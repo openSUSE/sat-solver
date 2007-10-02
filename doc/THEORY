@@ -1,0 +1,93 @@
+SAT theory
+
+References
+----------
+
+http://del.icio.us/kkaempf/sat
+
+
+Boolean expressions
+
+Operations ! (not), OR, AND
+
+
+Glossary
+--------
+
+Literal
+  variable (positive) or negated variable (negative)
+
+Clause
+  (Literal OR Literal)
+
+Unit clause
+  (Literal)
+
+Empty clause - always false
+  ()
+
+Formula
+  Clause AND/OR Clause
+
+CNF - conjunctive normal form
+  Clause AND Clause
+
+
+deMorgan allows to re-write any kind of boolean expression
+to NNF - negated normal form
+ - Negation only at variable level, not at expression level
+   (if you have !(a OR B) -> (!a AND !b), !(a AND B) -> (!a OR !b))
+
+
+
+Applicable transformations
+==========================
+
+Operators:
+
+ & = 'and' (conjunction)
+ | = 'or' (disjunction)
+ - = 'not' (negation)
+
+- commutative law
+
+  A & B == B & A
+  A | B == B | A
+  
+- distributive law
+
+  A | (B & C) == (A | B) & (A | C)
+  
+- operator precedence
+
+  A | B & C == A | (B & C)            & binds stronger than | 
+  -A & -B == (-A) & (-B)              ! binds stronger that -
+
+- conditionals
+
+  IF A THEN B => (-A | B)
+  
+- deMorgan
+
+  -(A & B) == -A | -B
+  -(A | B) == -A & -B
+  
+
+Dependencies
+============
+
+Install A               (A)
+Remove A                (-A)
+Update A                (A|A1|A2|...)        An = update candidates for A
+                                             (remove A from rule to
+                                             force upgrade)
+A requires B            (-A|B1|B2|...)       for each Bn = provider of B
+A conflicts B           (-A|-B1) & (-A|-B2)  for each Bn = provider of B
+
+A recommends B          w(-A|B1|B2|...)      weak requires
+A essentialfor B        (-B1|A) & (-B2|A)    reverse requires
+A supplements B         w(-B1|A) & w(-B2|A)  weak reverse requires
+
+A freshens B            (-B|dA)              dA = dependencies of A
+                                             must be converted to CNF using
+					     above listed transformations

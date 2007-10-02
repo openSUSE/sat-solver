@@ -1,0 +1,14 @@
+>!> Installing baz2 from channel test
+>!> 1 problems found:
+>!> Problem:
+>!> Cannot install baz2, because it is conflicting with foo2
+>!> A conflict over baz21 (baz21) requires the removal of baz2-1.0-1.noarch[test] which is scheduled for installation
+>!>    Solution:
+>!>       do not install baz2
+>!>       do not install baz2-1.0-1.noarch[test]
+>!>    Solution:
+>!>       delete foo2
+>!>       delete foo2-1.0-1.noarch
+>!>    Solution:
+>!>       Ignore this conflict of baz2
+>!>       

@@ -1,0 +1,24 @@
+>!> Establishing state ...
+>!> Established context
+>!> ESTABLISHED:1: U__s_[S2:0][package]A-1.0-1.noarch Licence: 1
+>!> ESTABLISHED:2: U__s_[S2:0][package]B-1.0-1.noarch Licence: 1
+>!> ESTABLISHED:3: I__s_[S1:1][package]fftw3-3.1.2-24.x86_64 Licence: 1
+>!> ESTABLISHED:4: I__s_[S1:1][package]kdenetwork3-IRC-3.5.6-2.x86_64 Licence: 1
+>!> ESTABLISHED:5: I__s_[S1:1][package]nh2ps-2.3.1-553.x86_64 Licence: 1
+>!> ESTABLISHED:6: I__s_[S1:1][package]perl-XML-Simple-2.16-5.x86_64 Licence: 1
+>!> ESTABLISHED:7: I_Lu_[S0:0][system]system-.noarch Licence: 0
+>!> ESTABLISHED:8: I__s_[S1:1][package]zen-updater-7.1.100-50.x86_64 Licence: 1
+>!> Installing B from channel test
+>!> No problems so far
+>!> ESTABLISHED:1: U_Ts_[S2:0][package]A-1.0-1.noarch Licence: 1
+>!> ESTABLISHED:2: U_Tu_[S2:0][package]B-1.0-1.noarch Licence: 1
+>!> ESTABLISHED:3: I__s_[S1:1][package]fftw3-3.1.2-24.x86_64 Licence: 1
+>!> ESTABLISHED:4: I__s_[S1:1][package]kdenetwork3-IRC-3.5.6-2.x86_64 Licence: 1
+>!> ESTABLISHED:5: I__s_[S1:1][package]nh2ps-2.3.1-553.x86_64 Licence: 1
+>!> ESTABLISHED:6: I__s_[S1:1][package]perl-XML-Simple-2.16-5.x86_64 Licence: 1
+>!> ESTABLISHED:7: I_Lu_[S0:0][system]system-.noarch Licence: 0
+>!> ESTABLISHED:8: I__s_[S1:1][package]zen-updater-7.1.100-50.x86_64 Licence: 1
+>!> Solution #1:
+>!> install A-1.0-1.noarch[test]
+>!> install B-1.0-1.noarch[test]
+>!> installs=2, upgrades=0, uninstalls=0

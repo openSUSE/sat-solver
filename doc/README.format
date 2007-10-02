@@ -1,0 +1,38 @@
+Metadata information is stored as '.solv' files
+
+These files have the following format:
+
+ 
+  MAGIC: 'SOLV'
+  U32:   SOLVVERSION
+ 
+  -- sizes --
+ 
+  U32:   NUMID                       /* number of Ids (names) */
+  U32:   NUMREL                      /* number of RelDeps (dependencies) */
+  U32:   NUMSOLV                     /* number of Solvables (packages) */
+  
+  -- string data --
+  U32:   SIZEID                      /* total size of string buffer */
+   U8*:   DICT (SIZE SIZEID)         /* (raw) string buffer */
+  
+  -- reldep data --
+   U8*:   RELDICT                    /* Buffer for RandDeps (Id,Id,u8) */
+ 
+  -- source data --                  /* apparently unused */
+  
+  U32:   NUMSRCDATA
+   U8 :   TYPE                        /* TYPE_ID, TYPE_U32, TYPE_STR */
+   ID :   DATAID
+   ID | U32 | U8*
+  
+  -- solvables --
+ 
+  U32:   NUMSOLVDATA
+   U8 :   TYPE
+   ID :   DATAID
+   U32:   NUM/SIZE
+  
+  U8*: BITS
+  U8*: DATA
+

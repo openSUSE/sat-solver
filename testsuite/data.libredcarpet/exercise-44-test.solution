@@ -1,0 +1,26 @@
+Loaded 750 packages from exercise-44-system.xml
+Loaded 0 packages from exercise-40-packages.xml
+
+------------------------------------------------
+
+
+Completed solutions: 1
+
+Best Solution:
+
+>!> Solution #1:
+Checksum = d424f345
+>!> remove  rpm-perl-4.0.3-1.03.noarch
+>!> remove  talk-0.17-12.noarch
+>!> remove  talk-server-0.17-12.noarch
+>!> installs=0, upgrades=0, uninstalls=3
+download size=0.0k, install size=0.0k
+total priority=0, min priority=2147483647, max priority=0
+other penalties=0
+- - - - - - - - - -
+There are no installable providers of greater than or equal to perl-5.00503.noarch[[Any]] for rpm-perl-4.0.3-1.03.noarch
+rpm-perl-4.0.3-1.03.noarch: missing requirement greater than or equal to perl-5.00503.noarch[[Any]]
+talk-server-0.17-12.noarch: conflicts with talk-0.17-12.noarch
+talk-0.17-12.noarch: conflicts with talk-server-0.17-12.noarch
+
+

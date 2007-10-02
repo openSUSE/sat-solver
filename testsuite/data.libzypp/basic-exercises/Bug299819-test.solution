@@ -1,0 +1,4 @@
+>!> No problems so far
+>!> Solution #1:
+>!> remove  F-1.0-1.noarch
+>!> installs=0, upgrades=0, uninstalls=1

@@ -1,0 +1,14 @@
+>!> Uninstalling A
+>!> 1 problems found:
+>!> Problem:
+>!> B has missing dependencies
+>!> There are no alternative providers of A installed for B-1.0-1.noarch
+>!>    Solution:
+>!>       keep A
+>!>       keep A-1.0-1.noarch
+>!>    Solution:
+>!>       delete B
+>!>       delete B-1.0-1.noarch
+>!>    Solution:
+>!>       Ignore this requirement just here
+>!>       

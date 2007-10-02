@@ -1,0 +1,42 @@
+#
+# sat-solver testsuite README
+#
+#
+
+- deptestomatic
+  parses and runs *-test.xml 
+  
+  By default gives 'zypp' compatible output
+  Run with '--redcarpet' to switch to original libredcarpet output
+  
+  e.g.
+  cd data.libredcarpet
+  ../deptestomatic --redcarpet exercise-1-test.xml
+  
+  
+- gen-data.rb
+
+  generates sat-solv compatible copy of zypp/redcarpet testsuite
+  tree by pre-parsing all -package.xml and -system.xml files into
+  .solv files.
+  
+  run with
+  ./gen-data.rb </path/to/zypp_or_redcarpet/testdata> <local_directory>
+  
+  The <local_directory> will be created
+  gen-data runs recursively through all sub-directories and re-creates
+  the identical layout beloy <local_directory>
+  
+- runtest.rb
+
+  Tool to run single or multiple tests
+  
+  ./runtest.rb <path/to/testcase>
+  to run a single test or
+  ./runtest.rb <path/to/testdir>
+  to run all tests below a given directory
+  
+  e.g.
+  ./runtest.rb --redcarpet data.libredcarpet/exercise-42-test.xml
+  ./runtest.rb --redcarpet data.libredcarpet
+

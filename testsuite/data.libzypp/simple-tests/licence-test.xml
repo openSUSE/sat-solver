@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+   load patch data from you.suse.de and install script(is satisfied)
+   but not message ( is unneeded )
+-->
+<test>
+<setup>
+  <setlicencebit/>
+  <system file="licence-package.xml"/>
+  <channel name="test" file="single-package.xml"/>
+</setup>
+<trial>
+  <establish/>
+  <showpool all="true" prefix=">!> ESTABLISHED:" getlicence="true"/>
+  <install channel="test" name="B"/>
+  <reportproblems/>
+  <showpool all="true" prefix=">!> ESTABLISHED:" getlicence="true"/>
+</trial>
+</test>

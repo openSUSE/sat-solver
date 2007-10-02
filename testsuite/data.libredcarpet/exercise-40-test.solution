@@ -1,0 +1,194 @@
+Loaded 740 packages from exercise-40-system.xml
+Loaded 0 packages from exercise-40-packages.xml
+
+------------------------------------------------
+
+
+Completed solutions: 1
+
+Best Solution:
+
+>!> Solution #1:
+Checksum = 2dde9240
+>!> remove  Gtk-Perl-0.7008-ximian.1.noarch
+>!> remove  battstat_applet-2.0.9-ximian.7.noarch
+>!> remove  control-center-plus-1.5.11-ximian.1.noarch
+>!> remove  evolution-1.0.2-ximian.1.noarch
+>!> remove  gaim-1:0.43-ximian.1.noarch
+>!> remove  gimp-perl-1:1.2.2-ximian.3.noarch
+>!> remove  gnome-applets-1:1.4.0.1-ximian.6.noarch
+>!> remove  gnome-core-1:1.4.0.4-ximian.11.noarch
+>!> remove  gnome-core-devel-1:1.4.0.4-ximian.11.noarch
+>!> remove  gnome-lokkit-0.50-6.noarch
+>!> remove  gnome-pilot-0.1.64-ximian.1.noarch
+>!> remove  gnome-pilot-devel-0.1.64-ximian.1.noarch
+>!> remove  gnome-utils-1:1.4.0-ximian.10.noarch
+>!> remove  gnomeicu-1:0.96.1-ximian.4.noarch
+>!> remove  grdb-0.2.4-ximian.4.noarch
+>!> remove  gtkhtml-1.0.1-ximian.1.noarch
+>!> remove  gtkhtml-devel-1.0.1-ximian.1.noarch
+>!> remove  libcapplet-1.5.8-ximian.1.noarch
+>!> remove  licq-gnome-1.0.3-7.noarch
+>!> remove  magicdev-0.3.6-2.noarch
+>!> remove  nautilus-1.0.6-ximian.4.noarch
+>!> remove  nautilus-devel-1.0.6-ximian.4.noarch
+>!> remove  nautilus-mozilla-1.0.6-ximian.4.noarch
+>!> remove  pygnome-applet-1:1.4.1-ximian.3.noarch
+>!> remove  rp3-1.1.10-3.noarch
+>!> remove  rpm-perl-4.0.3-1.03.noarch
+>!> remove  sawfish-1:0.38-ximian.5.noarch
+>!> remove  sawfish-themer-1:0.38-ximian.5.noarch
+>!> remove  sawfish-themes-0.2-ximian.1.noarch
+>!> remove  talk-0.17-12.noarch
+>!> remove  talk-server-0.17-12.noarch
+>!> remove  ximian-doorman-1:1.0.8-ximian.4.noarch
+>!> remove  xmms-gnome-1:1.2.6-ximian.3.noarch
+>!> remove  xscreensaver-1:4.00-ximian.2.noarch
+>!> installs=0, upgrades=0, uninstalls=34
+download size=0.0k, install size=0.0k
+total priority=0, min priority=2147483647, max priority=0
+other penalties=0
+- - - - - - - - - -
+There are no installable providers of greater than or equal to perl-5.00503.noarch[[Any]] for rpm-perl-4.0.3-1.03.noarch
+libcapplet-1.5.8-ximian.1.noarch: conflicts with libcapplet1-1.5.11-ximian.1.noarch
+rpm-perl-4.0.3-1.03.noarch: missing requirement greater than or equal to perl-5.00503.noarch[[Any]]
+talk-server-0.17-12.noarch: conflicts with talk-0.17-12.noarch
+talk-0.17-12.noarch: conflicts with talk-server-0.17-12.noarch
+There are no installable providers of (any) libcapplet.so.0[[Any]] for magicdev-0.3.6-2.noarch
+libcapplet-1.5.8-ximian.1.noarch provides libcapplet.so.0, but is scheduled to be uninstalled.
+There are no installable providers of (any) libcapplet.so.0[[Any]] for gnome-pilot-0.1.64-ximian.1.noarch
+libcapplet-1.5.8-ximian.1.noarch provides libcapplet.so.0, but is scheduled to be uninstalled.
+There are no installable providers of (any) libcapplet.so.0[[Any]] for sawfish-1:0.38-ximian.5.noarch
+libcapplet-1.5.8-ximian.1.noarch provides libcapplet.so.0, but is scheduled to be uninstalled.
+There are no installable providers of (any) libcapplet.so.0[[Any]] for gtkhtml-1.0.1-ximian.1.noarch
+libcapplet-1.5.8-ximian.1.noarch provides libcapplet.so.0, but is scheduled to be uninstalled.
+There are no installable providers of (any) libcapplet.so.0[[Any]] for grdb-0.2.4-ximian.4.noarch
+libcapplet-1.5.8-ximian.1.noarch provides libcapplet.so.0, but is scheduled to be uninstalled.
+There are no installable providers of (any) libcapplet.so.0[[Any]] for gnome-core-1:1.4.0.4-ximian.11.noarch
+libcapplet-1.5.8-ximian.1.noarch provides libcapplet.so.0, but is scheduled to be uninstalled.
+There are no installable providers of (any) libcapplet.so.0[[Any]] for control-center-plus-1.5.11-ximian.1.noarch
+libcapplet-1.5.8-ximian.1.noarch provides libcapplet.so.0, but is scheduled to be uninstalled.
+There are no installable providers of (any) libcapplet.so.0[[Any]] for xscreensaver-1:4.00-ximian.2.noarch
+libcapplet-1.5.8-ximian.1.noarch provides libcapplet.so.0, but is scheduled to be uninstalled.
+xscreensaver-1:4.00-ximian.2.noarch: depended on libcapplet-1.5.8-ximian.1.noarch
+xscreensaver-1:4.00-ximian.2.noarch: missing requirement (any) libcapplet.so.0[[Any]]
+control-center-plus-1.5.11-ximian.1.noarch: depended on libcapplet-1.5.8-ximian.1.noarch
+control-center-plus-1.5.11-ximian.1.noarch: missing requirement (any) libcapplet.so.0[[Any]]
+gnome-core-1:1.4.0.4-ximian.11.noarch: depended on libcapplet-1.5.8-ximian.1.noarch
+gnome-core-1:1.4.0.4-ximian.11.noarch: missing requirement (any) libcapplet.so.0[[Any]]
+grdb-0.2.4-ximian.4.noarch: depended on libcapplet-1.5.8-ximian.1.noarch
+grdb-0.2.4-ximian.4.noarch: missing requirement (any) libcapplet.so.0[[Any]]
+gtkhtml-1.0.1-ximian.1.noarch: depended on libcapplet-1.5.8-ximian.1.noarch
+gtkhtml-1.0.1-ximian.1.noarch: missing requirement (any) libcapplet.so.0[[Any]]
+sawfish-1:0.38-ximian.5.noarch: depended on libcapplet-1.5.8-ximian.1.noarch
+sawfish-1:0.38-ximian.5.noarch: missing requirement (any) libcapplet.so.0[[Any]]
+gnome-pilot-0.1.64-ximian.1.noarch: depended on libcapplet-1.5.8-ximian.1.noarch
+gnome-pilot-0.1.64-ximian.1.noarch: missing requirement (any) libcapplet.so.0[[Any]]
+magicdev-0.3.6-2.noarch: depended on libcapplet-1.5.8-ximian.1.noarch
+magicdev-0.3.6-2.noarch: missing requirement (any) libcapplet.so.0[[Any]]
+There are no installable providers of (any) libgpilotd.so.1[[Any]] for evolution-1.0.2-ximian.1.noarch
+gnome-pilot-0.1.64-ximian.1.noarch provides libgpilotd.so.1, but is scheduled to be uninstalled.
+There are no installable providers of (any) libgpilotdcm.so.1[[Any]] for evolution-1.0.2-ximian.1.noarch
+gnome-pilot-0.1.64-ximian.1.noarch provides libgpilotdcm.so.1, but is scheduled to be uninstalled.
+There are no installable providers of (any) libgpilotdconduit.so.1[[Any]] for evolution-1.0.2-ximian.1.noarch
+gnome-pilot-0.1.64-ximian.1.noarch provides libgpilotdconduit.so.1, but is scheduled to be uninstalled.
+There are no installable providers of equal to gnome-pilot-0.1.64.noarch[[Any]] for gnome-pilot-devel-0.1.64-ximian.1.noarch
+gnome-pilot-0.1.64-ximian.1.noarch provides gnome-pilot-0.1.64-ximian.1.noarch, but is scheduled to be uninstalled.
+There are no installable providers of (any) sawfish[[Any]] for sawfish-themes-0.2-ximian.1.noarch
+sawfish-1:0.38-ximian.5.noarch provides sawfish-1:0.38-ximian.5.noarch, but is scheduled to be uninstalled.
+There are no installable providers of (any) sawfish[[Any]] for sawfish-themer-1:0.38-ximian.5.noarch
+sawfish-1:0.38-ximian.5.noarch provides sawfish-1:0.38-ximian.5.noarch, but is scheduled to be uninstalled.
+There are no installable providers of greater than or equal to gtkhtml-1.0.1.noarch[[Any]] for evolution-1.0.2-ximian.1.noarch
+gtkhtml-1.0.1-ximian.1.noarch provides gtkhtml-1.0.1-ximian.1.noarch, but is scheduled to be uninstalled.
+There are no installable providers of greater than or equal to gtkhtml-0.9.0.noarch[[Any]] for Gtk-Perl-0.7008-ximian.1.noarch
+gtkhtml-1.0.1-ximian.1.noarch provides gtkhtml-1.0.1-ximian.1.noarch, but is scheduled to be uninstalled.
+There are no installable providers of equal to gtkhtml-1.0.1.noarch[[Any]] for gtkhtml-devel-1.0.1-ximian.1.noarch
+gtkhtml-1.0.1-ximian.1.noarch provides gtkhtml-1.0.1-ximian.1.noarch, but is scheduled to be uninstalled.
+There are no installable providers of (any) libpanel_applet.so.0[[Any]] for licq-gnome-1.0.3-7.noarch
+gnome-core-1:1.4.0.4-ximian.11.noarch provides libpanel_applet.so.0, but is scheduled to be uninstalled.
+There are no installable providers of (any) libpanel_applet.so.0[[Any]] for nautilus-1.0.6-ximian.4.noarch
+gnome-core-1:1.4.0.4-ximian.11.noarch provides libpanel_applet.so.0, but is scheduled to be uninstalled.
+There are no installable providers of (any) libpanel_applet.so.0[[Any]] for xmms-gnome-1:1.2.6-ximian.3.noarch
+gnome-core-1:1.4.0.4-ximian.11.noarch provides libpanel_applet.so.0, but is scheduled to be uninstalled.
+There are no installable providers of (any) libpanel_applet.so.0[[Any]] for gnome-pilot-0.1.64-ximian.1.noarch
+gnome-core-1:1.4.0.4-ximian.11.noarch provides libpanel_applet.so.0, but is scheduled to be uninstalled.
+There are no installable providers of (any) libpanel_applet.so.0[[Any]] for battstat_applet-2.0.9-ximian.7.noarch
+gnome-core-1:1.4.0.4-ximian.11.noarch provides libpanel_applet.so.0, but is scheduled to be uninstalled.
+There are no installable providers of (any) libpanel_applet.so.0[[Any]] for gaim-1:0.43-ximian.1.noarch
+gnome-core-1:1.4.0.4-ximian.11.noarch provides libpanel_applet.so.0, but is scheduled to be uninstalled.
+There are no installable providers of (any) libpanel_applet.so.0[[Any]] for gnomeicu-1:0.96.1-ximian.4.noarch
+gnome-core-1:1.4.0.4-ximian.11.noarch provides libpanel_applet.so.0, but is scheduled to be uninstalled.
+There are no installable providers of (any) libpanel_applet.so.0[[Any]] for gnome-applets-1:1.4.0.1-ximian.6.noarch
+gnome-core-1:1.4.0.4-ximian.11.noarch provides libpanel_applet.so.0, but is scheduled to be uninstalled.
+There are no installable providers of (any) libpanel_applet.so.0[[Any]] for rp3-1.1.10-3.noarch
+gnome-core-1:1.4.0.4-ximian.11.noarch provides libpanel_applet.so.0, but is scheduled to be uninstalled.
+There are no installable providers of (any) libpanel_applet.so.0[[Any]] for gnome-utils-1:1.4.0-ximian.10.noarch
+gnome-core-1:1.4.0.4-ximian.11.noarch provides libpanel_applet.so.0, but is scheduled to be uninstalled.
+There are no installable providers of (any) libpanel_status.so.0[[Any]] for battstat_applet-2.0.9-ximian.7.noarch
+gnome-core-1:1.4.0.4-ximian.11.noarch provides libpanel_status.so.0, but is scheduled to be uninstalled.
+There are no installable providers of greater than or equal to gnome-core-1.2.4.noarch[[Any]] for battstat_applet-2.0.9-ximian.7.noarch
+gnome-core-1:1.4.0.4-ximian.11.noarch provides gnome-core-1:1.4.0.4-ximian.11.noarch, but is scheduled to be uninstalled.
+There are no installable providers of greater than or equal to gnome-core-1.0.0.noarch[[Any]] for gnome-lokkit-0.50-6.noarch
+gnome-core-1:1.4.0.4-ximian.11.noarch provides gnome-core-1:1.4.0.4-ximian.11.noarch, but is scheduled to be uninstalled.
+There are no installable providers of equal to gnome-core-1.4.0.4.noarch[[Any]] for gnome-core-devel-1:1.4.0.4-ximian.11.noarch
+gnome-core-1:1.4.0.4-ximian.11.noarch provides gnome-core-1:1.4.0.4-ximian.11.noarch, but is scheduled to be uninstalled.
+There are no installable providers of greater than or equal to gnome-core-1.4.0.noarch[[Any]] for Gtk-Perl-0.7008-ximian.1.noarch
+gnome-core-1:1.4.0.4-ximian.11.noarch provides gnome-core-1:1.4.0.4-ximian.11.noarch, but is scheduled to be uninstalled.
+There are no installable providers of greater than or equal to gnome-core-1.4.0.noarch[[Any]] for pygnome-applet-1:1.4.1-ximian.3.noarch
+gnome-core-1:1.4.0.4-ximian.11.noarch provides gnome-core-1:1.4.0.4-ximian.11.noarch, but is scheduled to be uninstalled.
+pygnome-applet-1:1.4.1-ximian.3.noarch: depended on gnome-core-1:1.4.0.4-ximian.11.noarch
+pygnome-applet-1:1.4.1-ximian.3.noarch: missing requirement greater than or equal to gnome-core-1.4.0.noarch[[Any]]
+Gtk-Perl-0.7008-ximian.1.noarch: depended on gnome-core-1:1.4.0.4-ximian.11.noarch
+Gtk-Perl-0.7008-ximian.1.noarch: missing requirement greater than or equal to gnome-core-1.4.0.noarch[[Any]]
+gnome-core-devel-1:1.4.0.4-ximian.11.noarch: depended on gnome-core-1:1.4.0.4-ximian.11.noarch
+gnome-core-devel-1:1.4.0.4-ximian.11.noarch: missing requirement equal to gnome-core-1.4.0.4.noarch[[Any]]
+gnome-lokkit-0.50-6.noarch: depended on gnome-core-1:1.4.0.4-ximian.11.noarch
+gnome-lokkit-0.50-6.noarch: missing requirement greater than or equal to gnome-core-1.0.0.noarch[[Any]]
+battstat_applet-2.0.9-ximian.7.noarch: depended on gnome-core-1:1.4.0.4-ximian.11.noarch
+battstat_applet-2.0.9-ximian.7.noarch: missing requirement greater than or equal to gnome-core-1.2.4.noarch[[Any]]
+gnome-utils-1:1.4.0-ximian.10.noarch: depended on gnome-core-1:1.4.0.4-ximian.11.noarch
+gnome-utils-1:1.4.0-ximian.10.noarch: missing requirement (any) libpanel_applet.so.0[[Any]]
+rp3-1.1.10-3.noarch: depended on gnome-core-1:1.4.0.4-ximian.11.noarch
+rp3-1.1.10-3.noarch: missing requirement (any) libpanel_applet.so.0[[Any]]
+gnome-applets-1:1.4.0.1-ximian.6.noarch: depended on gnome-core-1:1.4.0.4-ximian.11.noarch
+gnome-applets-1:1.4.0.1-ximian.6.noarch: missing requirement (any) libpanel_applet.so.0[[Any]]
+gnomeicu-1:0.96.1-ximian.4.noarch: depended on gnome-core-1:1.4.0.4-ximian.11.noarch
+gnomeicu-1:0.96.1-ximian.4.noarch: missing requirement (any) libpanel_applet.so.0[[Any]]
+gaim-1:0.43-ximian.1.noarch: depended on gnome-core-1:1.4.0.4-ximian.11.noarch
+gaim-1:0.43-ximian.1.noarch: missing requirement (any) libpanel_applet.so.0[[Any]]
+xmms-gnome-1:1.2.6-ximian.3.noarch: depended on gnome-core-1:1.4.0.4-ximian.11.noarch
+xmms-gnome-1:1.2.6-ximian.3.noarch: missing requirement (any) libpanel_applet.so.0[[Any]]
+nautilus-1.0.6-ximian.4.noarch: depended on gnome-core-1:1.4.0.4-ximian.11.noarch
+nautilus-1.0.6-ximian.4.noarch: missing requirement (any) libpanel_applet.so.0[[Any]]
+licq-gnome-1.0.3-7.noarch: depended on gnome-core-1:1.4.0.4-ximian.11.noarch
+licq-gnome-1.0.3-7.noarch: missing requirement (any) libpanel_applet.so.0[[Any]]
+gtkhtml-devel-1.0.1-ximian.1.noarch: depended on gtkhtml-1.0.1-ximian.1.noarch
+gtkhtml-devel-1.0.1-ximian.1.noarch: missing requirement equal to gtkhtml-1.0.1.noarch[[Any]]
+evolution-1.0.2-ximian.1.noarch: depended on gtkhtml-1.0.1-ximian.1.noarch
+evolution-1.0.2-ximian.1.noarch: missing requirement greater than or equal to gtkhtml-1.0.1.noarch[[Any]]
+sawfish-themer-1:0.38-ximian.5.noarch: depended on sawfish-1:0.38-ximian.5.noarch
+sawfish-themer-1:0.38-ximian.5.noarch: missing requirement (any) sawfish[[Any]]
+sawfish-themes-0.2-ximian.1.noarch: depended on sawfish-1:0.38-ximian.5.noarch
+sawfish-themes-0.2-ximian.1.noarch: missing requirement (any) sawfish[[Any]]
+gnome-pilot-devel-0.1.64-ximian.1.noarch: depended on gnome-pilot-0.1.64-ximian.1.noarch
+gnome-pilot-devel-0.1.64-ximian.1.noarch: missing requirement equal to gnome-pilot-0.1.64.noarch[[Any]]
+There are no installable providers of (any) sawfish-themes[[Any]] for ximian-doorman-1:1.0.8-ximian.4.noarch
+sawfish-themes-0.2-ximian.1.noarch provides sawfish-themes-0.2-ximian.1.noarch, but is scheduled to be uninstalled.
+There are no installable providers of (any) libnautilus.so.0[[Any]] for nautilus-mozilla-1.0.6-ximian.4.noarch
+nautilus-1.0.6-ximian.4.noarch provides libnautilus.so.0, but is scheduled to be uninstalled.
+There are no installable providers of equal to nautilus-1.0.6.noarch[[Any]] for nautilus-devel-1.0.6-ximian.4.noarch
+nautilus-1.0.6-ximian.4.noarch provides nautilus-1.0.6-ximian.4.noarch, but is scheduled to be uninstalled.
+There are no installable providers of equal to nautilus-1.0.6.noarch[[Any]] for nautilus-mozilla-1.0.6-ximian.4.noarch
+nautilus-1.0.6-ximian.4.noarch provides nautilus-1.0.6-ximian.4.noarch, but is scheduled to be uninstalled.
+There are no installable providers of (any) Gtk-Perl[[Any]] for gimp-perl-1:1.2.2-ximian.3.noarch
+Gtk-Perl-0.7008-ximian.1.noarch provides Gtk-Perl-0.7008-ximian.1.noarch, but is scheduled to be uninstalled.
+gimp-perl-1:1.2.2-ximian.3.noarch: depended on Gtk-Perl-0.7008-ximian.1.noarch
+gimp-perl-1:1.2.2-ximian.3.noarch: missing requirement (any) Gtk-Perl[[Any]]
+nautilus-mozilla-1.0.6-ximian.4.noarch: depended on nautilus-1.0.6-ximian.4.noarch
+nautilus-mozilla-1.0.6-ximian.4.noarch: missing requirement equal to nautilus-1.0.6.noarch[[Any]]
+nautilus-devel-1.0.6-ximian.4.noarch: depended on nautilus-1.0.6-ximian.4.noarch
+nautilus-devel-1.0.6-ximian.4.noarch: missing requirement equal to nautilus-1.0.6.noarch[[Any]]
+ximian-doorman-1:1.0.8-ximian.4.noarch: depended on sawfish-themes-0.2-ximian.1.noarch
+ximian-doorman-1:1.0.8-ximian.4.noarch: missing requirement (any) sawfish-themes[[Any]]
+
+

@@ -1,0 +1,46 @@
+SAT solver
+
+References
+----------
+
+http://people.debian.org/~dburrows/model.pdf
+
+
+Basic idea
+----------
+
+Express packaga dependencies as boolean expressions.
+(in conjunctive normal form - CNF)
+
+(! == boolean not)
+
+A requires B  -> !A or B
+A conflicts B -> !A or !B (! (A and B)
+A obsoletes B -> A conflicts B
+A provides B -> B == A (replace all occurences of B in CNFs with A)
+
+
+Datastructures
+--------------
+
+Solvable:
+ Representation of package with name, version, architecture, dependencies
+
+Source:
+ collection of solvables, like a repository or the rpm database
+
+Pool:
+ collection of sources
+
+
+
+Usage
+-----
+
+The installed packages are represented as a single Source
+The installed and available packages are represented as a Pool
+
+The solver gets initialized by passing it the complete pool (all Solvables)
+and a single Source (called 'system', representing the installed Solvables).
+
+It then creates rules to flag the Solvables of 'system' as installed.

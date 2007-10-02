@@ -1,0 +1,4 @@
+>!> Solution #1:
+>!> remove  exim-0:3.12-10.2
+>!> remove  at-0:3.1.8-10
+>!> installs=0, upgrades=0, uninstalls=2

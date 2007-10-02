@@ -1,0 +1,19 @@
+Queue
+
+The queue schedules tasks for the solver
+
+The tasks are (cmd, id) pairs.
+
+The following commands are defined:
+
+SOLVER_INSTALL_SOLVABLE           Install solvable (id is index into solvables)
+SOLVER_ERASE_SOLVABLE             Erase solvable (id is name Id)
+SOLVER_INSTALL_SOLVABLE_NAME      Install solvable by name (id is name Id)
+SOLVER_ERASE_SOLVABLE_NAME        Erase package by name (id is name Id)
+SOLVER_INSTALL_SOLVABLE_PROVIDES  Install solvable by provides (id is RelDep Id)
+SOLVER_ERASE_SOLVABLE_PROVIDES    Erase solvable by provides (id is RelDep Id)
+SOLVER_INSTALL_SOLVABLE_UPDATE    Update solvable
+
+
+Install by name and by provides are handled identical, since every
+solvable provides its name

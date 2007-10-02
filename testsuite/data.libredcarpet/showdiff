@@ -1,0 +1,2 @@
+#!/bin/bash
+exec diff -wu ex*-$1-test.solution ex*-$1-test.result

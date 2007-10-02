@@ -1,0 +1,24 @@
+>!> 2 problems found:
+>!> Problem:
+>!> B cannot be installed due to missing dependencies
+>!> There are no installable providers of A_not == 1.1 for B-1.0-2.x86_64[test]
+>!>    Solution:
+>!>       do not install B
+>!>       do not install B-1.0-2.x86_64[test]
+>!>    Solution:
+>!>       Ignore this requirement just here
+>!>       
+>!> Problem:
+>!> No valid solution found with just resolvables of best architecture.
+>!> With this run only resolvables with the best architecture have been regarded.
+>!>    Solution:
+>!>       Make a solver run with ALL possibilities.
+>!>       Regarding all resolvables with a compatible architecture.
+>!> Taking solution: 0
+>!> For problem:     0
+>!> No problems so far
+>!> No problems so far
+>!> Solution #1:
+>!> install A-1.1-2.x86_64[test]
+>!> install B-1.0-2.i686[test]
+>!> installs=2, upgrades=0, uninstalls=0

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!-- "Bug299819 -->
+<test>
+<setup arch="i686">
+	<system file="Bug299819-2-system.xml.gz"/>
+	<channel file="Bug299819-2-package.xml.gz" name="1" />
+	<locale name="de" />
+	<locale name="de_DE" />
+</setup>
+<trial>
+<install channel="1" kind="package" name="autoconf" arch="i586" version="2.60" release="21"/>
+<install channel="1" kind="package" name="automake" arch="i586" version="1.9.6" release="35"/>
+<install channel="1" kind="package" name="bzip2" arch="i586" version="1.0.3" release="36"/>
+<install channel="1" kind="package" name="yast2-devel" arch="i586" version="2.14.15" release="3"/>
+<install channel="1" kind="package" name="autoyast2" arch="noarch" version="2.14.15" release="9"/>
+<install channel="1" kind="package" name="autoyast2-installation" arch="noarch" version="2.14.15" release="9"/>
+<install channel="1" kind="package" name="bitstream-vera" arch="noarch" version="1.10" release="199"/>
+<install channel="1" kind="package" name="yast2-cd-creator" arch="noarch" version="2.14.0" release="20"/>
+<install channel="1" kind="package" name="yast2-iscsi-server" arch="noarch" version="2.14.0" release="15"/>
+<install channel="1" kind="package" name="yast2-slp-server" arch="noarch"
+version="2.14.1" release="3"/>
+<reportproblems/>
+<showpool all="yes" prefix=">!> pool:"/>
+</trial>
+</test>
