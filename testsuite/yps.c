@@ -17,6 +17,7 @@
 #include <string.h>
 
 #include "pool.h"
+#include "poolarch.h"
 #include "source_solv.h"
 #include "solver.h"
 
@@ -73,6 +74,7 @@ main(int argc, char **argv)
   int erase = 0;
 
   pool = pool_create();
+  pool_setarch(pool, "i686");
   pool->verbose = 1;
   queueinit(&job);
 
