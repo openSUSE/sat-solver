@@ -32,6 +32,7 @@ select_solvable(Pool *pool, Source *source, char *name)
   Id id;
   Queue plist;
   int i, end;
+  Solvable *s;
 
   id = str2id(pool, name, 1);
   queueinit( &plist);
@@ -39,7 +40,10 @@ select_solvable(Pool *pool, Source *source, char *name)
   end = source ? source->start + source->nsolvables : pool->nsolvables;
   for (; i < end; i++)
     {
-      if (pool->solvables[i].name == id)
+      s = pool->solvables + i;
+      if (s->arch == ARCH_SRC || s->arch == ARCH_NOSRC)
+	continue;
+      if (s->name == id)
 	queuepush(&plist, i);
     }
 
