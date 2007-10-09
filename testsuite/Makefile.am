@@ -3,7 +3,7 @@ noinst_PROGRAMS = yps gimmick deptestomatic
 INCLUDES =  \
 	-I$(top_srcdir)/src
 
-LIBS = \
+LIBADD = \
 	$(top_builddir)/src/libsatsolver0.la
 
 yps_SOURCES = \
