@@ -1,0 +1,15 @@
+#! /bin/sh
+
+file1=`mktemp /tmp/diffXXXXXX`
+file2=`mktemp /tmp/diffXXXXXX`
+
+pwd=`readlink -f $PWD`
+
+sfile=`readlink -f $1 | sed -e "s,$pwd/,,"`
+rfile=`readlink -f $2 | sed -e "s,$pwd/,,"`
+
+grep -e "^>\!> \(upgrade\|install\|remove\)" $1 | sed -e "s,installs,zzinstalls", | sort > $file1
+grep -e "^>\!> \(upgrade\|install\|remove\)" $2 | sed -e "s,installs,zzinstalls", | sort > $file2
+diff -U 0 $file1 $file2 | sed -e "s,$file1,$sfile,; s,$file2,$rfile,; s,zzinst,inst," | grep -v @@
+rm -f $file1 $file2
+

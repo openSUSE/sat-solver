@@ -106,11 +106,13 @@ class Solution
     solutions.each { |s|
       return true if s == r
     }
-#    STDERR.puts "#{rname} failed"
-#    STDERR.puts "Solution:"
-#    pp solutions.first
-#    STDERR.puts "Result:"
-#    pp r
+    
+    #STDERR.puts "#{rname} failed"
+    system( "./diffres #{sname} #{rname}")
+    #STDERR.puts "Solution:"
+    #pp solutions.first
+    #STDERR.puts "Result:"
+    #pp r
     return false
   end
 
@@ -126,8 +128,8 @@ class Tester < Test::Unit::TestCase
     $tests.each { |test|
 #      puts "Testing #{test}"
       basename = File.basename(test, ".xml")
-      print "."
-      STDOUT.flush
+      #print "."
+      #STDOUT.flush
       dir = File.dirname(test)
       args = ""
       args = "--redcarpet" if $redcarpet

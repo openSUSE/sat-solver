@@ -64,6 +64,3 @@
 >!> install language:de-.noarch
 >!> install language:de_DE-.noarch
 >!> installs=58, upgrades=0, uninstalls=0
->!> Solution #2:
->!> This solution is a duplicate.
->!> installs=58, upgrades=0, uninstalls=0
