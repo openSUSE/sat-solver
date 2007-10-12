@@ -2,10 +2,10 @@
 >!> Installing isdn4k-utils from channel test
 >!> Installing kdbg from channel test
 >!> Solution #1:
->!> install XFree86-libs-3.3.5-1[test]
->!> install gdbm-1.8.0-3[test]
->!> install inn-2.2.1-2[test]
->!> install isdn4k-utils-3.0beta2-4[test]
->!> install kdbg-1.0beta1-1[test]
->!> install kdelibs-1.1.2-1[test]
+>!> install XFree86-libs-3.3.5-1.noarch[test]
+>!> install gdbm-1.8.0-3.noarch[test]
+>!> install inn-2.2.1-2.noarch[test]
+>!> install isdn4k-utils-3.0beta2-4.noarch[test]
+>!> install kdbg-1.0beta1-1.noarch[test]
+>!> install kdelibs-1.1.2-1.noarch[test]
 >!> installs=6, upgrades=0, uninstalls=0
