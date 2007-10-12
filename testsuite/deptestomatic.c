@@ -20,7 +20,7 @@
 #include "solver.h"
 #include "source_solv.h"
 #include "poolarch.h"
-
+#include "../tools/source_write.h"
 
 static int verbose = 0;
 static int redcarpet = 0;
@@ -145,6 +145,7 @@ typedef struct _parsedata {
   struct _channelmap *channels;
 
   Source *system;	// system source
+  Source *locales;      // where we store locales
 
   Id arch;              // set architecture
 
@@ -627,9 +628,55 @@ startElement( void *userData, const char *name, const char **atts )
     break;
 
     case STATE_LOCALE: {	       /* system locales */
+
       const char *name = attrval( atts, "name" );
-      err( "ignoring locale %s", name );
-      /* FIXME */
+      char locale[100];
+      strcpy(locale, "language:");
+      strncat(locale, name, 100);
+
+      Solvable s;
+      memset(&s, 0, sizeof(Solvable));
+      s.name = str2id(pd->pool, locale, 1);
+      s.arch = str2id(pd->pool, "noarch", 1);
+      s.evr = str2id(pd->pool, "", 1);
+      if (!pd->locales) {
+	  pd->locales = pool_addsource_empty(pd->pool);
+	  pool_freeidhashes(pd->pool);
+	  pd->locales->name = strdup( "locales" );
+	  pd->locales->start = pd->pool->nsolvables;
+      }
+
+      source_reserve_ids(pd->locales, 0, 3);
+
+      strcpy(locale, "locale:");
+      strncat(locale, name, 100);
+      Id pr = source_addid_dep(pd->locales, 0, str2id(pd->pool, locale, 1), 0);
+
+      strcpy(locale, "Locale(");
+      strncat(locale, name, 100);
+      strncat(locale, ")", 100);
+      pr = source_addid_dep(pd->locales, pr, str2id(pd->pool, locale, 1), 0);
+
+      strcpy(locale, "language:");
+      strncat(locale, name, 100);
+      pr = source_addid_dep(pd->locales, pr, str2id(pd->pool, locale, 1), 0);
+
+      s.provides = pd->locales->idarraydata + pr;
+
+      pd->pool->solvables = realloc(pd->pool->solvables, (pd->pool->nsolvables + 1) * sizeof(Solvable));
+      memcpy(pd->pool->solvables + pd->pool->nsolvables, &s, sizeof(Solvable));
+      pd->locales->nsolvables++;
+      pd->pool->nsolvables++;
+
+      pd->nchannels++;
+      pd->channels = (struct _channelmap *)realloc( pd->channels, pd->nchannels * sizeof( struct _channelmap ) );
+
+      struct _channelmap *cmap = pd->channels + (pd->nchannels-1);
+      cmap->name = str2id( pool, "locales", 1 );
+      cmap->source = pd->locales;
+
+      queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE_PROVIDES );
+      queuepush( &(pd->trials), s.name );
     }
     break;
 
@@ -708,7 +755,7 @@ startElement( void *userData, const char *name, const char **atts )
        * <install channel="1" kind="package" name="foofoo" arch="i586" version="2.60" release="21"/>
        */
 
-      const char *channel = attrval( atts, "channel" );
+       const char *channel = attrval( atts, "channel" );
        char package[100];
        getPackageName( atts, package );
 
@@ -746,7 +793,7 @@ startElement( void *userData, const char *name, const char **atts )
       }
       else {			       /* no channel given, from any channel */
 	Id id = str2id( pool, package, 1 );
-	queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE_NAME );
+	queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE_PROVIDES );
         queuepush( &(pd->trials), id );
       }
     }
@@ -874,6 +921,9 @@ endElement( void *userData, const char *name )
 
       if (pd->arch)
         pool_setarch( pd->pool, id2str(pd->pool, pd->arch) );
+      else
+	pool_setarch( pd->pool, "i686" );
+
       pool_prepare( pd->pool );
       pool->promoteepoch = 1;
 
