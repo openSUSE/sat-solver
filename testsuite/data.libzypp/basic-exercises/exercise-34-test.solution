@@ -1,6 +1,6 @@
 >!> Installing gnome-vfs from channel ximian
 >!> Solution #1:
->!> install gnome-mime-data-1.0.1-ximian.3[ximian]
->!> upgrade gnome-vfs-1.0.3-ximian.5 => gnome-vfs-1.0.4-ximian.4[ximian]
->!> upgrade gnome-vfs-devel-1.0.3-ximian.5 => gnome-vfs-devel-1.0.4-ximian.4[ximian]
+>!> install gnome-mime-data-1.0.1-ximian.3.noarch[ximian]
+>!> upgrade gnome-vfs-1.0.3-ximian.5.noarch => gnome-vfs-1.0.4-ximian.4.noarch[ximian]
+>!> upgrade gnome-vfs-devel-1.0.3-ximian.5.noarch => gnome-vfs-devel-1.0.4-ximian.4.noarch[ximian]
 >!> installs=1, upgrades=2, uninstalls=0

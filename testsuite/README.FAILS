@@ -36,28 +36,3 @@ basic-exercises/exercise-42-force-test.xml
 yast-tests/tpctl-multi-test.xml
 	only installs one kernel module, should be two
 
-simple-tests/arch3-test.xml
-	mls updates the arch, libzypp asks user about it
-	
-basic-exercises/exercise-32-test.xml
-basic-exercises/exercise-34-test.xml
-basic-exercises/exercise-35-test.xml
-basic-exercises/exercise-36-test.xml
-basic-exercises/exercise-37-test.xml
-basic-exercises/exercise-38-test.xml
-basic-exercises/exercise-39-force-test.xml
-basic-exercises/exercise-43-test.xml
-basic-exercises/exercise-44-test.xml
-basic-exercises/exercise-47-test.xml
-basic-exercises/provide-1-test.xml
-basic-exercises/require-1-test.xml
-basic-exercises/require-2-test.xml
-yast-tests/Bug156439-test.xml
-yast-tests/Bug156513-test.xml
-yast-tests/Bug159696-test.xml
-yast-tests/bug155368-force-test.xml
-yast-tests/exercise-05reallive-4-test.xml
-yast-tests/exercise-06upgrade-test.xml
-yast-tests/exercise-alternatives-3-force-test.xml
-yast-tests/kernel2-test.xml
-	unknown yet
