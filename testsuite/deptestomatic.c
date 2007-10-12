@@ -646,11 +646,9 @@ startElement( void *userData, const char *name, const char **atts )
 	  pd->locales->start = pd->pool->nsolvables;
       }
 
-      source_reserve_ids(pd->locales, 0, 3);
+      source_reserve_ids(pd->locales, 0, 2);
 
-      strcpy(locale, "locale:");
-      strncat(locale, name, 100);
-      Id pr = source_addid_dep(pd->locales, 0, str2id(pd->pool, locale, 1), 0);
+      Id pr = 0;
 
       strcpy(locale, "Locale(");
       strncat(locale, name, 100);
