@@ -4,7 +4,7 @@ INCLUDES =  \
 	-I$(top_srcdir)/src
 
 LDADD = \
-	$(top_builddir)/src/libsatsolver0.la
+	$(top_builddir)/src/libsatsolver.la
 
 yps_SOURCES = \
 	yps.c
