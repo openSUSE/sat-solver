@@ -1,9 +1,10 @@
+/*  -*- mode: C; c-file-style: "gnu"; fill-column: 78 -*- */
 /*
  * deptestomatic.c
- * 
+ *
  * Parse 'deptestomatic' XML representation
  * and run test case
- * 
+ *
  */
 
 #include <sys/types.h>
@@ -14,6 +15,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <expat.h>
+#include <libgen.h>
 
 #include "solver.h"
 #include "source_solv.h"
@@ -34,7 +36,7 @@ err( const char *msg, ...)
   fprintf( stderr, "%s: ", Current );
   vfprintf( stderr, msg, ap );
   fprintf( stderr, "\n" );
-  va_end( ap );  
+  va_end( ap );
 }
 
 /* XML parser states */
@@ -66,7 +68,7 @@ enum state {
     STATE_SUBSCRIBE,
     STATE_VERIFY,
     STATE_UPGRADE,
-    
+
   NUMSTATES
 };
 
@@ -136,7 +138,7 @@ typedef struct _parsedata {
   int docontent;	// handle content
 
   Queue trials;
-  
+
   Pool *pool;		// current pool, with channels
 
   int nchannels;
@@ -151,9 +153,10 @@ typedef struct _parsedata {
   bool allowdowngrade;
   bool allowuninstall;
   bool allowvirtualconflicts;
-  
+
   struct stateswitch *swtab[NUMSTATES];
   enum state sbtab[NUMSTATES];
+  char directory[PATH_MAX];
 } Parsedata;
 
 /*------------------------------------------------------------------*/
@@ -201,7 +204,7 @@ evr2id( Pool *pool, Parsedata *pd, const char *e, const char *v, const char *r )
       if (v2 > v && *v2 == ':')
 	e = "0";
     }
-  
+
   // compute length of Id string
   l = 1;  // for the \0
   if (e)
@@ -382,7 +385,7 @@ adddep( Pool *pool, Parsedata *pd, unsigned int olddeps, const char **atts, int 
 
 /*
  * read source from file as name
- * 
+ *
  */
 
 static Source *
@@ -456,13 +459,33 @@ select_solvable( Pool *pool, Source *source, const char *name )
   return ID_NULL;
 }
 
+static void getPackageName( const char **atts, char package[100] )
+{
+  package[0] = 0;
+  const char *packattr = attrval( atts, "package" );
+  const char *kind     = attrval( atts, "kind" );
+
+  if (packattr == NULL)
+    packattr = attrval( atts, "name" );
+
+  /* for non-packages we prepend the namespace */
+  if (kind != NULL && strcmp(kind, "package") )
+    {
+      strncpy(package, kind, 100);
+      strncat(package, ":" , 100);
+    }
+
+  if (packattr)
+    strncat(package, packattr, 100);
+}
+
 
 /*----------------------------------------------------------------*/
 
 /*
  * XML callback
  * <name>
- * 
+ *
  */
 
 static void XMLCALL
@@ -497,7 +520,7 @@ startElement( void *userData, const char *name, const char **atts )
 #endif
       return;
     }
-  
+
   // set new state
   pd->state = sw->to;
 
@@ -535,13 +558,12 @@ startElement( void *userData, const char *name, const char **atts )
 
     case STATE_ARCH: {		       /* set architecture */
       val = attrval( atts, "name" );
-      if (!val) {
+      if (!val)
 	err( "<arch> without name" );
-      }
-      else {
-	if (pd->arch) {
+      else
+        {
+          if (pd->arch)
 	  err( "<arch> overrides arch" );
-	}
 	pd->arch = str2id( pool, val, 1 );
       }
     }
@@ -551,7 +573,11 @@ startElement( void *userData, const char *name, const char **atts )
       const char *name = attrval( atts, "name" );
       const char *file = attrval( atts, "file" );
       if (file && name) {
-	Source *source = add_source( pd, name, file );
+	char path[PATH_MAX];
+	strncpy(path, pd->directory, sizeof(path));
+	strncat(path, file, sizeof(path));
+
+	Source *source = add_source( pd, name, path );
 	if (source) {
 	  pd->nchannels++;
 	  pd->channels = (struct _channelmap *)realloc( pd->channels, pd->nchannels * sizeof( struct _channelmap ) );
@@ -567,7 +593,7 @@ startElement( void *userData, const char *name, const char **atts )
 	  err( "Can't add <channel> %s", name );
 	  exit( 1 );
 	}
-	  
+
       }
       else {
 	err( "<channel> incomplete" );
@@ -582,7 +608,10 @@ startElement( void *userData, const char *name, const char **atts )
 	err( "Duplicate <system>" );
       }
       if (file) {
-	Source *source = add_source( pd, name, file );
+	char path[PATH_MAX];
+	strncpy(path, pd->directory, sizeof(path));
+	strncat(path, file, sizeof(path));
+	Source *source = add_source( pd, "system", path );
 	if (source)
 	  pd->system = source;
 	else {
@@ -611,7 +640,7 @@ startElement( void *userData, const char *name, const char **atts )
 
     case STATE_FORCEINSTALL:	       /* pretend its installed */
     break;
-      
+
     case STATE_FORCEUNINSTALL:	       /* pretend its not installed */
     break;
 
@@ -619,7 +648,7 @@ startElement( void *userData, const char *name, const char **atts )
       /*
        * <lock channel="1" package="foofoo" />
        */
- 
+
       const char *channel = attrval( atts, "channel" );
       const char *package = attrval( atts, "package" );
 
@@ -673,27 +702,28 @@ startElement( void *userData, const char *name, const char **atts )
       break;
 
      case STATE_INSTALL: {	       /* install package */
-      
+
       /*
        * <install channel="1" package="foofoo" />
        * <install channel="1" kind="package" name="foofoo" arch="i586" version="2.60" release="21"/>
        */
- 
-      const char *channel = attrval( atts, "channel" );
-      const char *package = attrval( atts, "package" );
 
-      if (package == NULL) {
-	package = attrval( atts, "name" );
-      }
-      if (package == NULL) {
+      const char *channel = attrval( atts, "channel" );
+       char package[100];
+       getPackageName( atts, package );
+
+       if (!strlen(package))
+         {
 	err( "%s: No package given in <install>", Current );
 	break;
       }
 
       Source *source = NULL;
-      if (channel) {		       /* from specific channel */
+       if (channel) /* from specific channel */
+         {
         Id cid = str2id( pool, channel, 0 );
-	if (cid == ID_NULL) {
+           if (cid == ID_NULL)
+             {
 	  err( "Install: Channel '%s' does not exist", channel );
 	  exit( 1 );
 	}
@@ -721,10 +751,13 @@ startElement( void *userData, const char *name, const char **atts )
       }
     }
     break;
-      
+
     case STATE_REMOVE: {	       /* remove package */
-      const char *package = attrval( atts, "package" );
-      if (package == NULL) {
+      char package[100];
+      getPackageName( atts, package );
+
+      if (!strlen(package))
+        {
 	err( "No package given in <uninstall>" );
 	exit( 1 );
       }
@@ -811,7 +844,7 @@ startElement( void *userData, const char *name, const char **atts )
 /*
  * XML callback
  * </name>
- * 
+ *
  */
 
 static void XMLCALL
@@ -851,7 +884,7 @@ endElement( void *userData, const char *name )
       solv->allowuninstall = pd->allowuninstall;
       solv->rc_output = redcarpet ? 2 : 1;
       pd->pool->verbose = verbose;
-      
+
       // Solve !
       solve( solv, &(pd->trials) );
       // clean up
@@ -872,7 +905,7 @@ endElement( void *userData, const char *name )
 /*
  * XML callback
  * character data
- * 
+ *
  */
 
 static void XMLCALL
@@ -914,7 +947,7 @@ usage( void )
 
 /*
  * read 'helix' type xml test description
- * 
+ *
  */
 
 int
@@ -923,11 +956,6 @@ main( int argc, char **argv )
   Parsedata pd;
   int i;
   struct stateswitch *sw;
-
-  if (argc < 2)
-    {
-      usage();
-    }
 
   // prepare parsedata
   memset( &pd, 0, sizeof( pd ) );
@@ -943,20 +971,19 @@ main( int argc, char **argv )
 
   pd.nchannels = 0;
   pd.channels = NULL;
-  
+
   pd.system = NULL;
 
   pd.content = (char *)malloc( 256 );
   pd.acontent = 256;
   pd.lcontent = 0;
 
-  
   /*
    * policies
    */
-  
+
   pd.allowuninstall = 0;
-  
+
   /*
    * set up XML parser
    */
@@ -967,24 +994,32 @@ main( int argc, char **argv )
   XML_SetCharacterDataHandler( parser, characterData );
 
   int argp = 1;
-  if (!strcmp( argv[argp], "--redcarpet" ))
+  if (argp < argc && !strcmp( argv[argp], "--redcarpet" ))
     {
       redcarpet = 1;
       pd.allowuninstall = 1;
       ++argp;
     }
-  
-  if (!strcmp( argv[argp], "-v" ))
+
+  if (argp < argc && !strcmp( argv[argp], "-v" ))
     {
       verbose = 1;
       ++argp;
     }
-  
-  if (!strcmp( argv[argp], "-h" ))
+
+  if (argp >= argc || !strcmp( argv[argp], "-h" ))
     {
       usage();
     }
-  
+
+  strncpy(pd.directory, argv[argp], PATH_MAX);
+  memmove(pd.directory, dirname(pd.directory), strlen(pd.directory));
+  if (pd.directory[strlen(pd.directory)-1] != '/')
+	strncat(pd.directory, "/", PATH_MAX);
+  // if it's . then use empty
+  if (!strcmp(pd.directory, "./"))
+     pd.directory[0] = 0;
+
   FILE *fp = fopen( argv[argp], "r" );
   if (!fp) {
     perror( argv[argp] );
@@ -998,7 +1033,7 @@ main( int argc, char **argv )
     {
       char buf[BUFF_SIZE];
       int l;
-     
+
       l = fread( buf, 1, sizeof(buf), fp );
       if (XML_Parse( parser, buf, l, l == 0 ) == XML_STATUS_ERROR)
 	{
