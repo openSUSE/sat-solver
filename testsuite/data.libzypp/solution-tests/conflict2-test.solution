@@ -1,0 +1,14 @@
+>!> Installing B from channel test
+>!> 1 problems found:
+>!> Problem:
+>!> Cannot install B, because it is conflicting with A
+>!> A conflict over B == 1.0-1 (B) requires the removal of B-1.0-1.noarch[test] which is scheduled for installation
+>!>    Solution:
+>!>       do not install B
+>!>       do not install B-1.0-1.noarch[test]
+>!>    Solution:
+>!>       delete A
+>!>       delete A-1.0-1.noarch
+>!>    Solution:
+>!>       Ignore this conflict of B
+>!>       
