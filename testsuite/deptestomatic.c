@@ -810,6 +810,7 @@ startElement( void *userData, const char *name, const char **atts )
 	err( "No system channel defined to <uninstall> from" );
 	exit( 1 );
       }
+      pd->allowuninstall = 1;
 #if 0
       Id id = select_solvable( pool, pd->system, package );
       if (id == ID_NULL) {
