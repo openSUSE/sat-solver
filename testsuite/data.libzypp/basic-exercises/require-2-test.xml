@@ -5,6 +5,7 @@
   <channel name="test" file="require-packages.xml.gz"/>
 </setup>
 <trial>
-  <addRequire kind="package" name="A,B"/>
+  <addRequire kind="package" name="A"/>
+  <addRequire kind="package" name="B"/>
 </trial>
 </test>
