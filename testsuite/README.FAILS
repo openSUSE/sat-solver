@@ -61,6 +61,7 @@ basic-exercises/exercise-39-force-test.xml
 	mls removes a package not fullfilling requirements on install of another
 
 basic-exercises/exercise-47-test.xml
+basic-exercises/exercise-43-test.xml
 	the test case's solution is not what libzypp is doing (INVALID)
 	
 basic-exercises/provide-1-test.xml
