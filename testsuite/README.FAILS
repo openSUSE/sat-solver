@@ -1,4 +1,5 @@
 basic-exercises/Bug299819-2-test.xml
+yast-tests/Bug159696-test.xml
        installs recommends
 
 basic-exercises/exercise-27-force-test.xml
@@ -23,16 +24,51 @@ basic-exercises/exercise-40-test.xml
 
 yast-tests/kernel3-test.xml
 yast-tests/tpctl-bigsmp-test.xml
-yast-tests/Bug156513-test.solution
+yast-tests/Bug156513-test.xml
+yast-tests/kernel2-test.xml
        installs 3 kernels and not just the default as wanted
 
 yast-tests/exercise-inconsistent6-force-test.xml
-       libzypp removes broken pack, mls downgrades
+basic-exercises/exercise-36-test.xml
+yast-tests/bug155368-force-test.xml
+       libzypp removes broken pack, mls changes version
 
 basic-exercises/exercise-44-delete-glibc-force-test.xml
 basic-exercises/exercise-42-force-test.xml
-       libzypp deinstalls less packages - looks like a bug to me
+basic-exercises/exercise-32-test.xml
+basic-exercises/exercise-35-test.xml
+basic-exercises/exercise-37-test.xml
+basic-exercises/exercise-44-test.xml
+       libzypp (de)installs less packages - looks like a libzypp bug to me
 
 yast-tests/tpctl-multi-test.xml
 	only installs one kernel module, should be two
+
+yast-tests/exercise-06upgrade-test.xml
+simple-tests/vendor-test.xml
+kernel-tests/1_2_1-default-test.xml
+kernel-tests/2_2_1-default-test.xml
+kernel-tests/2_2_2-default-test.xml
+kernel-tests/1_2_2-default-test.xml
+kernel-tests/1_2_2-smp-test.xml
+distupgrade-tests/unmaintained-nodelete-single-test.xml
+	distupgrade unhandled
+
+basic-exercises/exercise-38-test.xml
+	forceuninstall unhandled
+
+basic-exercises/exercise-39-force-test.xml
+	mls removes a package not fullfilling requirements on install of another
+
+basic-exercises/exercise-47-test.xml
+	the test case's solution is not what libzypp is doing (INVALID)
+	
+basic-exercises/provide-1-test.xml
+	addProvide is not supported
+
+basic-exercises/require-1-test.xml
+	B requires c, but nothing providing C is installed
+
+yast-tests/Bug162887-test.xml
+	locale de_DE also drags in locale de
 

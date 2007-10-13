@@ -1,6 +1,64 @@
+Load from File './data.libzypp/basic-exercises/exercise-29-system.xml.gz'
+Added repository '@system' with 665 resolvables
+Loaded 665 resolvables from exercise-29-system.xml.gz.
+Load from File './data.libzypp/basic-exercises/exercise-34-preview.xml'
+Added repository 'preview' with 6 resolvables
+Loaded 6 resolvables from exercise-34-preview.xml.
+Load from File './data.libzypp/basic-exercises/exercise-34-ximian.xml'
+Added repository 'ximian' with 202 resolvables
+Loaded 202 resolvables from exercise-34-ximian.xml.
+Load from File './data.libzypp/basic-exercises/exercise-34-rh72.xml'
+Added repository 'redhat' with 1235 resolvables
+Loaded 1235 resolvables from exercise-34-rh72.xml.
+Load from File './data.libzypp/basic-exercises/exercise-34-snapshots.xml'
+Added repository 'gnome2' with 103 resolvables
+Loaded 103 resolvables from exercise-34-snapshots.xml.
+
+------------------------------------------------
+
 >!> Installing gnome-vfs from channel ximian
+
+Completed solutions: 1
+Pruned solutions: 0
+Deferred solutions: 0
+Invalid solutions: 0
+
+Best Solution:
 >!> Solution #1:
->!> install gnome-mime-data-1.0.1-ximian.3.noarch[ximian]
+Checksum = 5e47a62b
+>!> install gnome-mime-data-1.0.3.0.200202270245-snap.ximian.1.noarch[gnome2]
 >!> upgrade gnome-vfs-1.0.3-ximian.5.noarch => gnome-vfs-1.0.4-ximian.4.noarch[ximian]
 >!> upgrade gnome-vfs-devel-1.0.3-ximian.5.noarch => gnome-vfs-devel-1.0.4-ximian.4.noarch[ximian]
 >!> installs=1, upgrades=2, uninstalls=0
+download size=0.0k, install size=9266.2k
+total priority=0, min priority=0, max priority=0
+other penalties=0
+- - - - - - - - - -
+Context Info:
+
+
+------------------------------------------------
+
+>!> Installing gnome-vfs from channel ximian
+>!> Installing libglade from channel ximian
+
+Completed solutions: 1
+Pruned solutions: 0
+Deferred solutions: 0
+Invalid solutions: 0
+
+Best Solution:
+>!> Solution #1:
+Checksum = 7c43a36d
+>!> install gnome-mime-data-1.0.3.0.200202270245-snap.ximian.1.noarch[gnome2]
+>!> upgrade gnome-vfs-1.0.3-ximian.5.noarch => gnome-vfs-1.0.4-ximian.4.noarch[ximian]
+>!> upgrade gnome-vfs-devel-1.0.3-ximian.5.noarch => gnome-vfs-devel-1.0.4-ximian.4.noarch[ximian]
+>!> upgrade libglade-1:0.16-ximian.4.noarch => libglade-1:0.17-1.ximian.1.noarch[ximian]
+>!> upgrade libglade-devel-1:0.16-ximian.4.noarch => libglade-devel-1:0.17-1.ximian.1.noarch[ximian]
+>!> installs=1, upgrades=4, uninstalls=0
+download size=0.0k, install size=11424.7k
+total priority=0, min priority=0, max priority=0
+other penalties=0
+- - - - - - - - - -
+Context Info:
+

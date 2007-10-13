@@ -1,3 +1,12 @@
+Load from File './data.libzypp/yast-tests/beta8-packages.xml.gz'
+Added repository 'packages' with 1853 resolvables
+Loaded 1853 resolvables from beta8-packages.xml.gz.
+Load from File './data.libzypp/yast-tests/beta8-selections.xml.gz'
+Added repository 'selections' with 29 resolvables
+Loaded 29 resolvables from beta8-selections.xml.gz.
+
+------------------------------------------------
+
 >!> Installing selection:default from channel selections
 >!> Installing selection:Laptop from channel selections
 >!> Installing ial from channel packages
@@ -5,7 +14,15 @@
 >!> Installing toshutils from channel packages
 >!> Installing yast2-trans-en_US from channel packages
 >!> No problems so far
+
+Completed solutions: 1
+Pruned solutions: 0
+Deferred solutions: 0
+Invalid solutions: 0
+
+Best Solution:
 >!> Solution #1:
+Checksum = 1f9c7c7a
 >!> install 3ddiag-0.729-7.i586[packages]
 >!> install 855resolution-0.4-11.i586[packages]
 >!> install AdobeICCProfiles-2.0-6.noarch[packages]
@@ -717,3 +734,9 @@
 >!> |unflag selection:default-Gnome-10-46.noarch[selections]
 >!> |unflag sendmail-8.13.5-9.i586[packages]
 >!> installs=704, upgrades=0, uninstalls=0
+download size=0.0k, install size=0.0k
+total priority=0, min priority=0, max priority=0
+other penalties=0
+- - - - - - - - - -
+Context Info:
+

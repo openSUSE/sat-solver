@@ -1,7 +1,7 @@
 >!> Solution #1:
->!> remove  screem-0.4.1-3mdk
->!> remove  talk-0.17-12
->!> remove  talk-server-0.17-12
+>!> remove  screem-0.4.1-3mdk.noarch
+>!> remove  talk-0.17-12.noarch
+>!> remove  talk-server-0.17-12.noarch
 >!> |unflag LPRng-3.7.4-28[redhat]
 >!> |unflag XFree86-4.1.0-15[redhat]
 >!> |unflag XFree86-libs-4.1.0-15[redhat]

@@ -1,6 +1,26 @@
+Load from File './data.libzypp/yast-tests/bug155368-system.xml.gz'
+Added repository '@system' with 1073 resolvables
+Loaded 1073 resolvables from bug155368-system.xml.gz.
+Load from File './data.libzypp/yast-tests/beta6-packages.xml.gz'
+Added repository 'packages' with 2828 resolvables
+Loaded 2828 resolvables from beta6-packages.xml.gz.
+Load from File './data.libzypp/yast-tests/beta6-selections.xml.gz'
+Added repository 'selections' with 19 resolvables
+Loaded 19 resolvables from beta6-selections.xml.gz.
+
+------------------------------------------------
+
 >!> Uninstalling yast2-transfer
 >!> No problems so far
+
+Completed solutions: 3
+Pruned solutions: 0
+Deferred solutions: 0
+Invalid solutions: 0
+
+Best Solution:
 >!> Solution #1:
+Checksum = 621d7246
 >!> remove  autoyast2-2.13.19-2.noarch
 >!> remove  autoyast2-installation-2.13.19-2.noarch
 >!> remove  yast2-backup-2.13.1-2.noarch
@@ -23,31 +43,9 @@
 >!> remove  yast2-update-2.13.3-2.x86_64
 >!> remove  yast2-vm-2.13.22-2.x86_64
 >!> installs=0, upgrades=0, uninstalls=21
->!> Solution #2:
->!> upgrade autoyast2-2.13.19-2.noarch => autoyast2-2.13.23-2.noarch[packages]
->!> upgrade autoyast2-installation-2.13.19-2.noarch => autoyast2-installation-2.13.23-2.noarch[packages]
->!> upgrade yast2-transfer-2.13.3-2.x86_64 => yast2-transfer-2.13.2-4.x86_64[packages]
->!> installs=0, upgrades=3, uninstalls=0
->!> Solution #3:
->!> remove  yast2-backup-2.13.1-2.noarch
->!> remove  yast2-bootloader-2.13.18-3.x86_64
->!> remove  yast2-http-server-2.13.9-4.noarch
->!> remove  yast2-inetd-2.13.2-2.noarch
->!> remove  yast2-installation-2.13.28-2.noarch
->!> remove  yast2-network-2.13.29-2.x86_64
->!> remove  yast2-nfs-server-2.13.2-5.noarch
->!> remove  yast2-nis-server-2.13.1-5.noarch
->!> remove  yast2-packager-2.13.39-2.x86_64
->!> remove  yast2-powertweak-2.13.5-4.noarch
->!> remove  yast2-repair-2.13.3-4.noarch
->!> remove  yast2-restore-2.13.1-2.noarch
->!> remove  yast2-samba-server-2.13.6-2.noarch
->!> remove  yast2-storage-2.13.33-2.x86_64
->!> remove  yast2-sysconfig-2.13.5-4.noarch
->!> remove  yast2-tv-2.13.7-2.noarch
->!> remove  yast2-update-2.13.3-2.x86_64
->!> remove  yast2-vm-2.13.22-2.x86_64
->!> upgrade autoyast2-2.13.19-2.noarch => autoyast2-2.13.23-2.noarch[packages]
->!> upgrade autoyast2-installation-2.13.19-2.noarch => autoyast2-installation-2.13.23-2.noarch[packages]
->!> upgrade yast2-transfer-2.13.3-2.x86_64 => yast2-transfer-2.13.2-4.x86_64[packages]
->!> installs=0, upgrades=3, uninstalls=18
+download size=0.0k, install size=0.0k
+total priority=0, min priority=2147483647, max priority=0
+other penalties=0
+- - - - - - - - - -
+Context Info:
+

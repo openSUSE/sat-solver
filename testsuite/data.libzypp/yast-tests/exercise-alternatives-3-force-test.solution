@@ -1,7 +1,68 @@
+Load from File './data.libzypp/yast-tests/exercise-alternatives-system.xml.gz'
+Added repository '@system' with 1 resolvables
+Loaded 1 resolvables from exercise-alternatives-system.xml.gz.
+Load from File './data.libzypp/yast-tests/exercise-alternatives-packages.xml.gz'
+Added repository 'test' with 8 resolvables
+Loaded 8 resolvables from exercise-alternatives-packages.xml.gz.
+
+------------------------------------------------
+
 >!> Installing alt-conflict from channel test
+
+Completed solutions: 4
+Pruned solutions: 0
+Deferred solutions: 0
+Invalid solutions: 0
+
+Best Solution:
 >!> Solution #1:
+Checksum = 6895791d
+>!> install alt-conflict-1.0-1.noarch[test]
+>!> install icewm-1.0-1.noarch[test]
+>!> install postfix-1.0-1.noarch[test]
+>!> remove  foo-1.0-1.noarch
+>!> installs=3, upgrades=0, uninstalls=1
+download size=0.0k, install size=0.9k
+total priority=0, min priority=0, max priority=0
+other penalties=0
+- - - - - - - - - -
+Context Info:
+
+Other Valid Solutions:
+>!> Solution #2:
+Checksum = 9110718d
+>!> install alt-conflict-1.0-1.noarch[test]
+>!> install icewm-1.0-1.noarch[test]
+>!> install sendmail-1.0-1.noarch[test]
+>!> remove  foo-1.0-1.noarch
+>!> installs=3, upgrades=0, uninstalls=1
+download size=0.0k, install size=0.9k
+total priority=0, min priority=0, max priority=0
+other penalties=0
+- - - - - - - - - -
+Context Info:
+>!> Solution #3:
+Checksum = 2ca95820
+>!> install WindowMaker-1.0-1.noarch[test]
+>!> install alt-conflict-1.0-1.noarch[test]
+>!> install postfix-1.0-1.noarch[test]
+>!> remove  foo-1.0-1.noarch
+>!> installs=3, upgrades=0, uninstalls=1
+download size=0.0k, install size=0.9k
+total priority=0, min priority=0, max priority=0
+other penalties=0
+- - - - - - - - - -
+Context Info:
+>!> Solution #4:
+Checksum = 966240c0
 >!> install WindowMaker-1.0-1.noarch[test]
 >!> install alt-conflict-1.0-1.noarch[test]
 >!> install sendmail-1.0-1.noarch[test]
 >!> remove  foo-1.0-1.noarch
 >!> installs=3, upgrades=0, uninstalls=1
+download size=0.0k, install size=0.9k
+total priority=0, min priority=0, max priority=0
+other penalties=0
+- - - - - - - - - -
+Context Info:
+

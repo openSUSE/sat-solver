@@ -1,3 +1,12 @@
+Load from File './data.libzypp/basic-exercises/exercise-25-system.xml.gz'
+Added repository '@system' with 760 resolvables
+Loaded 760 resolvables from exercise-25-system.xml.gz.
+Load from File './data.libzypp/basic-exercises/exercise-32-packages.xml.gz'
+Added repository 'gnome2' with 103 resolvables
+Loaded 103 resolvables from exercise-32-packages.xml.gz.
+
+------------------------------------------------
+
 >!> Installing GConf2 from channel gnome2
 >!> Installing ORBit2 from channel gnome2
 >!> Installing atk from channel gnome2
@@ -43,15 +52,21 @@
 >!> Installing nautilus-gtkhtml from channel gnome2
 >!> Installing pango from channel gnome2
 >!> Installing sawfish2 from channel gnome2
+
+Completed solutions: 1
+Pruned solutions: 0
+Deferred solutions: 0
+
+Best Solution:
 >!> Solution #1:
+Checksum = ca8a37e7
 >!> upgrade GConf2-1.1.8.0.200202140152-snap.ximian.1.noarch => GConf2-1.1.8.0.200202240433-snap.ximian.1.noarch[gnome2]
 >!> upgrade GConf2-devel-1.1.8.0.200202140152-snap.ximian.1.noarch => GConf2-devel-1.1.8.0.200202240433-snap.ximian.1.noarch[gnome2]
 >!> upgrade ORBit2-2.3.105.0.200202140152-snap.ximian.1.noarch => ORBit2-2.3.105.0.200202240433-snap.ximian.1.noarch[gnome2]
 >!> upgrade ORBit2-devel-2.3.105.0.200202140152-snap.ximian.1.noarch => ORBit2-devel-2.3.105.0.200202240433-snap.ximian.1.noarch[gnome2]
 >!> upgrade atk-0.12.0.200202140152-snap.ximian.1.noarch => atk-0.13.0.200202240433-snap.ximian.1.noarch[gnome2]
 >!> upgrade atk-devel-0.12.0.200202140152-snap.ximian.1.noarch => atk-devel-0.13.0.200202240433-snap.ximian.1.noarch[gnome2]
->!> upgrade audiofile-1:0.2.3.0.200202140152-snap.ximian.noarch => audiofile-1:0.2.3.0.200202240433-snap.ximian.[gnome2]
->!> upgrade audiofile-devel-1:0.2.3.0.200202140152-snap.ximian.noarch => audiofile-devel-1:0.2.3.0.200202240433-snap.ximian.[gnome2]
+>!> upgrade audiofile-1:0.2.3.0.200202140152-snap.ximian..noarch => audiofile-1:0.2.3.0.200202240433-snap.ximian..noarch[gnome2]
 >!> upgrade bonobo-activation-0.9.3.0.200202140152-snap.ximian.1.noarch => bonobo-activation-0.9.4.0.200202240433-snap.ximian.1.noarch[gnome2]
 >!> upgrade bonobo-activation-devel-0.9.3.0.200202140152-snap.ximian.1.noarch => bonobo-activation-devel-0.9.4.0.200202240433-snap.ximian.1.noarch[gnome2]
 >!> upgrade bug-buddy2-1:2.1.3.0.200202140152-snap.ximian.1.noarch => bug-buddy2-1:2.1.3.0.200202240433-snap.ximian.1.noarch[gnome2]
@@ -59,7 +74,6 @@
 >!> upgrade eel2-1.1.4.0.200202140152-snap.ximian.1.noarch => eel2-1.1.5.0.200202240433-snap.ximian.1.noarch[gnome2]
 >!> upgrade eog2-1:0.111.0.0.200202140152-snap.ximian.1.noarch => eog2-1:0.112.0.0.200202240433-snap.ximian.1.noarch[gnome2]
 >!> upgrade esound-1:0.2.23.0.200202140152-snap.ximian.1.noarch => esound-1:0.2.23.0.200202240433-snap.ximian.1.noarch[gnome2]
->!> upgrade esound-devel-1:0.2.23.0.200202140152-snap.ximian.1.noarch => esound-devel-1:0.2.23.0.200202240433-snap.ximian.1.noarch[gnome2]
 >!> upgrade gail-0.8.0.200202140152-snap.ximian.1.noarch => gail-0.8.0.200202240433-snap.ximian.1.noarch[gnome2]
 >!> upgrade gconf-editor-0.1.0.200202140152-snap.ximian.1.noarch => gconf-editor-0.1.0.200202240433-snap.ximian.1.noarch[gnome2]
 >!> upgrade gdm2-1:2.3.90.1.0.200202140152-snap.ximian.1.noarch => gdm2-1:2.3.90.1.0.200202240433-snap.ximian.1.noarch[gnome2]
@@ -124,7 +138,10 @@
 >!> upgrade rep-gtk2-1:0.16.pre1.0.200202140152-snap.ximian.1.noarch => rep-gtk2-1:0.16.pre1.0.200202240433-snap.ximian.1.noarch[gnome2]
 >!> upgrade sawfish2-1:2.0.pre1.0.200202140152-snap.ximian.1.noarch => sawfish2-1:2.0.pre1.0.200202240433-snap.ximian.1.noarch[gnome2]
 >!> upgrade yelp-0.2.99.0.200202140152-snap.ximian.1.noarch => yelp-0.2.99.0.200202240433-snap.ximian.1.noarch[gnome2]
->!> installs=0, upgrades=80, uninstalls=0
->!> Solution #2:
->!> This solution is a duplicate.
->!> installs=0, upgrades=80, uninstalls=0
+>!> installs=0, upgrades=78, uninstalls=0
+download size=0.0k, install size=207142.0k
+total priority=0, min priority=0, max priority=0
+other penalties=0
+- - - - - - - - - -
+Context Info:
+

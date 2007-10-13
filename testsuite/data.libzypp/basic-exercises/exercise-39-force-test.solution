@@ -67,12 +67,3 @@
 >!> upgrade rep-gtk2-1:0.16.pre1.0.200202140152-snap.ximian.1.noarch => rep-gtk2-1:0.16.pre1.0.200203061421-snap.ximian.1.noarch[gnome2]
 >!> upgrade sawfish2-1:2.0.pre1.0.200202140152-snap.ximian.1.noarch => sawfish2-1:2.0.pre1.0.200203061421-snap.ximian.1.noarch[gnome2]
 >!> installs=0, upgrades=63, uninstalls=2
->!> Solution #2:
->!> This solution is a duplicate.
->!> installs=0, upgrades=63, uninstalls=2
->!> Solution #3:
->!> This solution is a duplicate.
->!> installs=0, upgrades=63, uninstalls=2
->!> Solution #4:
->!> This solution is a duplicate.
->!> installs=0, upgrades=63, uninstalls=2
