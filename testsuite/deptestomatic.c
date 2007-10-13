@@ -871,6 +871,7 @@ startElement( void *userData, const char *name, const char **atts )
 
     case STATE_VERIFY: {
       pd->fixsystem = 1;
+      pd->allowuninstall = 1;
     }
     break;
 
