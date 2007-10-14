@@ -704,7 +704,6 @@ startElement( void *userData, const char *name, const char **atts )
 	    strncpy(locale, name, name - first);
 	    locale[first-name] = 0;
 	  }
-	printf("locale %s\n", locale);
 
 	insertLocale(pd, locale);
 

@@ -133,7 +133,7 @@ class Tester < Test::Unit::TestCase
       dir = File.dirname(test)
       args = ""
       args = "--redcarpet" if $redcarpet
-      if ( system( "(cd #{dir}; #{$deptestomatic} #{args} #{basename}.xml > #{basename}.result)" ) )
+      if ( system( "#{$deptestomatic} #{args} #{dir}/#{basename}.xml > #{dir}/#{basename}.result" ) )
         sname = File.join( dir, "#{basename}.solution" )
         rname = File.join( dir, "#{basename}.result" )
 	result = Solution.compare( sname, rname ) 
