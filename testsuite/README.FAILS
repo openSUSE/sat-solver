@@ -41,9 +41,6 @@ basic-exercises/exercise-37-test.xml
 basic-exercises/exercise-44-test.xml
        libzypp (de)installs less packages - looks like a libzypp bug to me
 
-yast-tests/tpctl-multi-test.xml
-	only installs one kernel module, should be two
-
 yast-tests/exercise-06upgrade-test.xml
 simple-tests/vendor-test.xml
 kernel-tests/1_2_1-default-test.xml
