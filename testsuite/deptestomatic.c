@@ -481,6 +481,53 @@ static void getPackageName( const char **atts, char package[100] )
 }
 
 
+static void insertLocale( Parsedata *pd, const char *name)
+{
+  if (!pd->locales) 
+    {
+      pd->locales = pool_addsource_empty(pd->pool);
+      pool_freeidhashes(pd->pool);
+      pd->locales->name = strdup( "locales" );
+      pd->locales->start = pd->pool->nsolvables;
+    
+      pd->nchannels++;
+      pd->channels = (struct _channelmap *)realloc( pd->channels, pd->nchannels * sizeof( struct _channelmap ) );
+    
+      struct _channelmap *cmap = pd->channels + (pd->nchannels-1);
+      cmap->name = str2id( pd->pool, "locales", 1 );
+      cmap->source = pd->locales;
+    }
+
+  char locale[100];
+  strcpy(locale, "language:");
+  strncat(locale, name, 100);
+
+  Solvable s;
+  memset(&s, 0, sizeof(Solvable));
+  s.name = str2id(pd->pool, locale, 1);
+  s.arch = str2id(pd->pool, "noarch", 1);
+  s.evr = str2id(pd->pool, "", 1);
+
+  source_reserve_ids(pd->locales, 0, 2);
+
+  Id pr = source_addid_dep(pd->locales, 0, str2id(pd->pool, locale, 1), 0);
+
+  strcpy(locale, "Locale(");
+  strncat(locale, name, 100);
+  strncat(locale, ")", 100);
+  pr = source_addid_dep(pd->locales, pr, str2id(pd->pool, locale, 1), 0);
+
+  s.provides = pd->locales->idarraydata + pr;
+
+  pd->pool->solvables = realloc(pd->pool->solvables, (pd->pool->nsolvables + 1) * sizeof(Solvable));
+  memcpy(pd->pool->solvables + pd->pool->nsolvables, &s, sizeof(Solvable));
+  pd->locales->nsolvables++;
+  pd->pool->nsolvables++;
+
+  queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE_PROVIDES );
+  queuepush( &(pd->trials), s.name );
+}
+
 /*----------------------------------------------------------------*/
 
 /*
@@ -603,139 +650,140 @@ startElement( void *userData, const char *name, const char **atts )
     }
     break;
 
-    case STATE_SYSTEM: {	       /* system file */
-      const char *file = attrval( atts, "file" );
-      if (pd->system) {
-	err( "Duplicate <system>" );
+    case STATE_SYSTEM: 	       /* system file */
+      {
+	const char *file = attrval( atts, "file" );
+	if (pd->system)
+	  err( "Duplicate <system>" );
+     
+	if (file) 
+	  {
+	    char path[PATH_MAX];
+	    strncpy(path, pd->directory, sizeof(path));
+	    strncat(path, file, sizeof(path));
+	    Source *source = add_source( pd, "system", path );
+	    if (source)
+	      pd->system = source;
+	    else 
+	      {
+		err( "Can't add <system>" );
+		exit( 1 );
+	      }
+	  }
+	else 
+	  {
+	    err( "<system> incomplete" );
+	    exit( 1 );
+	  }
       }
-      if (file) {
-	char path[PATH_MAX];
-	strncpy(path, pd->directory, sizeof(path));
-	strncat(path, file, sizeof(path));
-	Source *source = add_source( pd, "system", path );
-	if (source)
-	  pd->system = source;
-	else {
-	  err( "Can't add <system>" );
-	  exit( 1 );
-	}
+      break;
+
+    case STATE_LOCALE: /* system locales */
+      {	       
+
+	const char *name = attrval( atts, "name" );
+
+	const char *sep1 = strchr(name, '@');
+	const char *sep2 = strchr(name, '.');
+      
+	char locale[100];
+	if (!sep1 && !sep2)
+	  {
+	    strncpy(locale, name, sizeof(locale));
+	  } 
+	else 
+	  {
+	    const char * first = sep1;
+	    if (sep2 && sep1 && sep2 < sep1)
+	      first = sep2;
+	    if (name - first >= sizeof(locale))
+	      {
+		err("locale argument insane");
+		exit(1);
+	      }
+	    strncpy(locale, name, name - first);
+	    locale[first-name] = 0;
+	  }
+	printf("locale %s\n", locale);
+
+	insertLocale(pd, locale);
+
+	sep1 = strchr(locale, '_'); // reuse of variable
+	if ( sep1 ) 
+	  {
+	    // insert the language only too
+	    locale[sep1-locale] = 0;
+	    insertLocale( pd, locale );
+	  } 
       }
-      else {
-	err( "<system> incomplete" );
-	exit( 1 );
-      }
-    }
-    break;
-
-    case STATE_LOCALE: {	       /* system locales */
-
-      const char *name = attrval( atts, "name" );
-      char locale[100];
-      strcpy(locale, "language:");
-      strncat(locale, name, 100);
-
-      Solvable s;
-      memset(&s, 0, sizeof(Solvable));
-      s.name = str2id(pd->pool, locale, 1);
-      s.arch = str2id(pd->pool, "noarch", 1);
-      s.evr = str2id(pd->pool, "", 1);
-      if (!pd->locales) {
-	  pd->locales = pool_addsource_empty(pd->pool);
-	  pool_freeidhashes(pd->pool);
-	  pd->locales->name = strdup( "locales" );
-	  pd->locales->start = pd->pool->nsolvables;
-      }
-
-      source_reserve_ids(pd->locales, 0, 2);
-
-      Id pr = 0;
-
-      strcpy(locale, "Locale(");
-      strncat(locale, name, 100);
-      strncat(locale, ")", 100);
-      pr = source_addid_dep(pd->locales, pr, str2id(pd->pool, locale, 1), 0);
-
-      strcpy(locale, "language:");
-      strncat(locale, name, 100);
-      pr = source_addid_dep(pd->locales, pr, str2id(pd->pool, locale, 1), 0);
-
-      s.provides = pd->locales->idarraydata + pr;
-
-      pd->pool->solvables = realloc(pd->pool->solvables, (pd->pool->nsolvables + 1) * sizeof(Solvable));
-      memcpy(pd->pool->solvables + pd->pool->nsolvables, &s, sizeof(Solvable));
-      pd->locales->nsolvables++;
-      pd->pool->nsolvables++;
-
-      pd->nchannels++;
-      pd->channels = (struct _channelmap *)realloc( pd->channels, pd->nchannels * sizeof( struct _channelmap ) );
-
-      struct _channelmap *cmap = pd->channels + (pd->nchannels-1);
-      cmap->name = str2id( pool, "locales", 1 );
-      cmap->source = pd->locales;
-
-      queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE_PROVIDES );
-      queuepush( &(pd->trials), s.name );
-    }
-    break;
+      break;
 
     case STATE_FORCE:		       /* force solution by evtl. removing system packages */
       pd->allowuninstall = 1;
       pd->fixsystem = 1;
-    break;
+      break;
 
     case STATE_FORCEINSTALL:	       /* pretend its installed */
-    break;
+      break;
 
     case STATE_FORCEUNINSTALL:	       /* pretend its not installed */
-    break;
+      break;
 
-    case STATE_LOCK: {	               /* prevent install/removal */
-      /*
-       * <lock channel="1" package="foofoo" />
-       */
+    case STATE_LOCK: 	               /* prevent install/removal */
+      {
+	/*
+	 * <lock channel="1" package="foofoo" />
+	 */
 
-      const char *channel = attrval( atts, "channel" );
-      const char *package = attrval( atts, "package" );
+	const char *channel = attrval( atts, "channel" );
+	const char *package = attrval( atts, "package" );
 
-      if (package == NULL) {
-	package = attrval( atts, "name" );
-      }
-      if (package == NULL) {
-	err( "%s: No package given in <lock>", Current );
-	break;
-      }
+	if (package == NULL)
+	  package = attrval( atts, "name" );
 
-      Source *source = NULL;
-      if (channel) {		       /* from specific channel */
-        Id cid = str2id( pool, channel, 0 );
-	if (cid == ID_NULL) {
-	  err( "Install: Channel '%s' does not exist", channel );
-	  exit( 1 );
-	}
-	int i = 0;
-	while (i < pd->nchannels ) {
-	  if (pd->channels[i].name == cid) {
-	    source = pd->channels[i].source;
+	if (package == NULL) 
+	  {
+	    err( "%s: No package given in <lock>", Current );
 	    break;
 	  }
-	  ++i;
-	}
-	Id id = select_solvable( pool, source, package );
-	if (id == ID_NULL) {
-	  err( "Install: Package '%s' not found", package );
-	  if (source) err( " in channel '%s'", channel );
-	  exit( 1 );
-	}
-	queuepush( &(pd->trials), SOLVER_ERASE_SOLVABLE );
-        queuepush( &(pd->trials), id );
+
+	Source *source = NULL;
+	if (channel) 		       /* from specific channel */
+	  {
+	    Id cid = str2id( pool, channel, 0 );
+	    if (cid == ID_NULL) 
+	      {
+		err( "Install: Channel '%s' does not exist", channel );
+		exit( 1 );
+	      }
+	    int i = 0;
+	    while (i < pd->nchannels ) 
+	      {
+		if (pd->channels[i].name == cid) 
+		  {
+		    source = pd->channels[i].source;
+		    break;
+		  }
+		++i;
+	      }
+	    Id id = select_solvable( pool, source, package );
+	    if (id == ID_NULL) 
+	      {
+		err( "Install: Package '%s' not found", package );
+		if (source) err( " in channel '%s'", channel );
+		exit( 1 );
+	      }
+	    queuepush( &(pd->trials), SOLVER_ERASE_SOLVABLE );
+	    queuepush( &(pd->trials), id );
+	  }
+	else 			       /* no channel given, lock installed */
+	  {
+	    Id id = str2id( pool, package, 1 );
+	    queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE_NAME );
+	    queuepush( &(pd->trials), id );
+	  }
       }
-      else {			       /* no channel given, lock installed */
-	Id id = str2id( pool, package, 1 );
-	queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE_NAME );
-        queuepush( &(pd->trials), id );
-      }
-    }
-    break;
+      break;
 
     case STATE_MEDIAID:		       /* output installation order with media id */
     break;
