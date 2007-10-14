@@ -617,37 +617,46 @@ startElement( void *userData, const char *name, const char **atts )
     }
     break;
 
-    case STATE_CHANNEL: {	       /* read channel */
-      const char *name = attrval( atts, "name" );
-      const char *file = attrval( atts, "file" );
-      if (file && name) {
-	char path[PATH_MAX];
-	strncpy(path, pd->directory, sizeof(path));
-	strncat(path, file, sizeof(path));
+    case STATE_CHANNEL: 	       /* read channel */
+      {
+	const char *name = attrval( atts, "name" );
+	const char *file = attrval( atts, "file" );
+	if (file) 
+	  {
+	    char path[PATH_MAX];
+	    strncpy(path, pd->directory, sizeof(path));
+	    strncat(path, file, sizeof(path));
 
-	Source *source = add_source( pd, name, path );
-	if (source) {
-	  pd->nchannels++;
-	  pd->channels = (struct _channelmap *)realloc( pd->channels, pd->nchannels * sizeof( struct _channelmap ) );
-	  if (pd->channels == NULL) {
-	    err( "OOM!" );
-	    abort();
+	    if (!name)
+	      name = file;
+
+	    Source *source = add_source( pd, name, path );
+	    if (source) 
+	      {
+		pd->nchannels++;
+		pd->channels = (struct _channelmap *)realloc( pd->channels, pd->nchannels * sizeof( struct _channelmap ) );
+		if (pd->channels == NULL) 
+		  {
+		    err( "OOM!" );
+		    abort();
+		  }
+		struct _channelmap *cmap = pd->channels + (pd->nchannels-1);
+		cmap->name = str2id( pool, name, 1 );
+		cmap->source = source;
+	      }
+	    else 
+	      {
+		err( "Can't add <channel> %s", name );
+		exit( 1 );
+	      }
+
 	  }
-	  struct _channelmap *cmap = pd->channels + (pd->nchannels-1);
-	  cmap->name = str2id( pool, name, 1 );
-	  cmap->source = source;
-	}
-	else {
-	  err( "Can't add <channel> %s", name );
-	  exit( 1 );
-	}
-
+	else 
+	  {
+	    err( "<channel> incomplete" );
+	    exit( 1 );
+	  }
       }
-      else {
-	err( "<channel> incomplete" );
-	exit( 1 );
-      }
-    }
     break;
 
     case STATE_SYSTEM: 	       /* system file */
