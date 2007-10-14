@@ -6,9 +6,10 @@
 <test>
 <setup>
   <channel name="beta52" file="beta52-i386-packages.xml.gz"/>
-  <locale name="fr"/>
+  <locale name="fr_FR"/>
 </setup>
 <trial>
+  <availablelocales/>
   <install channel="beta52" name="aspell"/>
 </trial>
 </test>

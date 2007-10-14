@@ -1,0 +1,951 @@
+>!> Installing product:openSUSE-factory.i686 from channel 4
+>!> Installing product:openSUSE-extra.i686 from channel 2
+>!> Installing product:openSUSE-DVD5-download.i686 from channel 1
+>!> Installing java-1_5_0-sun-plugin.i586 from channel 2
+>!> Installing 3ddiag.i586 from channel 4
+>!> Installing opensuse-quickstart_en.noarch from channel 2
+>!> Installing pattern:non_oss_java.i586 from channel 2
+>!> Installing AdobeICCProfiles.noarch from channel 2
+>!> Installing pattern:non_oss.i586 from channel 2
+>!> Installing ipw-firmware.noarch from channel 2
+>!> Installing flash-player.i586 from channel 2
+>!> Installing RealPlayer.i586 from channel 2
+>!> Installing kio_ipodslave.i586 from channel 4
+>!> Installing GraphicsMagick.i586 from channel 4
+>!> Installing smartlink-softmodem.i586 from channel 2
+>!> Installing java-1_5_0-sun.i586 from channel 2
+>!> Installing pattern:laptop.i586 from channel 4
+>!> Installing pattern:multimedia.i586 from channel 4
+>!> Installing pattern:kde_imaging.i586 from channel 4
+>!> Installing pattern:sw_management.i586 from channel 4
+>!> Installing pattern:kde_games.i586 from channel 4
+>!> Installing pattern:kde_basis.i586 from channel 4
+>!> Installing pattern:enhanced_base.i586 from channel 4
+>!> Installing pattern:yast2_basis.i586 from channel 4
+>!> Installing pattern:office.i586 from channel 4
+>!> Installing xorg-x11-libs.i586 from channel 4
+>!> Installing pattern:xgl.i586 from channel 4
+>!> Installing pattern:update_test.i586 from channel 4
+>!> Installing xorg-x11-libXv.i586 from channel 4
+>!> Installing pattern:apparmor.i586 from channel 4
+>!> Installing pattern:kde_multimedia.i586 from channel 4
+>!> Installing pattern:games.i586 from channel 4
+>!> Installing pattern:kde_laptop.i586 from channel 4
+>!> Installing pattern:sw_management_kde.i586 from channel 4
+>!> Installing pattern:kde.i586 from channel 4
+>!> Installing pattern:kde_internet.i586 from channel 4
+>!> Installing xorg-x11-libXpm.i586 from channel 4
+>!> Installing xorg-x11-libXp.i586 from channel 4
+>!> Installing pattern:kde_office.i586 from channel 4
+>!> Installing pattern:kde_xgl.i586 from channel 4
+>!> Installing pattern:x11.i586 from channel 4
+>!> Installing pattern:kde_utilities.i586 from channel 4
+>!> Installing pattern:yast2_install_wf.i586 from channel 4
+>!> Installing pattern:imaging.i586 from channel 4
+>!> Installing pattern:fonts.i586 from channel 4
+>!> Installing pattern:base.i586 from channel 4
+>!> Installing xorg-x11-libXmu.i586 from channel 4
+>!> Installing yast2-transfer.i586 from channel 4
+>!> Installing xorg-x11-libfontenc.i586 from channel 4
+>!> Installing xorg-x11-libXprintUtil.i586 from channel 4
+>!> Installing xorg-x11-libXrender.i586 from channel 4
+>!> Installing CheckHardware.i586 from channel 4
+>!> Installing 915resolution.i586 from channel 4
+>!> Installing ImageMagick.i586 from channel 4
+>!> Installing kdebase3.i586 from channel 4
+>!> Installing Mesa.i586 from channel 4
+>!> Installing MozillaFirefox.i586 from channel 4
+>!> Installing MozillaFirefox-translations.i586 from channel 4
+>!> Installing kerry.i586 from channel 4
+>!> Installing NetworkManager.i586 from channel 4
+>!> Installing NetworkManager-kde.i586 from channel 4
+>!> Installing OpenEXR.i586 from channel 4
+>!> Installing man-pages.noarch from channel 4
+>!> Installing libxcrypt.i586 from channel 4
+>!> Installing OpenOffice_org.i586 from channel 4
+>!> Installing OpenOffice_org-Quickstarter.i586 from channel 4
+>!> Installing OpenOffice_org-base.i586 from channel 4
+>!> Installing libx86.i586 from channel 4
+>!> Installing liblcms.i586 from channel 4
+>!> Installing OpenOffice_org-calc.i586 from channel 4
+>!> Installing OpenOffice_org-filters.i586 from channel 4
+>!> Installing OpenOffice_org-draw.i586 from channel 4
+>!> Installing liblazy.i586 from channel 4
+>!> Installing limal.i586 from channel 4
+>!> Installing OpenOffice_org-impress.i586 from channel 4
+>!> Installing OpenOffice_org-kde.i586 from channel 4
+>!> Installing OpenOffice_org-mailmerge.i586 from channel 4
+>!> Installing OpenOffice_org-math.i586 from channel 4
+>!> Installing nss-mdns.i586 from channel 4
+>!> Installing kdeartwork3-xscreensaver.i586 from channel 4
+>!> Installing perl-gettext.i586 from channel 4
+>!> Installing OpenOffice_org-pyuno.i586 from channel 4
+>!> Installing man.i586 from channel 4
+>!> Installing libgnomeui.i586 from channel 4
+>!> Installing kdeartwork3-kscreensaver.i586 from channel 4
+>!> Installing libpng.i586 from channel 4
+>!> Installing openssh.i586 from channel 4
+>!> Installing OpenOffice_org-writer.i586 from channel 4
+>!> Installing PolicyKit.i586 from channel 4
+>!> Installing master-boot-code.i586 from channel 4
+>!> Installing SDL_Pango.i586 from channel 4
+>!> Installing mktemp.i586 from channel 4
+>!> Installing pcre.i586 from channel 4
+>!> Installing SDL.i586 from channel 4
+>!> Installing SDL_image.i586 from channel 4
+>!> Installing SDL_mixer.i586 from channel 4
+>!> Installing SDL_perl.i586 from channel 4
+>!> Installing kdepim3-notes.i586 from channel 4
+>!> Installing libapparmor.i586 from channel 4
+>!> Installing SuSEfirewall2.noarch from channel 4
+>!> Installing a2ps.i586 from channel 4
+>!> Installing a52dec.i586 from channel 4
+>!> Installing aaa_skel.i586 from channel 4
+>!> Installing perl-XML-Parser.i586 from channel 4
+>!> Installing aaa_base.i586 from channel 4
+>!> Installing aalib.i586 from channel 4
+>!> Installing acct.i586 from channel 4
+>!> Installing sax2-ident.i586 from channel 4
+>!> Installing sax2-libsax.i586 from channel 4
+>!> Installing sax2-libsax-perl.i586 from channel 4
+>!> Installing libsndfile.i586 from channel 4
+>!> Installing perl-IO-Compress-Base.i586 from channel 4
+>!> Installing openal.i586 from channel 4
+>!> Installing acl.i586 from channel 4
+>!> Installing acpid.i586 from channel 4
+>!> Installing libksba.i586 from channel 4
+>!> Installing qca.i586 from channel 4
+>!> Installing perl-Archive-Tar.i586 from channel 4
+>!> Installing kpowersave.i586 from channel 4
+>!> Installing libext2fs2.i586 from channel 4
+>!> Installing yast2-repair.noarch from channel 4
+>!> Installing agfa-fonts.noarch from channel 4
+>!> Installing libexpat1.i586 from channel 4
+>!> Installing libspeex.i586 from channel 4
+>!> Installing alsa.i586 from channel 4
+>!> Installing alsa-oss.i586 from channel 4
+>!> Installing alsa-plugins.i586 from channel 4
+>!> Installing prctl.i586 from channel 4
+>!> Installing kio_beagle.i586 from channel 4
+>!> Installing kdepim3-kpilot.i586 from channel 4
+>!> Installing nfsidmap.i586 from channel 4
+>!> Installing alsa-utils.i586 from channel 4
+>!> Installing pam-config.i586 from channel 4
+>!> Installing openSUSE-release.i586 from channel 4
+>!> Installing amarok.i586 from channel 4
+>!> Installing sumf.i586 from channel 4
+>!> Installing supertux.i586 from channel 4
+>!> Installing amarok-xine.i586 from channel 4
+>!> Installing amarok-libvisual.i586 from channel 4
+>!> Installing sax2.i586 from channel 4
+>!> Installing sax2-gui.i586 from channel 4
+>!> Installing amrnb.i586 from channel 4
+>!> Installing amrwb.i586 from channel 4
+>!> Installing recode.i586 from channel 4
+>!> Installing libpcap.i586 from channel 4
+>!> Installing pmtools.i586 from channel 4
+>!> Installing udev.i586 from channel 4
+>!> Installing ufraw.i586 from channel 4
+>!> Installing libao.i586 from channel 4
+>!> Installing sudo.i586 from channel 4
+>!> Installing make.i586 from channel 4
+>!> Installing libgtkhtml.i586 from channel 4
+>!> Installing apparmor-parser.i586 from channel 4
+>!> Installing apparmor-docs.i586 from channel 4
+>!> Installing apparmor-profiles.noarch from channel 4
+>!> Installing kio_slp.i586 from channel 4
+>!> Installing apparmor-utils.noarch from channel 4
+>!> Installing libgcc42.i586 from channel 4
+>!> Installing libexiv2.i586 from channel 4
+>!> Installing perl-Net-Daemon.i586 from channel 4
+>!> Installing perl-TermReadLine-Gnu.i586 from channel 4
+>!> Installing nscd.i586 from channel 4
+>!> Installing pam.i586 from channel 4
+>!> Installing libkipi.i586 from channel 4
+>!> Installing arts.i586 from channel 4
+>!> Installing yast2-registration.noarch from channel 4
+>!> Installing libsmbclient.i586 from channel 4
+>!> Installing libakode.i586 from channel 4
+>!> Installing susehelp.noarch from channel 4
+>!> Installing aspell.i586 from channel 4
+>!> Installing rrdtool.i586 from channel 4
+>!> Installing libgnomesu.i586 from channel 4
+>!> Installing libkexiv2.i586 from channel 4
+>!> Installing pkg-config.i586 from channel 4
+>!> Installing aspell-en.i586 from channel 4
+>!> Installing parted.i586 from channel 4
+>!> Installing perl-TermReadKey.i586 from channel 4
+>!> Installing pango.i586 from channel 4
+>!> Installing libgphoto2.i586 from channel 4
+>!> Installing mkinitrd.i586 from channel 4
+>!> Installing konversation.i586 from channel 4
+>!> Installing pptp.i586 from channel 4
+>!> Installing libexif.i586 from channel 4
+>!> Installing perl-IO-Compress-Zlib.i586 from channel 4
+>!> Installing libevent.i586 from channel 4
+>!> Installing libacl.i586 from channel 4
+>!> Installing libwmf.i586 from channel 4
+>!> Installing at.i586 from channel 4
+>!> Installing x11-input-synaptics.i586 from channel 4
+>!> Installing x11-input-wacom.i586 from channel 4
+>!> Installing x11-input-wacom-tools.i586 from channel 4
+>!> Installing x11-tools.i586 from channel 4
+>!> Installing x11-video-fglrxG01.i586 from channel 4
+>!> Installing perl-XML-Simple.i586 from channel 4
+>!> Installing suse-build-key.noarch from channel 4
+>!> Installing suseRegister.noarch from channel 4
+>!> Installing xerces-j2.noarch from channel 4
+>!> Installing ati-fglrxG01-kmp-default.i586 from channel 4
+>!> Installing atk.i586 from channel 4
+>!> Installing attr.i586 from channel 4
+>!> Installing libkdepimlibs4.i586 from channel 4
+>!> Installing audiofile.i586 from channel 4
+>!> Installing kdebase4-runtime.i586 from channel 4
+>!> Installing audit.i586 from channel 4
+>!> Installing audit-libs.i586 from channel 4
+>!> Installing autofs.i586 from channel 4
+>!> Installing autoyast2-installation.noarch from channel 4
+>!> Installing lsof.i586 from channel 4
+>!> Installing autoyast2.noarch from channel 4
+>!> Installing avahi.i586 from channel 4
+>!> Installing avahi-compat-mDNSResponder.i586 from channel 4
+>!> Installing avahi-glib.i586 from channel 4
+>!> Installing sash.i586 from channel 4
+>!> Installing bash.i586 from channel 4
+>!> Installing bc.i586 from channel 4
+>!> Installing beagle-index.i586 from channel 4
+>!> Installing mailx.i586 from channel 4
+>!> Installing beagle-firefox.i586 from channel 4
+>!> Installing bind-utils.i586 from channel 4
+>!> Installing bind-libs.i586 from channel 4
+>!> Installing binutils.i586 from channel 4
+>!> Installing kdelibs3.i586 from channel 4
+>!> Installing kdepim3.i586 from channel 4
+>!> Installing libgnomeprintui.i586 from channel 4
+>!> Installing blocxx.i586 from channel 4
+>!> Installing pilot-link.i586 from channel 4
+>!> Installing bluez-libs.i586 from channel 4
+>!> Installing bluez-utils.i586 from channel 4
+>!> Installing xorg-x11-libX11-ccache.i586 from channel 4
+>!> Installing libvolume_id.i586 from channel 4
+>!> Installing kdebase3-session.i586 from channel 4
+>!> Installing boost.i586 from channel 4
+>!> Installing pam-modules.i586 from channel 4
+>!> Installing bootcycle.i586 from channel 4
+>!> Installing bootchart.noarch from channel 4
+>!> Installing bootsplash.i586 from channel 4
+>!> Installing libgnomeprint.i586 from channel 4
+>!> Installing libvorbis.i586 from channel 4
+>!> Installing bootsplash-theme-SuSE.i586 from channel 4
+>!> Installing libFLAC8.i586 from channel 4
+>!> Installing lsb.i586 from channel 4
+>!> Installing yast2-support.noarch from channel 4
+>!> Installing libkdegames4.i586 from channel 4
+>!> Installing bundle-lang-kde-en.noarch from channel 4
+>!> Installing bzip2.i586 from channel 4
+>!> Installing python-xml.i586 from channel 4
+>!> Installing cabextract.i586 from channel 4
+>!> Installing mjpegtools.i586 from channel 4
+>!> Installing cairo.i586 from channel 4
+>!> Installing libFLAC++6.i586 from channel 4
+>!> Installing perl-PlRPC.i586 from channel 4
+>!> Installing opensuse-updater.i586 from channel 4
+>!> Installing permissions.i586 from channel 4
+>!> Installing sensors.i586 from channel 4
+>!> Installing manufacturer-PPDs.noarch from channel 4
+>!> Installing cdparanoia.i586 from channel 4
+>!> Installing cdrdao.i586 from channel 4
+>!> Installing cdrkit-cdrtools-compat.i586 from channel 4
+>!> Installing libavc1394.i586 from channel 4
+>!> Installing check.i586 from channel 4
+>!> Installing libkdecore4.i586 from channel 4
+>!> Installing chromium.i586 from channel 4
+>!> Installing tk.i586 from channel 4
+>!> Installing readline.i586 from channel 4
+>!> Installing sgml-skel.noarch from channel 4
+>!> Installing clucene-core.i586 from channel 4
+>!> Installing setserial.i586 from channel 4
+>!> Installing syslog-ng.i586 from channel 4
+>!> Installing sysvinit.i586 from channel 4
+>!> Installing pm-utils.i586 from channel 4
+>!> Installing libkde4.i586 from channel 4
+>!> Installing compat.i586 from channel 4
+>!> Installing compat-libstdc++.i586 from channel 4
+>!> Installing xmoto.i586 from channel 4
+>!> Installing xntp.i586 from channel 4
+>!> Installing xorg-x11.i586 from channel 4
+>!> Installing xorg-x11-Xvnc.i586 from channel 4
+>!> Installing xorg-x11-driver-input.i586 from channel 4
+>!> Installing xml-commons.noarch from channel 4
+>!> Installing xml-commons-apis.noarch from channel 4
+>!> Installing compat-openssl097g.i586 from channel 4
+>!> Installing compiz.i586 from channel 4
+>!> Installing compiz-kde.i586 from channel 4
+>!> Installing poppler.i586 from channel 4
+>!> Installing portmap.i586 from channel 4
+>!> Installing qt3.i586 from channel 4
+>!> Installing qscintilla.i586 from channel 4
+>!> Installing coreutils.i586 from channel 4
+>!> Installing kdegraphics3-scan.i586 from channel 4
+>!> Installing kino.i586 from channel 4
+>!> Installing cpio.i586 from channel 4
+>!> Installing mozilla-nss.i586 from channel 4
+>!> Installing libkdcraw0.i586 from channel 4
+>!> Installing cracklib.i586 from channel 4
+>!> Installing cracklib-dict-full.i586 from channel 4
+>!> Installing cron.i586 from channel 4
+>!> Installing libgpg-error.i586 from channel 4
+>!> Installing libdvdread.i586 from channel 4
+>!> Installing kdegraphics3-postscript.i586 from channel 4
+>!> Installing less.i586 from channel 4
+>!> Installing libvisual.i586 from channel 4
+>!> Installing vacation.i586 from channel 4
+>!> Installing kdegraphics3-pdf.i586 from channel 4
+>!> Installing kdegraphics3-kamera.i586 from channel 4
+>!> Installing v4l-conf.i586 from channel 4
+>!> Installing sqlite2.i586 from channel 4
+>!> Installing libattr.i586 from channel 4
+>!> Installing cups.i586 from channel 4
+>!> Installing cups-client.i586 from channel 4
+>!> Installing pax.i586 from channel 4
+>!> Installing cups-drivers.i586 from channel 4
+>!> Installing cups-libs.i586 from channel 4
+>!> Installing curl-ca-bundle.i586 from channel 4
+>!> Installing koffice-illustration.i586 from channel 4
+>!> Installing curl.i586 from channel 4
+>!> Installing strigi.i586 from channel 4
+>!> Installing cyrus-sasl.i586 from channel 4
+>!> Installing cyrus-sasl-crammd5.i586 from channel 4
+>!> Installing cyrus-sasl-digestmd5.i586 from channel 4
+>!> Installing cyrus-sasl-plain.i586 from channel 4
+>!> Installing cyrus-sasl-saslauthd.i586 from channel 4
+>!> Installing perl-HTML-Tagset.i586 from channel 4
+>!> Installing kdebase3-samba.i586 from channel 4
+>!> Installing openobex.i586 from channel 4
+>!> Installing libjpeg.i586 from channel 4
+>!> Installing db-utils.i586 from channel 4
+>!> Installing libdv.i586 from channel 4
+>!> Installing dbus-1-qt3.i586 from channel 4
+>!> Installing dbus-1.i586 from channel 4
+>!> Installing libsoprano3.i586 from channel 4
+>!> Installing dbus-1-glib.i586 from channel 4
+>!> Installing libdrm.i586 from channel 4
+>!> Installing xorg-x11-fonts-core.noarch from channel 4
+>!> Installing openldap2-client.i586 from channel 4
+>!> Installing dbus-1-x11.i586 from channel 4
+>!> Installing perl-Net-DNS.i586 from channel 4
+>!> Installing mpt-status.i586 from channel 4
+>!> Installing libjasper.i586 from channel 4
+>!> Installing openslp.i586 from channel 4
+>!> Installing yast2-scanner.noarch from channel 4
+>!> Installing dcraw.i586 from channel 4
+>!> Installing ldapcpplib.i586 from channel 4
+>!> Installing dejavu.noarch from channel 4
+>!> Installing kde4-kmines.i586 from channel 4
+>!> Installing net-tools.i586 from channel 4
+>!> Installing deltarpm.i586 from channel 4
+>!> Installing yast2-sound.i586 from channel 4
+>!> Installing desktop-data-SuSE.noarch from channel 4
+>!> Installing desktop-file-utils.i586 from channel 4
+>!> Installing desktop-translations.noarch from channel 4
+>!> Installing dhcdbd.i586 from channel 4
+>!> Installing dhcp.i586 from channel 4
+>!> Installing dhcp-client.i586 from channel 4
+>!> Installing libjack.i586 from channel 4
+>!> Installing libstdc++42.i586 from channel 4
+>!> Installing dhcpcd.i586 from channel 4
+>!> Installing dialog.i586 from channel 4
+>!> Installing diffutils.i586 from channel 4
+>!> Installing digikam.i586 from channel 4
+>!> Installing libdca.i586 from channel 4
+>!> Installing digikamimageplugins.i586 from channel 4
+>!> Installing dirmngr.i586 from channel 4
+>!> Installing mozilla-nspr.i586 from channel 4
+>!> Installing lbreakout.i586 from channel 4
+>!> Installing libuuid1.i586 from channel 4
+>!> Installing kdebase3-nsplugin.i586 from channel 4
+>!> Installing dockutils.i586 from channel 4
+>!> Installing libgnomecups.i586 from channel 4
+>!> Installing dos2unix.i586 from channel 4
+>!> Installing dosbootdisk.i586 from channel 4
+>!> Installing licenses.noarch from channel 4
+>!> Installing ppp.i586 from channel 4
+>!> Installing xorg-x11-fonts.noarch from channel 4
+>!> Installing dosfstools.i586 from channel 4
+>!> Installing libdc1394.i586 from channel 4
+>!> Installing kdeutils3-laptop.i586 from channel 4
+>!> Installing mingetty.i586 from channel 4
+>!> Installing libmal.i586 from channel 4
+>!> Installing dvd+rw-tools.i586 from channel 4
+>!> Installing sax2-tools.i586 from channel 4
+>!> Installing e2fsprogs.i586 from channel 4
+>!> Installing yast2-storage-lib.i586 from channel 4
+>!> Installing libusb.i586 from channel 4
+>!> Installing libsamplerate.i586 from channel 4
+>!> Installing microcode_ctl.i586 from channel 4
+>!> Installing logrotate.i586 from channel 4
+>!> Installing ed.i586 from channel 4
+>!> Installing libopensync.i586 from channel 4
+>!> Installing efont-unicode.noarch from channel 4
+>!> Installing libopenssl0_9_8.i586 from channel 4
+>!> Installing eject.i586 from channel 4
+>!> Installing perl-Config-Crontab.i586 from channel 4
+>!> Installing ruby.i586 from channel 4
+>!> Installing libopencdk.i586 from channel 4
+>!> Installing libtunepimp.i586 from channel 4
+>!> Installing enscript.i586 from channel 4
+>!> Installing libltdl-3.i586 from channel 4
+>!> Installing esound.i586 from channel 4
+>!> Installing ethtool.i586 from channel 4
+>!> Installing librsvg.i586 from channel 4
+>!> Installing metamail.i586 from channel 4
+>!> Installing exiftool.i586 from channel 4
+>!> Installing linux-atm-lib.i586 from channel 4
+>!> Installing liboil.i586 from channel 4
+>!> Installing expat.i586 from channel 4
+>!> Installing libogg.i586 from channel 4
+>!> Installing librpcsecgss.i586 from channel 4
+>!> Installing faac.i586 from channel 4
+>!> Installing faad2.i586 from channel 4
+>!> Installing fam.i586 from channel 4
+>!> Installing mono-core.i586 from channel 4
+>!> Installing libmpcdec.i586 from channel 4
+>!> Installing mad.i586 from channel 4
+>!> Installing libieee1284.i586 from channel 4
+>!> Installing libofa.i586 from channel 4
+>!> Installing fbset.i586 from channel 4
+>!> Installing m4.i586 from channel 4
+>!> Installing ffmpeg.i586 from channel 4
+>!> Installing libzypp.i586 from channel 4
+>!> Installing mono-winforms.i586 from channel 4
+>!> Installing mono-web.i586 from channel 4
+>!> Installing fftw3.i586 from channel 4
+>!> Installing file.i586 from channel 4
+>!> Installing fileshareset.i586 from channel 4
+>!> Installing filesystem.i586 from channel 4
+>!> Installing fillup.i586 from channel 4
+>!> Installing yast2-storage.i586 from channel 4
+>!> Installing filters.i586 from channel 4
+>!> Installing findutils.i586 from channel 4
+>!> Installing finger.i586 from channel 4
+>!> Installing poppler-qt.i586 from channel 4
+>!> Installing popt.i586 from channel 4
+>!> Installing fontconfig.i586 from channel 4
+>!> Installing fonts-config.noarch from channel 4
+>!> Installing xorg-x11-libXfixes.i586 from channel 4
+>!> Installing foomatic-filters.i586 from channel 4
+>!> Installing libnscd.i586 from channel 4
+>!> Installing freealut.i586 from channel 4
+>!> Installing freeciv.i586 from channel 4
+>!> Installing freeglut.i586 from channel 4
+>!> Installing libgnomecanvas.i586 from channel 4
+>!> Installing freetype2.i586 from channel 4
+>!> Installing fribidi.i586 from channel 4
+>!> Installing kdeutils3.i586 from channel 4
+>!> Installing frozen-bubble.i586 from channel 4
+>!> Installing ft2demos.i586 from channel 4
+>!> Installing ftgl.i586 from channel 4
+>!> Installing fuse.i586 from channel 4
+>!> Installing fvwm2.i586 from channel 4
+>!> Installing opensuse-manual_en.noarch from channel 4
+>!> Installing libzio.i586 from channel 4
+>!> Installing kdenetwork3-vnc.i586 from channel 4
+>!> Installing gail.i586 from channel 4
+>!> Installing yast2-sudo.noarch from channel 4
+>!> Installing terminfo.i586 from channel 4
+>!> Installing libidn.i586 from channel 4
+>!> Installing gawk.i586 from channel 4
+>!> Installing liby2util.i586 from channel 4
+>!> Installing mdadm.i586 from channel 4
+>!> Installing kdenetwork3-news.i586 from channel 4
+>!> Installing libnl.i586 from channel 4
+>!> Installing libdb-4_5.i586 from channel 4
+>!> Installing gconf2.i586 from channel 4
+>!> Installing wget.i586 from channel 4
+>!> Installing libidl.i586 from channel 4
+>!> Installing gdb.i586 from channel 4
+>!> Installing gdbm.i586 from channel 4
+>!> Installing genisoimage.i586 from channel 4
+>!> Installing perl-Net-IP.i586 from channel 4
+>!> Installing gettext.i586 from channel 4
+>!> Installing preload.i586 from channel 4
+>!> Installing libraw1394.i586 from channel 4
+>!> Installing libgnome.i586 from channel 4
+>!> Installing kdegraphics3.i586 from channel 4
+>!> Installing ghostscript-fonts-std.i586 from channel 4
+>!> Installing ghostscript-fonts-other.i586 from channel 4
+>!> Installing ghostscript-library.i586 from channel 4
+>!> Installing ghostscript-x11.i586 from channel 4
+>!> Installing libtiff.i586 from channel 4
+>!> Installing giflib.i586 from channel 4
+>!> Installing gimp.i586 from channel 4
+>!> Installing perl-DBI.i586 from channel 4
+>!> Installing gimp-help.noarch from channel 4
+>!> Installing libnjb.i586 from channel 4
+>!> Installing libicu.i586 from channel 4
+>!> Installing powersave.i586 from channel 4
+>!> Installing gle.i586 from channel 4
+>!> Installing rpm.i586 from channel 4
+>!> Installing glib2.i586 from channel 4
+>!> Installing glib-sharp2.i586 from channel 4
+>!> Installing powersave-libs.i586 from channel 4
+>!> Installing glibc.i686 from channel 4
+>!> Installing kdetv.i586 from channel 4
+>!> Installing lame.i586 from channel 4
+>!> Installing glibc-i18ndata.i586 from channel 4
+>!> Installing glibc-locale.i586 from channel 4
+>!> Installing kdebase3-ksysguardd.i586 from channel 4
+>!> Installing libnetpbm.i586 from channel 4
+>!> Installing kde4-kreversi.i586 from channel 4
+>!> Installing glitz.i586 from channel 4
+>!> Installing gmime.i586 from channel 4
+>!> Installing libgssapi.i586 from channel 4
+>!> Installing gmp.i586 from channel 4
+>!> Installing libbonoboui.i586 from channel 4
+>!> Installing gnome-icon-theme.noarch from channel 4
+>!> Installing gnome-keyring.i586 from channel 4
+>!> Installing tcpd.i586 from channel 4
+>!> Installing tcpdump.i586 from channel 4
+>!> Installing tcsh.i586 from channel 4
+>!> Installing libdaemon.i586 from channel 4
+>!> Installing libasound2.i586 from channel 4
+>!> Installing wireless-tools.i586 from channel 4
+>!> Installing perl-Digest-MD4.i586 from channel 4
+>!> Installing perl-Digest-SHA1.i586 from channel 4
+>!> Installing obexftp.i586 from channel 4
+>!> Installing pth.i586 from channel 4
+>!> Installing xorg-x11-libSM.i586 from channel 4
+>!> Installing perl-URI.i586 from channel 4
+>!> Installing libtheora.i586 from channel 4
+>!> Installing libcurl4.i586 from channel 4
+>!> Installing kdegames4-carddecks-other.noarch from channel 4
+>!> Installing x264.i586 from channel 4
+>!> Installing xalan-j2.noarch from channel 4
+>!> Installing libqtpod.i586 from channel 4
+>!> Installing libquicktime.i586 from channel 4
+>!> Installing libxslt.i586 from channel 4
+>!> Installing sysconfig.i586 from channel 4
+>!> Installing sysfsutils.i586 from channel 4
+>!> Installing taglib.i586 from channel 4
+>!> Installing kdegames4-carddecks-default.noarch from channel 4
+>!> Installing gnome-vfs2.i586 from channel 4
+>!> Installing limal-perl.i586 from channel 4
+>!> Installing krb5.i586 from channel 4
+>!> Installing kdenetwork3-InstantMessenger.i586 from channel 4
+>!> Installing rdesktop.i586 from channel 4
+>!> Installing gnutls.i586 from channel 4
+>!> Installing libcroco.i586 from channel 4
+>!> Installing perl-base.i586 from channel 4
+>!> Installing perl-IO-Zlib.i586 from channel 4
+>!> Installing kio_iso.i586 from channel 4
+>!> Installing gpart.i586 from channel 4
+>!> Installing siga.noarch from channel 4
+>!> Installing gpg2.i586 from channel 4
+>!> Installing kdebase3-kdm.i586 from channel 4
+>!> Installing gpgme.i586 from channel 4
+>!> Installing keyutils-libs.i586 from channel 4
+>!> Installing libglade2.i586 from channel 4
+>!> Installing gpm.i586 from channel 4
+>!> Installing kdegames4.i586 from channel 4
+>!> Installing xaw3d.i586 from channel 4
+>!> Installing tar.i586 from channel 4
+>!> Installing tcl.i586 from channel 4
+>!> Installing libqt4-x11.i586 from channel 4
+>!> Installing lzo.i586 from channel 4
+>!> Installing groff.i586 from channel 4
+>!> Installing grep.i586 from channel 4
+>!> Installing perl-Compress-Zlib.i586 from channel 4
+>!> Installing grub.i586 from channel 4
+>!> Installing gsf-sharp.i586 from channel 4
+>!> Installing kde4-kpat.i586 from channel 4
+>!> Installing kdenetwork3.i586 from channel 4
+>!> Installing gstreamer010.i586 from channel 4
+>!> Installing gstreamer010-plugins-good.i586 from channel 4
+>!> Installing libgimpprint.i586 from channel 4
+>!> Installing gstreamer010-plugins-base.i586 from channel 4
+>!> Installing perl-Parse-RecDescent.i586 from channel 4
+>!> Installing libmusicbrainz.i586 from channel 4
+>!> Installing mono-data-sqlite.i586 from channel 4
+>!> Installing gtk-sharp2.i586 from channel 4
+>!> Installing gtk2.i586 from channel 4
+>!> Installing libqt4-sql.i586 from channel 4
+>!> Installing libqt4-qt3support.i586 from channel 4
+>!> Installing perl-DBD-SQLite.i586 from channel 4
+>!> Installing gwenview.i586 from channel 4
+>!> Installing gzip.i586 from channel 4
+>!> Installing hal.i586 from channel 4
+>!> Installing hal-resmgr.i586 from channel 4
+>!> Installing hdparm.i586 from channel 4
+>!> Installing hicolor-icon-theme.noarch from channel 4
+>!> Installing kde4-kmahjongg.i586 from channel 4
+>!> Installing hotkey-setup.i586 from channel 4
+>!> Installing libmtp.i586 from channel 4
+>!> Installing hplip.i586 from channel 4
+>!> Installing hplip-hpijs.i586 from channel 4
+>!> Installing hwinfo.i586 from channel 4
+>!> Installing libgdiplus.i586 from channel 4
+>!> Installing kwin-decor-suse2.i586 from channel 4
+>!> Installing libart_lgpl.i586 from channel 4
+>!> Installing icedax.i586 from channel 4
+>!> Installing yast2-runlevel.noarch from channel 4
+>!> Installing id3lib.i586 from channel 4
+>!> Installing kdemultimedia3-mixer.i586 from channel 4
+>!> Installing ifnteuro.noarch from channel 4
+>!> Installing ifplugd.i586 from channel 4
+>!> Installing imlib2.i586 from channel 4
+>!> Installing imlib2-loaders.i586 from channel 4
+>!> Installing info2html.noarch from channel 4
+>!> Installing info.i586 from channel 4
+>!> Installing initviocons.i586 from channel 4
+>!> Installing insserv.i586 from channel 4
+>!> Installing inst-source-utils.noarch from channel 4
+>!> Installing intlfnts.noarch from channel 4
+>!> Installing mono-data.i586 from channel 4
+>!> Installing perl-TimeDate.i586 from channel 4
+>!> Installing iproute2.i586 from channel 4
+>!> Installing iptables.i586 from channel 4
+>!> Installing iputils.i586 from channel 4
+>!> Installing irqbalance.i586 from channel 4
+>!> Installing irda.i586 from channel 4
+>!> Installing libcdio.i586 from channel 4
+>!> Installing ispell.i586 from channel 4
+>!> Installing ispell-american.i586 from channel 4
+>!> Installing koffice.i586 from channel 4
+>!> Installing ktorrent.i586 from channel 4
+>!> Installing perl-spamassassin.i586 from channel 4
+>!> Installing smartmontools.i586 from channel 4
+>!> Installing kdemultimedia3-CD.i586 from channel 4
+>!> Installing libcddb.i586 from channel 4
+>!> Installing kdemultimedia3.i586 from channel 4
+>!> Installing unzip.i586 from channel 4
+>!> Installing update-alternatives.noarch from channel 4
+>!> Installing usbutils.i586 from channel 4
+>!> Installing utempter.i586 from channel 4
+>!> Installing util-linux.i586 from channel 4
+>!> Installing susehelp_en.noarch from channel 4
+>!> Installing suspend.i586 from channel 4
+>!> Installing libbeagle.i586 from channel 4
+>!> Installing kdelibs4-icons-scalable.noarch from channel 4
+>!> Installing kdelibs4-icons.noarch from channel 4
+>!> Installing ksh.i586 from channel 4
+>!> Installing jarnal.noarch from channel 4
+>!> Installing xorg-x11-libX11.i586 from channel 4
+>!> Installing lukemftp.i586 from channel 4
+>!> Installing libgsm.i586 from channel 4
+>!> Installing postfix.i586 from channel 4
+>!> Installing libcap.i586 from channel 4
+>!> Installing strace.i586 from channel 4
+>!> Installing spamassassin.i586 from channel 4
+>!> Installing joe.i586 from channel 4
+>!> Installing libxml2.i586 from channel 4
+>!> Installing jpeg.i586 from channel 4
+>!> Installing jpackage-utils.i586 from channel 4
+>!> Installing opensc.i586 from channel 4
+>!> Installing k3b.i586 from channel 4
+>!> Installing k3b-INTERNAL.i586 from channel 4
+>!> Installing ksymoops.i586 from channel 4
+>!> Installing kaffeine.i586 from channel 4
+>!> Installing libbz2-1.i586 from channel 4
+>!> Installing kbd.i586 from channel 4
+>!> Installing perl-File-Tail.i586 from channel 4
+>!> Installing pwdutils.i586 from channel 4
+>!> Installing libgcrypt.i586 from channel 4
+>!> Installing kcm_gtk.i586 from channel 4
+>!> Installing perl-X500-DN.i586 from channel 4
+>!> Installing pcmciautils.i586 from channel 4
+>!> Installing pcsc-lite.i586 from channel 4
+>!> Installing sed.i586 from channel 4
+>!> Installing python-qt.i586 from channel 4
+>!> Installing kdelibs4-core.i586 from channel 4
+>!> Installing smpppd.i586 from channel 4
+>!> Installing lua-libs.i586 from channel 4
+>!> Installing ulimit.noarch from channel 4
+>!> Installing ufraw-gimp.i586 from channel 4
+>!> Installing meanwhile.i586 from channel 4
+>!> Installing resmgr.i586 from channel 4
+>!> Installing procps.i586 from channel 4
+>!> Installing klogd.i586 from channel 4
+>!> Installing kde4-filesystem.noarch from channel 4
+>!> Installing module-init-tools.i586 from channel 4
+>!> Installing slang.i586 from channel 4
+>!> Installing unclutter.i586 from channel 4
+>!> Installing vlan.i586 from channel 4
+>!> Installing vim-data.i586 from channel 4
+>!> Installing vorbis-tools.i586 from channel 4
+>!> Installing xgl.i586 from channel 4
+>!> Installing xgl-hardware-list.noarch from channel 4
+>!> Installing xdg-menu.i586 from channel 4
+>!> Installing xdg-utils.noarch from channel 4
+>!> Installing xdmbgrd.i586 from channel 4
+>!> Installing yast2.i586 from channel 4
+>!> Installing yast2-backup.noarch from channel 4
+>!> Installing yast2-inetd.noarch from channel 4
+>!> Installing yast2-iscsi-client.noarch from channel 4
+>!> Installing yast2-ncurses.i586 from channel 4
+>!> Installing yast2-metapackage-handler.noarch from channel 4
+>!> Installing yast2-perl-bindings.i586 from channel 4
+>!> Installing yast2-pkg-bindings.i586 from channel 4
+>!> Installing yast2-printer.i586 from channel 4
+>!> Installing yast2-profile-manager.i586 from channel 4
+>!> Installing yast2-restore.noarch from channel 4
+>!> Installing yast2-samba-client.noarch from channel 4
+>!> Installing yast2-security.noarch from channel 4
+>!> Installing yast2-slp.i586 from channel 4
+>!> Installing yast2-sysconfig.noarch from channel 4
+>!> Installing yast2-theme-openSUSE.noarch from channel 4
+>!> Installing yp-tools.i586 from channel 4
+>!> Installing xorg-x11-libXt.i586 from channel 4
+>!> Installing xorg-x11-libxkbfile.i586 from channel 4
+>!> Installing xorg-x11-server.i586 from channel 4
+>!> Installing xosd.i586 from channel 4
+>!> Installing xpdf-tools.i586 from channel 4
+>!> Installing xterm.i586 from channel 4
+>!> Installing xtermset.i586 from channel 4
+>!> Installing xine-lib.i586 from channel 4
+>!> Installing xinetd.i586 from channel 4
+>!> Installing w3m.i586 from channel 4
+>!> Installing xkeyboard-config.noarch from channel 4
+>!> Installing xli.i586 from channel 4
+>!> Installing xlockmore.i586 from channel 4
+>!> Installing vim.i586 from channel 4
+>!> Installing vim-base.i586 from channel 4
+>!> Installing python.i586 from channel 4
+>!> Installing libmng.i586 from channel 4
+>!> Installing sane-backends.i586 from channel 4
+>!> Installing perl-libwww-perl.i586 from channel 4
+>!> Installing reiserfs.i586 from channel 4
+>!> Installing scsi.i586 from channel 4
+>!> Installing pinentry.i586 from channel 4
+>!> Installing yast2-trans-en_US.noarch from channel 4
+>!> Installing perl-XML-Writer.i586 from channel 4
+>!> Installing perl.i586 from channel 4
+>!> Installing perl-Bootloader.i586 from channel 4
+>!> Installing kscpm.i586 from channel 4
+>!> Installing qtcurve-gtk2.i586 from channel 4
+>!> Installing kdepimlibs4.i586 from channel 4
+>!> Installing neon.i586 from channel 4
+>!> Installing procmail.i586 from channel 4
+>!> Installing procinfo.i586 from channel 4
+>!> Installing startup-notification.i586 from channel 4
+>!> Installing ocrad.i586 from channel 4
+>!> Installing rsync.i586 from channel 4
+>!> Installing myspell-american.noarch from channel 4
+>!> Installing wodim.i586 from channel 4
+>!> Installing wol.i586 from channel 4
+>!> Installing words.noarch from channel 4
+>!> Installing kitchensync.i586 from channel 4
+>!> Installing wavpack.i586 from channel 4
+>!> Installing wdiff.i586 from channel 4
+>!> Installing mcpp.i586 from channel 4
+>!> Installing tightvnc.i586 from channel 4
+>!> Installing timezone.i586 from channel 4
+>!> Installing wv.i586 from channel 4
+>!> Installing wvdial.i586 from channel 4
+>!> Installing wvstreams.i586 from channel 4
+>!> Installing wpa_supplicant.i586 from channel 4
+>!> Installing sqlite.i586 from channel 4
+>!> Installing libgsf.i586 from channel 4
+>!> Installing numlockx.i586 from channel 4
+>!> Installing psmisc.i586 from channel 4
+>!> Installing kdebase3-beagle.i586 from channel 4
+>!> Installing xorg-x11-driver-video.i586 from channel 4
+>!> Installing libqt4-dbus-1.i586 from channel 4
+>!> Installing pciutils.i586 from channel 4
+>!> Installing release-notes.noarch from channel 4
+>!> Installing sharutils.i586 from channel 4
+>!> Installing shared-mime-info.i586 from channel 4
+>!> Installing perl-Digest-HMAC.i586 from channel 4
+>!> Installing ncurses.i586 from channel 4
+>!> Installing openssl-certs.i586 from channel 4
+>!> Installing netpbm.i586 from channel 4
+>!> Installing openssl.i586 from channel 4
+>!> Installing ntfsprogs.i586 from channel 4
+>!> Installing kdelibs3-doc.i586 from channel 4
+>!> Installing libmikmod.i586 from channel 4
+>!> Installing openct.i586 from channel 4
+>!> Installing openssh-askpass.i586 from channel 4
+>!> Installing netcfg.noarch from channel 4
+>!> Installing perl-Crypt-SmbHash.i586 from channel 4
+>!> Installing perl-Crypt-SSLeay.i586 from channel 4
+>!> Installing providers.noarch from channel 4
+>!> Installing tpb.i586 from channel 4
+>!> Installing tpctl.i586 from channel 4
+>!> Installing tpctl-kmp-default.i586 from channel 4
+>!> Installing yast2-samba-server.noarch from channel 4
+>!> Installing netcat.i586 from channel 4
+>!> Installing xorg-x11-libICE.i586 from channel 4
+>!> Installing perl-HTML-Parser.i586 from channel 4
+>!> Installing libqt4.i586 from channel 4
+>!> Installing orbit2.i586 from channel 4
+>!> Installing perl-Net_SSLeay.i586 from channel 4
+>!> Installing kdebase3-SuSE.i586 from channel 4
+>!> Installing telnet.i586 from channel 4
+>!> Installing perl-Compress-Raw-Zlib.i586 from channel 4
+>!> Installing kdebluetooth.i586 from channel 4
+>!> Installing scpm.i586 from channel 4
+>!> Installing screen.i586 from channel 4
+>!> Installing perl-IO-Socket-SSL.i586 from channel 4
+>!> Installing xorg-x11-libXext.i586 from channel 4
+>!> Installing patch.i586 from channel 4
+>!> Installing pciutils-ids.noarch from channel 4
+>!> Installing libbonobo.i586 from channel 4
+>!> Installing libblkid1.i586 from channel 4
+>!> Installing xorg-x11-libXdmcp.i586 from channel 4
+>!> Installing krecord.i586 from channel 4
+>!> Installing kipi-plugins.i586 from channel 4
+>!> Installing libstroke.i586 from channel 4
+>!> Installing xorg-x11-libXau.i586 from channel 4
+>!> Installing ypbind.i586 from channel 4
+>!> Installing yast2-qt.i586 from channel 4
+>!> Installing yast2-power-management.i586 from channel 4
+>!> Installing yast2-pam.noarch from channel 4
+>!> Installing yast2-packager.i586 from channel 4
+>!> Installing yast2-online-update-frontend.noarch from channel 4
+>!> Installing yast2-online-update.noarch from channel 4
+>!> Installing yast2-ntp-client.noarch from channel 4
+>!> Installing yast2-nis-client.i586 from channel 4
+>!> Installing yast2-nfs-client.noarch from channel 4
+>!> Installing yast2-network.i586 from channel 4
+>!> Installing yast2-mouse.i586 from channel 4
+>!> Installing yast2-mail.noarch from channel 4
+>!> Installing yast2-ldap-client.noarch from channel 4
+>!> Installing yast2-ldap.i586 from channel 4
+>!> Installing yast2-kerberos-client.noarch from channel 4
+>!> Installing yast2-irda.noarch from channel 4
+>!> Installing yast2-installation.noarch from channel 4
+>!> Installing kde4-kdialog.i586 from channel 4
+>!> Installing yast2-hardware-detection.i586 from channel 4
+>!> Installing yast2-firewall.noarch from channel 4
+>!> Installing yast2-country.i586 from channel 4
+>!> Installing yast2-core.i586 from channel 4
+>!> Installing yast2-control-center-qt.i586 from channel 4
+>!> Installing yast2-control-center.i586 from channel 4
+>!> Installing yast2-bootloader.i586 from channel 4
+>!> Installing yast2-apparmor.noarch from channel 4
+>!> Installing yast2-bluetooth.noarch from channel 4
+>!> Installing yast2-add-on.noarch from channel 4
+>!> Installing yast2-xml.i586 from channel 4
+>!> Installing yast2-x11.noarch from channel 4
+>!> Installing xvkbd.i586 from channel 4
+>!> Installing xvid.i586 from channel 4
+>!> Installing yast2-update.i586 from channel 4
+>!> Installing xstroke.i586 from channel 4
+>!> Installing yast2-users.i586 from channel 4
+>!> Installing xscreensaver.i586 from channel 4
+>!> Installing xorg-x11-libxcb.i586 from channel 4
+>!> Installing zlib.i586 from channel 4
+>!> Installing yast2-tune.i586 from channel 4
+>!> Installing yast2-tv.noarch from channel 4
+>!> Installing zip.i586 from channel 4
+>!> Installing zisofs-tools.i586 from channel 4
+>!> Installing zsh.i586 from channel 4
+>!> Installing zvbi.i586 from channel 4
+>!> Installing zypper.i586 from channel 4
+>!> 2 problems found:
+>!> Problem:
+>!> No valid solution found with just resolvables of best architecture.
+>!> With this run only resolvables with the best architecture have been regarded.
+>!>    Solution:
+>!>       Make a solver run with ALL possibilities.
+>!>       Regarding all resolvables with a compatible architecture.
+>!> Problem:
+>!> beagle cannot be installed due to missing dependencies
+>!> There are no installable providers of mono(gmime-sharp) == 2.2.0.0 for beagle-0.2.17-29.i586[4]
+>!>    Solution:
+>!>       do not install beagle
+>!>       do not install beagle-0.2.17-29.i586[4]
+>!>    Solution:
+>!>       Ignore this requirement just here
+>!>       
+>!> Taking solution: 0
+>!> For problem:     1
+>!> 2 problems found:
+>!> 2 problems found:
+>!> Problem:
+>!> Can't satisfy requirement mono(gmime-sharp) == 2.2.0.0 for beagle-0.2.17-28.i586
+>!> === beagle-0.2.17-28.i586 ===
+>!>    Solution:
+>!>       delete beagle
+>!>       delete beagle-0.2.17-28.i586
+>!>    Solution:
+>!>       Ignore this requirement just here
+>!>       
+>!>    Solution:
+>!>       Generally ignore this requirement
+>!>       
+>!> Problem:
+>!> No valid solution found with just resolvables of best architecture.
+>!> With this run only resolvables with the best architecture have been regarded.
+>!>    Solution:
+>!>       Make a solver run with ALL possibilities.
+>!>       Regarding all resolvables with a compatible architecture.
+>!> Taking solution: 0
+>!> For problem:     1
+>!> 5 problems found:
+>!> 5 problems found:
+>!> Problem:
+>!> No valid solution found with just resolvables of best architecture.
+>!> With this run only resolvables with the best architecture have been regarded.
+>!>    Solution:
+>!>       Make a solver run with ALL possibilities.
+>!>       Regarding all resolvables with a compatible architecture.
+>!> Problem:
+>!> beagle-index has missing dependencies
+>!> There are no alternative providers of beagle installed for beagle-index-10.3_20070203-53.i586[4]
+>!>    Solution:
+>!>       keep beagle
+>!>       keep beagle-0.2.17-28.i586
+>!>    Solution:
+>!>       do not install beagle-index
+>!>       do not install beagle-index-10.3_20070203-53.i586[4]
+>!>    Solution:
+>!>       Ignore this requirement just here
+>!>       
+>!>    Solution:
+>!>       Generally ignore this requirement
+>!>       
+>!> Problem:
+>!> kdebase3-beagle has missing dependencies
+>!> There are no alternative providers of beagle >= 0.2.4 installed for kdebase3-beagle-3.5.7-30.i586[4]
+>!>    Solution:
+>!>       keep beagle
+>!>       keep beagle-0.2.17-28.i586
+>!>    Solution:
+>!>       do not install kdebase3-beagle
+>!>       do not install kdebase3-beagle-3.5.7-30.i586[4]
+>!>    Solution:
+>!>       Ignore this requirement just here
+>!>       
+>!>    Solution:
+>!>       Generally ignore this requirement
+>!>       
+>!> Problem:
+>!> kerry has missing dependencies
+>!> There are no alternative providers of beagle >= 0.2.6 installed for kerry-0.2.2-53.i586[4]
+>!>    Solution:
+>!>       keep beagle
+>!>       keep beagle-0.2.17-28.i586
+>!>    Solution:
+>!>       do not install kerry
+>!>       do not install kerry-0.2.2-53.i586[4]
+>!>    Solution:
+>!>       Ignore this requirement just here
+>!>       
+>!>    Solution:
+>!>       Generally ignore this requirement
+>!>       
+>!> Problem:
+>!> kio_beagle has missing dependencies
+>!> There are no alternative providers of beagle >= 0.2.4 installed for kio_beagle-0.3.1-85.i586[4]
+>!>    Solution:
+>!>       keep beagle
+>!>       keep beagle-0.2.17-28.i586
+>!>    Solution:
+>!>       do not install kio_beagle
+>!>       do not install kio_beagle-0.3.1-85.i586[4]
+>!>    Solution:
+>!>       Ignore this requirement just here
+>!>       
+>!>    Solution:
+>!>       Generally ignore this requirement
+>!>       
