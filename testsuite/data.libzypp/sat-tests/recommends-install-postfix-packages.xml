@@ -1,0 +1,928 @@
+<channel><subchannel>
+<package><name>default</name>
+  <summary>Standard System with KDE</summary>
+  <section>system</section>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>10.1</version>
+      <release>35</release>
+      <arch>noarch</arch>
+    </update>
+  </history>
+  <recommends>
+    <dep kind='package' name='mailx' />
+    <dep kind='package' name='postfix' />
+  </recommends>
+</package>
+<package><name>bash</name>
+  <section>system</section>
+  <location>1</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>3.1</version>
+      <release>18</release>
+      <arch>i586</arch>
+    </update>
+  </history>
+  <requires>
+    <dep name='/bin/sh' />
+    <dep name='glibc' />
+    <dep name='libdl.so.2' />
+    <dep name='libdl.so.2(GLIBC_2.0)' />
+    <dep name='libdl.so.2(GLIBC_2.1)' />
+  </requires>
+  <provides>
+    <dep name='bash' op='=' version='3.1' />
+    <dep name='/bin/bash' />
+    <dep name='/bin/sh' />
+  </provides>
+</package>
+<package><name>coreutils</name>
+  <section>system</section>
+  <location>1</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>5.93</version>
+      <release>16</release>
+      <arch>i586</arch>
+    </update>
+  </history>
+  <requires>
+    <dep name='/bin/sh'/>
+    <dep name='/bin/sh' />
+    <dep name='libacl.so.1' />
+    <dep name='libacl.so.1(ACL_1.0)' />
+    <dep name='libattr.so.1' />
+    <dep name='libattr.so.1(ATTR_1.1)' />
+    <dep name='glibc' />
+    <dep name='libdl.so.2' />
+    <dep name='libm.so.6' />
+    <dep name='libm.so.6(GLIBC_2.0)' />
+    <dep name='librt.so.1' />
+    <dep name='librt.so.1(GLIBC_2.2)' />
+  </requires>
+  <provides>
+    <dep name='fileutil' />
+    <dep name='fileutils' />
+    <dep name='sh-utils' />
+    <dep name='sh_utils' />
+    <dep name='shellutl' />
+    <dep name='stat' />
+    <dep name='textutil' />
+    <dep name='textutils' />
+    <dep name='textutl' />
+    <dep name='txtutils' />
+    <dep name='coreutils' op='=' version='5.93' />
+    <dep name='/bin/cat' />
+    <dep name='/bin/chgrp' />
+    <dep name='/bin/chmod' />
+    <dep name='/bin/chown' />
+    <dep name='/bin/cp' />
+    <dep name='/bin/date' />
+    <dep name='/bin/dd' />
+    <dep name='/bin/df' />
+    <dep name='/bin/echo' />
+    <dep name='/bin/false' />
+    <dep name='/bin/kill' />
+    <dep name='/bin/ln' />
+    <dep name='/bin/ls' />
+    <dep name='/bin/mkdir' />
+    <dep name='/bin/mknod' />
+    <dep name='/bin/mv' />
+    <dep name='/bin/pwd' />
+    <dep name='/bin/rm' />
+    <dep name='/bin/rmdir' />
+    <dep name='/bin/sleep' />
+    <dep name='/bin/sort' />
+    <dep name='/bin/stty' />
+    <dep name='/bin/sync' />
+    <dep name='/bin/touch' />
+    <dep name='/bin/true' />
+    <dep name='/bin/uname' />
+    <dep name='/usr/bin/basename' />
+    <dep name='/usr/bin/chroot' />
+    <dep name='/usr/bin/cksum' />
+    <dep name='/usr/bin/comm' />
+    <dep name='/usr/bin/csplit' />
+    <dep name='/usr/bin/cut' />
+    <dep name='/usr/bin/dirname' />
+    <dep name='/usr/bin/du' />
+    <dep name='/usr/bin/env' />
+    <dep name='/usr/bin/expand' />
+    <dep name='/usr/bin/expr' />
+    <dep name='/usr/bin/fold' />
+    <dep name='/usr/bin/groups' />
+    <dep name='/usr/bin/head' />
+    <dep name='/usr/bin/id' />
+    <dep name='/usr/bin/install' />
+    <dep name='/usr/bin/join' />
+    <dep name='/usr/bin/logname' />
+    <dep name='/usr/bin/md5sum' />
+    <dep name='/usr/bin/mkfifo' />
+    <dep name='/usr/bin/nice' />
+    <dep name='/usr/bin/nl' />
+    <dep name='/usr/bin/nohup' />
+    <dep name='/usr/bin/od' />
+    <dep name='/usr/bin/paste' />
+    <dep name='/usr/bin/pathchk' />
+    <dep name='/usr/bin/pr' />
+    <dep name='/usr/bin/printf' />
+    <dep name='/usr/bin/split' />
+    <dep name='/usr/bin/sum' />
+    <dep name='/usr/bin/tail' />
+    <dep name='/usr/bin/tee' />
+    <dep name='/usr/bin/test' />
+    <dep name='/usr/bin/touch' />
+    <dep name='/usr/bin/tr' />
+    <dep name='/usr/bin/tsort' />
+    <dep name='/usr/bin/tty' />
+    <dep name='/usr/bin/unexpand' />
+    <dep name='/usr/bin/uniq' />
+    <dep name='/usr/bin/wc' />
+  </provides>
+  <obsoletes>
+    <dep name='fileutil' />
+    <dep name='fileutils' />
+    <dep name='sh-utils' />
+    <dep name='sh_utils' />
+    <dep name='stat' />
+    <dep name='textutil' />
+    <dep name='textutils' />
+  </obsoletes>
+</package>
+<package><name>cyrus-sasl</name>
+  <section>system</section>
+  <location>1</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>2.1.21</version>
+      <release>12</release>
+      <arch>i586</arch>
+    </update>
+  </history>
+  <requires>
+    <dep name='insserv'/>
+    <dep name='coreutils'/>
+    <dep name='/bin/sh'/>
+    <dep name='insserv' />
+    <dep name='coreutils' />
+    <dep name='/bin/sh' />
+    <dep name='glibc' />
+    <dep name='libdb-4.3.so' />
+    <dep name='libdl.so.2' />
+    <dep name='libdl.so.2(GLIBC_2.0)' />
+    <dep name='libdl.so.2(GLIBC_2.1)' />
+    <dep name='libresolv.so.2' />
+    <dep name='libsasl2.so.2' />
+  </requires>
+  <provides>
+    <dep name='cyrus-sasl2' />
+    <dep name='libanonymous.so.2' />
+    <dep name='liblogin.so.2' />
+    <dep name='libsasl2.so.2' />
+    <dep name='libsasldb.so.2' />
+    <dep name='cyrus-sasl' op='=' version='2.1.21' />
+  </provides>
+  <obsoletes>
+    <dep name='cyrus-sasl2' />
+  </obsoletes>
+</package>
+<package><name>db</name>
+  <section>system</section>
+  <location>1</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>4.3.29</version>
+      <release>10</release>
+      <arch>i586</arch>
+    </update>
+  </history>
+  <requires>
+    <dep name='/sbin/ldconfig'/>
+    <dep name='/sbin/ldconfig' />
+    <dep name='glibc' />
+    <dep name='libgcc_s.so.1' />
+    <dep name='libgcc_s.so.1(GCC_3.0)' />
+    <dep name='libm.so.6' />
+    <dep name='libpthread.so.0' />
+    <dep name='libpthread.so.0(GLIBC_2.0)' />
+    <dep name='libpthread.so.0(GLIBC_2.2)' />
+    <dep name='libpthread.so.0(GLIBC_2.3.2)' />
+  </requires>
+  <provides>
+    <dep name='libdb-4.3.so' />
+    <dep name='libdb_cxx-4.3.so' />
+    <dep name='db' op='=' version='4.3.29' />
+  </provides>
+</package>
+<package><name>filesystem</name>
+  <section>system</section>
+  <location>1</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>10.1</version>
+      <release>2</release>
+      <arch>i586</arch>
+    </update>
+  </history>
+  <requires>
+  </requires>
+  <provides>
+    <dep name='aaa_dir' />
+    <dep name='filesystem' op='=' version='10.1' />
+  </provides>
+  <obsoletes>
+    <dep name='aaa_dir' />
+  </obsoletes>
+</package>
+<package><name>glibc</name>
+  <section>system</section>
+  <location>1</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>2.4</version>
+      <release>12</release>
+      <arch>i586</arch>
+    </update>
+  </history>
+  <requires>
+    <dep name='filesystem'/>
+    <dep name='/usr/sbin/glibc_post_upgrade'/>
+    <dep name='/sbin/ldconfig'/>
+    <dep name='filesystem' />
+    <dep name='/usr/sbin/glibc_post_upgrade' />
+    <dep name='/sbin/ldconfig' />
+    <dep name='ld-linux.so.2' />
+    <dep name='ld-linux.so.2(GLIBC_2.1)' />
+    <dep name='ld-linux.so.2(GLIBC_2.3)' />
+    <dep name='ld-linux.so.2(GLIBC_PRIVATE)' />
+    <dep name='glibc' />
+    <dep name='libdl.so.2' />
+    <dep name='libdl.so.2(GLIBC_2.0)' />
+    <dep name='libnsl.so.1' />
+    <dep name='libnsl.so.1(GLIBC_2.0)' />
+    <dep name='libnsl.so.1(GLIBC_2.1)' />
+    <dep name='libnss_files.so.2' />
+    <dep name='libnss_files.so.2(GLIBC_PRIVATE)' />
+    <dep name='libpthread.so.0' />
+    <dep name='libpthread.so.0(GLIBC_2.0)' />
+    <dep name='libpthread.so.0(GLIBC_2.1)' />
+    <dep name='libpthread.so.0(GLIBC_2.2)' />
+    <dep name='libpthread.so.0(GLIBC_PRIVATE)' />
+    <dep name='libresolv.so.2' />
+    <dep name='libresolv.so.2(GLIBC_2.0)' />
+    <dep name='libresolv.so.2(GLIBC_2.2)' />
+    <dep name='libresolv.so.2(GLIBC_PRIVATE)' />
+  </requires>
+  <provides>
+    <dep name='ld-linux.so.2' />
+    <dep name='ld-linux.so.2(GLIBC_2.0)' />
+    <dep name='ld-linux.so.2(GLIBC_2.1)' />
+    <dep name='ld-linux.so.2(GLIBC_2.3)' />
+    <dep name='ld-linux.so.2(GLIBC_2.4)' />
+    <dep name='ld-linux.so.2(GLIBC_PRIVATE)' />
+    <dep name='ld-linux.so.2(ld-linux.so.2)' />
+    <dep name='libBrokenLocale.so.1' />
+    <dep name='libBrokenLocale.so.1(GLIBC_2.0)' />
+    <dep name='libBrokenLocale.so.1(libBrokenLocale.so.1)' />
+    <dep name='libSegFault.so' />
+    <dep name='libanl.so.1' />
+    <dep name='libanl.so.1(GLIBC_2.2.3)' />
+    <dep name='libanl.so.1(libanl.so.1)' />
+    <dep name='glibc' />
+    <dep name='libcidn.so.1' />
+    <dep name='libcidn.so.1(GLIBC_PRIVATE)' />
+    <dep name='libcidn.so.1(libcidn.so.1)' />
+    <dep name='libdl.so.2' />
+    <dep name='libdl.so.2(GLIBC_2.0)' />
+    <dep name='libdl.so.2(GLIBC_2.1)' />
+    <dep name='libdl.so.2(GLIBC_2.3.3)' />
+    <dep name='libdl.so.2(GLIBC_2.3.4)' />
+    <dep name='libdl.so.2(GLIBC_PRIVATE)' />
+    <dep name='libdl.so.2(libdl.so.2)' />
+    <dep name='libm.so.6' />
+    <dep name='libm.so.6(GLIBC_2.0)' />
+    <dep name='libm.so.6(GLIBC_2.1)' />
+    <dep name='libm.so.6(GLIBC_2.2)' />
+    <dep name='libm.so.6(GLIBC_2.4)' />
+    <dep name='libm.so.6(libm.so.6)' />
+    <dep name='libmemusage.so' />
+    <dep name='libnsl.so.1' />
+    <dep name='libnsl.so.1(GLIBC_2.0)' />
+    <dep name='libnsl.so.1(GLIBC_2.1)' />
+    <dep name='libnsl.so.1(GLIBC_2.2)' />
+    <dep name='libnsl.so.1(libnsl.so.1)' />
+    <dep name='libnss_compat.so.2' />
+    <dep name='libnss_compat.so.2(GLIBC_PRIVATE)' />
+    <dep name='libnss_compat.so.2(libnss_compat.so.2)' />
+    <dep name='libnss_dns.so.2' />
+    <dep name='libnss_dns.so.2(GLIBC_PRIVATE)' />
+    <dep name='libnss_dns.so.2(libnss_dns.so.2)' />
+    <dep name='libnss_files.so.2' />
+    <dep name='libnss_files.so.2(GLIBC_PRIVATE)' />
+    <dep name='libnss_files.so.2(libnss_files.so.2)' />
+    <dep name='libnss_hesiod.so.2' />
+    <dep name='libnss_hesiod.so.2(GLIBC_PRIVATE)' />
+    <dep name='libnss_hesiod.so.2(libnss_hesiod.so.2)' />
+    <dep name='libnss_nis.so.2' />
+    <dep name='libnss_nis.so.2(GLIBC_PRIVATE)' />
+    <dep name='libnss_nis.so.2(libnss_nis.so.2)' />
+    <dep name='libnss_nisplus.so.2' />
+    <dep name='libnss_nisplus.so.2(GLIBC_PRIVATE)' />
+    <dep name='libnss_nisplus.so.2(libnss_nisplus.so.2)' />
+    <dep name='libpcprofile.so' />
+    <dep name='libpthread.so.0' />
+    <dep name='libpthread.so.0(GLIBC_2.0)' />
+    <dep name='libpthread.so.0(GLIBC_2.1)' />
+    <dep name='libpthread.so.0(GLIBC_2.1.1)' />
+    <dep name='libpthread.so.0(GLIBC_2.1.2)' />
+    <dep name='libpthread.so.0(GLIBC_2.2)' />
+    <dep name='libpthread.so.0(GLIBC_2.2.3)' />
+    <dep name='libpthread.so.0(GLIBC_2.2.6)' />
+    <dep name='libpthread.so.0(GLIBC_2.3.2)' />
+    <dep name='libpthread.so.0(GLIBC_2.3.3)' />
+    <dep name='libpthread.so.0(GLIBC_2.3.4)' />
+    <dep name='libpthread.so.0(GLIBC_2.4)' />
+    <dep name='libpthread.so.0(GLIBC_PRIVATE)' />
+    <dep name='libpthread.so.0(libpthread.so.0)' />
+    <dep name='libresolv.so.2' />
+    <dep name='libresolv.so.2(GLIBC_2.0)' />
+    <dep name='libresolv.so.2(GLIBC_2.2)' />
+    <dep name='libresolv.so.2(GLIBC_2.3.2)' />
+    <dep name='libresolv.so.2(GLIBC_PRIVATE)' />
+    <dep name='libresolv.so.2(libresolv.so.2)' />
+    <dep name='librt.so.1' />
+    <dep name='librt.so.1(GLIBC_2.1)' />
+    <dep name='librt.so.1(GLIBC_2.2)' />
+    <dep name='librt.so.1(GLIBC_2.3.4)' />
+    <dep name='librt.so.1(GLIBC_2.4)' />
+    <dep name='librt.so.1(librt.so.1)' />
+    <dep name='libthread_db.so.1' />
+    <dep name='libthread_db.so.1(GLIBC_2.1.3)' />
+    <dep name='libthread_db.so.1(GLIBC_2.2.3)' />
+    <dep name='libthread_db.so.1(GLIBC_2.3)' />
+    <dep name='libthread_db.so.1(GLIBC_2.3.3)' />
+    <dep name='libthread_db.so.1(libthread_db.so.1)' />
+    <dep name='libutil.so.1' />
+    <dep name='libutil.so.1(GLIBC_2.0)' />
+    <dep name='libutil.so.1(libutil.so.1)' />
+    <dep name='glibc' op='=' version='2.4' />
+    <dep name='/sbin/ldconfig' />
+    <dep name='/usr/bin/gencat' />
+    <dep name='/usr/bin/getconf' />
+    <dep name='/usr/bin/getent' />
+    <dep name='/usr/bin/iconv' />
+    <dep name='/usr/bin/locale' />
+    <dep name='/usr/bin/localedef' />
+    <dep name='/usr/sbin/glibc_post_upgrade' />
+  </provides>
+  <obsoletes>
+    <dep name='ngpt' />
+    <dep name='ngpt-devel' />
+  </obsoletes>
+</package>
+<package><name>insserv</name>
+  <section>system</section>
+  <location>1</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>1.04.0</version>
+      <release>15</release>
+      <arch>i586</arch>
+    </update>
+  </history>
+  <requires>
+    <dep name='/bin/sh' />
+    <dep name='glibc' />
+  </requires>
+  <provides>
+    <dep name='aaa_base:/sbin/insserv' />
+    <dep name='insserv' op='=' version='1.04.0' />
+    <dep name='/sbin/insserv' />
+  </provides>
+</package>
+<package><name>libacl</name>
+  <section>system</section>
+  <location>1</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>2.2.34</version>
+      <release>9</release>
+      <arch>i586</arch>
+    </update>
+  </history>
+  <requires>
+    <dep name='/sbin/ldconfig'/>
+    <dep name='/sbin/ldconfig' />
+    <dep name='libattr.so.1' />
+    <dep name='libattr.so.1(ATTR_1.0)' />
+    <dep name='glibc' />
+  </requires>
+  <provides>
+    <dep name='libacl.so.1' />
+    <dep name='libacl.so.1(ACL_1.0)' />
+    <dep name='libacl.so.1(ACL_1.1)' />
+    <dep name='libacl.so.1(libacl.so.1)' />
+    <dep name='libacl' op='=' version='2.2.34' />
+  </provides>
+</package>
+<package><name>libattr</name>
+  <section>system</section>
+  <location>1</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>2.4.28</version>
+      <release>11</release>
+      <arch>i586</arch>
+    </update>
+  </history>
+  <requires>
+    <dep name='/sbin/ldconfig'/>
+    <dep name='/sbin/ldconfig' />
+    <dep name='glibc' />
+  </requires>
+  <provides>
+    <dep name='libattr.so.1' />
+    <dep name='libattr.so.1(ATTR_1.0)' />
+    <dep name='libattr.so.1(ATTR_1.1)' />
+    <dep name='libattr.so.1(ATTR_1.2)' />
+    <dep name='libattr.so.1(libattr.so.1)' />
+    <dep name='libattr' op='=' version='2.4.28' />
+  </provides>
+</package>
+<package><name>libgcc</name>
+  <section>system</section>
+  <location>1</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>4.1.0</version>
+      <release>10</release>
+      <arch>i586</arch>
+    </update>
+  </history>
+  <requires>
+    <dep name='glibc' />
+  </requires>
+  <provides>
+    <dep name='libgcc_s.so.1' />
+    <dep name='libgcc_s.so.1(GCC_3.0)' />
+    <dep name='libgcc_s.so.1(GCC_3.3)' />
+    <dep name='libgcc_s.so.1(GCC_3.3.1)' />
+    <dep name='libgcc_s.so.1(GCC_3.4)' />
+    <dep name='libgcc_s.so.1(GCC_3.4.2)' />
+    <dep name='libgcc_s.so.1(GCC_4.0.0)' />
+    <dep name='libgcc_s.so.1(GLIBC_2.0)' />
+    <dep name='libgcc_s.so.1(libgcc_s.so.1)' />
+    <dep name='libgcc' op='=' version='4.1.0' />
+  </provides>
+</package>
+<package><name>mailx</name>
+  <section>system</section>
+  <location>1</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>11.25</version>
+      <release>9</release>
+      <arch>i586</arch>
+    </update>
+  </history>
+  <requires>
+    <dep name='smtp_daemon' />
+    <dep name='glibc' />
+    <dep name='libssl.so.0.9.8' />
+  </requires>
+  <provides>
+    <dep name='mail' />
+    <dep name='nail' />
+    <dep name='mailx' op='=' version='11.25' />
+    <dep name='/usr/bin/mail' />
+    <dep name='/usr/bin/mailx' />
+  </provides>
+</package>
+<package><name>openldap2-client</name>
+  <section>system</section>
+  <location>1</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>2.3.19</version>
+      <release>13</release>
+      <arch>i586</arch>
+    </update>
+  </history>
+  <requires>
+    <dep name='glibc' />
+    <dep name='libdl.so.2' />
+    <dep name='liblber-2.3.so.0' />
+    <dep name='libldap-2.3.so.0' />
+    <dep name='libresolv.so.2' />
+    <dep name='libresolv.so.2(GLIBC_2.2)' />
+    <dep name='libsasl2.so.2' />
+    <dep name='libssl.so.0.9.8' />
+  </requires>
+  <provides>
+    <dep name='liblber-2.3.so.0' />
+    <dep name='libldap-2.3.so.0' />
+    <dep name='libldap_r-2.3.so.0' />
+    <dep name='openldap2-client' op='=' version='2.3.19' />
+  </provides>
+  <conflicts>
+    <dep name='openldap-client' />
+  </conflicts>
+</package>
+<package><name>openssl</name>
+  <section>system</section>
+  <location>1</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>0.9.8a</version>
+      <release>13</release>
+      <arch>i586</arch>
+    </update>
+  </history>
+  <requires>
+    <dep name='/sbin/ldconfig'/>
+    <dep name='/sbin/ldconfig' />
+    <dep name='/bin/sh' />
+    <dep name='glibc' />
+    <dep name='libdl.so.2' />
+    <dep name='libdl.so.2(GLIBC_2.0)' />
+    <dep name='libdl.so.2(GLIBC_2.1)' />
+    <dep name='libssl.so.0.9.8' />
+  </requires>
+  <provides>
+    <dep name='ssl' />
+    <dep name='lib4758cca.so' />
+    <dep name='libaep.so' />
+    <dep name='libatalla.so' />
+    <dep name='libchil.so' />
+    <dep name='libcswift.so' />
+    <dep name='libgmp.so' />
+    <dep name='libnuron.so' />
+    <dep name='libssl.so.0.9.8' />
+    <dep name='libsureware.so' />
+    <dep name='libubsec.so' />
+    <dep name='openssl' op='=' version='0.9.8a' />
+  </provides>
+  <conflicts>
+    <dep name='ssleay' />
+  </conflicts>
+  <obsoletes>
+    <dep name='ssleay' />
+  </obsoletes>
+</package>
+<package><name>postfix</name>
+  <section>system</section>
+  <location>1</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>2.2.9</version>
+      <release>3</release>
+      <arch>i586</arch>
+    </update>
+  </history>
+  <requires>
+    <dep name='/usr/sbin/useradd'/>
+    <dep name='/usr/sbin/groupadd'/>
+    <dep name='insserv'/>
+    <dep name='coreutils'/>
+    <dep name='textutils'/>
+    <dep name='sh-utils'/>
+    <dep name='fileutils'/>
+    <dep name='openldap2-client'/>
+    <dep name='/bin/sh'/>
+    <dep name='/usr/sbin/useradd' />
+    <dep name='/usr/sbin/groupadd' />
+    <dep name='insserv' />
+    <dep name='coreutils' />
+    <dep name='textutils' />
+    <dep name='sh-utils' />
+    <dep name='fileutils' />
+    <dep name='openldap2-client' />
+    <dep name='/bin/sh' />
+    <dep name='/bin/bash' />
+    <dep name='/bin/sh' />
+    <dep name='glibc' />
+    <dep name='libdl.so.2' />
+    <dep name='libdl.so.2(GLIBC_2.0)' />
+    <dep name='libdl.so.2(GLIBC_2.1)' />
+    <dep name='liblber-2.3.so.0' />
+    <dep name='libldap-2.3.so.0' />
+    <dep name='libnsl.so.1' />
+    <dep name='libnsl.so.1(GLIBC_2.0)' />
+    <dep name='libpostfix-dns.so.1' />
+    <dep name='libpostfix-global.so.1' />
+    <dep name='libpostfix-master.so.1' />
+    <dep name='libpostfix-tls.so.1' />
+    <dep name='libpostfix-util.so.1' />
+    <dep name='libresolv.so.2' />
+    <dep name='libresolv.so.2(GLIBC_2.2)' />
+    <dep name='libsasl2.so.2' />
+    <dep name='libssl.so.0.9.8' />
+  </requires>
+  <provides>
+    <dep name='smtp_daemon' />
+    <dep name='dict_ldap.so' />
+    <dep name='dict_tcp.so' />
+    <dep name='libpostfix-dns.so.1' />
+    <dep name='libpostfix-global.so.1' />
+    <dep name='libpostfix-master.so.1' />
+    <dep name='libpostfix-tls.so.1' />
+    <dep name='libpostfix-util.so.1' />
+    <dep name='postfix' op='=' version='2.2.9' />
+    <dep name='/usr/sbin/sendmail' />
+  </provides>
+  <conflicts>
+    <dep name='sendmail' />
+    <dep name='exim' />
+  </conflicts>
+</package>
+<package><name>pwdutils</name>
+  <section>system</section>
+  <location>1</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>3.0.7.1</version>
+      <release>12</release>
+      <arch>i586</arch>
+    </update>
+  </history>
+  <requires>
+    <dep name='/bin/cp'/>
+    <dep name='/bin/mv'/>
+    <dep name='/bin/sh'/>
+    <dep name='/bin/cp' />
+    <dep name='/bin/mv' />
+    <dep name='/bin/sh' />
+    <dep name='/bin/bash' />
+    <dep name='/bin/sh' />
+    <dep name='glibc' />
+    <dep name='libdl.so.2' />
+    <dep name='libdl.so.2(GLIBC_2.0)' />
+    <dep name='libdl.so.2(GLIBC_2.1)' />
+    <dep name='liblber-2.3.so.0' />
+    <dep name='libldap-2.3.so.0' />
+    <dep name='libm.so.6' />
+    <dep name='libnsl.so.1' />
+    <dep name='libnsl.so.1(GLIBC_2.0)' />
+    <dep name='libnsl.so.1(GLIBC_2.1)' />
+    <dep name='libresolv.so.2' />
+  </requires>
+  <provides>
+    <dep name='liblog_syslog.so.1' />
+    <dep name='liblog_syslog.so.1(LIBLOG_SYSLOG_1.0)' />
+    <dep name='liblog_syslog.so.1(liblog_syslog.so.1)' />
+    <dep name='/usr/bin/chfn' />
+    <dep name='/usr/bin/chsh' />
+    <dep name='/usr/bin/newgrp' />
+    <dep name='/usr/bin/passwd' />
+    <dep name='/usr/sbin/groupadd' />
+    <dep name='/usr/sbin/groupdel' />
+    <dep name='/usr/sbin/groupmod' />
+    <dep name='/usr/sbin/useradd' />
+    <dep name='/usr/sbin/userdel' />
+    <dep name='/usr/sbin/usermod' />
+  </provides>
+</package>
+<package><name>db</name>
+  <section>system</section>
+  <location>1</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>4.3.29</version>
+      <release>10</release>
+      <arch>i686</arch>
+    </update>
+  </history>
+  <requires>
+    <dep name='/sbin/ldconfig'/>
+    <dep name='/sbin/ldconfig' />
+    <dep name='glibc' />
+    <dep name='libgcc_s.so.1' />
+    <dep name='libgcc_s.so.1(GCC_3.0)' />
+    <dep name='libm.so.6' />
+    <dep name='libpthread.so.0' />
+    <dep name='libpthread.so.0(GLIBC_2.0)' />
+    <dep name='libpthread.so.0(GLIBC_2.2)' />
+    <dep name='libpthread.so.0(GLIBC_2.3.2)' />
+  </requires>
+  <provides>
+    <dep name='libdb-4.3.so' />
+    <dep name='libdb_cxx-4.3.so' />
+    <dep name='db' op='=' version='4.3.29' />
+  </provides>
+</package>
+<package><name>glibc</name>
+  <section>system</section>
+  <location>1</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>2.4</version>
+      <release>12</release>
+      <arch>i686</arch>
+    </update>
+  </history>
+  <requires>
+    <dep name='filesystem'/>
+    <dep name='/usr/sbin/glibc_post_upgrade'/>
+    <dep name='/sbin/ldconfig'/>
+    <dep name='filesystem' />
+    <dep name='/usr/sbin/glibc_post_upgrade' />
+    <dep name='/sbin/ldconfig' />
+    <dep name='ld-linux.so.2' />
+    <dep name='ld-linux.so.2(GLIBC_2.1)' />
+    <dep name='ld-linux.so.2(GLIBC_2.3)' />
+    <dep name='ld-linux.so.2(GLIBC_PRIVATE)' />
+    <dep name='glibc' />
+    <dep name='libdl.so.2' />
+    <dep name='libdl.so.2(GLIBC_2.0)' />
+    <dep name='libnsl.so.1' />
+    <dep name='libnsl.so.1(GLIBC_2.0)' />
+    <dep name='libnsl.so.1(GLIBC_2.1)' />
+    <dep name='libnss_files.so.2' />
+    <dep name='libnss_files.so.2(GLIBC_PRIVATE)' />
+    <dep name='libpthread.so.0' />
+    <dep name='libpthread.so.0(GLIBC_2.0)' />
+    <dep name='libpthread.so.0(GLIBC_2.1)' />
+    <dep name='libpthread.so.0(GLIBC_2.2)' />
+    <dep name='libpthread.so.0(GLIBC_PRIVATE)' />
+    <dep name='libresolv.so.2' />
+    <dep name='libresolv.so.2(GLIBC_2.0)' />
+    <dep name='libresolv.so.2(GLIBC_2.2)' />
+    <dep name='libresolv.so.2(GLIBC_PRIVATE)' />
+  </requires>
+  <provides>
+    <dep name='ld-linux.so.2' />
+    <dep name='ld-linux.so.2(GLIBC_2.0)' />
+    <dep name='ld-linux.so.2(GLIBC_2.1)' />
+    <dep name='ld-linux.so.2(GLIBC_2.3)' />
+    <dep name='ld-linux.so.2(GLIBC_2.4)' />
+    <dep name='ld-linux.so.2(GLIBC_PRIVATE)' />
+    <dep name='ld-linux.so.2(ld-linux.so.2)' />
+    <dep name='libBrokenLocale.so.1' />
+    <dep name='libBrokenLocale.so.1(GLIBC_2.0)' />
+    <dep name='libBrokenLocale.so.1(libBrokenLocale.so.1)' />
+    <dep name='libSegFault.so' />
+    <dep name='libanl.so.1' />
+    <dep name='libanl.so.1(GLIBC_2.2.3)' />
+    <dep name='libanl.so.1(libanl.so.1)' />
+    <dep name='glibc' />
+    <dep name='libcidn.so.1' />
+    <dep name='libcidn.so.1(GLIBC_PRIVATE)' />
+    <dep name='libcidn.so.1(libcidn.so.1)' />
+    <dep name='libdl.so.2' />
+    <dep name='libdl.so.2(GLIBC_2.0)' />
+    <dep name='libdl.so.2(GLIBC_2.1)' />
+    <dep name='libdl.so.2(GLIBC_2.3.3)' />
+    <dep name='libdl.so.2(GLIBC_2.3.4)' />
+    <dep name='libdl.so.2(GLIBC_PRIVATE)' />
+    <dep name='libdl.so.2(libdl.so.2)' />
+    <dep name='libm.so.6' />
+    <dep name='libm.so.6(GLIBC_2.0)' />
+    <dep name='libm.so.6(GLIBC_2.1)' />
+    <dep name='libm.so.6(GLIBC_2.2)' />
+    <dep name='libm.so.6(GLIBC_2.4)' />
+    <dep name='libm.so.6(libm.so.6)' />
+    <dep name='libmemusage.so' />
+    <dep name='libnsl.so.1' />
+    <dep name='libnsl.so.1(GLIBC_2.0)' />
+    <dep name='libnsl.so.1(GLIBC_2.1)' />
+    <dep name='libnsl.so.1(GLIBC_2.2)' />
+    <dep name='libnsl.so.1(libnsl.so.1)' />
+    <dep name='libnss_compat.so.2' />
+    <dep name='libnss_compat.so.2(GLIBC_PRIVATE)' />
+    <dep name='libnss_compat.so.2(libnss_compat.so.2)' />
+    <dep name='libnss_dns.so.2' />
+    <dep name='libnss_dns.so.2(GLIBC_PRIVATE)' />
+    <dep name='libnss_dns.so.2(libnss_dns.so.2)' />
+    <dep name='libnss_files.so.2' />
+    <dep name='libnss_files.so.2(GLIBC_PRIVATE)' />
+    <dep name='libnss_files.so.2(libnss_files.so.2)' />
+    <dep name='libnss_hesiod.so.2' />
+    <dep name='libnss_hesiod.so.2(GLIBC_PRIVATE)' />
+    <dep name='libnss_hesiod.so.2(libnss_hesiod.so.2)' />
+    <dep name='libnss_nis.so.2' />
+    <dep name='libnss_nis.so.2(GLIBC_PRIVATE)' />
+    <dep name='libnss_nis.so.2(libnss_nis.so.2)' />
+    <dep name='libnss_nisplus.so.2' />
+    <dep name='libnss_nisplus.so.2(GLIBC_PRIVATE)' />
+    <dep name='libnss_nisplus.so.2(libnss_nisplus.so.2)' />
+    <dep name='libpcprofile.so' />
+    <dep name='libpthread.so.0' />
+    <dep name='libpthread.so.0(GLIBC_2.0)' />
+    <dep name='libpthread.so.0(GLIBC_2.1)' />
+    <dep name='libpthread.so.0(GLIBC_2.1.1)' />
+    <dep name='libpthread.so.0(GLIBC_2.1.2)' />
+    <dep name='libpthread.so.0(GLIBC_2.2)' />
+    <dep name='libpthread.so.0(GLIBC_2.2.3)' />
+    <dep name='libpthread.so.0(GLIBC_2.2.6)' />
+    <dep name='libpthread.so.0(GLIBC_2.3.2)' />
+    <dep name='libpthread.so.0(GLIBC_2.3.3)' />
+    <dep name='libpthread.so.0(GLIBC_2.3.4)' />
+    <dep name='libpthread.so.0(GLIBC_2.4)' />
+    <dep name='libpthread.so.0(GLIBC_PRIVATE)' />
+    <dep name='libpthread.so.0(libpthread.so.0)' />
+    <dep name='libresolv.so.2' />
+    <dep name='libresolv.so.2(GLIBC_2.0)' />
+    <dep name='libresolv.so.2(GLIBC_2.2)' />
+    <dep name='libresolv.so.2(GLIBC_2.3.2)' />
+    <dep name='libresolv.so.2(GLIBC_PRIVATE)' />
+    <dep name='libresolv.so.2(libresolv.so.2)' />
+    <dep name='librt.so.1' />
+    <dep name='librt.so.1(GLIBC_2.1)' />
+    <dep name='librt.so.1(GLIBC_2.2)' />
+    <dep name='librt.so.1(GLIBC_2.3.4)' />
+    <dep name='librt.so.1(GLIBC_2.4)' />
+    <dep name='librt.so.1(librt.so.1)' />
+    <dep name='libthread_db.so.1' />
+    <dep name='libthread_db.so.1(GLIBC_2.1.3)' />
+    <dep name='libthread_db.so.1(GLIBC_2.2.3)' />
+    <dep name='libthread_db.so.1(GLIBC_2.3)' />
+    <dep name='libthread_db.so.1(GLIBC_2.3.3)' />
+    <dep name='libthread_db.so.1(libthread_db.so.1)' />
+    <dep name='libutil.so.1' />
+    <dep name='libutil.so.1(GLIBC_2.0)' />
+    <dep name='libutil.so.1(libutil.so.1)' />
+    <dep name='glibc' op='=' version='2.4' />
+    <dep name='/sbin/ldconfig' />
+    <dep name='/usr/bin/gencat' />
+    <dep name='/usr/bin/getconf' />
+    <dep name='/usr/bin/getent' />
+    <dep name='/usr/bin/iconv' />
+    <dep name='/usr/bin/locale' />
+    <dep name='/usr/bin/localedef' />
+    <dep name='/usr/sbin/glibc_post_upgrade' />
+  </provides>
+  <obsoletes>
+    <dep name='ngpt' />
+    <dep name='ngpt-devel' />
+  </obsoletes>
+</package>
+<package><name>sendmail</name>
+  <section>system</section>
+  <location>5</location>
+  <history>
+    <update>
+      <hid>12345</hid>
+      <version>8.13.6</version>
+      <release>4</release>
+      <arch>i586</arch>
+    </update>
+  </history>
+  <requires>
+    <dep name='fileutils'/>
+    <dep name='/sbin/insserv'/>
+    <dep name='/bin/sh'/>
+    <dep name='fileutils' />
+    <dep name='/sbin/insserv' />
+    <dep name='filesystem' />
+    <dep name='/bin/sh' />
+    <dep name='glibc' />
+    <dep name='libdb-4.3.so' />
+    <dep name='liblber-2.3.so.0' />
+    <dep name='libldap-2.3.so.0' />
+    <dep name='libnsl.so.1' />
+    <dep name='libnsl.so.1(GLIBC_2.0)' />
+    <dep name='libnsl.so.1(GLIBC_2.1)' />
+    <dep name='libresolv.so.2' />
+    <dep name='libresolv.so.2(GLIBC_2.0)' />
+    <dep name='libresolv.so.2(GLIBC_2.2)' />
+    <dep name='libsasl2.so.2' />
+    <dep name='libssl.so.0.9.8' />
+  </requires>
+  <provides>
+    <dep name='sendcf' />
+    <dep name='smailcfg' />
+    <dep name='smtp_daemon' />
+    <dep name='sendmail' op='=' version='8.13.6' />
+    <dep name='/usr/sbin/sendmail' />
+  </provides>
+  <conflicts>
+    <dep name='smail' />
+    <dep name='postfix' />
+    <dep name='sendmail-tls' />
+    <dep name='postfix-tls' />
+  </conflicts>
+  <obsoletes>
+    <dep name='sendmail-tls' />
+  </obsoletes>
+</package>
+
+</subchannel></channel>

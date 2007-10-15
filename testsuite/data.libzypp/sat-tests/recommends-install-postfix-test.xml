@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<test>
+<setup>
+  <channel name="1" file="recommends-install-postfix-packages.xml"/>
+</setup>
+<trial>
+  <install channel="1" kind="package" name="default"/>
+</trial>
+</test>
