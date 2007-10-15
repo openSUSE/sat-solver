@@ -20,8 +20,19 @@ $redcarpet = false
 
 $tests = Array.new
 $deptestomatic = File.join( Dir.getwd, "deptestomatic" )
+$topdir = Dir.getwd
+$fails = Array.new
+
+class CompareResult
+  Incomplete = 0
+  KnownFailure = 1
+  UnexpectedFailure = 2
+  KnownPass = 3
+  UnexpectedPass = 4
+end
 
 class Solution
+
   # poor mans diff
   def Solution.filediff name1, name2
     begin
@@ -91,29 +102,47 @@ class Solution
   def Solution.compare sname, rname
     unless File.readable?( sname )
       STDERR.puts "Cannot open #{sname}"
-      return false
+      return CompareResult::Incomplete
     end
     unless File.readable?( rname )
       STDERR.puts "Cannot open #{rname}"
-      return false
+      return CompareResult::Incomplete
     end
     
     solutions = Solution.read sname
     results = Solution.read rname
     
-    return true if (solutions.empty? && results.empty?)
+    if (solutions.empty? && results.empty?)
+      if ( $fails.member?( sname ) )
+	STDERR.puts "#{rname} passed"
+	return CompareResult::UnexpectedPass
+      else
+	return CompareResult::KnownPass  
+      end
+    end
+
     r = results.first
     solutions.each { |s|
-      return true if s == r
+      if s == r
+	if ( $fails.member?( sname ) )
+	  STDERR.puts "#{rname} passed"
+	  return CompareResult::UnexpectedPass
+	else
+	  return CompareResult::KnownPass  
+	end
+      end
     }
     
-    #STDERR.puts "#{rname} failed"
+    if ( $fails.member?( sname ) )
+      return CompareResult::KnownFailure
+    end
+    STDERR.puts "#{rname} failed"
     system( "./diffres #{sname} #{rname}")
     #STDERR.puts "Solution:"
     #pp solutions.first
     #STDERR.puts "Result:"
     #pp r
-    return false
+    return CompareResult::UnexpectedFailure
   end
 
 end
@@ -122,7 +151,10 @@ end
 class Tester < Test::Unit::TestCase
   
   def test_run
-    passed = 0
+    upassed = 0
+    epassed = 0
+    ufailed = 0
+    efailed = 0
     puts "#{$tests.size} tests ahead"
     $tests.sort!
     $tests.each { |test|
@@ -137,13 +169,21 @@ class Tester < Test::Unit::TestCase
         sname = File.join( dir, "#{basename}.solution" )
         rname = File.join( dir, "#{basename}.result" )
 	result = Solution.compare( sname, rname ) 
-	passed += 1 if result
+	case result
+	when CompareResult::UnexpectedFailure
+	  ufailed += 1
+	when CompareResult::UnexpectedPass
+	  upassed += 1
+	when CompareResult::KnownFailure
+	  efailed += 1
+	when CompareResult::KnownPass
+	  epassed += 1
+	end
 #        assert(  )
 #      puts "(cd #{File.dirname(test)}; #{$deptestomatic} #{basename}.xml > #{basename}.result)" 
       end
     }
-    failed = $tests.size - passed
-    puts "\n\t==> #{$tests.size} tests: #{passed} passed, #{failed} failed <==\n"
+      puts "\n\t==> #{$tests.size} tests: (#{epassed}/#{upassed}) passed, (#{efailed}/#{ufailed}) failed <==\n"
   end
 end
 
@@ -210,9 +250,17 @@ if ARGV.first == "-v"
   ARGV.shift
 end
 
+IO.foreach( "README.FAILS") { |line|
+  line.chomp
+  if ( line !~ /^\s/ )
+    line = line[0..-6] + ".solution"
+    $fails << line
+  end
+}
+
 r = Runner.new
 
 ARGV.each { |arg|
-  wd = Dir.getwd unless arg[0,1] == "/"
+  wd = "." unless arg[0,1] == "/"
   r.run wd, arg, recurse
 }
