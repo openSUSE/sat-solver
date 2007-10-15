@@ -59,6 +59,3 @@
 ./data.libzypp/basic-exercises/require-1-test.xml
 	B requires c, but nothing providing C is installed
 
-./data.libzypp/yast-tests/Bug162887-test.xml
-	mls installs sendmail, libzypp prefers postfix as recommended by selections
-
