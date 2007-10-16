@@ -22,9 +22,6 @@
        does not want to remove obsoletes
 
 ./data.libzypp/yast-tests/kernel3-test.xml
-./data.libzypp/yast-tests/tpctl-bigsmp-test.xml
-./data.libzypp/yast-tests/Bug156513-test.xml
-./data.libzypp/yast-tests/kernel2-test.xml
        installs 3 kernels and not just the default as wanted
 
 ./data.libzypp/yast-tests/exercise-inconsistent6-force-test.xml
