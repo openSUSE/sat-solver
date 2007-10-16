@@ -989,6 +989,7 @@ endElement( void *userData, const char *name )
       solv->allowdowngrade = pd->allowdowngrade;
       solv->allowuninstall = pd->allowuninstall;
       solv->rc_output = redcarpet ? 2 : 1;
+      solv->noupdateprovide = 1;
       pd->pool->verbose = verbose;
 
       // Solve !

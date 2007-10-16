@@ -5,13 +5,7 @@
 ./data.libzypp/basic-exercises/exercise-27-force-test.xml
        removes "uninstallables" - weired decision
 
-./data.libzypp/yast-tests/exercise-xfree-test.xml
-./data.libzypp/yast-tests/exercise-obscureobsoletes-01-test.xml
 ./data.libzypp/yast-tests/exercise-kdelibsobs-force-test.xml
-./data.libzypp/yast-tests/exercise-corcircle-test.xml
-./data.libzypp/yast-tests/exercise-04obsoletes-09-test.xml
-./data.libzypp/yast-tests/exercise-04obsoletes-06-test.xml
-./data.libzypp/yast-tests/exercise-04obsoletes-01-test.xml
 ./data.libzypp/yast-tests/exercise-02conflict-09-force-test.xml
 ./data.libzypp/yast-tests/exercise-02conflict-09-test.xml
 ./data.libzypp/yast-tests/exercise-02conflict-12-test.xml
