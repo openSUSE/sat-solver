@@ -19,9 +19,6 @@
 ./data.libzypp/yast-tests/bug155368-force-test.xml
        libzypp removes broken pack, mls changes version
 
-./data.libzypp/language-tests/beta52-myspell-de_DE-test.xml
-	myspell-german and german-old conflict, the found solution is invalid
-
 #./data.libzypp/bugzilla-tests/Bug217574-test.xml
 ./data.libzypp/bugzilla-tests/bug225218-test.xml
 ./data.libzypp/bugzilla-tests/bug308098-test.xml
