@@ -41,7 +41,7 @@ select_solvable(Pool *pool, Source *source, char *name)
   for (; i < end; i++)
     {
       s = pool->solvables + i;
-      if (s->arch == ARCH_SRC || s->arch == ARCH_NOSRC)
+      if (!pool_installable(pool, s))
 	continue;
       if (s->name == id)
 	queuepush(&plist, i);
@@ -156,6 +156,7 @@ main(int argc, char **argv)
   solv->updatesystem = 0;
   solv->allowdowngrade = 0;
   solv->allowuninstall = 0;
+  solv->noupdateprovide = 0;
 
   // Solve !
 
