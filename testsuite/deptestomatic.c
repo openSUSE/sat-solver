@@ -1005,7 +1005,8 @@ endElement( void *userData, const char *name )
 	pool_setarch( pd->pool, "i686" );
 
       pool_prepare( pd->pool );
-      pool->promoteepoch = 1;
+      if (redcarpet)
+        pool->promoteepoch = 1;
 
       Solver *solv = solver_create( pd->pool, pd->system );
       solv->fixsystem = pd->fixsystem;
