@@ -745,7 +745,6 @@ startElement( void *userData, const char *name, const char **atts )
 
     case STATE_FORCE:		       /* force solution by evtl. removing system packages */
       pd->allowuninstall = 1;
-      pd->fixsystem = 1;
       break;
 
     case STATE_FORCEINSTALL:	       /* pretend its installed */
