@@ -1,19 +1,19 @@
 Open issues
 
 1. Architecture handling
-   Ensure 'best' architecture is choosen on fresh install
-   Ensure update keeps architecture
+   Ensure 'best' architecture is choosen on fresh install [DONE]
+   Ensure update keeps architecture [DONE]
    Ensure dist-upgrade chooses 'best' architecture
    
 2. Logging
    Improve logging so solver decisions are comprehensible
    
-3. weak dependencies
+3. weak dependencies [DONE]
    to support 'recommends'
    mark rules as 'weak' so trackback on assignment conflict can
    disable such rules and continue
    
-4. reverse dependencies
+4. reverse dependencies [DONE]
    essentialfor, supplements
    will be almost for free when weak rules are implemented
    still rules have to be marked 'reverse' for logging and proposal
@@ -35,16 +35,16 @@ Open issues
 8. Architecture rules
    architecture-specific dependencies
    
-9. Locks
+9. Locks [NOT A SOLVER ISSUE]
    ability to keep packages at a specific version
    ability to prevent installation of specific packages / reldep
 
-10. Extended reldeps
+10. Extended reldeps [DONE IN PART]
     Boolean AND, OR
     Compare architecture
     Compare namespace
    
-11. Syntax of dependencies
+11. Syntax of dependencies [DONE]
     Two types of conjunctions:
 
     1. "a>5 AND b>5"  => a and b can be provided by different solvables
