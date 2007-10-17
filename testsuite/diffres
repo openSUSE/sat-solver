@@ -8,7 +8,14 @@ pwd=`readlink -f $PWD`
 sfile=`readlink -f $1 | sed -e "s,$pwd/,,"`
 rfile=`readlink -f $2 | sed -e "s,$pwd/,,"`
 
-grep -e "^>\!> \(upgrade\|install\|remove\)" $1 | sed -e "s,installs,zzinstalls", | sort > $file1
+if fgrep -q "Solution #2" $1; then
+   sed -n -e "1,/Solution #2/p" $1 > $file1.o
+else
+   cp $1 $file1.o
+fi
+
+grep -e "^>\!> \(upgrade\|install\|remove\)" $file1.o | sed -e "s,installs,zzinstalls", | sort > $file1
+rm $file1.o
 grep -e "^>\!> \(upgrade\|install\|remove\)" $2 | sed -e "s,installs,zzinstalls", | sort > $file2
 diff -U 0 $file1 $file2 | sed -e "s,$file1,$sfile,; s,$file2,$rfile,; s,zzinst,inst," | grep -v @@
 rm -f $file1 $file2

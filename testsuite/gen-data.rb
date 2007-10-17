@@ -38,15 +38,20 @@ private
   
   def process_file name
     dots = name.split "."
-    return if dots.size < 2
+    #return if dots.size < 2
     cmd = nil
     srcdir = File.join( @from.path, @path )
     srcname = File.join( srcdir, name )
     suffix = nil
+    destdir = File.join( @dest.path, @path )
     case dots.last
     when /solution/                       # some are named .solution1
       cmd = "cat #{srcname}"
       suffix = dots.last
+      return if File.exists?( File.join( destdir, name ) )
+    when /ignore/ 
+      cmd = "cat #{srcname}"
+      return if File.exists?( File.join( destdir, name ) )
     when "bz2"
       chk = check_name name
       return unless chk
@@ -70,11 +75,11 @@ private
       else
 	cmd += " #{srcname}"
 	suffix = "xml"
+	return if File.exists?( File.join( destdir, name ) )
       end
     else
       return
     end
-    destdir = File.join( @dest.path, @path )
     destname = File.basename name, ".*"
     destname += ".#{suffix}" if suffix
     cmd += " > "

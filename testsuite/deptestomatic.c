@@ -43,32 +43,37 @@ err( const char *msg, ...)
 
 enum state {
   STATE_START,
-   STATE_TEST,
-   STATE_SETUP,
-    STATE_ARCH,
-    STATE_SYSTEM,
-    STATE_CHANNEL,
-    STATE_FORCE,
-    STATE_LOCALE,
-    STATE_FORCEINSTALL,
-    STATE_FORCEUNINSTALL,
-    STATE_LOCK,
-    STATE_MEDIAID,
-   STATE_TRIAL,
-    STATE_INSTALL,
-    STATE_REMOVE,
-    STATE_REPORTPROBLEMS,
-    STATE_TAKESOLUTION,
-    STATE_ESTABLISH,
-    STATE_SHOWPOOL,
-    STATE_DISTUPGRADE,
-    STATE_ADDREQUIRE,
-    STATE_ADDCONFLICT,
-    STATE_CURRENT,
-    STATE_SUBSCRIBE,
-    STATE_VERIFY,
-    STATE_UPGRADE,
-
+  STATE_TEST,
+  STATE_SETUP,
+  STATE_ARCH,
+  STATE_SYSTEM,
+  STATE_CHANNEL,
+  STATE_FORCE,
+  STATE_LOCALE,
+  STATE_FORCEINSTALL,
+  STATE_FORCEUNINSTALL,
+  STATE_LOCK,
+  STATE_MEDIAID,
+  STATE_MEDIAORDER,
+  STATE_TRIAL,
+  STATE_INSTALL,
+  STATE_REMOVE,
+  STATE_REPORTPROBLEMS,
+  STATE_TAKESOLUTION,
+  STATE_ESTABLISH,
+  STATE_SHOWPOOL,
+  STATE_DISTUPGRADE,
+  STATE_ADDREQUIRE,
+  STATE_ADDCONFLICT,
+  STATE_CURRENT,
+  STATE_SUBSCRIBE,
+  STATE_VERIFY,
+  STATE_UPGRADE,
+  STATE_TRANSACT,
+  STATE_HARDWAREINFO,
+  STATE_SETLICENSEBIT,
+  STATE_INSTORDER,
+  STATE_AVAILABLELOCALES,
   NUMSTATES
 };
 
@@ -97,6 +102,8 @@ static struct stateswitch stateswitches[] = {
   { STATE_SETUP,       "force-uninstall",STATE_FORCEUNINSTALL, 0 },
   { STATE_SETUP,       "lock",         STATE_LOCK, 0 },
   { STATE_SETUP,       "mediaid",      STATE_MEDIAID, 0 },
+  { STATE_SETUP,       "hardwareInfo", STATE_HARDWAREINFO, 0 },
+  { STATE_SETUP,       "setlicencebit", STATE_SETLICENSEBIT, 0 },
 
   { STATE_TRIAL,       "install",      STATE_INSTALL, 0 },
   { STATE_TRIAL,       "uninstall",    STATE_REMOVE, 0 },
@@ -112,7 +119,10 @@ static struct stateswitch stateswitches[] = {
   { STATE_TRIAL,       "verify",       STATE_VERIFY, 0 },
   { STATE_TRIAL,       "upgrade",      STATE_UPGRADE, 0 },
   { STATE_TRIAL,       "lock",         STATE_LOCK, 0 },
-
+  { STATE_TRIAL,       "transact",     STATE_TRANSACT, 0 },
+  { STATE_TRIAL,       "mediaorder",   STATE_MEDIAORDER, 0 },
+  { STATE_TRIAL,       "instorder",    STATE_INSTORDER, 0 },
+  { STATE_TRIAL,       "availablelocales",STATE_AVAILABLELOCALES, 0 },
   { NUMSTATES }
 
 };
@@ -720,8 +730,15 @@ startElement( void *userData, const char *name, const char **atts )
 	if ( sep1 ) 
 	  {
 	    // insert the language only too
-	    locale[sep1-locale] = 0;
-	    insertLocale( pd, locale );
+            if (!strcmp(locale, "pt_BR"))
+	      {
+		insertLocale(pd, "en");
+	      }
+            else 
+	      {
+		locale[sep1-locale] = 0;
+		insertLocale( pd, locale );
+	      }
 	  } 
       }
       break;
@@ -793,6 +810,7 @@ startElement( void *userData, const char *name, const char **atts )
       }
       break;
 
+    case STATE_MEDIAORDER:
     case STATE_MEDIAID:		       /* output installation order with media id */
     break;
 
@@ -887,6 +905,12 @@ startElement( void *userData, const char *name, const char **atts )
     break;
 
     case STATE_ESTABLISH:
+    break;
+
+    case STATE_AVAILABLELOCALES:
+    break;
+
+    case STATE_INSTORDER:
     break;
 
     case STATE_SHOWPOOL:
@@ -990,6 +1014,7 @@ endElement( void *userData, const char *name )
       solv->allowuninstall = pd->allowuninstall;
       solv->rc_output = redcarpet ? 2 : 1;
       solv->noupdateprovide = 1;
+      //solv->ignorerecommends = 1;
       pd->pool->verbose = verbose;
 
       // Solve !

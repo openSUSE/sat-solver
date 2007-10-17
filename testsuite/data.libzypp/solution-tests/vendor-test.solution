@@ -1,0 +1,28 @@
+>!> Doing distribution upgrade ...
+>!> 1: I__s_[S1:0][package]A-1.0-1.noarch
+>!> 2: U_Th_[S2:0][package]A-2.0-2.noarch
+>!> 3: I__s_[S1:0][package]B-1.0-1.noarch
+>!> 4: U__s_[S2:0][package]B-2.0-3.noarch
+>!> 5: I__s_[S1:0][package]C-1.0-1.noarch
+>!> 6: U__s_[S2:0][package]C-2.0-3.noarch
+>!> 1 problems found:
+>!> Problem:
+>!> A cannot be installed due to missing dependencies
+>!> There are no installable providers of B == 2.0 for A-2.0-2.noarch[3rd]
+>!>    Solution:
+>!>       Install B although it would change the vendor
+>!>       B-2.0-3.noarch[3rd] provides this dependency, but would change the vendor of the installed item
+>!>    Solution:
+>!>       do not install A
+>!>       do not install A-2.0-2.noarch[3rd]
+>!>    Solution:
+>!>       Ignore this requirement just here
+>!>       
+>!> Taking solution: 0
+>!> For problem:     0
+>!> No problems so far
+>!> No problems so far
+>!> Solution #1:
+>!> upgrade A-1.0-1.noarch => A-2.0-2.noarch[3rd]
+>!> upgrade B-1.0-1.noarch => B-2.0-3.noarch[3rd]
+>!> installs=0, upgrades=2, uninstalls=0

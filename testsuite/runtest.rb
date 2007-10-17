@@ -22,6 +22,7 @@ $tests = Array.new
 $deptestomatic = File.join( Dir.getwd, "deptestomatic" )
 $topdir = Dir.getwd
 $fails = Array.new
+$ignorecount = 0
 
 class CompareResult
   Incomplete = 0
@@ -101,7 +102,6 @@ class Solution
   # compare solution s with result r
   def Solution.compare sname, rname
     unless File.readable?( sname )
-      STDERR.puts "Cannot open #{sname}"
       return CompareResult::Incomplete
     end
     unless File.readable?( rname )
@@ -113,7 +113,7 @@ class Solution
     results = Solution.read rname
     
     if (solutions.empty? && results.empty?)
-      if ( $fails.member?( sname ) )
+      if ( $fails.member?( rname ) )
 	STDERR.puts "#{rname} passed"
 	return CompareResult::UnexpectedPass
       else
@@ -124,7 +124,7 @@ class Solution
     r = results.first
     solutions.each { |s|
       if s == r
-	if ( $fails.member?( sname ) )
+	if ( $fails.member?( rname ) )
 	  STDERR.puts "#{rname} passed"
 	  return CompareResult::UnexpectedPass
 	else
@@ -133,7 +133,7 @@ class Solution
       end
     }
     
-    if ( $fails.member?( sname ) )
+    if ( $fails.member?( rname ) )
       return CompareResult::KnownFailure
     end
     STDERR.puts "#{rname} failed"
@@ -168,7 +168,15 @@ class Tester < Test::Unit::TestCase
       if ( system( "#{$deptestomatic} #{args} #{dir}/#{basename}.xml > #{dir}/#{basename}.result" ) )
         sname = File.join( dir, "#{basename}.solution" )
         rname = File.join( dir, "#{basename}.result" )
-	result = Solution.compare( sname, rname ) 
+	result = Solution.compare( sname, rname )
+	if result == CompareResult::Incomplete
+	  sname = File.join( dir, "#{basename}.solution1" )
+	  result = Solution.compare( sname, rname )
+	  # TODO: try solution2..
+	end
+	if result == CompareResult::Incomplete
+	  puts "#{test} is incomplete"
+	end
 	case result
 	when CompareResult::UnexpectedFailure
 	  ufailed += 1
@@ -181,9 +189,11 @@ class Tester < Test::Unit::TestCase
 	end
 #        assert(  )
 #      puts "(cd #{File.dirname(test)}; #{$deptestomatic} #{basename}.xml > #{basename}.result)" 
+      else
+	puts "#{test} is incomplete"
       end
     }
-      puts "\n\t==> #{$tests.size} tests: (#{epassed}/#{upassed}) passed, (#{efailed}/#{ufailed}) failed <==\n"
+    puts "\n\t==> #{$tests.size} tests: (#{epassed}/#{upassed}) passed, (#{efailed}/#{ufailed}) failed, #{$ignorecount} ignored <==\n"
   end
 end
 
@@ -202,14 +212,30 @@ class Runner
   # process current directory
   #
   def rundir path, recurse
-#    puts "Rundir #{path}"
+    #puts "Rundir #{path}"
+    ignores = Array.new
+    ignorefile = File.join( path, "ignore" )
+    if File.readable?( ignorefile )
+      IO.foreach( ignorefile ) { |line|
+	line.chomp!
+	if ( line !~ /^\s/ && line !~ /^#/ )
+	  ignores << line
+	end
+      }
+    end
+    
     dir = Dir.new( path )
 
     dir.each { |name|
       if File.directory?( name )
 	rundir File.join( path, name ), recurse if recurse
       else
-	run path, name
+	#puts name, $ignores.member?(name)
+	if !ignores.member?(name)
+	  run path, name
+	else
+	  $ignorecount += 1
+	end
       end
     }
     
@@ -250,13 +276,15 @@ if ARGV.first == "-v"
   ARGV.shift
 end
 
-IO.foreach( "README.FAILS") { |line|
-  line.chomp
-  if ( line !~ /^\s/ )
-    line = line[0..-6] + ".solution"
-    $fails << line
-  end
-}
+if File.readable?("README.FAILS")
+  IO.foreach( "README.FAILS") { |line|
+    line.chomp
+    if ( line !~ /^\s/ )
+      line = line[0..-6] + ".result"
+      $fails << line
+    end
+  }
+end
 
 r = Runner.new
 

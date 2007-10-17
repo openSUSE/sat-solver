@@ -1,0 +1,5 @@
+>!> No problems so far
+>!> Solution #1:
+>!> install foo-kmp-2-1.i586[kmp]
+>!> upgrade kernel-default-1-1.i586 => kernel-default-2-1.i586[kmp]
+>!> installs=1, upgrades=1, uninstalls=0

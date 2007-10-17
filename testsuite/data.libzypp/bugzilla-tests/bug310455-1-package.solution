@@ -1,0 +1,16 @@
+>!> Requesting locale en
+>!> Requesting locale en_GB
+>!> Installing amarok-xine from channel 1
+>!> 1 problems found:
+>!> Problem:
+>!> amarok-xine cannot be installed due to missing dependencies
+>!> There are no installable providers of amarok == 1.4.7-111.pm.4 for amarok-xine-1.4.7-111.pm.4.i586[1]
+>!>    Solution:
+>!>       Install amarok although it would change the vendor
+>!>       amarok-1.4.7-111.pm.4.i586[1] provides this dependency, but would change the vendor of the installed item
+>!>    Solution:
+>!>       do not install amarok-xine
+>!>       do not install amarok-xine-1.4.7-111.pm.4.i586[1]
+>!>    Solution:
+>!>       Ignore this requirement just here
+>!>       

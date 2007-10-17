@@ -10,43 +10,54 @@
 ./data.libzypp/yast-tests/exercise-02conflict-09-test.xml
 ./data.libzypp/yast-tests/exercise-02conflict-12-test.xml
 ./data.libzypp/yast-tests/exercise-02conflict-13-force-test.xml
-./data.libzypp/basic-exercises/exercise-60-test.xml
-./data.libzypp/basic-exercises/exercise-48-test.xml
-./data.libzypp/basic-exercises/exercise-40-test.xml
        does not want to remove obsoletes
 
 ./data.libzypp/yast-tests/kernel3-test.xml
        installs 3 kernels and not just the default as wanted
 
 ./data.libzypp/yast-tests/exercise-inconsistent6-force-test.xml
-./data.libzypp/basic-exercises/exercise-36-test.xml
 ./data.libzypp/yast-tests/bug155368-force-test.xml
        libzypp removes broken pack, mls changes version
-
-./data.libzypp/basic-exercises/exercise-44-delete-glibc-force-test.xml
-./data.libzypp/basic-exercises/exercise-42-force-test.xml
-./data.libzypp/basic-exercises/exercise-32-test.xml
-./data.libzypp/basic-exercises/exercise-35-test.xml
-./data.libzypp/basic-exercises/exercise-37-test.xml
-./data.libzypp/basic-exercises/exercise-44-test.xml
-       libzypp (de)installs less packages - looks like a libzypp bug to me
-
-./data.libzypp/yast-tests/exercise-06upgrade-test.xml
-	distupgrade unhandled
-
-./data.libzypp/basic-exercises/exercise-38-test.xml
-	forceuninstall unhandled
-
-./data.libzypp/basic-exercises/exercise-39-force-test.xml
-	mls removes a package not fullfilling requirements on install of another
-
-./data.libzypp/basic-exercises/exercise-47-test.xml
-./data.libzypp/basic-exercises/exercise-43-test.xml
-	the test case's solution is not what libzypp is doing (INVALID)
-	
-./data.libzypp/basic-exercises/provide-1-test.xml
-	addProvide is not supported
 
 ./data.libzypp/basic-exercises/require-1-test.xml
 	B requires c, but nothing providing C is installed
 
+./data.libzypp/language-tests/beta52-myspell-de_DE-test.xml
+	myspell-german and german-old conflict, the found solution is invalid
+
+#./data.libzypp/bugzilla-tests/Bug217574-test.xml
+./data.libzypp/bugzilla-tests/bug225218-test.xml
+./data.libzypp/bugzilla-tests/bug308098-test.xml
+./data.libzypp/bugzilla-tests/bug310618-test.xml
+./data.libzypp/distupgrade-tests/rename-multiple-conflicting-test.xml
+./data.libzypp/distupgrade-tests/rename-multiple-test.xml
+./data.libzypp/distupgrade-tests/rename-single-test.xml
+./data.libzypp/distupgrade-tests/rename-version-cap-test.xml
+#./data.libzypp/distupgrade-tests/unmaintained-nodelete-single-test.xml
+./data.libzypp/distupgrade-tests/unmaintained-single-test.xml
+./data.libzypp/distupgrade-tests/upgrade-multiple-test.xml
+./data.libzypp/distupgrade-tests/upgrade-single-test.xml
+./data.libzypp/kernel-tests/1_1_1-default-test.xml
+./data.libzypp/kernel-tests/1_1_1-smp-test.xml
+./data.libzypp/kernel-tests/1_1_2-default-test.xml
+./data.libzypp/kernel-tests/1_1_2-smp-test.xml
+./data.libzypp/kernel-tests/1_1_3-default-test.xml
+./data.libzypp/kernel-tests/1_1_3-smp-test.xml
+#./data.libzypp/kernel-tests/1_2_1-default-test.xml
+#./data.libzypp/kernel-tests/1_2_1-smp-test.xml
+#./data.libzypp/kernel-tests/1_2_2-default-test.xml
+#./data.libzypp/kernel-tests/1_2_2-smp-test.xml
+./data.libzypp/kernel-tests/1_2_3-default-test.xml
+./data.libzypp/kernel-tests/1_2_3-smp-test.xml
+./data.libzypp/kernel-tests/2_1-default-test.xml
+./data.libzypp/kernel-tests/2_1-smp-test.xml
+#./data.libzypp/kernel-tests/2_2_1-default-test.xml
+#./data.libzypp/kernel-tests/2_2_1-smp-test.xml
+#./data.libzypp/kernel-tests/2_2_2-default-test.xml
+./data.libzypp/yast-tests/Bug156439-test.xml
+./data.libzypp/yast-tests/exercise-06upgrade-test.xml
+	distupgrade unhandled	
+
+./data.libzypp/language-tests/Bug159338-test.xml
+./data.libzypp/language-tests/install-locales-test.xml
+	looks like a valid bug to me - ft2demos is needed by ghostscript-cjk
