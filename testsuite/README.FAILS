@@ -19,9 +19,6 @@
 ./data.libzypp/yast-tests/bug155368-force-test.xml
        libzypp removes broken pack, mls changes version
 
-./data.libzypp/basic-exercises/require-1-test.xml
-	B requires c, but nothing providing C is installed
-
 ./data.libzypp/language-tests/beta52-myspell-de_DE-test.xml
 	myspell-german and german-old conflict, the found solution is invalid
 
@@ -58,6 +55,7 @@
 ./data.libzypp/yast-tests/exercise-06upgrade-test.xml
 	distupgrade unhandled	
 
-./data.libzypp/language-tests/Bug159338-test.xml
-./data.libzypp/language-tests/install-locales-test.xml
-	looks like a valid bug to me - ft2demos is needed by ghostscript-cjk
+./data.libzypp/basic-exercises/exercise-25-test.xml
+./data.libzypp/basic-exercises/exercise-26-test.xml
+	promotecho is only enabled for redcarpet
+
