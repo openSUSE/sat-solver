@@ -29,10 +29,9 @@
 ./data.libzypp/kernel-tests/1_2_1-default-test.xml
 ./data.libzypp/kernel-tests/1_2_1-default-manual-test.xml
 ./data.libzypp/kernel-tests/3_1-test.xml
-./data.libzypp/kernel-tests/3_2-test.xml
 ./data.libzypp/kernel-tests/3_4-test.xml
 ./data.libzypp/kernel-tests/kernel_kmp-test.xml
-	libzypp plays around with kernel deps
+	hardwareinfo not supported
 
 ./data.libzypp/bugzilla-tests/bug310618-test.xml
 	sat-solver does not like it
