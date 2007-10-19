@@ -2,9 +2,6 @@
 ./data.libzypp/yast-tests/Bug159696-test.xml
        installs recommends
 
-./data.libzypp/basic-exercises/exercise-27-force-test.xml
-       removes "uninstallables" - weired decision
-
 ./data.libzypp/yast-tests/exercise-kdelibsobs-force-test.xml
 ./data.libzypp/yast-tests/exercise-02conflict-09-force-test.xml
 ./data.libzypp/yast-tests/exercise-02conflict-09-test.xml
@@ -16,7 +13,6 @@
        installs 3 kernels and not just the default as wanted
 
 ./data.libzypp/yast-tests/exercise-inconsistent6-force-test.xml
-./data.libzypp/yast-tests/bug155368-force-test.xml
        libzypp removes broken pack, mls changes version
 
 ./data.libzypp/basic-exercises/exercise-25-test.xml
