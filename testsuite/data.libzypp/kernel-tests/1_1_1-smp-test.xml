@@ -22,7 +22,7 @@
 -->
 
 <trial>
-  <distupgrade delete_unmaintained="false"/>
+  <install channel="packages" kind="package" name="kernel-smp" arch="i586" version="2.6.16_rc5_git14" release="3"/>
   <reportproblems/>
 </trial>
 

@@ -959,7 +959,7 @@ startElement( void *userData, const char *name, const char **atts )
       pd->updatesystem = 1;
       //pd->fixsystem = 1;
       pd->allowuninstall = 1;
-      //pd->allowdowngrade = 1;
+      pd->allowdowngrade = 1;
       break;
 
     case STATE_UPGRADE: {

@@ -869,6 +869,7 @@
 <uninstall  kind="package" name="libgpod"/>
 <uninstall  kind="package" name="gcc41-gij-32bit"/>
 <uninstall  kind="package" name="java-1_4_2-gcj-compat-32bit"/>
+<distupgrade/>
   <reportproblems/>
 </trial>
 </test>

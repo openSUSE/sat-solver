@@ -8,6 +8,5 @@
   <channel name="upgrade" file="single-other-package.xml"/>
 </setup>
 <trial>
-  <distupgrade delete_unmaintained="false"/>
 </trial>
 </test>
