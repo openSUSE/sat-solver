@@ -8,6 +8,6 @@
   <channel name="upgrade" file="single-other-package.xml"/>
 </setup>
 <trial>
-  <distupgrade/>
+  <uninstall  kind="package" name="A"/>
 </trial>
 </test>

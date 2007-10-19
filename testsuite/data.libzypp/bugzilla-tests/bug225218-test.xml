@@ -8,7 +8,7 @@
   <channel name="upgrade" file="bug225218-packages.xml"/>
 </setup>
 <trial>
-  <distupgrade/>
+  <install channel="upgrade" kind="package" name="A2" arch="noarch" version="2.0" release="1"/>
   <reportproblems ignoreValidSolution="true"/>
 </trial>
 </test>

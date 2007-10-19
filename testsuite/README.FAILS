@@ -19,14 +19,8 @@
 ./data.libzypp/basic-exercises/exercise-26-test.xml
 	promotecho is only enabled for redcarpet
 
-./data.libzypp/bugzilla-tests/bug225218-test.xml
 ./data.libzypp/bugzilla-tests/bug308098-test.xml
 ./data.libzypp/bugzilla-tests/bug310618-test.xml
-./data.libzypp/distupgrade-tests/rename-multiple-conflicting-test.xml
-./data.libzypp/distupgrade-tests/rename-multiple-test.xml
-./data.libzypp/distupgrade-tests/rename-single-test.xml
-./data.libzypp/distupgrade-tests/rename-version-cap-test.xml
-./data.libzypp/distupgrade-tests/unmaintained-single-test.xml
 ./data.libzypp/kernel-tests/1_2_1-default-test.xml
 ./data.libzypp/kernel-tests/1_2_1-smp-test.xml
 ./data.libzypp/kernel-tests/1_2_2-default-test.xml

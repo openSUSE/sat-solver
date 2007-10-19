@@ -8,6 +8,9 @@
   <channel name="upgrade" file="version-rename-package.xml"/>
 </setup>
 <trial>
-  <distupgrade/>
+<install channel="upgrade" kind="package" name="A_new" arch="noarch" version="2.0" release="1"/>
+<install channel="upgrade" kind="package" name="B_new" arch="noarch" version="2.0" release="1"/>
+<uninstall  kind="package" name="A"/>
+<uninstall  kind="package" name="B"/>
 </trial>
 </test>

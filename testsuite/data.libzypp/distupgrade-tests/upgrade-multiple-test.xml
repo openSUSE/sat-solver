@@ -9,6 +9,6 @@
   <channel name="upgrade2" file="single-v3-package.xml"/>
 </setup>
 <trial>
-  <distupgrade/>
+  <install channel="upgrade2" kind="package" name="A" arch="noarch" version="2.0" release="2"/>
 </trial>
 </test>

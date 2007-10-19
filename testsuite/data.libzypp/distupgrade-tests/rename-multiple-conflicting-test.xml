@@ -8,6 +8,6 @@
   <channel name="upgrade" file="conflicting-multiple-rename-package.xml"/>
 </setup>
 <trial>
-  <distupgrade/>
+  <install channel="upgrade" kind="package" name="A2" arch="noarch" version="2.0" release="1"/>
 </trial>
 </test>

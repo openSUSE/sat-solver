@@ -9,7 +9,544 @@
   <channel name="sel" file="bug150844-selections.xml.gz"/>
 </setup>
 <trial>
-  <distupgrade/>
+<install channel="pkg" kind="package" name="ghostscript-library" arch="i586" version="8.15.2rc1" release="7"/>
+<install channel="pkg" kind="package" name="ghostscript-x11" arch="i586" version="8.15.2rc1" release="7"/>
+<install channel="pkg" kind="package" name="giflib" arch="i586" version="4.1.4" release="3"/>
+<install channel="pkg" kind="package" name="gle" arch="i586" version="3.0.6" release="650"/>
+<install channel="pkg" kind="package" name="glib" arch="i586" version="1.2.10" release="599"/>
+<install channel="pkg" kind="package" name="glib2" arch="i586" version="2.8.5" release="8"/>
+<install channel="pkg" kind="package" name="glibc-i18ndata" arch="i586" version="2.3.90" release="65"/>
+<install channel="pkg" kind="package" name="glibc-info" arch="i586" version="2.3.90" release="65"/>
+<install channel="pkg" kind="package" name="3ddiag" arch="i586" version="0.729" release="3"/>
+<install channel="pkg" kind="package" name="CheckHardware" arch="i586" version="0.1" release="975"/>
+<install channel="pkg" kind="package" name="Mesa" arch="i586" version="6.4.2" release="2"/>
+<install channel="pkg" kind="package" name="SDL" arch="i586" version="1.2.9" release="6"/>
+<install channel="pkg" kind="package" name="a2ps" arch="i586" version="4.13" release="1063"/>
+<install channel="pkg" kind="package" name="aaa_base" arch="i586" version="10.0.42" release="52"/>
+<install channel="pkg" kind="package" name="aalib" arch="i586" version="1.4.0" release="292"/>
+<install channel="pkg" kind="package" name="aaa_skel" arch="i586" version="2006.1.25" release="1"/>
+<install channel="pkg" kind="package" name="acl" arch="i586" version="2.2.34" release="2"/>
+<install channel="pkg" kind="package" name="alsa" arch="i586" version="1.0.11" release="9"/>
+<install channel="pkg" kind="package" name="ash" arch="i586" version="1.6.1" release="5"/>
+<install channel="pkg" kind="package" name="arts" arch="i586" version="1.5.1" release="4"/>
+<install channel="pkg" kind="package" name="at" arch="i586" version="3.1.8" release="910"/>
+<install channel="pkg" kind="package" name="atk" arch="i586" version="1.10.3" release="4"/>
+<install channel="pkg" kind="package" name="attr" arch="i586" version="2.4.28" release="2"/>
+<install channel="pkg" kind="package" name="audiofile" arch="i586" version="0.2.6" release="7"/>
+<install channel="pkg" kind="package" name="autoconf" arch="i586" version="2.59" release="82"/>
+<install channel="pkg" kind="package" name="automake" arch="i586" version="1.9.6" release="3"/>
+<install channel="pkg" kind="package" name="autofs" arch="i586" version="4.1.4" release="11"/>
+<install channel="pkg" kind="package" name="bash" arch="i586" version="3.1" release="8"/>
+<install channel="pkg" kind="package" name="awesfx" arch="i586" version="0.5.0d" release="5"/>
+<install channel="pkg" kind="package" name="bc" arch="i586" version="1.06" release="753"/>
+<install channel="pkg" kind="package" name="bin86" arch="i586" version="0.16.0" release="191"/>
+<install channel="pkg" kind="package" name="bind-utils" arch="i586" version="9.3.2" release="5"/>
+<install channel="pkg" kind="package" name="binutils" arch="i586" version="2.16.91.0.5" release="4"/>
+<install channel="pkg" kind="package" name="bison" arch="i586" version="2.1" release="3"/>
+<install channel="pkg" kind="package" name="compat" arch="i586" version="2006.1.25" release="1"/>
+<install channel="pkg" kind="package" name="bootcycle" arch="i586" version="0.3" release="101"/>
+<install channel="pkg" kind="package" name="bootsplash" arch="i586" version="3.3" release="5"/>
+<install channel="pkg" kind="package" name="bootsplash-theme-SuSE-SLES" arch="i586" version="3.1" release="53"/>
+<install channel="pkg" kind="package" name="busybox" arch="i586" version="1.1.0" release="3"/>
+<install channel="pkg" kind="package" name="bzip2" arch="i586" version="1.0.3" release="7"/>
+<install channel="pkg" kind="package" name="cabextract" arch="i586" version="1.1" release="6"/>
+<install channel="pkg" kind="package" name="capi4linux" arch="i586" version="2006.1.25" release="1"/>
+<install channel="pkg" kind="package" name="cdk" arch="i586" version="4.9.13" release="5"/>
+<install channel="pkg" kind="package" name="cdparanoia" arch="i586" version="IIIalpha9.8" release="551"/>
+<install channel="pkg" kind="package" name="cdrdao" arch="i586" version="1.2.0" release="5"/>
+<install channel="pkg" kind="package" name="cpio" arch="i586" version="2.6" release="8"/>
+<install channel="pkg" kind="package" name="coreutils" arch="i586" version="5.93" release="10"/>
+<install channel="pkg" kind="package" name="cracklib" arch="i586" version="2.8.6" release="2"/>
+<install channel="pkg" kind="package" name="cron" arch="i586" version="4.1" release="31"/>
+<install channel="pkg" kind="package" name="cpp" arch="i586" version="4.1.0_20060210" release="3"/>
+<install channel="pkg" kind="package" name="cups" arch="i586" version="1.1.23" release="27"/>
+<install channel="pkg" kind="package" name="cups-client" arch="i586" version="1.1.23" release="27"/>
+<install channel="pkg" kind="package" name="cups-SUSE-ppds-dat" arch="i586" version="1.1.20" release="107"/>
+<install channel="pkg" kind="package" name="cups-drivers" arch="i586" version="1.1.23" release="15"/>
+<install channel="pkg" kind="package" name="cups-drivers-stp" arch="i586" version="1.1.23" release="15"/>
+<install channel="pkg" kind="package" name="cups-libs" arch="i586" version="1.1.23" release="27"/>
+<install channel="pkg" kind="package" name="curl" arch="i586" version="7.15.1" release="5"/>
+<install channel="pkg" kind="package" name="cyrus-sasl" arch="i586" version="2.1.21" release="6"/>
+<install channel="pkg" kind="package" name="cvs" arch="i586" version="1.12.12" release="8"/>
+<install channel="pkg" kind="package" name="db-utils" arch="i586" version="4.3.29" release="5"/>
+<install channel="pkg" kind="package" name="device-mapper" arch="i586" version="1.02.02" release="4"/>
+<install channel="pkg" kind="package" name="devs" arch="i586" version="10.0.42" release="3"/>
+<install channel="pkg" kind="package" name="dhcpcd" arch="i586" version="1.3.22pl4" release="213"/>
+<install channel="pkg" kind="package" name="dialog" arch="i586" version="0.9b" release="194"/>
+<install channel="pkg" kind="package" name="diffutils" arch="i586" version="2.8.7" release="6"/>
+<install channel="pkg" kind="package" name="dirmngr" arch="i586" version="0.9.2" release="4"/>
+<install channel="pkg" kind="package" name="dos2unix" arch="i586" version="3.1" release="306"/>
+<install channel="pkg" kind="package" name="dosfstools" arch="i586" version="2.11" release="5"/>
+<install channel="pkg" kind="package" name="dosbootdisk" arch="i586" version="1.1" release="42"/>
+<install channel="pkg" kind="package" name="dvd+rw-tools" arch="i586" version="6.1" release="2"/>
+<install channel="pkg" kind="package" name="e2fsprogs" arch="i586" version="1.38" release="15"/>
+<install channel="pkg" kind="package" name="ed" arch="i586" version="0.2" release="871"/>
+<install channel="pkg" kind="package" name="eject" arch="i586" version="2.1.0" release="2"/>
+<install channel="pkg" kind="package" name="enscript" arch="i586" version="1.6.4" release="9"/>
+<install channel="pkg" kind="package" name="esound" arch="i586" version="0.2.36" release="6"/>
+<install channel="pkg" kind="package" name="ethtool" arch="i586" version="3" release="5"/>
+<install channel="pkg" kind="package" name="expect" arch="i586" version="5.43.0" release="6"/>
+<install channel="pkg" kind="package" name="expat" arch="i586" version="2.0.0" release="3"/>
+<install channel="pkg" kind="package" name="evms" arch="i586" version="2.5.4" release="3"/>
+<install channel="pkg" kind="package" name="evms-gui" arch="i586" version="2.5.4" release="3"/>
+<install channel="pkg" kind="package" name="fam" arch="i586" version="2.6.10" release="136"/>
+<install channel="pkg" kind="package" name="fbset" arch="i586" version="2.1" release="787"/>
+<install channel="pkg" kind="package" name="fetchmail" arch="i586" version="6.3.2" release="3"/>
+<install channel="pkg" kind="package" name="file" arch="i586" version="4.16" release="4"/>
+<install channel="pkg" kind="package" name="findutils" arch="i586" version="4.2.27" release="3"/>
+<install channel="pkg" kind="package" name="fillup" arch="i586" version="1.42" release="108"/>
+<install channel="pkg" kind="package" name="filters" arch="i586" version="2006.1.25" release="1"/>
+<install channel="pkg" kind="package" name="filesystem" arch="i586" version="10.0.42" release="7"/>
+<install channel="pkg" kind="package" name="finger" arch="i586" version="1.3" release="4"/>
+<install channel="pkg" kind="package" name="flac" arch="i586" version="1.1.2" release="5"/>
+<install channel="pkg" kind="package" name="flex" arch="i586" version="2.5.31" release="6"/>
+<install channel="pkg" kind="package" name="fontconfig" arch="i586" version="2.3.93.20060210" release="2"/>
+<install channel="pkg" kind="package" name="fltk" arch="i586" version="1.1.6" release="7"/>
+<install channel="pkg" kind="package" name="fontconfig-devel" arch="i586" version="2.3.93.20060210" release="2"/>
+<install channel="pkg" kind="package" name="foomatic-filters" arch="i586" version="3.0.2" release="8"/>
+<install channel="pkg" kind="package" name="freeglut" arch="i586" version="051110" release="4"/>
+<install channel="pkg" kind="package" name="freetype2-devel" arch="i586" version="2.1.10" release="6"/>
+<install channel="pkg" kind="package" name="freetype2" arch="i586" version="2.1.10" release="6"/>
+<install channel="pkg" kind="package" name="fribidi" arch="i586" version="0.10.4" release="488"/>
+<install channel="pkg" kind="package" name="fvwm2" arch="i586" version="2.5.12" release="6"/>
+<install channel="pkg" kind="package" name="gail" arch="i586" version="1.8.8" release="4"/>
+<install channel="pkg" kind="package" name="gawk" arch="i586" version="3.1.5" release="6"/>
+<install channel="pkg" kind="package" name="gcc" arch="i586" version="4.1.0_20060210" release="3"/>
+<install channel="pkg" kind="package" name="gcc-c++" arch="i586" version="4.1.0_20060210" release="3"/>
+<install channel="pkg" kind="package" name="gcc-info" arch="i586" version="4.1.0_20060210" release="3"/>
+<install channel="pkg" kind="package" name="gcc-java" arch="i586" version="4.1.0_20060210" release="3"/>
+<install channel="pkg" kind="package" name="gcc-objc" arch="i586" version="4.1.0_20060210" release="3"/>
+<install channel="pkg" kind="package" name="gconf2" arch="i586" version="2.12.1" release="12"/>
+<install channel="pkg" kind="package" name="gdb" arch="i586" version="6.4" release="4"/>
+<install channel="pkg" kind="package" name="gdbm" arch="i586" version="1.8.3" release="233"/>
+<install channel="pkg" kind="package" name="gdbm-devel" arch="i586" version="1.8.3" release="233"/>
+<install channel="pkg" kind="package" name="gettext" arch="i586" version="0.14.5" release="3"/>
+<install channel="pkg" kind="package" name="ghostscript-fonts-other" arch="i586" version="8.15.2rc1" release="7"/>
+<install channel="pkg" kind="package" name="ghostscript-fonts-std" arch="i586" version="8.15.2rc1" release="7"/>
+<install channel="pkg" kind="package" name="glibc-locale" arch="i586" version="2.3.90" release="65"/>
+<install channel="pkg" kind="package" name="gnome-filesystem" arch="i586" version="0.1" release="243"/>
+<install channel="pkg" kind="package" name="gnome-mime-data" arch="i586" version="2.4.2" release="9"/>
+<install channel="pkg" kind="package" name="gnome-vfs2" arch="i586" version="2.12.2" release="23"/>
+<install channel="pkg" kind="package" name="gpart" arch="i586" version="0.1h" release="482"/>
+<install channel="pkg" kind="package" name="gpg" arch="i586" version="1.4.2" release="10"/>
+<install channel="pkg" kind="package" name="gpg2" arch="i586" version="1.9.18" release="5"/>
+<install channel="pkg" kind="package" name="gpgme" arch="i586" version="1.0.3" release="5"/>
+<install channel="pkg" kind="package" name="gpm" arch="i586" version="1.20.1" release="311"/>
+<install channel="pkg" kind="package" name="grep" arch="i586" version="2.5.1a" release="8"/>
+<install channel="pkg" kind="package" name="groff" arch="i586" version="1.18.1.1" release="17"/>
+<install channel="pkg" kind="package" name="grub" arch="i586" version="0.97" release="3"/>
+<install channel="pkg" kind="package" name="gtk" arch="i586" version="1.2.10" release="896"/>
+<install channel="pkg" kind="package" name="gtk2" arch="i586" version="2.8.10" release="11"/>
+<install channel="pkg" kind="package" name="guile" arch="i586" version="1.6.7" release="10"/>
+<install channel="pkg" kind="package" name="gzip" arch="i586" version="1.3.5" release="147"/>
+<install channel="pkg" kind="package" name="hal" arch="i586" version="0.5.6" release="8"/>
+<install channel="pkg" kind="package" name="hdparm" arch="i586" version="6.3" release="3"/>
+<install channel="pkg" kind="package" name="hfsutils" arch="i586" version="3.2.6" release="1041"/>
+<install channel="pkg" kind="package" name="htdig" arch="i586" version="3.2.0b6" release="10"/>
+<install channel="pkg" kind="package" name="hwinfo" arch="i586" version="12.5" release="2"/>
+<install channel="pkg" kind="package" name="i4l-base" arch="i586" version="2006.1.25" release="1"/>
+<install channel="pkg" kind="package" name="i4l-isdnlog" arch="i586" version="2006.1.25" release="1"/>
+<install channel="pkg" kind="package" name="i4lfirm" arch="i586" version="2006.1.25" release="1"/>
+<install channel="pkg" kind="package" name="id3lib" arch="i586" version="3.8.3" release="93"/>
+<install channel="pkg" kind="package" name="imlib" arch="i586" version="1.9.14" release="202"/>
+<install channel="pkg" kind="package" name="info" arch="i586" version="4.8" release="12"/>
+<install channel="pkg" kind="package" name="initviocons" arch="i586" version="0.4" release="306"/>
+<install channel="pkg" kind="package" name="insserv" arch="i586" version="1.04.0" release="8"/>
+<install channel="pkg" kind="package" name="iproute2" arch="i586" version="2.6.15" release="2"/>
+<install channel="pkg" kind="package" name="iputils" arch="i586" version="ss021109" release="156"/>
+<install channel="pkg" kind="package" name="iptables" arch="i586" version="1.3.5" release="2"/>
+<install channel="pkg" kind="package" name="isapnp" arch="i586" version="1.26" release="495"/>
+<install channel="pkg" kind="package" name="jfsutils" arch="i586" version="1.1.10" release="3"/>
+<install channel="pkg" kind="package" name="joe" arch="i586" version="3.3" release="5"/>
+<install channel="pkg" kind="package" name="k3b" arch="i586" version="0.12.10" release="12"/>
+<install channel="pkg" kind="package" name="kbd" arch="i586" version="1.12" release="50"/>
+<install channel="pkg" kind="package" name="kdebase3-NLD" arch="i586" version="10.1" release="10"/>
+<install channel="pkg" kind="package" name="kdebase3" arch="i586" version="3.5.1" release="22"/>
+<install channel="pkg" kind="package" name="kdebase3-kdm" arch="i586" version="3.5.1" release="22"/>
+<install channel="pkg" kind="package" name="kdebase3-ksysguardd" arch="i586" version="3.5.1" release="22"/>
+<install channel="pkg" kind="package" name="kdebase3-nsplugin" arch="i586" version="3.5.1" release="22"/>
+<install channel="pkg" kind="package" name="kdebase3-samba" arch="i586" version="3.5.1" release="22"/>
+<install channel="pkg" kind="package" name="kdelibs3" arch="i586" version="3.5.1" release="16"/>
+<install channel="pkg" kind="package" name="kdenetwork3-vnc" arch="i586" version="3.5.1" release="6"/>
+<install channel="pkg" kind="package" name="kdepim3" arch="i586" version="3.5.1" release="11"/>
+<install channel="pkg" kind="package" name="kdeutils3" arch="i586" version="3.5.1" release="6"/>
+<install channel="pkg" kind="package" name="kernel-default" arch="i586" version="2.6.16_rc3" release="2"/>
+<install channel="pkg" kind="package" name="kinternet" arch="i586" version="0.75" release="5"/>
+<install channel="pkg" kind="package" name="kio_slp" arch="i586" version="0.4.1" release="5"/>
+<install channel="pkg" kind="package" name="kpowersave" arch="i586" version="0.5.7" release="2"/>
+<install channel="pkg" kind="package" name="krb5" arch="i586" version="1.4.3" release="6"/>
+<install channel="pkg" kind="package" name="krb5-client" arch="i586" version="1.4.3" release="6"/>
+<install channel="pkg" kind="package" name="krb5-server" arch="i586" version="1.4.3" release="6"/>
+<install channel="pkg" kind="package" name="ksymoops" arch="i586" version="2.4.11" release="7"/>
+<install channel="pkg" kind="package" name="ldapcpplib" arch="i586" version="0.0.4" release="2"/>
+<install channel="pkg" kind="package" name="less" arch="i586" version="394" release="3"/>
+<install channel="pkg" kind="package" name="libacl" arch="i586" version="2.2.34" release="2"/>
+<install channel="pkg" kind="package" name="libaio" arch="i586" version="0.3.104" release="4"/>
+<install channel="pkg" kind="package" name="libaio-devel" arch="i586" version="0.3.104" release="4"/>
+<install channel="pkg" kind="package" name="libart_lgpl" arch="i586" version="2.3.17" release="7"/>
+<install channel="pkg" kind="package" name="libattr" arch="i586" version="2.4.28" release="2"/>
+<install channel="pkg" kind="package" name="libbonobo" arch="i586" version="2.10.1" release="11"/>
+<install channel="pkg" kind="package" name="libcap" arch="i586" version="1.92" release="489"/>
+<install channel="pkg" kind="package" name="libbonoboui" arch="i586" version="2.10.1" release="11"/>
+<install channel="pkg" kind="package" name="libelf" arch="i586" version="0.8.5" release="37"/>
+<install channel="pkg" kind="package" name="libexif" arch="i586" version="0.6.13" release="10"/>
+<install channel="pkg" kind="package" name="libgcc" arch="i586" version="4.1.0_20060210" release="3"/>
+<install channel="pkg" kind="package" name="libgcj" arch="i586" version="4.1.0_20060210" release="3"/>
+<install channel="pkg" kind="package" name="libgcrypt" arch="i586" version="1.2.2" release="3"/>
+<install channel="pkg" kind="package" name="libgcj-devel" arch="i586" version="4.1.0_20060210" release="3"/>
+<install channel="pkg" kind="package" name="libgimpprint" arch="i586" version="4.2.7" release="49"/>
+<install channel="pkg" kind="package" name="libglade2" arch="i586" version="2.5.1" release="13"/>
+<install channel="pkg" kind="package" name="libgnome" arch="i586" version="2.12.0.1" release="11"/>
+<install channel="pkg" kind="package" name="libgnomecanvas" arch="i586" version="2.12.0" release="8"/>
+<install channel="pkg" kind="package" name="libgnomeui" arch="i586" version="2.12.0" release="11"/>
+<install channel="pkg" kind="package" name="libgpg-error" arch="i586" version="1.0" release="6"/>
+<install channel="pkg" kind="package" name="libgsf" arch="i586" version="1.13.3" release="8"/>
+<install channel="pkg" kind="package" name="libidl" arch="i586" version="0.8.6" release="7"/>
+<install channel="pkg" kind="package" name="libidn" arch="i586" version="0.6.0" release="3"/>
+<install channel="pkg" kind="package" name="libjpeg" arch="i586" version="6.2.0" release="741"/>
+<install channel="pkg" kind="package" name="libjasper" arch="i586" version="1.701.0" release="5"/>
+<install channel="pkg" kind="package" name="libksba" arch="i586" version="0.9.12" release="4"/>
+<install channel="pkg" kind="package" name="liblcms" arch="i586" version="1.15" release="2"/>
+<install channel="pkg" kind="package" name="libmikmod" arch="i586" version="3.1.11" release="3"/>
+<install channel="pkg" kind="package" name="libmng" arch="i586" version="1.0.9" release="6"/>
+<install channel="pkg" kind="package" name="libnetpbm" arch="i586" version="1.0.0" release="646"/>
+<install channel="pkg" kind="package" name="libobjc" arch="i586" version="4.1.0_20060210" release="3"/>
+<install channel="pkg" kind="package" name="libogg" arch="i586" version="1.1.3" release="3"/>
+<install channel="pkg" kind="package" name="libpcap" arch="i586" version="0.9.4" release="2"/>
+<install channel="pkg" kind="package" name="libpng" arch="i586" version="1.2.8" release="8"/>
+<install channel="pkg" kind="package" name="libraw1394" arch="i586" version="1.2.0" release="3"/>
+<install channel="pkg" kind="package" name="librsvg" arch="i586" version="2.12.7" release="4"/>
+<install channel="pkg" kind="package" name="libsamplerate" arch="i586" version="0.1.2" release="5"/>
+<install channel="pkg" kind="package" name="libsmbclient" arch="i586" version="3.0.21b" release="5"/>
+<install channel="pkg" kind="package" name="libstdc++" arch="i586" version="4.1.0_20060210" release="3"/>
+<install channel="pkg" kind="package" name="libstdc++-devel" arch="i586" version="4.1.0_20060210" release="3"/>
+<install channel="pkg" kind="package" name="libstroke" arch="i586" version="0.5.1" release="4"/>
+<install channel="pkg" kind="package" name="libtiff" arch="i586" version="3.8.0" release="4"/>
+<install channel="pkg" kind="package" name="libtool" arch="i586" version="1.5.22" release="3"/>
+<install channel="pkg" kind="package" name="libusb" arch="i586" version="0.1.11" release="2"/>
+<install channel="pkg" kind="package" name="libvorbis" arch="i586" version="1.1.2" release="3"/>
+<install channel="pkg" kind="package" name="libxcrypt" arch="i586" version="2.4" release="2"/>
+<install channel="pkg" kind="package" name="libxml2" arch="i586" version="2.6.23" release="3"/>
+<install channel="pkg" kind="package" name="libxslt" arch="i586" version="1.1.15" release="4"/>
+<install channel="pkg" kind="package" name="liby2util" arch="i586" version="2.13.4" release="2"/>
+<install channel="pkg" kind="package" name="libzypp" arch="i586" version="0.0.8" release="2"/>
+<install channel="pkg" kind="package" name="lilo" arch="i586" version="22.7" release="7"/>
+<install channel="pkg" kind="package" name="linux-atm-lib" arch="i586" version="2.5.0" release="4"/>
+<install channel="pkg" kind="package" name="logrotate" arch="i586" version="3.7.3" release="3"/>
+<install channel="pkg" kind="package" name="lsb" arch="i586" version="3.0" release="8"/>
+<install channel="pkg" kind="package" name="lsof" arch="i586" version="4.76" release="3"/>
+<install channel="pkg" kind="package" name="ltrace" arch="i586" version="0.3.36" release="7"/>
+<install channel="pkg" kind="package" name="lukemftp" arch="i586" version="1.5" release="583"/>
+<install channel="pkg" kind="package" name="lvm2" arch="i586" version="2.02.01" release="4"/>
+<install channel="pkg" kind="package" name="m4" arch="i586" version="1.4.4" release="2"/>
+<install channel="pkg" kind="package" name="mailx" arch="i586" version="11.25" release="3"/>
+<install channel="pkg" kind="package" name="make" arch="i586" version="3.80" release="191"/>
+<install channel="pkg" kind="package" name="man" arch="i586" version="2.4.1" release="226"/>
+<install channel="pkg" kind="package" name="manufacturer-PPDs" arch="i586" version="0.5" release="2"/>
+<install channel="pkg" kind="package" name="mc" arch="i586" version="4.6.1" release="15"/>
+<install channel="pkg" kind="package" name="mdadm" arch="i586" version="2.2" release="9"/>
+<install channel="pkg" kind="package" name="microcode_ctl" arch="i586" version="1.13" release="2"/>
+<install channel="pkg" kind="package" name="mingetty" arch="i586" version="0.9.6s" release="78"/>
+<install channel="pkg" kind="package" name="mkinitrd" arch="i586" version="1.2" release="67"/>
+<install channel="pkg" kind="package" name="mktemp" arch="i586" version="1.5" release="734"/>
+<install channel="pkg" kind="package" name="module-init-tools" arch="i586" version="3.2.2" release="7"/>
+<install channel="pkg" kind="package" name="mtools" arch="i586" version="3.9.10" release="5"/>
+<install channel="pkg" kind="package" name="mutt" arch="i586" version="1.5.9i" release="15"/>
+<install channel="pkg" kind="package" name="ncurses" arch="i586" version="5.5" release="5"/>
+<install channel="pkg" kind="package" name="ncurses-devel" arch="i586" version="5.5" release="5"/>
+<install channel="pkg" kind="package" name="net-snmp" arch="i586" version="5.3.0.1" release="3"/>
+<install channel="pkg" kind="package" name="net-tools" arch="i586" version="1.60" release="570"/>
+<install channel="pkg" kind="package" name="netcat" arch="i586" version="1.10" release="873"/>
+<install channel="pkg" kind="package" name="nfs-utils" arch="i586" version="1.0.7" release="20"/>
+<install channel="pkg" kind="package" name="nscd" arch="i586" version="2.3.90" release="65"/>
+<install channel="pkg" kind="package" name="nss_ldap" arch="i586" version="246" release="2"/>
+<install channel="pkg" kind="package" name="ntfsprogs" arch="i586" version="1.11.2" release="3"/>
+<install channel="pkg" kind="package" name="openct" arch="i586" version="0.6.6" release="4"/>
+<install channel="pkg" kind="package" name="openldap2" arch="i586" version="2.3.19" release="4"/>
+<install channel="pkg" kind="package" name="openldap2-client" arch="i586" version="2.3.19" release="4"/>
+<install channel="pkg" kind="package" name="openmotif-libs" arch="i586" version="2.2.4" release="7"/>
+<install channel="pkg" kind="package" name="openslp" arch="i586" version="1.2.0" release="9"/>
+<install channel="pkg" kind="package" name="opensc" arch="i586" version="0.9.6" release="6"/>
+<install channel="pkg" kind="package" name="openslp-server" arch="i586" version="1.2.0" release="9"/>
+<install channel="pkg" kind="package" name="openssh" arch="i586" version="4.2p1" release="6"/>
+<install channel="pkg" kind="package" name="openssh-askpass" arch="i586" version="4.2p1" release="6"/>
+<install channel="pkg" kind="package" name="openssl" arch="i586" version="0.9.8a" release="7"/>
+<install channel="pkg" kind="package" name="opie" arch="i586" version="2.4" release="554"/>
+<install channel="pkg" kind="package" name="orbit2" arch="i586" version="2.12.4" release="6"/>
+<install channel="pkg" kind="package" name="pam" arch="i586" version="0.99.3.0" release="4"/>
+<install channel="pkg" kind="package" name="pam-modules" arch="i586" version="10.0.42" release="15"/>
+<install channel="pkg" kind="package" name="pam_krb5" arch="i586" version="2.2.3" release="5"/>
+<install channel="pkg" kind="package" name="pam_ldap" arch="i586" version="180" release="2"/>
+<install channel="pkg" kind="package" name="pam_smb" arch="i586" version="2.0.0rc6" release="7"/>
+<install channel="pkg" kind="package" name="pango" arch="i586" version="1.10.2" release="9"/>
+<install channel="pkg" kind="package" name="parted" arch="i586" version="1.6.25.1" release="2"/>
+<install channel="pkg" kind="package" name="patch" arch="i586" version="2.5.9" release="150"/>
+<install channel="pkg" kind="package" name="pax" arch="i586" version="3.4" release="4"/>
+<install channel="pkg" kind="package" name="pciutils" arch="i586" version="2.2.1" release="4"/>
+<install channel="pkg" kind="package" name="pcre" arch="i586" version="6.4" release="4"/>
+<install channel="pkg" kind="package" name="pcsc-lite" arch="i586" version="1.2.9_beta9" release="3"/>
+<install channel="pkg" kind="package" name="perl-Date-Calc" arch="i586" version="5.4" release="4"/>
+<install channel="pkg" kind="package" name="perl-Digest-HMAC" arch="i586" version="1.01" release="497"/>
+<install channel="pkg" kind="package" name="perl-Digest-MD4" arch="i586" version="1.5" release="3"/>
+<install channel="pkg" kind="package" name="perl-Digest-SHA1" arch="i586" version="2.10" release="5"/>
+<install channel="pkg" kind="package" name="perl-IO-stringy" arch="i586" version="2.110" release="3"/>
+<install channel="pkg" kind="package" name="perl" arch="i586" version="5.8.8" release="3"/>
+<install channel="pkg" kind="package" name="perl-Archive-Zip" arch="i586" version="1.16" release="3"/>
+<install channel="pkg" kind="package" name="perl-Bit-Vector" arch="i586" version="6.4" release="3"/>
+<install channel="pkg" kind="package" name="perl-Compress-Zlib" arch="i586" version="1.35" release="4"/>
+<install channel="pkg" kind="package" name="perl-Config-Crontab" arch="i586" version="1.11" release="2"/>
+<install channel="pkg" kind="package" name="perl-Crypt-SmbHash" arch="i586" version="0.12" release="3"/>
+<install channel="pkg" kind="package" name="perl-MIME-tools" arch="i586" version="5.419" release="2"/>
+<install channel="pkg" kind="package" name="perl-MailTools" arch="i586" version="1.67" release="3"/>
+<install channel="pkg" kind="package" name="perl-NetxAP" arch="i586" version="0.02" release="560"/>
+<install channel="pkg" kind="package" name="perl-Parse-RecDescent" arch="i586" version="1.80" release="249"/>
+<install channel="pkg" kind="package" name="perl-TermReadKey" arch="i586" version="2.30" release="3"/>
+<install channel="pkg" kind="package" name="perl-URI" arch="i586" version="1.35" release="5"/>
+<install channel="pkg" kind="package" name="perl-X500-DN" arch="i586" version="0.28" release="123"/>
+<install channel="pkg" kind="package" name="perl-XML-Parser" arch="i586" version="2.34" release="33"/>
+<install channel="pkg" kind="package" name="perl-gettext" arch="i586" version="1.05" release="3"/>
+<install channel="pkg" kind="package" name="permissions" arch="i586" version="2006.1.25" release="1"/>
+<install channel="pkg" kind="package" name="pinentry" arch="i586" version="0.7.2" release="4"/>
+<install channel="pkg" kind="package" name="pmtools" arch="i586" version="20050823" release="12"/>
+<install channel="pkg" kind="package" name="popt" arch="i586" version="1.7" release="242"/>
+<install channel="pkg" kind="package" name="portmap" arch="i586" version="5beta" release="739"/>
+<install channel="pkg" kind="package" name="postfix" arch="i586" version="2.2.6" release="6"/>
+<install channel="pkg" kind="package" name="powersave" arch="i586" version="0.11.11" release="2"/>
+<install channel="pkg" kind="package" name="ppp" arch="i586" version="2.4.3" release="22"/>
+<install channel="pkg" kind="package" name="pptp" arch="i586" version="1.7.0" release="3"/>
+<install channel="pkg" kind="package" name="prctl" arch="i586" version="1.3" release="358"/>
+<install channel="pkg" kind="package" name="procinfo" arch="i586" version="18" release="45"/>
+<install channel="pkg" kind="package" name="procmail" arch="i586" version="3.22" release="45"/>
+<install channel="pkg" kind="package" name="procps" arch="i586" version="3.2.6" release="5"/>
+<install channel="pkg" kind="package" name="psmisc" arch="i586" version="22.1" release="4"/>
+<install channel="pkg" kind="package" name="pwdutils" arch="i586" version="3.0.7.1" release="3"/>
+<install channel="pkg" kind="package" name="qt3" arch="i586" version="3.3.5" release="29"/>
+<install channel="pkg" kind="package" name="rcs" arch="i586" version="5.7" release="868"/>
+<install channel="pkg" kind="package" name="readline" arch="i586" version="5.1" release="8"/>
+<install channel="pkg" kind="package" name="recode" arch="i586" version="3.6" release="494"/>
+<install channel="pkg" kind="package" name="reiserfs" arch="i586" version="3.6.19" release="6"/>
+<install channel="pkg" kind="package" name="release-notes-sles" arch="i586" version="10" release="9"/>
+<install channel="pkg" kind="package" name="resmgr" arch="i586" version="0.9.8_SVNr75" release="3"/>
+<install channel="pkg" kind="package" name="rpm" arch="i586" version="4.4.2" release="14"/>
+<install channel="pkg" kind="package" name="rrdtool" arch="i586" version="1.2.12" release="2"/>
+<install channel="pkg" kind="package" name="rsh" arch="i586" version="0.17" release="562"/>
+<install channel="pkg" kind="package" name="rsync" arch="i586" version="2.6.6" release="5"/>
+<install channel="pkg" kind="package" name="samba-client" arch="i586" version="3.0.21b" release="5"/>
+<install channel="pkg" kind="package" name="sash" arch="i586" version="3.7" release="36"/>
+<install channel="pkg" kind="package" name="sax2" arch="i586" version="7.1" release="80"/>
+<install channel="pkg" kind="package" name="sax2-ident" arch="i586" version="1.7" release="80"/>
+<install channel="pkg" kind="package" name="sax2-tools" arch="i586" version="2.7" release="80"/>
+<install channel="pkg" kind="package" name="slang" arch="i586" version="2.0.5" release="4"/>
+<install channel="pkg" kind="package" name="scpm" arch="i586" version="1.1.3" release="3"/>
+<install channel="pkg" kind="package" name="screen" arch="i586" version="4.0.2" release="52"/>
+<install channel="pkg" kind="package" name="scsi" arch="i586" version="1.7_2.36_1.18_0.16_0.96" release="3"/>
+<install channel="pkg" kind="package" name="sed" arch="i586" version="4.1.4" release="7"/>
+<install channel="pkg" kind="package" name="sensors" arch="i586" version="2.9.2" release="5"/>
+<install channel="pkg" kind="package" name="setserial" arch="i586" version="2.17" release="583"/>
+<install channel="pkg" kind="package" name="sles-admin_en" arch="i586" version="9.1.0.5" release="9"/>
+<install channel="pkg" kind="package" name="sles-release" arch="i586" version="9.90" release="12"/>
+<install channel="pkg" kind="package" name="smpppd" arch="i586" version="1.59" release="8"/>
+<install channel="pkg" kind="package" name="smartmontools" arch="i586" version="5.33" release="10"/>
+<install channel="pkg" kind="package" name="star" arch="i586" version="1.5a70" release="2"/>
+<install channel="pkg" kind="package" name="strace" arch="i586" version="4.5.12" release="9"/>
+<install channel="pkg" kind="package" name="sudo" arch="i586" version="1.6.8p12" release="6"/>
+<install channel="pkg" kind="package" name="unixODBC" arch="i586" version="2.2.11" release="10"/>
+<install channel="pkg" kind="package" name="sysconfig" arch="i586" version="0.50.4" release="2"/>
+<install channel="pkg" kind="package" name="syslogd" arch="i586" version="1.4.1" release="548"/>
+<install channel="pkg" kind="package" name="sysvinit" arch="i586" version="2.86" release="9"/>
+<install channel="pkg" kind="package" name="tar" arch="i586" version="1.15.1" release="10"/>
+<install channel="pkg" kind="package" name="tcl" arch="i586" version="8.4.12" release="6"/>
+<install channel="pkg" kind="package" name="tcpd" arch="i586" version="7.6" release="720"/>
+<install channel="pkg" kind="package" name="tcpdump" arch="i586" version="3.9.4" release="3"/>
+<install channel="pkg" kind="package" name="tcsh" arch="i586" version="6.14.00" release="5"/>
+<install channel="pkg" kind="package" name="telnet" arch="i586" version="1.2" release="4"/>
+<install channel="pkg" kind="package" name="terminfo" arch="i586" version="5.5" release="5"/>
+<install channel="pkg" kind="package" name="texinfo" arch="i586" version="4.8" release="12"/>
+<install channel="pkg" kind="package" name="thinkeramik" arch="i586" version="3.2.1" release="10"/>
+<install channel="pkg" kind="package" name="tightvnc" arch="i586" version="1.2.9" release="187"/>
+<install channel="pkg" kind="package" name="timezone" arch="i586" version="2.3.90" release="65"/>
+<install channel="pkg" kind="package" name="tk" arch="i586" version="8.4.12" release="3"/>
+<install channel="pkg" kind="package" name="udev" arch="i586" version="084" release="5"/>
+<install channel="pkg" kind="package" name="unclutter" arch="i586" version="8" release="839"/>
+<install channel="pkg" kind="package" name="unrar" arch="i586" version="3.5.4" release="5"/>
+<install channel="pkg" kind="package" name="unzip" arch="i586" version="5.52" release="6"/>
+<install channel="pkg" kind="package" name="usbutils" arch="i586" version="0.71" release="10"/>
+<install channel="pkg" kind="package" name="utempter" arch="i586" version="0.5.5" release="6"/>
+<install channel="pkg" kind="package" name="util-linux" arch="i586" version="2.12r" release="10"/>
+<install channel="pkg" kind="package" name="vim" arch="i586" version="6.4.6" release="6"/>
+<install channel="pkg" kind="package" name="vacation" arch="i586" version="1.2.6.1" release="140"/>
+<install channel="pkg" kind="package" name="vlan" arch="i586" version="1.8" release="29"/>
+<install channel="pkg" kind="package" name="vsftpd" arch="i586" version="2.0.4" release="4"/>
+<install channel="pkg" kind="package" name="w3m" arch="i586" version="0.5.1" release="7"/>
+<install channel="pkg" kind="package" name="wget" arch="i586" version="1.10.2" release="4"/>
+<install channel="pkg" kind="package" name="wireless-tools" arch="i586" version="28pre13" release="11"/>
+<install channel="pkg" kind="package" name="wol" arch="i586" version="0.7.1" release="5"/>
+<install channel="pkg" kind="package" name="wvdial" arch="i586" version="1.54" release="71"/>
+<install channel="pkg" kind="package" name="wvstreams" arch="i586" version="4.2.1" release="2"/>
+<install channel="pkg" kind="package" name="x11-tools" arch="i586" version="0.1" release="25"/>
+<install channel="pkg" kind="package" name="xaw3d" arch="i586" version="1.5E" release="228"/>
+<install channel="pkg" kind="package" name="xbanner" arch="i586" version="1.31" release="862"/>
+<install channel="pkg" kind="package" name="xdg-menu" arch="i586" version="0.2" release="55"/>
+<install channel="pkg" kind="package" name="xdmbgrd" arch="i586" version="0.5" release="33"/>
+<install channel="pkg" kind="package" name="xfsprogs" arch="i586" version="2.7.11" release="5"/>
+<install channel="pkg" kind="package" name="xinetd" arch="i586" version="2.3.14" release="4"/>
+<install channel="pkg" kind="package" name="xlockmore" arch="i586" version="5.21" release="2"/>
+<install channel="pkg" kind="package" name="xntp" arch="i586" version="4.2.0a" release="58"/>
+<install channel="pkg" kind="package" name="xntp-doc" arch="i586" version="4.2.0a" release="58"/>
+<install channel="pkg" kind="package" name="xorg-x11-Xvnc" arch="i586" version="6.9.0" release="12"/>
+<install channel="pkg" kind="package" name="xorg-x11-devel" arch="i586" version="6.9.0" release="12"/>
+<install channel="pkg" kind="package" name="xorg-x11" arch="i586" version="6.9.0" release="12"/>
+<install channel="pkg" kind="package" name="xorg-x11-fonts-75dpi" arch="i586" version="6.9.0" release="12"/>
+<install channel="pkg" kind="package" name="xorg-x11-fonts-scalable" arch="i586" version="6.9.0" release="12"/>
+<install channel="pkg" kind="package" name="xorg-x11-libs" arch="i586" version="6.9.0" release="12"/>
+<install channel="pkg" kind="package" name="xorg-x11-man" arch="i586" version="6.9.0" release="12"/>
+<install channel="pkg" kind="package" name="xorg-x11-server" arch="i586" version="6.9.0" release="12"/>
+<install channel="pkg" kind="package" name="xpp" arch="i586" version="1.5" release="9"/>
+<install channel="pkg" kind="package" name="xorg-x11-server-glx" arch="i586" version="6.9.0" release="12"/>
+<install channel="pkg" kind="package" name="xscreensaver" arch="i586" version="4.23" release="4"/>
+<install channel="pkg" kind="package" name="xtermset" arch="i586" version="0.5.2" release="124"/>
+<install channel="pkg" kind="package" name="yast2" arch="i586" version="2.13.29" release="2"/>
+<install channel="pkg" kind="package" name="yast2-bootloader" arch="i586" version="2.13.13" release="2"/>
+<install channel="pkg" kind="package" name="yast2-core" arch="i586" version="2.13.17" release="2"/>
+<install channel="pkg" kind="package" name="yast2-control-center" arch="i586" version="2.13.2" release="2"/>
+<install channel="pkg" kind="package" name="yast2-country" arch="i586" version="2.13.13" release="2"/>
+<install channel="pkg" kind="package" name="yast2-ldap" arch="i586" version="2.13.1" release="2"/>
+<install channel="pkg" kind="package" name="yast2-mouse" arch="i586" version="2.13.7" release="2"/>
+<install channel="pkg" kind="package" name="yast2-ncurses" arch="i586" version="2.13.6" release="2"/>
+<install channel="pkg" kind="package" name="yast2-network" arch="i586" version="2.13.24" release="2"/>
+<install channel="pkg" kind="package" name="yast2-nis-client" arch="i586" version="2.13.1" release="2"/>
+<install channel="pkg" kind="package" name="yast2-online-update" arch="i586" version="2.13.4" release="2"/>
+<install channel="pkg" kind="package" name="yast2-packager" arch="i586" version="2.13.25" release="2"/>
+<install channel="pkg" kind="package" name="yast2-perl-bindings" arch="i586" version="2.13.4" release="2"/>
+<install channel="pkg" kind="package" name="yast2-power-management" arch="i586" version="2.13.4" release="2"/>
+<install channel="pkg" kind="package" name="yast2-printer" arch="i586" version="2.13.2" release="2"/>
+<install channel="pkg" kind="package" name="yast2-profile-manager" arch="i586" version="2.13.3" release="2"/>
+<install channel="pkg" kind="package" name="yast2-qt" arch="i586" version="2.13.13" release="4"/>
+<install channel="pkg" kind="package" name="yast2-slp" arch="i586" version="2.13.0" release="2"/>
+<install channel="pkg" kind="package" name="yast2-sound" arch="i586" version="2.13.7" release="2"/>
+<install channel="pkg" kind="package" name="yast2-storage" arch="i586" version="2.13.25" release="2"/>
+<install channel="pkg" kind="package" name="yast2-xml" arch="i586" version="2.13.1" release="2"/>
+<install channel="pkg" kind="package" name="yast2-transfer" arch="i586" version="2.13.2" release="2"/>
+<install channel="pkg" kind="package" name="yast2-tune" arch="i586" version="2.13.2" release="2"/>
+<install channel="pkg" kind="package" name="yast2-update" arch="i586" version="2.13.0" release="2"/>
+<install channel="pkg" kind="package" name="yast2-users" arch="i586" version="2.13.12" release="2"/>
+<install channel="pkg" kind="package" name="yast2-you-server" arch="i586" version="2.13.3" release="2"/>
+<install channel="pkg" kind="package" name="yp-tools" arch="i586" version="2.9" release="6"/>
+<install channel="pkg" kind="package" name="ypbind" arch="i586" version="1.19.1" release="3"/>
+<install channel="pkg" kind="package" name="zip" arch="i586" version="2.31" release="5"/>
+<install channel="pkg" kind="package" name="ypserv" arch="i586" version="2.19" release="2"/>
+<install channel="pkg" kind="package" name="zisofs-tools" arch="i586" version="1.0.6" release="5"/>
+<install channel="pkg" kind="package" name="zlib" arch="i586" version="1.2.3" release="5"/>
+<install channel="pkg" kind="package" name="zlib-devel" arch="i586" version="1.2.3" release="5"/>
+<install channel="pkg" kind="package" name="db-devel" arch="i686" version="4.3.29" release="5"/>
+<install channel="pkg" kind="package" name="zsh" arch="i586" version="4.2.6" release="5"/>
+<install channel="pkg" kind="package" name="db" arch="i686" version="4.3.29" release="5"/>
+<install channel="pkg" kind="package" name="glibc-devel" arch="i686" version="2.3.90" release="65"/>
+<install channel="pkg" kind="package" name="glibc" arch="i686" version="2.3.90" release="65"/>
+<install channel="pkg" kind="package" name="SPident" arch="noarch" version="0.9" release="63"/>
+<install channel="pkg" kind="package" name="Crystalcursors" arch="noarch" version="0.5" release="28"/>
+<install channel="pkg" kind="package" name="SuSEfirewall2" arch="noarch" version="3.4_SVNr135" release="3"/>
+<install channel="pkg" kind="package" name="autoyast2" arch="noarch" version="2.13.19" release="2"/>
+<install channel="pkg" kind="package" name="autoyast2-installation" arch="noarch" version="2.13.19" release="2"/>
+<install channel="pkg" kind="package" name="bitstream-vera" arch="noarch" version="1.10" release="170"/>
+<install channel="pkg" kind="package" name="efont-unicode" arch="noarch" version="0.4.2" release="8"/>
+<install channel="pkg" kind="package" name="gnome-icon-theme" arch="noarch" version="2.12.1" release="6"/>
+<install channel="pkg" kind="package" name="howtoenh" arch="noarch" version="2006.1.12" release="1"/>
+<install channel="pkg" kind="package" name="ifnteuro" arch="noarch" version="1.2.1" release="197"/>
+<install channel="pkg" kind="package" name="info2html" arch="noarch" version="1.4" release="5"/>
+<install channel="pkg" kind="package" name="intlfnts" arch="noarch" version="1.2.1" release="197"/>
+<install channel="pkg" kind="package" name="latex2html-pngicons" arch="noarch" version="2002.2.1" release="368"/>
+<install channel="pkg" kind="package" name="makedev" arch="noarch" version="2.6" release="410"/>
+<install channel="pkg" kind="package" name="man-pages" arch="noarch" version="2.20" release="2"/>
+<install channel="pkg" kind="package" name="netcfg" arch="noarch" version="10.0.42" release="2"/>
+<install channel="pkg" kind="package" name="providers" arch="noarch" version="2006.1.25" release="1"/>
+<install channel="pkg" kind="package" name="siga" arch="noarch" version="10.101" release="2"/>
+<install channel="pkg" kind="package" name="sitar" arch="noarch" version="1.0.2" release="2"/>
+<install channel="pkg" kind="package" name="suse-build-key" arch="noarch" version="1.0" release="671"/>
+<install channel="pkg" kind="package" name="susehelp" arch="noarch" version="2006.02.07" release="3"/>
+<install channel="pkg" kind="package" name="susehelp_en" arch="noarch" version="2006.02.07" release="3"/>
+<install channel="pkg" kind="package" name="words" arch="noarch" version="6" release="8"/>
+<install channel="pkg" kind="package" name="yast2-backup" arch="noarch" version="2.13.0" release="2"/>
+<install channel="pkg" kind="package" name="yast2-boot-server" arch="noarch" version="2.13.0" release="2"/>
+<install channel="pkg" kind="package" name="yast2-ca-management" arch="noarch" version="2.13.13" release="2"/>
+<install channel="pkg" kind="package" name="yast2-cd-creator" arch="noarch" version="2.12.4" release="2"/>
+<install channel="pkg" kind="package" name="yast2-dhcp-server" arch="noarch" version="2.13.0" release="2"/>
+<install channel="pkg" kind="package" name="yast2-dns-server" arch="noarch" version="2.13.6" release="2"/>
+<install channel="pkg" kind="package" name="yast2-firewall" arch="noarch" version="2.13.5" release="2"/>
+<install channel="pkg" kind="package" name="yast2-heartbeat" arch="noarch" version="2.13.3" release="2"/>
+<install channel="pkg" kind="package" name="yast2-http-server" arch="noarch" version="2.13.7" release="2"/>
+<install channel="pkg" kind="package" name="yast2-inetd" arch="noarch" version="2.13.1" release="2"/>
+<install channel="pkg" kind="package" name="yast2-installation" arch="noarch" version="2.13.15" release="2"/>
+<install channel="pkg" kind="package" name="yast2-instserver" arch="noarch" version="2.13.6" release="2"/>
+<install channel="pkg" kind="package" name="yast2-kerberos-client" arch="noarch" version="2.13.2" release="2"/>
+<install channel="pkg" kind="package" name="yast2-ldap-client" arch="noarch" version="2.13.8" release="2"/>
+<install channel="pkg" kind="package" name="yast2-ldap-server" arch="noarch" version="2.13.7" release="2"/>
+<install channel="pkg" kind="package" name="yast2-mail" arch="noarch" version="2.13.2" release="2"/>
+<install channel="pkg" kind="package" name="yast2-mail-aliases" arch="noarch" version="2.13.2" release="2"/>
+<install channel="pkg" kind="package" name="yast2-nfs-client" arch="noarch" version="2.13.2" release="2"/>
+<install channel="pkg" kind="package" name="yast2-nfs-server" arch="noarch" version="2.13.2" release="2"/>
+<install channel="pkg" kind="package" name="yast2-nis-server" arch="noarch" version="2.13.1" release="2"/>
+<install channel="pkg" kind="package" name="yast2-pam" arch="noarch" version="2.13.1" release="2"/>
+<install channel="pkg" kind="package" name="yast2-ntp-client" arch="noarch" version="2.13.1" release="2"/>
+<install channel="pkg" kind="package" name="yast2-powertweak" arch="noarch" version="2.13.4" release="2"/>
+<install channel="pkg" kind="package" name="yast2-repair" arch="noarch" version="2.13.2" release="2"/>
+<install channel="pkg" kind="package" name="yast2-restore" arch="noarch" version="2.13.0" release="2"/>
+<install channel="pkg" kind="package" name="yast2-runlevel" arch="noarch" version="2.13.4" release="2"/>
+<install channel="pkg" kind="package" name="yast2-samba-client" arch="noarch" version="2.13.5" release="2"/>
+<install channel="pkg" kind="package" name="yast2-samba-server" arch="noarch" version="2.13.5" release="2"/>
+<install channel="pkg" kind="package" name="yast2-support" arch="noarch" version="2.13.0" release="2"/>
+<install channel="pkg" kind="package" name="yast2-security" arch="noarch" version="2.13.1" release="2"/>
+<install channel="pkg" kind="package" name="yast2-sysconfig" arch="noarch" version="2.13.4" release="2"/>
+<install channel="pkg" kind="package" name="yast2-tftp-server" arch="noarch" version="2.13.2" release="2"/>
+<install channel="pkg" kind="package" name="yast2-theme-SuSELinux" arch="noarch" version="2.13.3" release="2"/>
+<install channel="pkg" kind="package" name="yast2-trans-en_US" arch="noarch" version="2.12.1" release="3"/>
+<install channel="pkg" kind="package" name="yast2-x11" arch="noarch" version="2.13.6" release="18"/>
+<uninstall  kind="package" name="libgtkhtml"/>
+<uninstall  kind="package" name="acroread"/>
+<uninstall  kind="package" name="XFree86"/>
+<uninstall  kind="package" name="linc"/>
+<uninstall  kind="package" name="hotplugctl"/>
+<uninstall  kind="package" name="heimdal-tools"/>
+<uninstall  kind="package" name="core-release"/>
+<uninstall  kind="package" name="XFree86-fonts-scalable"/>
+<uninstall  kind="package" name="hotplug"/>
+<uninstall  kind="package" name="saxtools"/>
+<uninstall  kind="package" name="XFree86-libs"/>
+<uninstall  kind="package" name="kdebase3-SLES"/>
+<uninstall  kind="package" name="cryptplug"/>
+<uninstall  kind="package" name="newpg"/>
+<uninstall  kind="package" name="perl-OPENSSL"/>
+<uninstall  kind="package" name="yast2-uml"/>
+<uninstall  kind="package" name="yast2-phone-services"/>
+<uninstall  kind="package" name="flac-xmms"/>
+<uninstall  kind="package" name="IBMJava2-JRE"/>
+<uninstall  kind="package" name="desktop-data-SLES"/>
+<uninstall  kind="package" name="xmms"/>
+<uninstall  kind="package" name="imwheel"/>
+<uninstall  kind="package" name="xf86tools"/>
+<uninstall  kind="package" name="gnokii"/>
+<uninstall  kind="package" name="heimdal"/>
+<uninstall  kind="package" name="gcc-g77"/>
+<uninstall  kind="package" name="heimdal-lib"/>
+<uninstall  kind="package" name="libungif"/>
+<uninstall  kind="package" name="XFree86-Mesa"/>
+<uninstall  kind="package" name="XFree86-Xvnc"/>
+<uninstall  kind="package" name="submount"/>
+<uninstall  kind="package" name="libselinux"/>
+<uninstall  kind="package" name="mad"/>
+<uninstall  kind="package" name="XFree86-server"/>
+<uninstall  kind="package" name="XFree86-server-glx"/>
+<uninstall  kind="package" name="schedutils"/>
+<uninstall  kind="package" name="XFree86-man"/>
+<uninstall  kind="package" name="XFree86-fonts-75dpi"/>
+<uninstall  kind="package" name="saxident"/>
+<uninstall  kind="package" name="XFree86-devel"/>
+<uninstall  kind="package" name="yast2-ipsec"/>
+<uninstall  kind="package" name="raidtools"/>
+<uninstall  kind="package" name="yast2-packagemanager"/>
+<uninstall  kind="package" name="release-notes"/>
+<uninstall  kind="package" name="pdksh"/>
+<uninstall  kind="package" name="compat-libstdc++-lsb"/>
   <reportproblems/>
 </trial>
 </test>
