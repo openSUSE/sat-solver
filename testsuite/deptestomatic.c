@@ -27,6 +27,7 @@ static int redcarpet = 0;
 
 static const char *Current;
 
+#define MAXNAMELEN 100
 
 static void
 err( const char *msg, ...)
@@ -53,6 +54,7 @@ enum state {
   STATE_FORCEINSTALL,
   STATE_FORCEUNINSTALL,
   STATE_LOCK,
+  STATE_KEEP,
   STATE_MEDIAID,
   STATE_MEDIAORDER,
   STATE_TRIAL,
@@ -123,6 +125,8 @@ static struct stateswitch stateswitches[] = {
   { STATE_TRIAL,       "mediaorder",   STATE_MEDIAORDER, 0 },
   { STATE_TRIAL,       "instorder",    STATE_INSTORDER, 0 },
   { STATE_TRIAL,       "availablelocales",STATE_AVAILABLELOCALES, 0 },
+  { STATE_TRIAL,       "keep",         STATE_KEEP, 0 },
+
   { NUMSTATES }
 
 };
@@ -480,7 +484,7 @@ select_solvable( Pool *pool, Source *source, const char *name, const char *arch 
   return ID_NULL;
 }
 
-static void getPackageName( const char **atts, char package[100] )
+static void getPackageName( const char **atts, char package[] )
 {
   package[0] = 0;
   const char *packattr = attrval( atts, "package" );
@@ -492,12 +496,12 @@ static void getPackageName( const char **atts, char package[100] )
   /* for non-packages we prepend the namespace */
   if (kind != NULL && strcmp(kind, "package") )
     {
-      strncpy(package, kind, 100);
-      strncat(package, ":" , 100);
+      strncpy(package, kind, MAXNAMELEN);
+      strncat(package, ":" , MAXNAMELEN);
     }
 
   if (packattr)
-    strncat(package, packattr, 100);
+    strncat(package, packattr, MAXNAMELEN);
 }
 
 
@@ -518,9 +522,9 @@ static void insertLocale( Parsedata *pd, const char *name)
       cmap->source = pd->locales;
     }
 
-  char locale[100];
+  char locale[MAXNAMELEN];
   strcpy(locale, "language:");
-  strncat(locale, name, 100);
+  strncat(locale, name, MAXNAMELEN);
 
   Solvable s;
   memset(&s, 0, sizeof(Solvable));
@@ -533,8 +537,8 @@ static void insertLocale( Parsedata *pd, const char *name)
   Id pr = source_addid_dep(pd->locales, 0, str2id(pd->pool, locale, 1), 0);
 
   strcpy(locale, "Locale(");
-  strncat(locale, name, 100);
-  strncat(locale, ")", 100);
+  strncat(locale, name, MAXNAMELEN);
+  strncat(locale, ")", MAXNAMELEN);
   pr = source_addid_dep(pd->locales, pr, str2id(pd->pool, locale, 1), 0);
 
   s.provides = pd->locales->idarraydata + pr;
@@ -715,7 +719,7 @@ startElement( void *userData, const char *name, const char **atts )
 	const char *sep1 = strchr(name, '@');
 	const char *sep2 = strchr(name, '.');
       
-	char locale[100];
+	char locale[MAXNAMELEN];
 	if (!sep1 && !sep2)
 	  {
 	    strncpy(locale, name, sizeof(locale));
@@ -824,6 +828,9 @@ startElement( void *userData, const char *name, const char **atts )
     case STATE_MEDIAID:		       /* output installation order with media id */
     break;
 
+    case STATE_HARDWAREINFO:
+    break;
+      
       /*-----------------------------------------------------------*/
       /* <trial> stuff */
 
@@ -839,7 +846,7 @@ startElement( void *userData, const char *name, const char **atts )
 
        const char *channel = attrval( atts, "channel" );
        const char *arch = attrval( atts, "arch" );
-       char package[100];
+       char package[MAXNAMELEN];
        getPackageName( atts, package );
 
        if (!strlen(package))
@@ -883,7 +890,7 @@ startElement( void *userData, const char *name, const char **atts )
     break;
 
     case STATE_REMOVE: {	       /* remove package */
-      char package[100];
+      char package[MAXNAMELEN];
       getPackageName( atts, package );
 
       if (!strlen(package))
@@ -976,6 +983,20 @@ startElement( void *userData, const char *name, const char **atts )
 
     case STATE_UPGRADE: {
       pd->updatesystem = 1;
+    }
+    break;
+
+    case STATE_KEEP: {
+//      const char *channel = attrval( atts, "channel" );
+      char package[MAXNAMELEN];
+      getPackageName( atts, package );
+
+      if (!strlen(package))
+        {
+	err( "No package given in <keep>" );
+	exit( 1 );
+      }
+      /* FIXME: Needs locks */
     }
     break;
 
