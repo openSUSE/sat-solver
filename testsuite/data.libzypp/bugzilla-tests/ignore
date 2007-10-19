@@ -24,3 +24,5 @@ bug224698-test.xml
 bug292077-test.xml
 #takesolution not support
 bug292077-test.xml
+#sat-solver tries all solution by default 
+bug191983-bare-test.xml

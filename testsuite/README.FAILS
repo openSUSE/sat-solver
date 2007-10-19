@@ -27,7 +27,52 @@
 ./data.libzypp/kernel-tests/1_2_2-default-test.xml
 ./data.libzypp/kernel-tests/1_2_1-smp-test.xml
 ./data.libzypp/kernel-tests/1_2_1-default-test.xml
+./data.libzypp/kernel-tests/1_2_1-default-manual-test.xml
+./data.libzypp/kernel-tests/3_1-test.xml
+./data.libzypp/kernel-tests/3_2-test.xml
+./data.libzypp/kernel-tests/3_4-test.xml
+./data.libzypp/kernel-tests/kernel_kmp-test.xml
 	libzypp plays around with kernel deps
 
 ./data.libzypp/bugzilla-tests/bug310618-test.xml
 	sat-solver does not like it
+
+./data.libzypp/lock-tests/install-single-test.xml
+	lock is implemented buggy
+
+./data.libzypp/bugzilla-tests/Bug255011-test.xml
+	wrong java picked (uninvested)
+
+./data.libzypp/bugzilla-tests/bug328081-test.xml
+	bundle-lang-common-ko is pretty much unneeded
+
+./data.libzypp/bugzilla-tests/bug310455-test.xml
+	libzypp does not like to change vendors, sat does not care
+
+./data.libzypp/mediaorder-tests/install-all-mediaorder-test.xml
+./data.libzypp/mediaorder-tests/install-default-gnome-mediaorder-test.xml
+./data.libzypp/mediaorder-tests/install-default-mediaorder-test.xml
+./data.libzypp/mediaorder-tests/install-kde-desktop-mediaorder-test.xml
+	the packages from the selections are ignored
+	
+./data.libzypp/bugzilla-tests/bug308252-test.xml
+./data.libzypp/bugzilla-tests/bug239199-test.xml
+./data.libzypp/bugzilla-tests/bug222531-test.xml
+./data.libzypp/patch-tests/jumbo-patch-test.xml
+./data.libzypp/patch-tests/kernel-single-update-test.xml
+./data.libzypp/patch-tests/kernel-update-test.xml
+./data.libzypp/patch-tests/parallel-atmos-test.xml
+./data.libzypp/patch-tests/parallel-atoms-equal-patch-test.xml
+./data.libzypp/patch-tests/script-test.xml
+./data.libzypp/freshen-tests/exercise-1-test.xml
+./data.libzypp/freshen-tests/exercise-11-test.xml
+./data.libzypp/freshen-tests/exercise-1f-test.xml
+./data.libzypp/freshen-tests/exercise-6-test.xml
+./data.libzypp/freshen-tests/exercise-6f-test.xml
+./data.libzypp/freshen-tests/exercise-7-test.xml
+./data.libzypp/freshen-tests/exercise-7f-test.xml
+./data.libzypp/freshen-tests/exercise-8-test.xml
+./data.libzypp/bugzilla-tests/bug230685-test.xml
+./data.libzypp/bugzilla-tests/bug238284-test.xml
+	patches pretty much unimplemented - very likely not a solver problem
+

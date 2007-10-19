@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!-- testcase for bug308252 -->
+<test>
+<setup arch="i686">
+	<system file="bug308252-system.xml.gz"/>
+	<channel file="bug308252-3-package.xml.gz" name="3" />
+	<locale name="en_US" />
+	<locale name="en" />
+</setup>
+<trial>
+<establish/>
+<showpool all="true" prefix=">!> ESTABLISHED:"/>
+</trial>
+</test>

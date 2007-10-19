@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!-- bug310455 -->
+<test>
+<setup arch="i686">
+	<system file="bug310455-system.xml.gz"/>
+	<channel file="bug310455-1-package.xml.gz" name="1" />
+	<channel file="bug310455-4-package.xml.gz" name="4" />
+	<locale name="en" />
+	<locale name="en_GB" />
+</setup>
+<trial>
+<install channel="1" kind="package" name="amarok-xine" />
+<reportproblems/>
+</trial>
+</test>
