@@ -5,7 +5,6 @@
 -->
 <test>
 <setup>
-  <setlicencebit/>
   <system file="licence-package.xml"/>
   <channel name="test" file="single-package.xml"/>
 </setup>

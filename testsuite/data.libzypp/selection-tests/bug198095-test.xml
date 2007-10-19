@@ -10,6 +10,5 @@ Bug 198095 - YaST2 Installaler crashes when selecting Gnome pattern to a KDE -->
 </setup>
 <trial>
   <install channel="selections" kind="selection" name="base"/>
-  <transact kind="selection"/>
 </trial>
 </test>
