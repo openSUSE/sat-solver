@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+   update A which requires B=2.0; B=1.0(suse) on the system 
+   but B=2.0 has another vendor than B=1.0;  result into an error message 
+   Additional: Do not update C cause it has another vendor
+   BUT do not delete it as it is not supported anymore
+-->
+<test>
+<setup>
+  <system file="vendor-package.xml"/>
+  <channel name="3rd" file="vendor-update-package.xml"/>
+</setup>
+<trial>
+  <distupgrade/>
+  <reportproblems/>
+  <takesolution problem="0" solution="0"/>
+  <reportproblems/>
+</trial>
+</test>

@@ -16,3 +16,5 @@ remove-still-needed3-test.xml
 require-test.xml
 #takesolution not support
 parallel-test.xml
+#incomplete
+vendor-test.xml
