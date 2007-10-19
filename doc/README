@@ -39,3 +39,11 @@ The solver gets initialized by passing it the complete pool (all Solvables)
 and a single Source (called 'system', representing the installed Solvables).
 
 It then creates rules to flag the Solvables of 'system' as installed.
+
+
+See also
+--------
+
+http://del.icio.us/kkaempf/sat for a general overview on references
+about satisfiability, sat-solving and its relation to package
+dependencies.
