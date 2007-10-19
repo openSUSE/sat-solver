@@ -955,6 +955,13 @@ startElement( void *userData, const char *name, const char **atts )
     }
     break;
 
+    case STATE_DISTUPGRADE:
+      pd->updatesystem = 1;
+      //pd->fixsystem = 1;
+      pd->allowuninstall = 1;
+      //pd->allowdowngrade = 1;
+      break;
+
     case STATE_UPGRADE: {
       pd->updatesystem = 1;
     }
@@ -1012,10 +1019,8 @@ endElement( void *userData, const char *name )
       solv->updatesystem = pd->updatesystem;
       solv->allowdowngrade = pd->allowdowngrade;
       solv->allowuninstall = pd->allowuninstall;
-      solv->noupdateprovide = 0;
       solv->rc_output = redcarpet ? 2 : 1;
       solv->noupdateprovide = 1;
-      //solv->ignorerecommends = 1;
       pd->pool->verbose = verbose;
 
       // Solve !

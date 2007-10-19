@@ -19,7 +19,10 @@
 ./data.libzypp/yast-tests/bug155368-force-test.xml
        libzypp removes broken pack, mls changes version
 
-#./data.libzypp/bugzilla-tests/Bug217574-test.xml
+./data.libzypp/basic-exercises/exercise-25-test.xml
+./data.libzypp/basic-exercises/exercise-26-test.xml
+	promotecho is only enabled for redcarpet
+
 ./data.libzypp/bugzilla-tests/bug225218-test.xml
 ./data.libzypp/bugzilla-tests/bug308098-test.xml
 ./data.libzypp/bugzilla-tests/bug310618-test.xml
@@ -27,32 +30,11 @@
 ./data.libzypp/distupgrade-tests/rename-multiple-test.xml
 ./data.libzypp/distupgrade-tests/rename-single-test.xml
 ./data.libzypp/distupgrade-tests/rename-version-cap-test.xml
-#./data.libzypp/distupgrade-tests/unmaintained-nodelete-single-test.xml
 ./data.libzypp/distupgrade-tests/unmaintained-single-test.xml
-./data.libzypp/distupgrade-tests/upgrade-multiple-test.xml
-./data.libzypp/distupgrade-tests/upgrade-single-test.xml
-./data.libzypp/kernel-tests/1_1_1-default-test.xml
-./data.libzypp/kernel-tests/1_1_1-smp-test.xml
-./data.libzypp/kernel-tests/1_1_2-default-test.xml
-./data.libzypp/kernel-tests/1_1_2-smp-test.xml
-./data.libzypp/kernel-tests/1_1_3-default-test.xml
-./data.libzypp/kernel-tests/1_1_3-smp-test.xml
-#./data.libzypp/kernel-tests/1_2_1-default-test.xml
-#./data.libzypp/kernel-tests/1_2_1-smp-test.xml
-#./data.libzypp/kernel-tests/1_2_2-default-test.xml
-#./data.libzypp/kernel-tests/1_2_2-smp-test.xml
-./data.libzypp/kernel-tests/1_2_3-default-test.xml
-./data.libzypp/kernel-tests/1_2_3-smp-test.xml
-./data.libzypp/kernel-tests/2_1-default-test.xml
-./data.libzypp/kernel-tests/2_1-smp-test.xml
-#./data.libzypp/kernel-tests/2_2_1-default-test.xml
-#./data.libzypp/kernel-tests/2_2_1-smp-test.xml
-#./data.libzypp/kernel-tests/2_2_2-default-test.xml
-./data.libzypp/yast-tests/Bug156439-test.xml
+./data.libzypp/kernel-tests/1_2_1-default-test.xml
+./data.libzypp/kernel-tests/1_2_1-smp-test.xml
+./data.libzypp/kernel-tests/1_2_2-default-test.xml
+./data.libzypp/kernel-tests/1_2_2-smp-test.xml
 ./data.libzypp/yast-tests/exercise-06upgrade-test.xml
-	distupgrade unhandled	
-
-./data.libzypp/basic-exercises/exercise-25-test.xml
-./data.libzypp/basic-exercises/exercise-26-test.xml
-	promotecho is only enabled for redcarpet
+	distupgrade not yet working completely
 
