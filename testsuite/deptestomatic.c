@@ -449,20 +449,30 @@ add_source( Parsedata *pd, const char *name, const char *file )
 //
 
 static Id
-select_solvable( Pool *pool, Source *source, const char *name )
+select_solvable( Pool *pool, Source *source, const char *name, const char *arch )
 {
-  Id id;
+  Id id, archid;
   int i, end;
 
   id = str2id( pool, name, 0 );
   if (id == ID_NULL) {
     return id;
   }
+  archid = ID_NULL;
+  if (arch)
+    {
+      archid = str2id( pool, arch, 0 );
+      if (archid == ID_NULL) {
+        return ID_NULL;
+      }
+    }
 
   i = source ? source->start : 1;
   end = source ? source->start + source->nsolvables : pool->nsolvables;
   for (; i < end; i++)
     {
+      if (archid && pool->solvables[i].arch != archid)
+	continue;
       if (pool->solvables[i].name == id)
 	return i;
     }
@@ -761,6 +771,7 @@ startElement( void *userData, const char *name, const char **atts )
 
 	const char *channel = attrval( atts, "channel" );
 	const char *package = attrval( atts, "package" );
+	const char *arch = attrval( atts, "arch" );
 
 	if (package == NULL)
 	  package = attrval( atts, "name" );
@@ -790,7 +801,7 @@ startElement( void *userData, const char *name, const char **atts )
 		  }
 		++i;
 	      }
-	    Id id = select_solvable( pool, source, package );
+	    Id id = select_solvable( pool, source, package, arch );
 	    if (id == ID_NULL) 
 	      {
 		err( "Install: Package '%s' not found", package );
@@ -827,6 +838,7 @@ startElement( void *userData, const char *name, const char **atts )
        */
 
        const char *channel = attrval( atts, "channel" );
+       const char *arch = attrval( atts, "arch" );
        char package[100];
        getPackageName( atts, package );
 
@@ -853,7 +865,7 @@ startElement( void *userData, const char *name, const char **atts )
 	  }
 	  ++i;
 	}
-	Id id = select_solvable( pool, source, package );
+	Id id = select_solvable( pool, source, package, arch );
 	if (id == ID_NULL) {
 	  err( "Install: Package '%s' not found", package );
 	  if (source) err( " in channel '%s'", channel );
@@ -885,7 +897,7 @@ startElement( void *userData, const char *name, const char **atts )
       }
       // pd->allowuninstall = 1;
 #if 0
-      Id id = select_solvable( pool, pd->system, package );
+      Id id = select_solvable( pool, pd->system, package, 0 );
       if (id == ID_NULL) {
 	err( "Remove: Package '%s' is not installed", package );
 	break;
