@@ -11,3 +11,6 @@ exercise-bug21829-5-test.xml
 Bug156408-test.xml
 #takesolution not support
 Bug156439-test.xml
+#packages without version are broken packages
+# -> invalid test
+exercise-kdelibsobs-force-test.xml
