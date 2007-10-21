@@ -23,15 +23,12 @@
 ./data.libzypp/basic-exercises/exercise-26-test.xml
 	promotecho is only enabled for redcarpet
 
+./data.libzypp/lock-tests/install-single-test.xml
+        lock should be broken by a install
+
 # BUGS
 ./data.libzypp/bugzilla-tests/bug310618-test.xml
 	sat-solver does not like it
-
-./data.libzypp/lock-tests/install-single-test.xml
-	lock is implemented buggy
-
-./data.libzypp/bugzilla-tests/Bug255011-test.xml
-	wrong java picked (uninvestigated)
 
 ./data.libzypp/bugzilla-tests/bug328081-test.xml
 	bundle-lang-common-ko is pretty much unneeded

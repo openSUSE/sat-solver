@@ -20,5 +20,6 @@
 <install channel="3" kind="pattern" name="novell-ncp"/>
 <install channel="3" kind="pattern" name="novell-vix"/>
 <install channel="3" kind="package" name="novell-cluster-services"/>
+<install name="java-1_4_2-ibm"/>
 </trial>
 </test>
