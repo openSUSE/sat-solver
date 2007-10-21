@@ -8,7 +8,8 @@
        installs recommends
 
 ./data.libzypp/yast-tests/exercise-02conflict-12-test.xml
-	libzypp does an upgrade of a package needed, mls wants a confirm
+./data.libzypp/kernel-tests/kernel_kmp-test.xml
+	libzypp does an upgrade of a package needed, mls prefers not to
 
 ./data.libzypp/yast-tests/exercise-02conflict-13-force-test.xml
 ./data.libzypp/yast-tests/exercise-inconsistent6-force-test.xml
@@ -24,7 +25,7 @@
 	promotecho is only enabled for redcarpet
 
 ./data.libzypp/lock-tests/install-single-test.xml
-        lock should be broken by a install
+        lock should be broken by a install (possibly not a solver bug)
 
 # BUGS
 ./data.libzypp/bugzilla-tests/bug310618-test.xml
@@ -63,6 +64,5 @@
 
 ./data.libzypp/kernel-tests/3_1-test.xml
 ./data.libzypp/kernel-tests/3_4-test.xml
-./data.libzypp/kernel-tests/kernel_kmp-test.xml
 ./data.libzypp/yast-tests/kernel3-test.xml
 	hardwareinfo/modalias not supported
