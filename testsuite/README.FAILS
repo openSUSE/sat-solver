@@ -34,12 +34,6 @@
 ./data.libzypp/bugzilla-tests/bug328081-test.xml
 	bundle-lang-common-ko is pretty much unneeded
 
-./data.libzypp/mediaorder-tests/install-all-mediaorder-test.xml
-./data.libzypp/mediaorder-tests/install-default-gnome-mediaorder-test.xml
-./data.libzypp/mediaorder-tests/install-default-mediaorder-test.xml
-./data.libzypp/mediaorder-tests/install-kde-desktop-mediaorder-test.xml
-	the packages from the selections are ignored
-	
 # MISSINGS
 ./data.libzypp/bugzilla-tests/bug308252-test.xml
 ./data.libzypp/bugzilla-tests/bug239199-test.xml
