@@ -3,7 +3,7 @@
   install minmal selection
 -->
 <test>
-<setup arch="i386">
+<setup arch="i586">
   <channel name="packages" file="sl10.1-beta3-packages.xml.gz"/>
   <channel name="selections" file="sl10.1-beta3-selections.xml.gz"/>
   <locale name="de"/>
