@@ -5,7 +5,7 @@
   incomplete: sl10.1-beta3-packages.xml does not include libboost_regex
 -->
 <test>
-<setup arch="i586">
+<setup arch="i686">
   <channel name="packages" file="sl10.1-beta3-packages.xml.gz"/>
   <channel name="selections" file="sl10.1-beta3-selections.xml.gz"/>
   <locale name="en"/>
