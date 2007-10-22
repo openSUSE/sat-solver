@@ -8,6 +8,9 @@
        installs recommends
 
 ./data.libzypp/yast-tests/exercise-02conflict-12-test.xml
+	very strange testcase, has two identical versions of requirerer2
+	installed and tests that the solver replaces just one, which
+	is actually impossible
 ./data.libzypp/kernel-tests/kernel_kmp-test.xml
 	libzypp does an upgrade of a package needed, mls prefers not to
 
@@ -17,22 +20,20 @@
 ./data.libzypp/yast-tests/exercise-02conflict-09-test.xml
        libzypp removes broken pack, mls changes version
 
-./data.libzypp/yast-tests/exercise-06upgrade-test.xml
-	p7new is obsoleting p7, but in that case libzypp does not install it
-
 ./data.libzypp/basic-exercises/exercise-25-test.xml
 ./data.libzypp/basic-exercises/exercise-26-test.xml
-	promotecho is only enabled for redcarpet
+	promoteepoch is only enabled for redcarpet
 
 ./data.libzypp/lock-tests/install-single-test.xml
         lock should be broken by a install (possibly not a solver bug)
 
 # BUGS
 ./data.libzypp/bugzilla-tests/bug310618-test.xml
-	sat-solver does not like it
+	sat-solver used to not like it, now it's just different
 
 ./data.libzypp/bugzilla-tests/bug328081-test.xml
 	bundle-lang-common-ko is pretty much unneeded
+	caused by inconsistent locale()/language mapping
 
 # MISSINGS
 ./data.libzypp/bugzilla-tests/bug308252-test.xml
