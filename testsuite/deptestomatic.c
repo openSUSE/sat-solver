@@ -528,17 +528,20 @@ static void insertLocale( Parsedata *pd, const char *name)
   Solvable s;
   memset(&s, 0, sizeof(Solvable));
   s.name = str2id(pd->pool, locale, 1);
-  s.arch = str2id(pd->pool, "noarch", 1);
-  s.evr = str2id(pd->pool, "", 1);
+  s.arch = ARCH_NOARCH;
+  s.evr = ID_EMPTY;
 
   source_reserve_ids(pd->locales, 0, 2);
 
-  Id pr = source_addid_dep(pd->locales, 0, str2id(pd->pool, locale, 1), 0);
+  Id pr = 0;
+  pr = source_addid_dep(pd->locales, pr, str2id(pd->pool, locale, 1), 0);
 
+#if 0
   strcpy(locale, "Locale(");
   strncat(locale, name, MAXNAMELEN);
   strncat(locale, ")", MAXNAMELEN);
   pr = source_addid_dep(pd->locales, pr, str2id(pd->pool, locale, 1), 0);
+#endif
 
   s.provides = pd->locales->idarraydata + pr;
 
