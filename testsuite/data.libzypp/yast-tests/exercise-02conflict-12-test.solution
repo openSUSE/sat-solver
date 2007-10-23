@@ -1,4 +1,27 @@
+Load from File './exercise-02conflict-system.xml.gz'
+Added repository '@system' with 19 resolvables
+Loaded 19 resolvables from exercise-02conflict-system.xml.gz.
+Load from File './exercise-02conflict-packages.xml.gz'
+Added repository 'test' with 25 resolvables
+Loaded 25 resolvables from exercise-02conflict-packages.xml.gz.
+
+------------------------------------------------
+
 >!> Installing required2 from channel test
+
+Completed solutions: 1
+Pruned solutions: 0
+Deferred solutions: 0
+Invalid solutions: 0
+
+Best Solution:
 >!> Solution #1:
+Checksum = 33cd2a38
 >!> upgrade required2-1.0-1.noarch => required2-2.0-1.noarch[test]
 >!> installs=0, upgrades=1, uninstalls=0
+download size=0.0k, install size=18014398509481984.0k
+total priority=0, min priority=0, max priority=0
+other penalties=0
+- - - - - - - - - -
+Context Info:
+

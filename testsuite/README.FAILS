@@ -7,10 +7,6 @@
 ./data.libzypp/bugzilla-tests/bug308098-test.xml
        installs recommends
 
-./data.libzypp/yast-tests/exercise-02conflict-12-test.xml
-	very strange testcase, has two identical versions of requirerer2
-	installed and tests that the solver replaces just one, which
-	is actually impossible
 ./data.libzypp/kernel-tests/kernel_kmp-test.xml
 	libzypp does an upgrade of a package needed, mls prefers not to
 
