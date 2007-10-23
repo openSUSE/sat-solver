@@ -20,7 +20,6 @@
 #include "solver.h"
 #include "source_solv.h"
 #include "poolarch.h"
-#include "../tools/source_write.h"
 
 static int verbose = 0;
 static int redcarpet = 0;
