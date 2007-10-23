@@ -57,3 +57,7 @@
 ./data.libzypp/kernel-tests/3_4-test.xml
 ./data.libzypp/yast-tests/kernel3-test.xml
 	hardwareinfo/modalias not supported
+
+./data.libzypp/sat-tests/install-digikam-test.xml
+	lock not implemented correctly
+

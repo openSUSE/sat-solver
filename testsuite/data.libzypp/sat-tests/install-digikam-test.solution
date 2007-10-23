@@ -1,0 +1,164 @@
+Load from File './install-digikam-system.xml.gz'
+Added repository '@system' with 1959 resolvables
+Loaded 1959 resolvables from install-digikam-system.xml.gz.
+Load from File './install-digikam-8-package.xml.gz'
+Added repository '8' with 4 resolvables
+Loaded 4 resolvables from install-digikam-8-package.xml.gz.
+Load from File './install-digikam-3-package.xml.gz'
+Added repository '3' with 83 resolvables
+Loaded 83 resolvables from install-digikam-3-package.xml.gz.
+Load from File './install-digikam-7-package.xml.gz'
+Added repository '7' with 210 resolvables
+Loaded 210 resolvables from install-digikam-7-package.xml.gz.
+Load from File './install-digikam-11-package.xml.gz'
+Added repository '11' with 116 resolvables
+Loaded 116 resolvables from install-digikam-11-package.xml.gz.
+Load from File './install-digikam-10-package.xml.gz'
+Added repository '10' with 237 resolvables
+Loaded 237 resolvables from install-digikam-10-package.xml.gz.
+Load from File './install-digikam-6-package.xml.gz'
+Added repository '6' with 3 resolvables
+Loaded 3 resolvables from install-digikam-6-package.xml.gz.
+Load from File './install-digikam-1-package.xml.gz'
+Added repository '1' with 31 resolvables
+Loaded 31 resolvables from install-digikam-1-package.xml.gz.
+Load from File './install-digikam-9-package.xml.gz'
+Added repository '9' with 18 resolvables
+Loaded 18 resolvables from install-digikam-9-package.xml.gz.
+Load from File './install-digikam-12-package.xml.gz'
+Added repository '12' with 29 resolvables
+Loaded 29 resolvables from install-digikam-12-package.xml.gz.
+Load from File './install-digikam-5-package.xml.gz'
+Added repository '5' with 6457 resolvables
+Loaded 6457 resolvables from install-digikam-5-package.xml.gz.
+Load from File './install-digikam-4-package.xml.gz'
+Added repository '4' with 632 resolvables
+Loaded 632 resolvables from install-digikam-4-package.xml.gz.
+Load from File './install-digikam-2-package.xml.gz'
+Added repository '2' with 19 resolvables
+Loaded 19 resolvables from install-digikam-2-package.xml.gz.
+>!> Requesting locale de
+>!> Requesting locale de_DE
+
+------------------------------------------------
+
+>!> Locking amarok from channel 4
+>!> Locking amarok-lang from channel 4
+>!> Locking amarok-libvisual from channel 4
+>!> Locking amarok-xine from channel 4
+>!> Locking amarok-yauap from channel 4
+>!> Locking amarok-lang from channel 7
+>!> Locking amarok from channel 7
+>!> Locking amarok-xine from channel 7
+>!> Locking amarok-libvisual from channel 7
+>!> Locking amarok-yauap from channel 7
+>!> Locking poppler-qt from channel 0
+>!> Locking bundle-lang-common-de from channel 0
+>!> Locking amarok from channel 5
+>!> Locking amarok-lang from channel 5
+>!> Locking amarok-libvisual from channel 5
+>!> Locking amarok-xine from channel 5
+>!> Locking amarok-yauap from channel 5
+>!> Locking gstreamer010-doc from channel 5
+>!> Locking gstreamer010 from channel 5
+>!> Locking gstreamer010-plugins-bad-devel from channel 5
+>!> Locking gstreamer010-devel from channel 5
+>!> Locking gstreamer010-lang from channel 5
+>!> Locking gstreamer010-plugins-bad from channel 5
+>!> Locking gstreamer010-plugins-base from channel 5
+>!> Locking gstreamer010-plugins-bad-doc from channel 5
+>!> Locking gstreamer010-plugins-base-doc from channel 5
+>!> Locking gstreamer010-plugins-good from channel 5
+>!> Locking gstreamer010-plugins-good-extra from channel 5
+>!> Locking gstreamer010-plugins-base-devel from channel 5
+>!> Locking gstreamer010-plugins-good-doc from channel 5
+>!> Locking gstreamer010-plugins-ugly from channel 5
+>!> Locking gstreamer010-plugins-ugly-doc from channel 5
+>!> Locking libtunepimp from channel 5
+>!> Locking libtunepimp-devel from channel 5
+>!> Locking libtunepimp5 from channel 5
+>!> Locking poppler from channel 5
+>!> Locking poppler-devel from channel 5
+>!> Locking poppler-doc from channel 5
+>!> Locking poppler-glib from channel 5
+>!> Locking poppler-qt from channel 5
+>!> Locking poppler-qt4 from channel 5
+>!> Locking poppler-tools from channel 5
+>!> Locking python-gstreamer010 from channel 5
+>!> Locking bundle-lang-common-ar from channel 5
+>!> Locking bundle-lang-common-ca from channel 5
+>!> Locking bundle-lang-common-cs from channel 5
+>!> Locking bundle-lang-common-da from channel 5
+>!> Locking bundle-lang-common-de from channel 5
+>!> Locking bundle-lang-common-en from channel 5
+>!> Locking bundle-lang-common-fi from channel 5
+>!> Locking bundle-lang-common-es from channel 5
+>!> Locking bundle-lang-common-fr from channel 5
+>!> Locking bundle-lang-common-hu from channel 5
+>!> Locking bundle-lang-common-it from channel 5
+>!> Locking bundle-lang-common-ja from channel 5
+>!> Locking bundle-lang-common-ko from channel 5
+>!> Locking bundle-lang-common-nb from channel 5
+>!> Locking bundle-lang-common-nl from channel 5
+>!> Locking bundle-lang-common-pl from channel 5
+>!> Locking bundle-lang-common-pt from channel 5
+>!> Locking bundle-lang-common-ru from channel 5
+>!> Locking bundle-lang-common-sv from channel 5
+>!> Locking bundle-lang-common-zh from channel 5
+>!> Locking bundle-lang-kde-ar from channel 5
+>!> Locking bundle-lang-kde-ca from channel 5
+>!> Locking bundle-lang-kde-cs from channel 5
+>!> Locking bundle-lang-kde-de from channel 5
+>!> Locking bundle-lang-kde-da from channel 5
+>!> Locking bundle-lang-kde-en from channel 5
+>!> Locking bundle-lang-kde-es from channel 5
+>!> Locking bundle-lang-kde-fi from channel 5
+>!> Locking bundle-lang-kde-fr from channel 5
+>!> Locking bundle-lang-kde-hu from channel 5
+>!> Locking bundle-lang-kde-it from channel 5
+>!> Locking bundle-lang-kde-ja from channel 5
+>!> Locking bundle-lang-kde-ko from channel 5
+>!> Locking bundle-lang-kde-nb from channel 5
+>!> Locking bundle-lang-kde-nl from channel 5
+>!> Locking bundle-lang-kde-pl from channel 5
+>!> Locking bundle-lang-kde-pt from channel 5
+>!> Locking bundle-lang-kde-ru from channel 5
+>!> Locking bundle-lang-kde-sv from channel 5
+>!> Locking bundle-lang-kde-zh from channel 5
+>!> Locking bundle-lang-kde-pt from channel 0
+>!> Locking poppler-devel from channel 0
+>!> Locking bundle-lang-kde-de from channel 0
+>!> Locking libtunepimp5 from channel 0
+>!> Locking amarok-yauap from channel 0
+>!> Locking poppler-glib from channel 0
+>!> Locking amarok from channel 0
+>!> Locking poppler-qt4 from channel 0
+>!> Locking libtunepimp from channel 0
+>!> Locking gstreamer010 from channel 0
+>!> Locking gstreamer010-plugins-base from channel 0
+>!> Locking gstreamer010-plugins-good from channel 0
+>!> Locking amarok-xine from channel 0
+>!> Locking poppler from channel 0
+>!> Locking amarok-libvisual from channel 0
+>!> Installing digikam from channel 7
+>!> No problems so far
+
+Completed solutions: 1
+Pruned solutions: 0
+Deferred solutions: 0
+Invalid solutions: 0
+
+Best Solution:
+>!> Solution #1:
+Checksum = 9046df72
+>!> install digikam-0.9.2-29.5.i586[7]
+>!> install language:de-.noarch
+>!> install language:de_DE-.noarch
+>!> |unflag digikam-0.9.2-51.i586[5]
+>!> installs=3, upgrades=0, uninstalls=0
+download size=0.0k, install size=0.0k
+total priority=0, min priority=0, max priority=0
+other penalties=0
+- - - - - - - - - -
+Context Info:
+
