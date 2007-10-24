@@ -27,10 +27,6 @@
 ./data.libzypp/bugzilla-tests/bug310618-test.xml
 	sat-solver used to not like it, now it's just different
 
-./data.libzypp/bugzilla-tests/bug328081-test.xml
-	bundle-lang-common-ko is pretty much unneeded
-	caused by inconsistent locale()/language mapping
-
 # MISSINGS
 ./data.libzypp/bugzilla-tests/bug308252-test.xml
 ./data.libzypp/bugzilla-tests/bug239199-test.xml

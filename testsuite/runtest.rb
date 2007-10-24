@@ -136,6 +136,13 @@ class Solution
     if ( $fails.member?( rname ) )
       return CompareResult::KnownFailure
     end
+
+    case sname
+    when /\.solution[23]$/
+      # we print error with solution1
+      return CompareResult::UnexpectedFailure
+    end
+
     STDERR.puts "#{rname} failed"
     system( "./diffres #{sname} #{rname}")
     #STDERR.puts "Solution:"
@@ -170,9 +177,18 @@ class Tester < Test::Unit::TestCase
         rname = File.join( dir, "#{basename}.result" )
 	result = Solution.compare( sname, rname )
 	if result == CompareResult::Incomplete
-	  sname = File.join( dir, "#{basename}.solution1" )
+	  sname = File.join( dir, "#{basename}.solution3" )
 	  result = Solution.compare( sname, rname )
-	  # TODO: try solution2..
+	  case result
+	  when CompareResult::UnexpectedFailure, CompareResult::KnownFailure, CompareResult::Incomplete
+	    sname = File.join( dir, "#{basename}.solution2" )
+	    result = Solution.compare( sname, rname )
+	  end
+	  case result
+	  when CompareResult::UnexpectedFailure, CompareResult::KnownFailure, CompareResult::Incomplete
+	    sname = File.join( dir, "#{basename}.solution1" )
+	    result = Solution.compare( sname, rname )
+	  end
 	end
 	if result == CompareResult::Incomplete
 	  puts "#{test} is incomplete"

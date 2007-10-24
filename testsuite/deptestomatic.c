@@ -506,13 +506,16 @@ static void getPackageName( const char **atts, char package[] )
 
 static void insertLocale( Parsedata *pd, const char *name)
 {
+  Pool *pool = pd->pool;
+  Solvable *s;
+  Id id;
+  char locale[MAXNAMELEN];
+  int i;
+
   if (!pd->locales) 
     {
-      pd->locales = pool_addsource_empty(pd->pool);
-      pool_freeidhashes(pd->pool);
-      pd->locales->name = strdup( "locales" );
-      pd->locales->start = pd->pool->nsolvables;
-    
+      pd->locales = pool_addsource_empty(pool);
+      pd->locales->name = strdup("locales");
       pd->nchannels++;
       pd->channels = (struct _channelmap *)realloc( pd->channels, pd->nchannels * sizeof( struct _channelmap ) );
     
@@ -521,35 +524,27 @@ static void insertLocale( Parsedata *pd, const char *name)
       cmap->source = pd->locales;
     }
 
-  char locale[MAXNAMELEN];
   strcpy(locale, "language:");
   strncat(locale, name, MAXNAMELEN);
+  id = str2id(pool, locale, 1);
 
-  Solvable s;
-  memset(&s, 0, sizeof(Solvable));
-  s.source = pd->locales;
-  s.name = str2id(pd->pool, locale, 1);
-  s.arch = ARCH_NOARCH;
-  s.evr = ID_EMPTY;
-
-  source_reserve_ids(pd->locales, 0, 2);
-
-  s.provides = source_addid_dep(pd->locales, s.provides, str2id(pd->pool, locale, 1), 0);
-
-#if 0
-  strcpy(locale, "Locale(");
-  strncat(locale, name, MAXNAMELEN);
-  strncat(locale, ")", MAXNAMELEN);
-  s.provides = source_addid_dep(pd->locales, s.provides, str2id(pd->pool, locale, 1), 0);
-#endif
-
-  pd->pool->solvables = realloc(pd->pool->solvables, (pd->pool->nsolvables + 1) * sizeof(Solvable));
-  memcpy(pd->pool->solvables + pd->pool->nsolvables, &s, sizeof(Solvable));
+  /* check if we already have that one */
+  for (i = pd->locales->start; i < pd->locales->start + pd->locales->nsolvables; i++)
+    if (pool->solvables[i].name == id)
+      return;
+  
+  pool->solvables = realloc(pool->solvables, (pool->nsolvables + 1) * sizeof(Solvable));
+  s = pool->solvables + pool->nsolvables++;
   pd->locales->nsolvables++;
-  pd->pool->nsolvables++;
+  memset(s, 0, sizeof(Solvable));
+  s->source = pd->locales;
+  s->name = id;
+  s->arch = ARCH_NOARCH;
+  s->evr = ID_EMPTY;
+  s->provides = source_addid_dep(pd->locales, s->provides, id, 0);
 
   queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE_PROVIDES );
-  queuepush( &(pd->trials), s.name );
+  queuepush( &(pd->trials), id );
 }
 
 /*----------------------------------------------------------------*/
