@@ -1,3 +1,4 @@
+>!> setting HardwareInfo to: ./hardware-dummy
 >!> Installing novell-cluster-services from channel oes
 >!> Solution #1:
 >!> install novell-cluster-services-1.8.4-8.i586[oes]

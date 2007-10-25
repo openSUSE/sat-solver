@@ -1,5 +1,6 @@
 >!> Requesting locale en
 >!> Requesting locale en_US
+>!> setting HardwareInfo to: ./hardware-dummy
 >!> Installing product:openSUSE.i686 from channel 1
 >!> Installing kernel-default.i586 from channel 1
 >!> Installing pattern:base.i586 from channel 1

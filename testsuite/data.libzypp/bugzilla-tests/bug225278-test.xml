@@ -5,6 +5,7 @@
 	<system file="bug225278-system.xml"/>
 	<channel file="bug225278-0-package.xml" name="0" />
 	<channel file="bug225278-1-package.xml" name="1" />
+        <hardwareInfo path="hardware-dummy"/>
 </setup>
 <trial>
 <showpool all="yes"/>

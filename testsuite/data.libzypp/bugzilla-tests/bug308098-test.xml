@@ -6,6 +6,7 @@
 	<channel file="bug308098-1-package.xml.gz" name="1" />
 	<locale name="en_US" />
 	<locale name="en" />
+        <hardwareInfo path="hardware-dummy"/>
 </setup>
 <trial>
 <showpool all="yes"/>

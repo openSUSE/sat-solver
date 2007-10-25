@@ -4,6 +4,7 @@
   <system file="bug208784-system.xml.gz"/>
   <channel name="sles10" file="../repos/sles10/sles-10-i386-1407-packages.xml.gz"/>
   <channel name="oes" file="oes-packages.xml.gz"/>
+  <hardwareInfo path="hardware-dummy"/>
 </setup>
 <trial>
   <install channel="oes" package="novell-cluster-services"/>

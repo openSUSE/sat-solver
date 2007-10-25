@@ -5,6 +5,7 @@
 	<channel file="Bug255011-1-package.xml" name="1" />
 	<channel file="Bug255011-3-package.xml" name="3" />
         <locale name="en"/>
+        <hardwareInfo path="hardware-dummy"/>
 </setup>
 <trial>
 <install channel="1" kind="product" name="SUSE_SLES_SP1"/>

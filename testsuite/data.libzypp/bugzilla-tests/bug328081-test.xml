@@ -5,6 +5,7 @@
 	<channel file="bug328081-package.xml.gz" name="1" />
 	<locale name="en" />
 	<locale name="en_US" />
+        <hardwareInfo path="hardware-dummy"/>
 </setup>
 <trial>
 <install channel="1" kind="product" name="openSUSE" arch="i686" version="10.3" release=""/>
