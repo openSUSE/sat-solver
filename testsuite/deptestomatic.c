@@ -8,6 +8,8 @@
  */
 
 #include <sys/types.h>
+#include <unistd.h>
+#include <fnmatch.h>
 #include <limits.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -16,6 +18,7 @@
 #include <string.h>
 #include <expat.h>
 #include <libgen.h>
+#include <dirent.h>
 
 #include "solver.h"
 #include "source_solv.h"
@@ -171,7 +174,115 @@ typedef struct _parsedata {
   struct stateswitch *swtab[NUMSTATES];
   enum state sbtab[NUMSTATES];
   char directory[PATH_MAX];
+
+  const char *hardwareinfo;
+  const char **modaliases;
+  int nmodaliases;
 } Parsedata;
+
+
+static void
+add_modalias(Parsedata *pd, const char *s)
+{
+  if ((pd->nmodaliases & 15) == 0)
+    {
+      if (pd->modaliases == 0)
+	pd->modaliases = malloc(16 * sizeof(const char *));
+      else
+	pd->modaliases = realloc(pd->modaliases, (pd->nmodaliases + 16) * sizeof(const char *));
+    }
+  pd->modaliases[pd->nmodaliases++] = s;
+}
+
+static void
+collect_modaliases(Parsedata *pd, int depth, char *dir, char *edir)
+{
+  if (depth == 0)
+    {
+      strcpy(edir, "/bus");
+      collect_modaliases(pd, 1, dir, edir + 4);
+      *edir = 0;
+      return;
+    }
+  if (depth == 1 || depth == 3)
+    {
+      struct dirent *de;
+      DIR *di = opendir(dir);
+      if (!di)
+	return;
+      while ((de = readdir(di)) != 0)
+	{
+	  if (de->d_name[0] == '.')
+	    continue;
+	  *edir = '/';
+	  strcpy(edir + 1, de->d_name);
+	  collect_modaliases(pd, depth + 1, dir, edir + strlen(edir));
+	  *edir = 0;
+	}
+      closedir(di);
+      return;
+    }
+  if (depth == 2)
+    {
+      strcpy(edir, "/devices");
+      collect_modaliases(pd, 3, dir, edir + 8);
+      *edir = 0;
+      return;
+    }
+  if (depth == 4)
+    {
+      int fd, l;
+      char buf[PATH_MAX];
+
+      strcpy(edir, "/modalias");
+      if ((fd = open(dir, O_RDONLY)) == -1)
+	return;
+      l = read(fd, buf, sizeof(buf));
+      close(fd);
+      if (l == 0 || l == sizeof(buf))
+	return;
+      if (buf[l - 1] == '\n')
+	l--;
+      if (l == 0)
+	return;
+      buf[l] = 0;
+      add_modalias(pd, strdup(buf));
+    }
+}
+
+static Id
+nscallback(Pool *pool, void *data, Id name, Id evr)
+{
+  Parsedata *pd = data;
+  const char *match;
+  const char **m;
+  char dir[PATH_MAX];
+  int i;
+
+  if (name != NAMESPACE_MODALIAS || ISRELDEP(evr))
+    return 0;
+  if (pd->nmodaliases == -1)
+    return 0;
+  if (!pd->modaliases)
+    {
+      if (!pd->hardwareinfo)
+	return 0;
+      strcpy(dir, pd->hardwareinfo);
+      collect_modaliases(pd, 0, dir, dir + strlen(dir));
+      if (pd->nmodaliases == 0)
+	{
+	  pd->nmodaliases = -1;
+	  return 0;
+	}
+    }
+  match = id2str(pool, evr);
+  for (i = 0, m = pd->modaliases; i < pd->nmodaliases; i++, m++)
+    if (fnmatch(match, *m, 0))
+      return 1;
+  return 0;
+}
+
+
 
 /*------------------------------------------------------------------*/
 /* attribute handling */
@@ -824,6 +935,12 @@ startElement( void *userData, const char *name, const char **atts )
     break;
 
     case STATE_HARDWAREINFO:
+      {
+        const char *path = attrval( atts, "path" );
+        if (pd->hardwareinfo)
+	  free((char *)pd->hardwareinfo);
+        pd->hardwareinfo = strdup(path);
+      }
     break;
       
       /*-----------------------------------------------------------*/
@@ -1133,6 +1250,8 @@ main( int argc, char **argv )
     }
 
   pd.pool = pool_create();
+  pd.pool->nscallback = nscallback;
+  pd.pool->nscallbackdata = &pd;
   queueinit( &pd.trials );
 
   pd.nchannels = 0;
