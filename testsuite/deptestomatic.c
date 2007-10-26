@@ -266,8 +266,12 @@ nscallback(Pool *pool, void *data, Id name, Id evr)
   if (!pd->modaliases)
     {
       if (!pd->hardwareinfo)
-	return 0;
-      strcpy(dir, pd->hardwareinfo);
+	{
+	  return 0;
+	  // strcpy(dir, "/sys");
+	}
+      else
+	strcpy(dir, pd->hardwareinfo);
       collect_modaliases(pd, 0, dir, dir + strlen(dir));
       if (pd->nmodaliases == 0)
 	{
@@ -936,10 +940,19 @@ startElement( void *userData, const char *name, const char **atts )
 
     case STATE_HARDWAREINFO:
       {
-        const char *path = attrval( atts, "path" );
-        if (pd->hardwareinfo)
+	if (pd->hardwareinfo)
 	  free((char *)pd->hardwareinfo);
-        pd->hardwareinfo = strdup(path);
+
+        const char *dir = attrval( atts, "path" );
+	if (dir)
+	  {
+	    char path[PATH_MAX];
+	    strncpy(path, pd->directory, sizeof(path));
+	    strncat(path, dir, sizeof(path));
+	    pd->hardwareinfo = strdup(path);
+	  } 
+	else
+	  pd->hardwareinfo = 0;
       }
     break;
       

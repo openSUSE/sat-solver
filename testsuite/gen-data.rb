@@ -52,6 +52,8 @@ private
     when /ignore/ 
       cmd = "cat #{srcname}"
       return if File.exists?( File.join( destdir, name ) )
+    when /modalias/
+      cmd = "cat #{srcname}"
     when "bz2"
       chk = check_name name
       return unless chk
