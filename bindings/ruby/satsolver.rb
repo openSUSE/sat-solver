@@ -1,5 +1,5 @@
 require 'satsolverx'
 
 module Satsolver
-  include Satsolverx
+include Satsolverx
 end
