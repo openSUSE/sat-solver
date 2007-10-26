@@ -3,7 +3,7 @@
  * 
  * command line interface to solver
  * Usage:
- *   yps <system> <source> [ ... <source>] <name>
+ *   yps <system> <repo> [ ... <repo>] <name>
  *     to install a package <name>
  * 
  *   yps -e <system> <name>
@@ -18,16 +18,16 @@
 
 #include "pool.h"
 #include "poolarch.h"
-#include "source_solv.h"
+#include "repo_solv.h"
 #include "solver.h"
 
 // find solvable by name
-//   If source != NULL, find there (installed packages)
+//   If repo != NULL, find there (installed packages)
 //   else find in pool (available packages)
 //
 
 static Solvable *
-select_solvable(Pool *pool, Source *source, char *name)
+select_solvable(Pool *pool, Repo *repo, char *name)
 {
   Id id;
   Queue plist;
@@ -36,8 +36,8 @@ select_solvable(Pool *pool, Source *source, char *name)
 
   id = str2id(pool, name, 1);
   queueinit( &plist);
-  i = source ? source->start : 1;
-  end = source ? source->start + source->nsolvables : pool->nsolvables;
+  i = repo ? repo->start : 1;
+  end = repo ? repo->start + repo->nsolvables : pool->nsolvables;
   for (; i < end; i++)
     {
       s = pool->solvables + i;
@@ -69,10 +69,10 @@ main(int argc, char **argv)
 {
   Pool *pool;		// available packages (multiple repos)
   FILE *fp;
-  Source *system;	// installed packages (single repo, aka 'Source')
+  Repo *system;	// installed packages (single repo, aka 'Repo')
   Solvable *xs;
   Solver *solv;
-  Source *channel;
+  Repo *channel;
   Queue job;
   Id id;
   int erase = 0;
@@ -84,7 +84,7 @@ main(int argc, char **argv)
 
   if (argc < 3)
     {
-      fprintf(stderr, "Usage:\n  yps <system> <source> [ ... <source>] <name>\n");
+      fprintf(stderr, "Usage:\n  yps <system> <repo> [ ... <repo>] <name>\n");
       fprintf(stderr, "    to install a package <name>\n");
       fprintf(stderr, "\n  yps -e <system> <name>\n");
       fprintf(stderr, "    to erase a package <name>\n");
@@ -107,7 +107,7 @@ main(int argc, char **argv)
       perror(argv[1]);
       exit(1);
     }
-  system = pool_addsource_solv(pool, fp, "system");
+  system = pool_addrepo_solv(pool, fp, "system");
   channel = 0;
   fclose(fp);
 
@@ -115,14 +115,14 @@ main(int argc, char **argv)
 
   argc--;
   argv++;
-  while (argc > 2)		       /* all but last arg are sources */
+  while (argc > 2)		       /* all but last arg are repos */
     {
       if ((fp = fopen(argv[1], "r")) == 0)
 	{
 	  perror(argv[1]);
 	  exit(1);
 	}
-      channel = pool_addsource_solv(pool, fp, argv[1]);
+      channel = pool_addrepo_solv(pool, fp, argv[1]);
       fclose(fp);
       argv++;
       argc--;

@@ -17,8 +17,8 @@ extern "C"
 #include "queue.h"
 #include "solvable.h"
 #include "solver.h"
-#include "source.h"
-#include "source_solv.h"
+#include "repo.h"
+#include "repo_solv.h"
 }
 #include <sstream>
 
@@ -64,14 +64,14 @@ extern "C"
   void prepare()
   { pool_prepare($self);}
 
-  void each_source()
+  void each_repo()
   {
-    for (int i = 0; i < $self->nsources; ++i )
-      rb_yield(SWIG_NewPointerObj((void*) $self->sources[i], SWIGTYPE_p__Source, 0));
+    for (int i = 0; i < $self->nrepos; ++i )
+      rb_yield(SWIG_NewPointerObj((void*) $self->repos[i], SWIGTYPE_p__Repo, 0));
   }
 
   Solvable *
-  select_solvable(Source *source, char *name)
+  select_solvable(Repo *repo, char *name)
   {
     Id id;
     Queue plist;
@@ -82,8 +82,8 @@ extern "C"
     pool = $self;
     id = str2id(pool, name, 1);
     queueinit( &plist);
-    i = source ? source->start : 1;
-    end = source ? source->start + source->nsolvables : pool->nsolvables;
+    i = repo ? repo->start : 1;
+    end = repo ? repo->start + repo->nsolvables : pool->nsolvables;
     for (; i < end; i++)
     {
       s = pool->solvables + i;
@@ -108,13 +108,13 @@ extern "C"
   }
 
 
-  Source* add_empty_source()
+  Repo* add_empty_repo()
   {
-    return pool_addsource_empty($self);
+    return pool_addrepo_empty($self);
   }
 
-  Source * add_source_solv(FILE *fp, const char *sourcename)
-  { pool_addsource_solv($self, fp, sourcename); }
+  Repo * add_repo_solv(FILE *fp, const char *reponame)
+  { pool_addrepo_solv($self, fp, reponame); }
 };
 %newobject pool_create;
 %delobject pool_free;
@@ -143,7 +143,7 @@ extern "C"
   { /*printf("push id\n");*/ queuepush($self, id); }
 
   void push( Solvable *s )
-  { /*printf("push solvable\n");*/ queuepush($self, (s - s->source->pool->solvables)); }
+  { /*printf("push solvable\n");*/ queuepush($self, (s - s->repo->pool->solvables)); }
 
   void push_unique(Id id)
   { queuepushunique($self, id); }
@@ -173,20 +173,20 @@ extern "C"
   //%rename(name_id) name();
   %ignore name;
   const char * name()
-  { return id2str($self->source->pool, $self->name);}
+  { return id2str($self->repo->pool, $self->name);}
 
   %rename("to_s") asString();
   const char * asString()
   {
     std::stringstream ss;
-    if ( $self->source == NULL )
+    if ( $self->repo == NULL )
         return "<UNKNOWN>";
       
-    ss << id2str($self->source->pool, $self->name);
+    ss << id2str($self->repo->pool, $self->name);
     ss << "-";
-    ss << id2str($self->source->pool, $self->evr);
+    ss << id2str($self->repo->pool, $self->evr);
     ss << "-";
-    ss << id2str($self->source->pool, $self->arch);
+    ss << id2str($self->repo->pool, $self->arch);
     return ss.str().c_str();
   }
 
@@ -196,7 +196,7 @@ extern "C"
 
 %extend Solver {
   
-  Solver( Pool *pool, Source *system ) { return solver_create(pool, system); }
+  Solver( Pool *pool, Repo *system ) { return solver_create(pool, system); }
   ~Solver() { solver_free($self); }
 
   %rename("fix_system") fixsystem;
@@ -225,9 +225,9 @@ extern "C"
       if (p == SYSTEMSOLVABLE)
         continue;
 
-      // getting source
+      // getting repo
       s = $self->pool->solvables + p;
-      Source *source = s->source;
+      Repo *repo = s->repo;
       rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
     }
   }
@@ -246,20 +246,20 @@ extern "C"
       if ($self->decisionmap[i] > 0)
         continue;
 
-      // getting source
+      // getting repo
       s = $self->pool->solvables + i;
-      Source *source = s->source;
+      Repo *repo = s->repo;
       rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
     }
   }
 };
 
-%include "source.h"
+%include "repo.h"
 
-%nodefaultdtor Source;
-%extend Source {
+%nodefaultdtor Repo;
+%extend Repo {
 
-  const char *name() { return source_name($self); }
+  const char *name() { return repo_name($self); }
 
   void each_solvable()
   {
@@ -276,7 +276,7 @@ extern "C"
   }
 };
 
-%include "source_solv.h"
+%include "repo_solv.h"
 
 %typemap(in) Id {
  $1 = (int) NUM2INT($input);

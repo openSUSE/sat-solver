@@ -21,7 +21,7 @@
 #include <dirent.h>
 
 #include "solver.h"
-#include "source_solv.h"
+#include "repo_solv.h"
 #include "poolarch.h"
 
 static int verbose = 0;
@@ -140,7 +140,7 @@ static struct stateswitch stateswitches[] = {
 struct _channelmap {
   Id nid;
   char *name;
-  Source *source;
+  Repo *repo;
 };
 
 typedef struct _parsedata {
@@ -161,8 +161,8 @@ typedef struct _parsedata {
   int nchannels;
   struct _channelmap *channels;
 
-  Source *system;	// system source
-  Source *locales;      // where we store locales
+  Repo *system;	// system repo
+  Repo *locales;      // where we store locales
 
   Id arch;              // set architecture
 
@@ -514,23 +514,23 @@ adddep( Pool *pool, Parsedata *pd, unsigned int olddeps, const char **atts, int 
 /*----------------------------------------------------------------*/
 
 /*
- * read source from file as name
+ * read repo from file as name
  *
  */
 
-static Source *
-add_source( Parsedata *pd, const char *name, const char *file )
+static Repo *
+add_repo( Parsedata *pd, const char *name, const char *file )
 {
   if (!file)
     {
-      err( "add_source, no filename!" );
+      err( "add_repo, no filename!" );
       return NULL;
     }
   char solvname[256];
   int l = strlen( file );
   if (l > 255 )
     {
-      err( "add_source, filename too long!" );
+      err( "add_repo, filename too long!" );
       return NULL;
     }
 
@@ -558,19 +558,19 @@ add_source( Parsedata *pd, const char *name, const char *file )
       perror( solvname );
       return NULL;
     }
-  Source *s = pool_addsource_solv( pd->pool, fp, name );
+  Repo *s = pool_addrepo_solv( pd->pool, fp, name );
   fclose( fp );
   return s;
 }
 
 
-// find solvable id by name and source
-//   If source != NULL, find there
+// find solvable id by name and repo
+//   If repo != NULL, find there
 //   else find in pool (available packages)
 //
 
 static Id
-select_solvable( Pool *pool, Source *source, const char *name, const char *arch )
+select_solvable( Pool *pool, Repo *repo, const char *name, const char *arch )
 {
   Id id, archid;
   int i, end;
@@ -588,8 +588,8 @@ select_solvable( Pool *pool, Source *source, const char *name, const char *arch 
       }
     }
 
-  i = source ? source->start : 1;
-  end = source ? source->start + source->nsolvables : pool->nsolvables;
+  i = repo ? repo->start : 1;
+  end = repo ? repo->start + repo->nsolvables : pool->nsolvables;
   for (; i < end; i++)
     {
       if (archid && pool->solvables[i].arch != archid)
@@ -636,7 +636,7 @@ static void insertLocale( Parsedata *pd, const char *name)
       pd->channels = (struct _channelmap *)realloc( pd->channels, pd->nchannels * sizeof( struct _channelmap ) );
       struct _channelmap *cmap = pd->channels + (pd->nchannels-1);
 
-      cmap->source = pd->locales = pool_addsource_empty(pool);
+      cmap->repo = pd->locales = pool_addrepo_empty(pool);
       pd->locales->name = cmap->name = strdup( "locales" );
       cmap->nid = str2id( pd->pool, cmap->name, 1 );
     }
@@ -654,11 +654,11 @@ static void insertLocale( Parsedata *pd, const char *name)
   s = pool->solvables + pool->nsolvables++;
   pd->locales->nsolvables++;
   memset(s, 0, sizeof(Solvable));
-  s->source = pd->locales;
+  s->repo = pd->locales;
   s->name = id;
   s->arch = ARCH_NOARCH;
   s->evr = ID_EMPTY;
-  s->provides = source_addid_dep(pd->locales, s->provides, id, 0);
+  s->provides = repo_addid_dep(pd->locales, s->provides, id, 0);
 
   queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE_PROVIDES );
   queuepush( &(pd->trials), id );
@@ -767,8 +767,8 @@ startElement( void *userData, const char *name, const char **atts )
 	      name = file;
 
 	    char *cname = strdup( name );
-	    Source *source = add_source( pd, cname, path );
-	    if (source) 
+	    Repo *repo = add_repo( pd, cname, path );
+	    if (repo) 
 	      {
 		pd->nchannels++;
 		pd->channels = (struct _channelmap *)realloc( pd->channels, pd->nchannels * sizeof( struct _channelmap ) );
@@ -780,7 +780,7 @@ startElement( void *userData, const char *name, const char **atts )
 		struct _channelmap *cmap = pd->channels + (pd->nchannels-1);
 		cmap->name = cname;
 		cmap->nid = str2id( pool, cname, 1 );
-		cmap->source = source;
+		cmap->repo = repo;
 	      }
 	    else 
 	      {
@@ -809,9 +809,9 @@ startElement( void *userData, const char *name, const char **atts )
 	    char path[PATH_MAX];
 	    strncpy(path, pd->directory, sizeof(path));
 	    strncat(path, file, sizeof(path));
-	    Source *source = add_source( pd, "system", path );
-	    if (source)
-	      pd->system = source;
+	    Repo *repo = add_repo( pd, "system", path );
+	    if (repo)
+	      pd->system = repo;
 	    else 
 	      {
 		err( "Can't add <system>" );
@@ -901,7 +901,7 @@ startElement( void *userData, const char *name, const char **atts )
 	    break;
 	  }
 
-	Source *source = NULL;
+	Repo *repo = NULL;
 	if (channel) 		       /* from specific channel */
 	  {
 	    Id cid = str2id( pool, channel, 0 );
@@ -915,16 +915,16 @@ startElement( void *userData, const char *name, const char **atts )
 	      {
 		if (pd->channels[i].nid == cid) 
 		  {
-		    source = pd->channels[i].source;
+		    repo = pd->channels[i].repo;
 		    break;
 		  }
 		++i;
 	      }
-	    Id id = select_solvable( pool, source, package, arch );
+	    Id id = select_solvable( pool, repo, package, arch );
 	    if (id == ID_NULL) 
 	      {
 		err( "Install: Package '%s' not found", package );
-		if (source) err( " in channel '%s'", channel );
+		if (repo) err( " in channel '%s'", channel );
 		exit( 1 );
 	      }
 	    queuepush( &(pd->trials), SOLVER_ERASE_SOLVABLE );
@@ -985,7 +985,7 @@ startElement( void *userData, const char *name, const char **atts )
 	break;
       }
 
-      Source *source = NULL;
+      Repo *repo = NULL;
        if (channel) /* from specific channel */
          {
         Id cid = str2id( pool, channel, 0 );
@@ -997,15 +997,15 @@ startElement( void *userData, const char *name, const char **atts )
 	int i = 0;
 	while (i < pd->nchannels ) {
 	  if (pd->channels[i].nid == cid) {
-	    source = pd->channels[i].source;
+	    repo = pd->channels[i].repo;
 	    break;
 	  }
 	  ++i;
 	}
-	Id id = select_solvable( pool, source, package, arch );
+	Id id = select_solvable( pool, repo, package, arch );
 	if (id == ID_NULL) {
 	  err( "Install: Package '%s' not found", package );
-	  if (source) err( " in channel '%s'", channel );
+	  if (repo) err( " in channel '%s'", channel );
 	  exit( 1 );
 	}
 	queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
@@ -1086,13 +1086,13 @@ startElement( void *userData, const char *name, const char **atts )
     }
     break;
 
-    case STATE_CURRENT: {	       /* FIXME: needs source prio */
+    case STATE_CURRENT: {	       /* FIXME: needs repo prio */
 //      const char *channel = attrval( atts, "channel" );
 //      err( "ignoring <current channel=\"%s\">", channel );
     }
     break;
 
-    case STATE_SUBSCRIBE: {	       /* FIXME: needs source prio */
+    case STATE_SUBSCRIBE: {	       /* FIXME: needs repo prio */
 //      const char *channel = attrval( atts, "channel" );
 //      err( "ignoring <subscribe channel=\"%s\">", channel );
     }
@@ -1166,7 +1166,7 @@ endElement( void *userData, const char *name )
     case STATE_TRIAL: {		       /* trial complete */
 
       if (!pd->system)
-	pd->system = pool_addsource_empty( pd->pool );
+	pd->system = pool_addrepo_empty( pd->pool );
 
       if (pd->arch)
         pool_setarch( pd->pool, id2str(pd->pool, pd->arch) );
@@ -1352,7 +1352,7 @@ main( int argc, char **argv )
   for ( i = 0; i < pd.nchannels; ++i )
     {
       free( pd.channels[i].name );
-      pool_freesource( pd.pool, pd.channels[i].source );
+      pool_freerepo( pd.pool, pd.channels[i].repo );
     }
 
   for ( i = 0; i < pd.nmodaliases; ++i )

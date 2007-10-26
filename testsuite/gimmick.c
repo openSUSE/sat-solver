@@ -1,7 +1,7 @@
 /*
  * gimmick - with gimmick
  * 
- * command line interface to source data
+ * command line interface to repo data
  *
  * Usage:
  *   cat x.solv | gimmick <name>
@@ -15,7 +15,7 @@
 #include <string.h>
 
 #include "pool.h"
-#include "source_solv.h"
+#include "repo_solv.h"
 #include "solver.h"
 
 int main(int argc, char **argv)
@@ -26,7 +26,7 @@ int main(int argc, char **argv)
   Id p, *pp;
 
   pool = pool_create();
-  pool_addsource_solv( pool, stdin, "" );
+  pool_addrepo_solv( pool, stdin, "" );
   if (argc == 2)
     id = str2id( pool, argv[1], 1 );
   else
