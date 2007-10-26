@@ -1,4 +1,4 @@
-%module satsolver
+%module satsolverx
 
 %{
 
