@@ -138,7 +138,8 @@ static struct stateswitch stateswitches[] = {
  */
 
 struct _channelmap {
-  Id name;
+  Id nid;
+  char *name;
   Source *source;
 };
 
@@ -175,8 +176,8 @@ typedef struct _parsedata {
   enum state sbtab[NUMSTATES];
   char directory[PATH_MAX];
 
-  const char *hardwareinfo;
-  const char **modaliases;
+  char *hardwareinfo;
+  char **modaliases;
   int nmodaliases;
 } Parsedata;
 
@@ -187,11 +188,11 @@ add_modalias(Parsedata *pd, const char *s)
   if ((pd->nmodaliases & 15) == 0)
     {
       if (pd->modaliases == 0)
-	pd->modaliases = malloc(16 * sizeof(const char *));
+	pd->modaliases = malloc(16 * sizeof(char *));
       else
-	pd->modaliases = realloc(pd->modaliases, (pd->nmodaliases + 16) * sizeof(const char *));
+	pd->modaliases = realloc(pd->modaliases, (pd->nmodaliases + 16) * sizeof(char *));
     }
-  pd->modaliases[pd->nmodaliases++] = s;
+  pd->modaliases[pd->nmodaliases++] = strdup(s);
 }
 
 static void
@@ -246,7 +247,7 @@ collect_modaliases(Parsedata *pd, int depth, char *dir, char *edir)
       if (l == 0)
 	return;
       buf[l] = 0;
-      add_modalias(pd, strdup(buf));
+      add_modalias(pd, buf);
     }
 }
 
@@ -255,7 +256,7 @@ nscallback(Pool *pool, void *data, Id name, Id evr)
 {
   Parsedata *pd = data;
   const char *match;
-  const char **m;
+  char **m;
   char dir[PATH_MAX];
   int i;
 
@@ -557,7 +558,9 @@ add_source( Parsedata *pd, const char *name, const char *file )
       perror( solvname );
       return NULL;
     }
-  return pool_addsource_solv( pd->pool, fp, strdup( name ) );
+  Source *s = pool_addsource_solv( pd->pool, fp, name );
+  fclose( fp );
+  return s;
 }
 
 
@@ -629,14 +632,13 @@ static void insertLocale( Parsedata *pd, const char *name)
 
   if (!pd->locales) 
     {
-      pd->locales = pool_addsource_empty(pool);
-      pd->locales->name = strdup("locales");
       pd->nchannels++;
       pd->channels = (struct _channelmap *)realloc( pd->channels, pd->nchannels * sizeof( struct _channelmap ) );
-    
       struct _channelmap *cmap = pd->channels + (pd->nchannels-1);
-      cmap->name = str2id( pd->pool, "locales", 1 );
-      cmap->source = pd->locales;
+
+      cmap->source = pd->locales = pool_addsource_empty(pool);
+      pd->locales->name = cmap->name = strdup( "locales" );
+      cmap->nid = str2id( pd->pool, cmap->name, 1 );
     }
 
   strcpy(locale, "language:");
@@ -764,7 +766,8 @@ startElement( void *userData, const char *name, const char **atts )
 	    if (!name)
 	      name = file;
 
-	    Source *source = add_source( pd, name, path );
+	    char *cname = strdup( name );
+	    Source *source = add_source( pd, cname, path );
 	    if (source) 
 	      {
 		pd->nchannels++;
@@ -775,11 +778,13 @@ startElement( void *userData, const char *name, const char **atts )
 		    abort();
 		  }
 		struct _channelmap *cmap = pd->channels + (pd->nchannels-1);
-		cmap->name = str2id( pool, name, 1 );
+		cmap->name = cname;
+		cmap->nid = str2id( pool, cname, 1 );
 		cmap->source = source;
 	      }
 	    else 
 	      {
+		free( cname );
 		err( "Can't add <channel> %s", name );
 		exit( 1 );
 	      }
@@ -908,7 +913,7 @@ startElement( void *userData, const char *name, const char **atts )
 	    int i = 0;
 	    while (i < pd->nchannels ) 
 	      {
-		if (pd->channels[i].name == cid) 
+		if (pd->channels[i].nid == cid) 
 		  {
 		    source = pd->channels[i].source;
 		    break;
@@ -991,7 +996,7 @@ startElement( void *userData, const char *name, const char **atts )
 	}
 	int i = 0;
 	while (i < pd->nchannels ) {
-	  if (pd->channels[i].name == cid) {
+	  if (pd->channels[i].nid == cid) {
 	    source = pd->channels[i].source;
 	    break;
 	  }
@@ -1342,7 +1347,23 @@ main( int argc, char **argv )
 	break;
     }
   XML_ParserFree( parser );
+  fclose( fp );
 
+  for ( i = 0; i < pd.nchannels; ++i )
+    {
+      free( pd.channels[i].name );
+      pool_freesource( pd.pool, pd.channels[i].source );
+    }
+
+  for ( i = 0; i < pd.nmodaliases; ++i )
+    free( pd.modaliases[i] );
+  free( pd.modaliases );
+
+  if ( pd.hardwareinfo)
+    free( pd.hardwareinfo );
+
+  pool_free( pd.pool );
+  free( pd.channels );
   free( pd.content );
 
   return 0;
