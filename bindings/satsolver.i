@@ -20,7 +20,7 @@ extern "C"
 #include "source.h"
 #include "source_solv.h"
 }
-
+#include <sstream>
 
 %}
 
@@ -175,6 +175,21 @@ extern "C"
   const char * name()
   { return id2str($self->source->pool, $self->name);}
 
+  %rename("to_s") asString();
+  const char * asString()
+  {
+    std::stringstream ss;
+    if ( $self->source == NULL )
+        return "<UNKNOWN>";
+      
+    ss << id2str($self->source->pool, $self->name);
+    ss << "-";
+    ss << id2str($self->source->pool, $self->evr);
+    ss << "-";
+    ss << id2str($self->source->pool, $self->arch);
+    return ss.str().c_str();
+  }
+
 }
 
 %include "solver.h"
@@ -192,6 +207,51 @@ extern "C"
 
   void solve(Queue *job) { solve($self, job); }
   void print_decisions() { printdecisions($self); }
+
+  void each_to_install()
+  {
+    Id p;
+    Solvable *s;
+    for (int i = 0; i < $self->decisionq.count; i++)
+    {
+      p = $self->decisionq.elements[i];
+      /* conflict */
+      if (p < 0)
+      continue;
+      /* already installed resolvable */
+      if (p >= $self->system->start && p < $self->system->start + $self->system->nsolvables)
+        continue;
+      /** system resolvable */
+      if (p == SYSTEMSOLVABLE)
+        continue;
+
+      // getting source
+      s = $self->pool->solvables + p;
+      Source *source = s->source;
+      rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
+    }
+  }
+
+  void each_to_remove()
+  {
+    Id p;
+    Solvable *s;
+
+    /* solvables to be erased */
+    for (int i = $self->system->start;
+         i < $self->system->start + $self->system->nsolvables;
+         i++)
+    {
+      /* what is this? */
+      if ($self->decisionmap[i] > 0)
+        continue;
+
+      // getting source
+      s = $self->pool->solvables + i;
+      Source *source = s->source;
+      rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
+    }
+  }
 };
 
 %include "source.h"
