@@ -166,11 +166,11 @@ typedef struct _parsedata {
 
   Id arch;              // set architecture
 
-  bool fixsystem;
-  bool updatesystem;
-  bool allowdowngrade;
-  bool allowuninstall;
-  bool allowvirtualconflicts;
+  int fixsystem;
+  int updatesystem;
+  int allowdowngrade;
+  int allowuninstall;
+  int allowvirtualconflicts;
 
   struct stateswitch *swtab[NUMSTATES];
   enum state sbtab[NUMSTATES];
