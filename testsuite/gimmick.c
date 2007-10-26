@@ -26,21 +26,21 @@ int main(int argc, char **argv)
   Id p, *pp;
 
   pool = pool_create();
-  pool_addrepo_solv( pool, stdin, "" );
+  pool_addrepo_solv(pool, stdin, "");
   if (argc == 2)
-    id = str2id( pool, argv[1], 1 );
+    id = str2id(pool, argv[1], 1);
   else
-    id = rel2id( pool, str2id( pool, argv[1], 1), str2id(pool, argv[2], 1), atoi(argv[3]), 1 );
-  pool_freeidhashes( pool );
+    id = rel2id(pool, str2id(pool, argv[1], 1), str2id(pool, argv[2], 1), atoi(argv[3]), 1);
 
-  pool_prepare( pool );
+  pool_prepare(pool);
 
-  printf("%s%s%s:\n", id2str( pool, id ), id2rel( pool, id ), id2evr( pool, id ) );
+  printf("%s:\n", dep2str(pool, id));
   FOR_PROVIDES(p, pp, id)
     {
       s = pool->solvables + p;
-      printf("  %s-%s.%s\n", id2str( pool, s->name ), id2str( pool, s->evr ), id2str( pool, s->arch ));
+      printf("  %s-%s.%s\n", id2str(pool, s->name), id2str(pool, s->evr), id2str(pool, s->arch));
     }
+  pool_free(pool);
   return 0;
 }
 

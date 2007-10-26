@@ -660,8 +660,8 @@ static void insertLocale( Parsedata *pd, const char *name)
   s->evr = ID_EMPTY;
   s->provides = repo_addid_dep(pd->locales, s->provides, id, 0);
 
-  queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE_PROVIDES );
-  queuepush( &(pd->trials), id );
+  queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
+  queuepush( &(pd->trials), s - pool->solvables );
 }
 
 /*----------------------------------------------------------------*/
