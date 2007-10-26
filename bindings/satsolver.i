@@ -63,16 +63,35 @@ extern "C"
   {
     return pool_addsource_empty($self);
   }
+
+  Source * add_source_solv(FILE *fp, const char *sourcename)
+  { pool_addsource_solv($self, fp, sourcename); }
 };
 %newobject pool_create;
 %delobject pool_free;
 
 
 %include "poolid.h"
-%include "poolid_private.h"
 %include "pooltypes.h"
 %include "queue.h"
 %include "solvable.h"
+
+%extend Solvable {
+
+  //%typemap(ruby,in) Id {
+  //  $1 = id2str($self->pool, $input);
+  //}
+
+  //%typemap(ruby,out) Id {
+  //  $result = rb_str_new2(str2id($self->pool,$1));
+  //}
+
+  //%rename(name_id) name();
+  const char * name()
+  { return id2str($self->source->pool, $self->name);}
+
+}
+
 %include "solver.h"
 %include "source.h"
 
@@ -87,7 +106,8 @@ extern "C"
     for (; i < endof; i++)
     {
       s = $self->pool->solvables + i;
-      rb_yield(SWIG_NewPointerObj((void*) s, $descriptor(storetype), 0));
+      //rb_yield(SWIG_NewPointerObj((void*) s, $descriptor(Solvable), 0));
+      rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
     }
   }
 };
