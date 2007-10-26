@@ -9,13 +9,13 @@ MESSAGE(STATUS "Ruby executable: ${RUBY_EXECUTABLE}")
 MESSAGE(STATUS "Ruby vendor arch dir: ${RUBY_VENDOR_ARCH_DIR}")
 MESSAGE(STATUS "Ruby include path: ${RUBY_INCLUDE_PATH}")
 
-SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c" )
+SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.cxx" )
 SET( SWIG_INPUT "${CMAKE_CURRENT_SOURCE_DIR}/satsolver.i" )
 
 ADD_CUSTOM_COMMAND (
-   OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c
+   OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.cxx
    COMMAND ${CMAKE_COMMAND} -E echo_append "Creating wrapper code for ruby..."
-   COMMAND ${SWIG_EXECUTABLE} -ruby -autorename -xmlout ${CMAKE_CURRENT_BINARY_DIR}/parse.xml -o ${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c -I${CMAKE_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/../satsolver.i
+   COMMAND ${SWIG_EXECUTABLE} -c++ -ruby -autorename -xmlout ${CMAKE_CURRENT_BINARY_DIR}/parse.xml -o ${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.cxx -I${CMAKE_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/../satsolver.i
    COMMAND ${CMAKE_COMMAND} -E echo "Done."
    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../*.i ${CMAKE_CURRENT_SOURCE_DIR}/*.i
@@ -25,7 +25,7 @@ ADD_CUSTOM_TARGET( glue
    DEPENDS ${SWIG_OUTPUT}
 )
 
-ADD_LIBRARY( satsolverx SHARED "${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c" )
+ADD_LIBRARY( satsolverx SHARED "${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.cxx" )
 SET_TARGET_PROPERTIES( satsolverx PROPERTIES PREFIX "" )
 ADD_DEPENDENCIES( satsolverx glue )
 
