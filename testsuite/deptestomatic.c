@@ -889,13 +889,11 @@ startElement( void *userData, const char *name, const char **atts )
 	 */
 
 	const char *channel = attrval( atts, "channel" );
-	const char *package = attrval( atts, "package" );
+	char package[MAXNAMELEN];
+	getPackageName( atts, package );
 	const char *arch = attrval( atts, "arch" );
 
-	if (package == NULL)
-	  package = attrval( atts, "name" );
-
-	if (package == NULL) 
+	if (!strlen(package))
 	  {
 	    err( "%s: No package given in <lock>", Current );
 	    break;
@@ -905,21 +903,22 @@ startElement( void *userData, const char *name, const char **atts )
 	if (channel) 		       /* from specific channel */
 	  {
 	    Id cid = str2id( pool, channel, 0 );
-	    if (cid == ID_NULL) 
+	    if (cid != ID_NULL) 
 	      {
-		err( "Install: Channel '%s' does not exist", channel );
-		exit( 1 );
-	      }
-	    int i = 0;
-	    while (i < pd->nchannels ) 
-	      {
-		if (pd->channels[i].nid == cid) 
+		int i = 0;
+		while (i < pd->nchannels ) 
 		  {
-		    repo = pd->channels[i].repo;
-		    break;
+		    if (pd->channels[i].nid == cid) 
+		      {
+			repo = pd->channels[i].repo;
+			break;
+		      }
+		    ++i;
 		  }
-		++i;
 	      }
+	  }
+	if (repo)
+	  {
 	    Id id = select_solvable( pool, repo, package, arch );
 	    if (id == ID_NULL) 
 	      {
@@ -932,8 +931,8 @@ startElement( void *userData, const char *name, const char **atts )
 	  }
 	else 			       /* no channel given, lock installed */
 	  {
-	    Id id = str2id( pool, package, 1 );
-	    queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE_NAME );
+	    Id id = select_solvable( pool, pd->system, package, arch );
+	    queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
 	    queuepush( &(pd->trials), id );
 	  }
       }
