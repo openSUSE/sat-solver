@@ -966,87 +966,88 @@ startElement( void *userData, const char *name, const char **atts )
      case STATE_TRIAL:
       break;
 
-     case STATE_INSTALL: {	       /* install package */
+    case STATE_INSTALL: 	       /* install package */
+      {
+	/*
+	 * <install channel="1" package="foofoo" />
+	 * <install channel="1" kind="package" name="foofoo" arch="i586" version="2.60" release="21"/>
+	 */
 
-      /*
-       * <install channel="1" package="foofoo" />
-       * <install channel="1" kind="package" name="foofoo" arch="i586" version="2.60" release="21"/>
-       */
+	const char *channel = attrval( atts, "channel" );
+	const char *arch = attrval( atts, "arch" );
+	char package[MAXNAMELEN];
+	getPackageName( atts, package );
 
-       const char *channel = attrval( atts, "channel" );
-       const char *arch = attrval( atts, "arch" );
-       char package[MAXNAMELEN];
-       getPackageName( atts, package );
-
-       if (!strlen(package))
-         {
-	err( "%s: No package given in <install>", Current );
-	break;
-      }
-
-      Repo *repo = NULL;
-       if (channel) /* from specific channel */
-         {
-        Id cid = str2id( pool, channel, 0 );
-           if (cid == ID_NULL)
-             {
-	  err( "Install: Channel '%s' does not exist", channel );
-	  exit( 1 );
-	}
-	int i = 0;
-	while (i < pd->nchannels ) {
-	  if (pd->channels[i].nid == cid) {
-	    repo = pd->channels[i].repo;
+	if (!strlen(package))
+	  {
+	    err( "%s: No package given in <install>", Current );
 	    break;
 	  }
-	  ++i;
-	}
-	Id id = select_solvable( pool, repo, package, arch );
-	if (id == ID_NULL) {
-	  err( "Install: Package '%s' not found", package );
-	  if (repo) err( " in channel '%s'", channel );
-	  exit( 1 );
-	}
-	queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
-        queuepush( &(pd->trials), id );
-      }
-      else {			       /* no channel given, from any channel */
-	Id id = str2id( pool, package, 1 );
-	queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE_PROVIDES );
-        queuepush( &(pd->trials), id );
-      }
-    }
-    break;
 
-    case STATE_REMOVE: {	       /* remove package */
-      char package[MAXNAMELEN];
-      getPackageName( atts, package );
+	Repo *repo = NULL;
+	if (channel) /* from specific channel */
+	  {
+	    Id cid = str2id( pool, channel, 0 );
+	    if (cid == ID_NULL)
+	      {
+		err( "Install: Channel '%s' does not exist", channel );
+		exit( 1 );
+	      }
+	    int i = 0;
+	    while (i < pd->nchannels ) 
+	      {
+		if (pd->channels[i].nid == cid) 
+		  {
+		    repo = pd->channels[i].repo;
+		    break;
+		  }
+		++i;
+	      }
+	    Id id = select_solvable( pool, repo, package, arch );
+	    if (id == ID_NULL) 
+	      {
+		err( "Install: Package '%s' not found", package );
+		if (repo) err( " in channel '%s'", channel );
+		exit( 1 );
+	      }
+	    queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
+	    queuepush( &(pd->trials), id );
+	  }
+	else 			       /* no channel given, from any channel */
+	  {
+	    Id id = str2id( pool, package, 1 );
+	    queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE_PROVIDES );
+	    queuepush( &(pd->trials), id );
+	  }
+      }
+      break;
 
-      if (!strlen(package))
-        {
-	err( "No package given in <uninstall>" );
-	exit( 1 );
+    case STATE_REMOVE: 	       /* remove package */
+      {
+	char package[MAXNAMELEN];
+	getPackageName( atts, package );
+
+	if (!strlen(package))
+	  {
+	    err( "No package given in <uninstall>" );
+	    exit( 1 );
+	  }
+	if (pd->system == NULL) 
+	  {
+	    err( "No system channel defined to <uninstall> from" );
+	    exit( 1 );
+	  }
+	Id id = select_solvable( pool, pd->system, package, 0 );
+	if (id == ID_NULL) 
+	  {
+	    err( "Remove: Package '%s' is not installed", package );
+	    exit(1);
+	  }
+	id = str2id( pool, package, 0 );
+	queuepush( &(pd->trials), SOLVER_ERASE_SOLVABLE_NAME );
+	queuepush( &(pd->trials), id);
       }
-      if (pd->system == NULL) {
-	err( "No system channel defined to <uninstall> from" );
-	exit( 1 );
-      }
-      // pd->allowuninstall = 1;
-#if 0
-      Id id = select_solvable( pool, pd->system, package, 0 );
-      if (id == ID_NULL) {
-	err( "Remove: Package '%s' is not installed", package );
-	break;
-      }
-      queuepush( &(pd->trials), SOLVER_ERASE_SOLVABLE );
-      queuepush( &(pd->trials), id );
-#else
-      Id id = str2id( pool, package, 1 );
-      queuepush( &(pd->trials), SOLVER_ERASE_SOLVABLE_NAME );
-      queuepush( &(pd->trials), id);
-#endif
-    }
-    break;
+      break;
 
     case STATE_REPORTPROBLEMS:
     break;
