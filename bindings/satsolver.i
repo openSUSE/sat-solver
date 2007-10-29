@@ -81,7 +81,7 @@ extern "C"
 
     pool = $self;
     id = str2id(pool, name, 1);
-    queueinit( &plist);
+    queue_init( &plist);
     i = repo ? repo->start : 1;
     end = repo ? repo->start + repo->nsolvables : pool->nsolvables;
     for (; i < end; i++)
@@ -90,7 +90,7 @@ extern "C"
       if (!pool_installable(pool, s))
         continue;
       if (s->name == id)
-        queuepush(&plist, i);
+        queue_push(&plist, i);
     }
 
     prune_best_version_arch(pool, &plist);
@@ -102,7 +102,7 @@ extern "C"
     }
 
     id = plist.elements[0];
-    queuefree(&plist);
+    queue_free(&plist);
 
     return pool->solvables + id;
   }
@@ -128,25 +128,25 @@ extern "C"
 %extend Queue {
 
   Queue()
-  { Queue *q = new Queue(); queueinit(q); return q; }
+  { Queue *q = new Queue(); queue_init(q); return q; }
 
   ~Queue()
-  { queuefree($self); }
+  { queue_free($self); }
 
   Queue* clone()
-  { Queue *t; clonequeue(t, $self); return t; }
+  { Queue *t; queue_clone(t, $self); return t; }
 
   Id shift()
-  { return queueshift($self); }
+  { return queue_shift($self); }
   
   void push(Id id)
-  { /*printf("push id\n");*/ queuepush($self, id); }
+  { /*printf("push id\n");*/ queue_push($self, id); }
 
   void push( Solvable *s )
-  { /*printf("push solvable\n");*/ queuepush($self, (s - s->repo->pool->solvables)); }
+  { /*printf("push solvable\n");*/ queue_push($self, (s - s->repo->pool->solvables)); }
 
   void push_unique(Id id)
-  { queuepushunique($self, id); }
+  { queue_pushunique($self, id); }
 
   %rename("empty?") empty();
   bool empty()
@@ -155,8 +155,8 @@ extern "C"
   void clear()
   { QUEUEEMPTY($self); }
 };
-%newobject queueinit;
-%delobject queuefree;
+%newobject queue_init;
+%delobject queue_free;
 
 %include "solvable.h"
 

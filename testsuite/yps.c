@@ -35,7 +35,7 @@ select_solvable(Pool *pool, Repo *repo, char *name)
   Solvable *s;
 
   id = str2id(pool, name, 1);
-  queueinit( &plist);
+  queue_init( &plist);
   i = repo ? repo->start : 1;
   end = repo ? repo->start + repo->nsolvables : pool->nsolvables;
   for (; i < end; i++)
@@ -44,7 +44,7 @@ select_solvable(Pool *pool, Repo *repo, char *name)
       if (!pool_installable(pool, s))
 	continue;
       if (s->name == id)
-	queuepush(&plist, i);
+	queue_push(&plist, i);
     }
 
   prune_best_version_arch(pool, &plist);
@@ -56,7 +56,7 @@ select_solvable(Pool *pool, Repo *repo, char *name)
     }
 
   id = plist.elements[0];
-  queuefree(&plist);
+  queue_free(&plist);
 
   return pool->solvables + id;
 }
@@ -80,7 +80,7 @@ main(int argc, char **argv)
   pool = pool_create();
   pool_setarch(pool, "i686");
   pool->verbose = 1;
-  queueinit(&job);
+  queue_init(&job);
 
   if (argc < 3)
     {
@@ -134,14 +134,14 @@ main(int argc, char **argv)
   else if (!erase)
     {
       xs = select_solvable(pool, channel, argv[1]);
-      queuepush(&job, SOLVER_INSTALL_SOLVABLE);
-      queuepush(&job, xs - pool->solvables);
+      queue_push(&job, SOLVER_INSTALL_SOLVABLE);
+      queue_push(&job, xs - pool->solvables);
     }
   else
     {
       id = str2id(pool, argv[1], 1);
-      queuepush(&job, SOLVER_ERASE_SOLVABLE_NAME);
-      queuepush(&job, id);
+      queue_push(&job, SOLVER_ERASE_SOLVABLE_NAME);
+      queue_push(&job, id);
     }
 
   pool_prepare(pool);
@@ -164,7 +164,7 @@ main(int argc, char **argv)
 
   // clean up
 
-  queuefree(&job);
+  queue_free(&job);
   solver_free(solv);
   pool_free(pool);
 

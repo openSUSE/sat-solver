@@ -660,8 +660,8 @@ static void insertLocale( Parsedata *pd, const char *name)
   s->evr = ID_EMPTY;
   s->provides = repo_addid_dep(pd->locales, s->provides, id, 0);
 
-  queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
-  queuepush( &(pd->trials), s - pool->solvables );
+  queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
+  queue_push( &(pd->trials), s - pool->solvables );
 }
 
 /*----------------------------------------------------------------*/
@@ -926,14 +926,14 @@ startElement( void *userData, const char *name, const char **atts )
 		if (repo) err( " in channel '%s'", channel );
 		exit( 1 );
 	      }
-	    queuepush( &(pd->trials), SOLVER_ERASE_SOLVABLE );
-	    queuepush( &(pd->trials), id );
+	    queue_push( &(pd->trials), SOLVER_ERASE_SOLVABLE );
+	    queue_push( &(pd->trials), id );
 	  }
 	else 			       /* no channel given, lock installed */
 	  {
 	    Id id = select_solvable( pool, pd->system, package, arch );
-	    queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
-	    queuepush( &(pd->trials), id );
+	    queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
+	    queue_push( &(pd->trials), id );
 	  }
       }
       break;
@@ -1010,14 +1010,14 @@ startElement( void *userData, const char *name, const char **atts )
 		if (repo) err( " in channel '%s'", channel );
 		exit( 1 );
 	      }
-	    queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
-	    queuepush( &(pd->trials), id );
+	    queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
+	    queue_push( &(pd->trials), id );
 	  }
 	else 			       /* no channel given, from any channel */
 	  {
 	    Id id = str2id( pool, package, 1 );
-	    queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE_PROVIDES );
-	    queuepush( &(pd->trials), id );
+	    queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE_PROVIDES );
+	    queue_push( &(pd->trials), id );
 	  }
       }
       break;
@@ -1044,8 +1044,8 @@ startElement( void *userData, const char *name, const char **atts )
 	    exit(1);
 	  }
 	id = str2id( pool, package, 0 );
-	queuepush( &(pd->trials), SOLVER_ERASE_SOLVABLE_NAME );
-	queuepush( &(pd->trials), id);
+	queue_push( &(pd->trials), SOLVER_ERASE_SOLVABLE_NAME );
+	queue_push( &(pd->trials), id);
       }
       break;
 
@@ -1070,8 +1070,8 @@ startElement( void *userData, const char *name, const char **atts )
 	err( "No name given in <addrequire>" );
 	exit( 1 );
       }
-      queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE_PROVIDES );
-      queuepush( &(pd->trials), str2id( pd->pool, name, 1 ) );
+      queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE_PROVIDES );
+      queue_push( &(pd->trials), str2id( pd->pool, name, 1 ) );
     }
     break;
 
@@ -1081,8 +1081,8 @@ startElement( void *userData, const char *name, const char **atts )
 	err( "No name given in <addconflict>" );
 	exit( 1 );
       }
-      queuepush( &(pd->trials), SOLVER_ERASE_SOLVABLE_PROVIDES );
-      queuepush( &(pd->trials), str2id( pd->pool, name, 1 ) );
+      queue_push( &(pd->trials), SOLVER_ERASE_SOLVABLE_PROVIDES );
+      queue_push( &(pd->trials), str2id( pd->pool, name, 1 ) );
     }
     break;
 
@@ -1127,8 +1127,8 @@ startElement( void *userData, const char *name, const char **atts )
 	exit( 1 );
       }
       Id id = select_solvable( pool, pd->system, package, arch );
-      queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
-      queuepush( &(pd->trials), id );
+      queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
+      queue_push( &(pd->trials), id );
     }
     break;
 
@@ -1193,7 +1193,7 @@ endElement( void *userData, const char *name )
       // clean up
 
       solver_free(solv);
-      queuefree( &(pd->trials) );
+      queue_free( &(pd->trials) );
     }
     break;
     default:
@@ -1272,7 +1272,7 @@ main( int argc, char **argv )
   pd.pool = pool_create();
   pd.pool->nscallback = nscallback;
   pd.pool->nscallbackdata = &pd;
-  queueinit( &pd.trials );
+  queue_init( &pd.trials );
 
   pd.nchannels = 0;
   pd.channels = NULL;
