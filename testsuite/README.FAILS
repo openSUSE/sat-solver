@@ -24,8 +24,6 @@
         lock should be broken by a install (possibly not a solver bug)
 
 # BUGS
-./data.libzypp/bugzilla-tests/bug310618-test.xml
-	sat-solver used to not like it, now it's just different
 
 # MISSINGS
 ./data.libzypp/bugzilla-tests/bug308252-test.xml
