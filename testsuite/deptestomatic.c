@@ -166,11 +166,11 @@ typedef struct _parsedata {
 
   Id arch;              // set architecture
 
-  int fixsystem;
-  int updatesystem;
-  int allowdowngrade;
-  int allowuninstall;
-  int allowvirtualconflicts;
+  int fixsystem;                 /* 0/1, if fix system (?) */
+  int updatesystem;              /* 0/1, if solver should update system */
+  int allowdowngrade;            /* 0/1, if version downgrades are allowed */
+  int allowuninstall;            /* 0/1, if solver should remove installed package for solution */ 
+  int allowvirtualconflicts;     /* 0/1, if conflicts specify package names or package provides */
 
   struct stateswitch *swtab[NUMSTATES];
   enum state sbtab[NUMSTATES];
