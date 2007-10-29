@@ -30,7 +30,6 @@
 # MISSINGS
 ./data.libzypp/bugzilla-tests/bug308252-test.xml
 ./data.libzypp/bugzilla-tests/bug239199-test.xml
-./data.libzypp/bugzilla-tests/bug222531-test.xml
 ./data.libzypp/patch-tests/jumbo-patch-test.xml
 ./data.libzypp/patch-tests/kernel-single-update-test.xml
 ./data.libzypp/patch-tests/kernel-update-test.xml

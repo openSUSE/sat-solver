@@ -1117,7 +1117,7 @@ startElement( void *userData, const char *name, const char **atts )
     break;
 
     case STATE_KEEP: {
-//      const char *channel = attrval( atts, "channel" );
+      const char *arch = attrval( atts, "arch" );
       char package[MAXNAMELEN];
       getPackageName( atts, package );
 
@@ -1126,7 +1126,9 @@ startElement( void *userData, const char *name, const char **atts )
 	err( "No package given in <keep>" );
 	exit( 1 );
       }
-      /* FIXME: Needs locks */
+      Id id = select_solvable( pool, pd->system, package, arch );
+      queuepush( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
+      queuepush( &(pd->trials), id );
     }
     break;
 
