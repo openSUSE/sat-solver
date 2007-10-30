@@ -24,11 +24,11 @@ Open issues
    How to express and, or, not within a .spec file ?
    See 'extended reldeps' below
    
-6. Locale supplements
+6. Locale supplements [DONE]
    support local(de), locale(de,at,ch) and locale(<package>:de)
    eventually extend 'package' to reldep, e.g. locale(package > 5.3-2:de)
    
-7. Modalias supplements
+7. Modalias supplements [DONE]
    support modalias(<modalias-regexp>) and modalias(<package>:<modalias-regexp>)
    eventually extend 'package' to reldep, e.g. modalias(package >5.3-2:<modalias-regexp>)
 
@@ -56,7 +56,7 @@ Open issues
     Full range of boolean operators (AND, OR, NOT) and
     conditionals (IF/THEN/ELSE) for dependencies.
 
-13. Source priorities
+13. Source priorities [DONE IN PART]
     Prefer solvables from specific sources
 
 14. split-provides
