@@ -19,7 +19,12 @@ $verbose = false
 $redcarpet = false
 
 $tests = Array.new
-$deptestomatic = File.join( Dir.getwd, "deptestomatic" )
+if File.executable?( "./deptestomatic" )
+  execdir = Dir.getwd
+else
+  execdir = "../build/testsuite"
+end
+$deptestomatic = File.join( execdir, "deptestomatic" )
 $topdir = Dir.getwd
 $fails = Array.new
 $ignorecount = 0
