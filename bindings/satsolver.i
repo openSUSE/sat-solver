@@ -30,7 +30,8 @@ extern "C"
 
 }*/
 
-%typemap(ruby,in) FILE * {
+#ifdef SWIG<Ruby>
+FILE * {
     OpenFile *fptr;
 
     Check_Type($input, T_FILE);    
@@ -38,6 +39,7 @@ extern "C"
     /*rb_io_check_writable(fptr);*/
     $1 = GetReadFile(fptr);
 }
+#endif
 
 %include "bitmap.h"
 %include "evr.h"
