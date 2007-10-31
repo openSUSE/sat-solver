@@ -153,7 +153,7 @@ extern "C"
   { return ($self->count == 0); }
 
   void clear()
-  { QUEUEEMPTY($self); }
+  { queue_empty($self); }
 };
 %newobject queue_init;
 %delobject queue_free;
@@ -196,7 +196,7 @@ extern "C"
 
 %extend Solver {
   
-  Solver( Pool *pool, Repo *system ) { return solver_create(pool, system); }
+  Solver( Pool *pool, Repo *installed ) { return solver_create(pool, installed); }
   ~Solver() { solver_free($self); }
 
   %rename("fix_system") fixsystem;
@@ -219,9 +219,9 @@ extern "C"
       if (p < 0)
       continue;
       /* already installed resolvable */
-      if (p >= $self->system->start && p < $self->system->start + $self->system->nsolvables)
+      if (p >= $self->installed->start && p < $self->installed->start + $self->installed->nsolvables)
         continue;
-      /** system resolvable */
+      /** installed resolvable */
       if (p == SYSTEMSOLVABLE)
         continue;
 
@@ -238,8 +238,8 @@ extern "C"
     Solvable *s;
 
     /* solvables to be erased */
-    for (int i = $self->system->start;
-         i < $self->system->start + $self->system->nsolvables;
+    for (int i = $self->installed->start;
+         i < $self->installed->start + $self->installed->nsolvables;
          i++)
     {
       /* what is this? */
