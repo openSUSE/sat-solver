@@ -171,6 +171,7 @@ typedef struct _parsedata {
   int allowdowngrade;            /* 0/1, if version downgrades are allowed */
   int allowuninstall;            /* 0/1, if solver should remove installed package for solution */ 
   int allowvirtualconflicts;     /* 0/1, if conflicts specify package names or package provides */
+  int allowarchchange;           /* 0/1, if packages can change architecture */
 
   struct stateswitch *swtab[NUMSTATES];
   enum state sbtab[NUMSTATES];
@@ -948,12 +949,14 @@ startElement( void *userData, const char *name, const char **atts )
 	  free((char *)pd->hardwareinfo);
 
         const char *dir = attrval( atts, "path" );
+printf("hardware %s\n", dir);
 	if (dir)
 	  {
 	    char path[PATH_MAX];
 	    strncpy(path, pd->directory, sizeof(path));
 	    strncat(path, dir, sizeof(path));
 	    pd->hardwareinfo = strdup(path);
+            printf("Setting hardwareinfo to %s\n", path);
 	  } 
 	else
 	  pd->hardwareinfo = 0;
@@ -975,6 +978,7 @@ startElement( void *userData, const char *name, const char **atts )
 
 	const char *channel = attrval( atts, "channel" );
 	const char *arch = attrval( atts, "arch" );
+        const char *version = attrval( atts, "version" );
 	char package[MAXNAMELEN];
 	getPackageName( atts, package );
 
@@ -1003,6 +1007,12 @@ startElement( void *userData, const char *name, const char **atts )
 		  }
 		++i;
 	      }
+           if ( arch && version ) // the downgrade should happen only for that package though...
+             {
+               pd->allowdowngrade = 1;
+               pd->allowarchchange = 1;
+             }
+
 	    Id id = select_solvable( pool, repo, package, arch );
 	    if (id == ID_NULL) 
 	      {
@@ -1106,6 +1116,7 @@ startElement( void *userData, const char *name, const char **atts )
 
     case STATE_DISTUPGRADE:
       pd->updatesystem = 1;
+      pd->allowarchchange = 1;
       //pd->fixsystem = 1;
       pd->allowuninstall = 1;
       pd->allowdowngrade = 1;
@@ -1184,6 +1195,7 @@ endElement( void *userData, const char *name )
       solv->updatesystem = pd->updatesystem;
       solv->allowdowngrade = pd->allowdowngrade;
       solv->allowuninstall = pd->allowuninstall;
+      solv->allowarchchange = pd->allowarchchange;
       solv->rc_output = redcarpet ? 2 : 1;
       solv->noupdateprovide = 1;
       pd->pool->verbose = verbose;
