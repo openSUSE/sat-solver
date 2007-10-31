@@ -23,6 +23,7 @@
 #include "solver.h"
 #include "repo_solv.h"
 #include "poolarch.h"
+#include "evr.h"
 
 static int verbose = 0;
 static int redcarpet = 0;
@@ -571,7 +572,7 @@ add_repo( Parsedata *pd, const char *name, const char *file )
 //
 
 static Id
-select_solvable( Pool *pool, Repo *repo, const char *name, const char *arch )
+select_solvable( Pool *pool, Repo *repo, const char *name, const char *version, const char *arch )
 {
   Id id, archid;
   int i, end;
@@ -595,8 +596,16 @@ select_solvable( Pool *pool, Repo *repo, const char *name, const char *arch )
     {
       if (archid && pool->solvables[i].arch != archid)
 	continue;
-      if (pool->solvables[i].name == id)
-	return i;
+      if (pool->solvables[i].name != id)
+	continue;
+      if (version)
+	{
+	  const char *sver = id2str(pool, pool->solvables[i].evr);
+	  const char *svere = strrchr(sver, '-');
+	  if (vercmp(version, version + strlen(version), sver, svere ? svere : sver + strlen(sver)))
+	    continue;
+	}
+      return i;
     }
 
   return ID_NULL;
@@ -893,6 +902,7 @@ startElement( void *userData, const char *name, const char **atts )
 	char package[MAXNAMELEN];
 	getPackageName( atts, package );
 	const char *arch = attrval( atts, "arch" );
+	const char *version = attrval( atts, "version" );
 
 	if (!strlen(package))
 	  {
@@ -920,7 +930,7 @@ startElement( void *userData, const char *name, const char **atts )
 	  }
 	if (repo)
 	  {
-	    Id id = select_solvable( pool, repo, package, arch );
+	    Id id = select_solvable( pool, repo, package, version, arch );
 	    if (id == ID_NULL) 
 	      {
 		err( "Install: Package '%s' not found", package );
@@ -932,7 +942,7 @@ startElement( void *userData, const char *name, const char **atts )
 	  }
 	else 			       /* no channel given, lock installed */
 	  {
-	    Id id = select_solvable( pool, pd->system, package, arch );
+	    Id id = select_solvable( pool, pd->system, package, version, arch );
 	    queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
 	    queue_push( &(pd->trials), id );
 	  }
@@ -1007,13 +1017,7 @@ printf("hardware %s\n", dir);
 		  }
 		++i;
 	      }
-           if ( arch && version ) // the downgrade should happen only for that package though...
-             {
-               pd->allowdowngrade = 1;
-               pd->allowarchchange = 1;
-             }
-
-	    Id id = select_solvable( pool, repo, package, arch );
+	    Id id = select_solvable( pool, repo, package, version, arch );
 	    if (id == ID_NULL) 
 	      {
 		err( "Install: Package '%s' not found", package );
@@ -1047,7 +1051,7 @@ printf("hardware %s\n", dir);
 	    err( "No system channel defined to <uninstall> from" );
 	    exit( 1 );
 	  }
-	Id id = select_solvable( pool, pd->system, package, 0 );
+	Id id = select_solvable( pool, pd->system, package, 0, 0 );
 	if (id == ID_NULL) 
 	  {
 	    err( "Remove: Package '%s' is not installed", package );
@@ -1129,6 +1133,7 @@ printf("hardware %s\n", dir);
 
     case STATE_KEEP: {
       const char *arch = attrval( atts, "arch" );
+      const char *version = attrval( atts, "version" );
       char package[MAXNAMELEN];
       getPackageName( atts, package );
 
@@ -1137,7 +1142,7 @@ printf("hardware %s\n", dir);
 	err( "No package given in <keep>" );
 	exit( 1 );
       }
-      Id id = select_solvable( pool, pd->system, package, arch );
+      Id id = select_solvable( pool, pd->system, package, version, arch );
       queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
       queue_push( &(pd->trials), id );
     }
