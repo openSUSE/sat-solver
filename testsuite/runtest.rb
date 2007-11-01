@@ -25,6 +25,9 @@ else
   execdir = "../build/testsuite"
 end
 $deptestomatic = File.join( execdir, "deptestomatic" )
+
+raise "Cannot find 'deptestomatic' executable. Please fix path in runtest.rb'" unless File.executable?( $deptestomatic )
+
 $topdir = Dir.getwd
 $fails = Array.new
 $ignorecount = 0
