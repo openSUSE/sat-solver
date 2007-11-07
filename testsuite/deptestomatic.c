@@ -56,6 +56,7 @@ enum state {
   STATE_LOCALE,
   STATE_FORCEINSTALL,
   STATE_FORCEUNINSTALL,
+  STATE_SETUPLOCK,
   STATE_LOCK,
   STATE_KEEP,
   STATE_MEDIAID,
@@ -105,7 +106,7 @@ static struct stateswitch stateswitches[] = {
   { STATE_SETUP,       "locale",       STATE_LOCALE, 0 },
   { STATE_SETUP,       "force-install",STATE_FORCEINSTALL, 0 },
   { STATE_SETUP,       "force-uninstall",STATE_FORCEUNINSTALL, 0 },
-  { STATE_SETUP,       "lock",         STATE_LOCK, 0 },
+  { STATE_SETUP,       "lock",         STATE_SETUPLOCK, 0 },
   { STATE_SETUP,       "mediaid",      STATE_MEDIAID, 0 },
   { STATE_SETUP,       "hardwareInfo", STATE_HARDWAREINFO, 0 },
   { STATE_SETUP,       "setlicencebit", STATE_SETLICENSEBIT, 0 },
@@ -893,6 +894,7 @@ startElement( void *userData, const char *name, const char **atts )
       break;
 
     case STATE_LOCK: 	               /* prevent install/removal */
+    case STATE_SETUPLOCK:
       {
 	/*
 	 * <lock channel="1" package="foofoo" />
@@ -1323,9 +1325,9 @@ main( int argc, char **argv )
       ++argp;
     }
 
-  if (argp < argc && !strcmp( argv[argp], "-v" ))
+  while (argp < argc && !strcmp( argv[argp], "-v" ))
     {
-      verbose = 1;
+      verbose++;
       ++argp;
     }
 
