@@ -68,6 +68,13 @@ select_solvable(Pool *pool, Repo *repo, char *name)
   return pool->solvables + id;
 }
 
+static int
+solution_callback(Solver *solv, void *data)
+{
+  printf("*** Found another decision:\n");
+  printdecisions(solv);
+  return 0;
+}
 
 //-----------------------------------------------
 
@@ -83,6 +90,7 @@ main(int argc, char **argv)
   Queue job;
   Id id;
   int erase = 0;
+  int all = 0;
 
   pool = pool_create();
   pool_setarch(pool, "i686");
@@ -98,13 +106,31 @@ main(int argc, char **argv)
       exit(0);
     }
 
-  // '-e' ?
-
-  if (argc > 1 && !strcmp(argv[1], "-e"))
+  while (argc > 1)
     {
-      erase = 1;
-      argc--;
-      argv++;
+      // '-e' ?
+      if (!strcmp(argv[1], "-e"))
+	{
+	  erase = 1;
+	  argc--;
+	  argv++;
+	  continue;
+	}
+      if (!strcmp(argv[1], "-A"))
+	{
+	  all = 1;
+	  argc--;
+	  argv++;
+	  continue;
+	}
+      if (!strcmp(argv[1], "-v"))
+	{
+	  pool->verbose++;
+	  argc--;
+	  argv++;
+	  continue;
+	}
+      break;
     }
 
   // Load system file (installed packages)
@@ -153,7 +179,7 @@ main(int argc, char **argv)
 
   pool_prepare(pool);
 
-  pool->promoteepoch = 1;
+  pool->promoteepoch = 0;
 
   // start solving
 
@@ -167,6 +193,8 @@ main(int argc, char **argv)
 
   // Solve !
 
+  if (all)
+    solv->solution_callback = solution_callback;
   solve(solv, &job);
 
   // clean up
