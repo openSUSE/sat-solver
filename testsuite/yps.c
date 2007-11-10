@@ -27,6 +27,7 @@
 #include "poolarch.h"
 #include "repo_solv.h"
 #include "solver.h"
+#include "policy.h"
 
 // find solvable by name
 //   If repo != NULL, find there (installed packages)
