@@ -6,6 +6,7 @@ extern "C"
 {
 #include "ruby.h"
 #include "rubyio.h"
+#include "policy.h"
 #include "bitmap.h"
 #include "evr.h"
 #include "hash.h"
