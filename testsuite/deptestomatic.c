@@ -1214,11 +1214,16 @@ endElement( void *userData, const char *name )
       pd->pool->verbose = verbose;
 
       // Solve !
-      solve( solv, &(pd->trials) );
+      solve( solv, &pd->trials );
+      // print result
+      if (solv->problems.count)
+	printsolutions(solv, &pd->trials);
+      else
+	printdecisions(solv);
       // clean up
 
       solver_free(solv);
-      queue_free( &(pd->trials) );
+      queue_free( &pd->trials );
     }
     break;
     default:
