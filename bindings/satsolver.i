@@ -25,20 +25,14 @@ extern "C"
 
 %}
 
-/*%typemap(ruby, in) FILE* {
+#if defined(SWIGRUBY)
+%typemap(in) FILE* {
+  OpenFile *fptr;
+
   Check_Type($input, T_FILE);
-  $1 = RFILE($input)->fptr;
-
-}*/
-
-#ifdef SWIG<Ruby>
-FILE * {
-    OpenFile *fptr;
-
-    Check_Type($input, T_FILE);    
-    GetOpenFile($input, fptr);
-    /*rb_io_check_writable(fptr);*/
-    $1 = GetReadFile(fptr);
+  GetOpenFile($input, fptr);
+  /*rb_io_check_writable(fptr);*/
+  $1 = GetReadFile(fptr);
 }
 #endif
 
@@ -260,7 +254,7 @@ FILE * {
 %nodefaultdtor Repo;
 %extend Repo {
 
-  const char *name() { return repo_name($self); }
+  /* const char *name() { return repo_name($self); } */
 
   void each_solvable()
   {
