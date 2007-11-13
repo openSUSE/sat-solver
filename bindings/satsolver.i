@@ -111,13 +111,10 @@ FILE * {
   }
 
 
-  Repo* add_empty_repo()
+  Repo* create_repo(const char *reponame)
   {
-    return pool_addrepo_empty($self);
+    return repo_create($self, reponame);
   }
-
-  Repo * add_repo_solv(FILE *fp, const char *reponame)
-  { pool_addrepo_solv($self, fp, reponame); }
 };
 %newobject pool_create;
 %delobject pool_free;
@@ -258,6 +255,7 @@ FILE * {
 };
 
 %include "repo.h"
+%include "repo_solv.h"
 
 %nodefaultdtor Repo;
 %extend Repo {
@@ -276,6 +274,11 @@ FILE * {
       //rb_yield(SWIG_NewPointerObj((void*) s, $descriptor(Solvable), 0));
       rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
     }
+  }
+
+  void add_solv(FILE *fp)
+  {
+    repo_add_solv($self, fp);
   }
 };
 

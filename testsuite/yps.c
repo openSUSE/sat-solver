@@ -141,7 +141,8 @@ main(int argc, char **argv)
       perror(argv[1]);
       exit(1);
     }
-  system = pool_addrepo_solv(pool, fp, "system");
+  system = repo_create(pool, "system");
+  repo_add_solv(system, fp);
   channel = 0;
   fclose(fp);
 
@@ -156,7 +157,8 @@ main(int argc, char **argv)
 	  perror(argv[1]);
 	  exit(1);
 	}
-      channel = pool_addrepo_solv(pool, fp, argv[1]);
+      channel = repo_create(pool, argv[1]);
+      repo_add_solv(channel, fp);
       fclose(fp);
       argv++;
       argc--;

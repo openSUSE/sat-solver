@@ -28,12 +28,14 @@
 int main(int argc, char **argv)
 {
   Pool *pool;
+  Repo *repo;
   Id id;
   Solvable *s;
   Id p, *pp;
 
   pool = pool_create();
-  pool_addrepo_solv(pool, stdin, "");
+  repo = repo_create(pool, "<stdin>");
+  repo_add_solv(repo, stdin);
   if (argc == 2)
     id = str2id(pool, argv[1], 1);
   else

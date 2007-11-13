@@ -567,7 +567,8 @@ add_repo( Parsedata *pd, const char *name, const char *file )
       perror( solvname );
       return NULL;
     }
-  Repo *s = pool_addrepo_solv( pd->pool, fp, name );
+  Repo *s = repo_create(pd->pool, name);
+  repo_add_solv(s, fp);
   fclose( fp );
   return s;
 }
@@ -653,8 +654,8 @@ static void insertLocale( Parsedata *pd, const char *name)
       pd->channels = (struct _channelmap *)realloc( pd->channels, pd->nchannels * sizeof( struct _channelmap ) );
       struct _channelmap *cmap = pd->channels + (pd->nchannels-1);
 
-      cmap->repo = pd->locales = pool_addrepo_empty(pool);
-      pd->locales->name = cmap->name = strdup( "locales" );
+      cmap->repo = pd->locales = repo_create(pool, "locales");
+      cmap->name = strdup( "locales" );
       cmap->nid = str2id( pd->pool, cmap->name, 1 );
     }
 
@@ -1192,7 +1193,7 @@ endElement( void *userData, const char *name )
     case STATE_TRIAL: {		       /* trial complete */
 
       if (!pd->system)
-	pd->system = pool_addrepo_empty( pd->pool );
+	pd->system = repo_create( pd->pool, 0 );
 
       if (pd->arch)
         pool_setarch( pd->pool, id2str(pd->pool, pd->arch) );
@@ -1384,7 +1385,7 @@ main( int argc, char **argv )
   for ( i = 0; i < pd.nchannels; ++i )
     {
       free( pd.channels[i].name );
-      pool_freerepo( pd.pool, pd.channels[i].repo );
+      repo_free( pd.channels[i].repo );
     }
 
   for ( i = 0; i < pd.nmodaliases; ++i )
