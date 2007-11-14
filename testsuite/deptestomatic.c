@@ -560,7 +560,7 @@ add_repo( Parsedata *pd, const char *name, const char *file )
   strncpy( solvname, file, l );
   strcpy( solvname + l, ".solv" );
 
-  if (verbose) err( "%s:%s -> %s", name, file, solvname );
+  if (verbose) fprintf( stdout, "%s:%s -> %s", name, file, solvname );
   FILE *fp = fopen( solvname, "r" );
   if (!fp)
     {
