@@ -1385,7 +1385,7 @@ main( int argc, char **argv )
   for ( i = 0; i < pd.nchannels; ++i )
     {
       free( pd.channels[i].name );
-      repo_free( pd.channels[i].repo );
+      repo_free( pd.channels[i].repo, 1 );
     }
 
   for ( i = 0; i < pd.nmodaliases; ++i )

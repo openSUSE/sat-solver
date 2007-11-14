@@ -209,19 +209,16 @@ extern "C"
     for (int i = 0; i < $self->decisionq.count; i++)
     {
       p = $self->decisionq.elements[i];
-      /* conflict */
       if (p < 0)
-      continue;
-      /* already installed resolvable */
-      if (p >= $self->installed->start && p < $self->installed->start + $self->installed->nsolvables)
-        continue;
-      /** installed resolvable */
+        continue;       /* conflicting package, ignore */
       if (p == SYSTEMSOLVABLE)
-        continue;
+        continue;       /* system resolvable, always installed */
 
       // getting repo
       s = $self->pool->solvables + p;
       Repo *repo = s->repo;
+      if (!repo || repo == $self->installed)
+        continue;       /* already installed resolvable */
       rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
     }
   }
@@ -231,18 +228,19 @@ extern "C"
     Id p;
     Solvable *s;
 
+    if (!$self->installed)
+      return;
     /* solvables to be erased */
-    for (int i = $self->installed->start;
-         i < $self->installed->start + $self->installed->nsolvables;
-         i++)
+    for (int i = $self->installed->start; i < $self->installed->end; i++)
     {
-      /* what is this? */
-      if ($self->decisionmap[i] > 0)
-        continue;
+      if ($self->decisionmap[i] >= 0)
+        continue;       /* we keep this package */
 
       // getting repo
       s = $self->pool->solvables + i;
       Repo *repo = s->repo;
+      if (repo != $self->installed)
+        continue;
       rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
     }
   }
@@ -261,10 +259,12 @@ extern "C"
     int i, endof;
     Solvable *s;
     i = $self ? $self->start : 1;
-    endof = $self ? $self->start + $self->nsolvables : $self->pool->nsolvables;
+    endof = $self ? $self->end : $self->pool->nsolvables;
     for (; i < endof; i++)
     {
       s = $self->pool->solvables + i;
+      if (s->repo != $self)
+        continue;
       //rb_yield(SWIG_NewPointerObj((void*) s, $descriptor(Solvable), 0));
       rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
     }
