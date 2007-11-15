@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<test>
+<setup>
+  <system file="mm-system.xml.gz"/>
+  <channel name="test" file="mm-packages.xml.gz"/>
+</setup>
+<trial>
+  <verify />
+  <install name="E"/>
+</trial>
+</test>
