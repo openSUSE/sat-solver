@@ -78,7 +78,7 @@
 >!> install mozilla-nspr-4.6.1-14.i586[beta52]
 >!> install mozilla-nss-3.11-13.i586[beta52]
 >!> install myspell-american-20040623-16.noarch[beta52]
->!> install myspell-german-old-20030428-112.noarch[beta52]
+>!> install myspell-german-20051213-7.noarch[beta52]
 >!> install ncurses-5.5-8.i586[beta52]
 >!> install neon-0.24.7-11.i586[beta52]
 >!> install openldap2-client-2.3.19-7.i586[beta52]

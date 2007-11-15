@@ -22,7 +22,7 @@
 -->
 
 <trial>
-  <install channel="packages" kind="package" name="nvidia-gfx-kmp-default"/>
+  <install kind="package" name="nvidia-gfx-kmp-default"/>
   <reportproblems/>
 </trial>
 

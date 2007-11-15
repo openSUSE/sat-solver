@@ -58,7 +58,6 @@
 <install channel="1" kind="package" name="mozilla-xulrunner181"/>
 <install channel="1" kind="package" name="ntfsprogs"/>
 <install channel="1" kind="package" name="kdebase3-kdm"/>
-<install channel="1" kind="package" name="libzypp"/>
 <install channel="1" kind="package" name="libopensync"/>
 <install channel="1" kind="package" name="fileshareset"/>
 <install channel="1" kind="package" name="kdebase3"/>
