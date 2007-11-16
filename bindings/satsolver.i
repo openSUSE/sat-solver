@@ -128,7 +128,7 @@ extern "C"
   { queue_free($self); }
 
   Queue* clone()
-  { Queue *t; queue_clone(t, $self); return t; }
+  { Queue *t = new Queue(); queue_clone(t, $self); return t; }
 
   Id shift()
   { return queue_shift($self); }
