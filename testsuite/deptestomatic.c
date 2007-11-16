@@ -36,6 +36,8 @@ static int redcarpet = 0;
 
 static const char *Current;
 
+static void rc_printdecisions(Solver *solv, Queue *job);
+
 #define MAXNAMELEN 100
 
 static void
@@ -1210,7 +1212,6 @@ endElement( void *userData, const char *name )
       solv->allowdowngrade = pd->allowdowngrade;
       solv->allowuninstall = pd->allowuninstall;
       solv->allowarchchange = pd->allowarchchange;
-      solv->rc_output = redcarpet ? 2 : 1;
       solv->noupdateprovide = 1;
       pd->pool->verbose = verbose;
 
@@ -1220,7 +1221,7 @@ endElement( void *userData, const char *name )
       if (solv->problems.count)
 	printsolutions(solv, &pd->trials);
       else
-	printdecisions(solv);
+	rc_printdecisions(solv, &pd->trials);
       // clean up
 
       solver_free(solv);
@@ -1266,6 +1267,195 @@ characterData( void *userData, const XML_Char *s, int len )
   while (len-- > 0)
     *c++ = *s++;
   *c = 0;
+}
+
+/*-------------------------------------------------------------------*/
+
+static const char *
+id2rc(Solver *solv, Id id)
+{
+  const char *evr;
+  if (!redcarpet)
+    return "";
+  evr = id2str(solv->pool, id); 
+  if (*evr < '0' || *evr > '9') 
+    return "0:";
+  while (*evr >= '0' && *evr <= '9') 
+    evr++;
+  if (*evr != ':') 
+    return "0:";
+  return "";
+}
+
+static void
+rc_printdecisions(Solver *solv, Queue *job)
+{
+  Pool *pool = solv->pool;
+  Repo *installed = solv->installed;
+  Id p, *obsoletesmap;
+  int i;
+  Solvable *s;
+
+  for (i = 0; i < job->count; i += 2)
+    {
+      if (job->elements[i] == SOLVER_INSTALL_SOLVABLE)
+	{
+	  s = pool->solvables + job->elements[i + 1];
+	  printf(">!> Installing %s from channel %s\n", id2str(pool, s->name), repo_name(s->repo));
+	}
+    }
+
+  obsoletesmap = (Id *)calloc(pool->nsolvables, sizeof(Id));
+  if (installed)
+    {
+      for (i = 0; i < solv->decisionq.count; i++)
+	{
+	  Id *pp, n;
+
+	  n = solv->decisionq.elements[i];
+	  if (n < 0)
+	    continue;
+	  if (n == SYSTEMSOLVABLE)
+	    continue;
+	  s = pool->solvables + n;
+	  if (s->repo == installed)		/* obsoletes don't count for already installed packages */
+	    continue;
+	  FOR_PROVIDES(p, pp, s->name)
+	    if (s->name == pool->solvables[p].name)
+	      {
+		if (pool->solvables[p].repo == installed && !obsoletesmap[p])
+		  {
+		    obsoletesmap[p] = n;
+		    obsoletesmap[n]++;
+		  }
+	      }
+	}
+      for (i = 0; i < solv->decisionq.count; i++)
+	{
+	  Id obs, *obsp;
+	  Id *pp, n;
+
+	  n = solv->decisionq.elements[i];
+	  if (n < 0)
+	    continue;
+	  if (n == SYSTEMSOLVABLE)
+	    continue;
+	  s = pool->solvables + n;
+	  if (s->repo == installed)		/* obsoletes don't count for already installed packages */
+	    continue;
+	  if (!s->obsoletes)
+	    continue;
+	  obsp = s->repo->idarraydata + s->obsoletes;
+	  while ((obs = *obsp++) != 0)
+	    FOR_PROVIDES(p, pp, obs)
+	      {
+		if (pool->solvables[p].repo == installed && !obsoletesmap[p])
+		  {
+		    obsoletesmap[p] = n;
+		    obsoletesmap[n]++;
+		  }
+	      }
+	}
+    }
+
+  printf(">!> Solution #1:\n");
+
+  int installs = 0, uninstalls = 0, upgrades = 0;
+  
+  /* print solvables to be erased */
+
+  if (installed)
+    {
+      for (i = installed->start; i < installed->end; i++)
+	{
+	  s = pool->solvables + i;
+	  if (s->repo != installed)
+	    continue;
+	  if (solv->decisionmap[i] >= 0)
+	    continue;
+	  if (obsoletesmap[i])
+	    continue;
+	  if (redcarpet)
+	    printf(">!> remove  %s-%s%s\n", id2str(pool, s->name), id2rc(solv, s->evr), id2str(pool, s->evr));
+	  else
+	    printf(">!> remove  %s-%s.%s\n", id2str(pool, s->name), id2str(pool, s->evr), id2str(pool, s->arch));
+	  uninstalls++;
+	}
+    }
+
+  /* print solvables to be installed */
+
+  for (i = 0; i < solv->decisionq.count; i++)
+    {
+      int j;
+      p = solv->decisionq.elements[i];
+      if (p < 0)
+	{
+	  if (solv->decisionq_why.elements[i] == 0 && solv->decisionmap[-p] == -1)
+	    {
+	      s = pool->solvables - p;
+	      printf(">!> !unflag %s-%s.%s[%s]\n", id2str(pool, s->name), id2str(pool, s->evr), id2str(pool, s->arch), repo_name(s->repo));
+	    }
+	  continue;
+	}
+      if (p == SYSTEMSOLVABLE)
+	continue;
+      s = pool->solvables + p;
+      if (installed && s->repo == installed)
+	continue;
+
+      if (!obsoletesmap[p])
+        {
+	  printf(">!> ");
+          printf("install %s-%s%s", id2str(pool, s->name), id2rc(solv, s->evr), id2str(pool, s->evr));
+	  if (!redcarpet)
+            printf(".%s", id2str(pool, s->arch));
+	  installs++;
+        }
+      else
+	{
+	  Solvable *f, *fn = 0;
+	  for (j = installed->start; j < installed->end; j++)
+	    {
+	      if (obsoletesmap[j] != p)
+		continue;
+	      f = pool->solvables + j;
+	      if (fn || f->name != s->name)
+		{
+		  if (redcarpet)
+		    printf(">!> remove  %s-%s%s\n", id2str(pool, f->name), id2rc(solv, f->evr), id2str(pool, f->evr));
+		  else
+		    printf(">!> remove  %s-%s.%s\n", id2str(pool, f->name), id2str(pool, f->evr), id2str(pool, f->arch));
+		  uninstalls++;
+		}
+	      else
+		fn = f;
+	    }
+	  if (!fn)
+	    {
+	      printf(">!> install %s-%s%s", id2str(pool, s->name), id2rc(solv, s->evr), id2str(pool, s->evr));
+	      if (!redcarpet)
+	        printf(".%s", id2str(pool, s->arch));
+	      installs++;
+	    }
+	  else
+	    {
+	      if (redcarpet)
+	        printf(">!> upgrade %s-%s => %s-%s%s", id2str(pool, fn->name), id2str(pool, fn->evr), id2str(pool, s->name), id2rc(solv, s->evr), id2str(pool, s->evr));
+	      else
+	        printf(">!> upgrade %s-%s.%s => %s-%s.%s", id2str(pool, fn->name), id2str(pool, fn->evr), id2str(pool, fn->arch), id2str(pool, s->name), id2str(pool, s->evr), id2str(pool, s->arch));
+	      upgrades++;
+	    }
+	}
+      Repo *repo = s->repo;
+      if (repo && strcmp(repo_name(repo), "locales"))
+	printf("[%s]", repo_name(repo));
+      printf("\n");
+    }
+
+  printf(">!> installs=%d, upgrades=%d, uninstalls=%d\n", installs, upgrades, uninstalls);
+  
+  free(obsoletesmap);
 }
 
 /*-------------------------------------------------------------------*/
