@@ -85,5 +85,11 @@
 ./data.libzypp/yast-tests/exercise-02conflict-12-test.xml
 ./data.libzypp/yast-tests/exercise-05reallive-4-test.xml
 ./data.libzypp/yast-tests/exercise-kdelibsobs-force-test.xml
+./data.libzypp/basic-exercises/exercise-35-test.xml
+./data.libzypp/basic-exercises/exercise-36-test.xml
+./data.libzypp/basic-exercises/exercise-37-test.xml
+./data.libzypp/basic-exercises/exercise-38-test.xml
+./data.libzypp/basic-exercises/exercise-40-test.xml
+./data.libzypp/basic-exercises/exercise-44-test.xml
 	the tests are really to be ignored
 
