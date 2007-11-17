@@ -1,28 +1,12 @@
-#have fix repo on machcd2
 bug186196-test.xml
-#does only run with ZYPP_KEYRING_DEFAULT_ACCEPT_ALL=1
-bug206927-test.xml
-#does not work correctly ( do not recognize "super-sets" )
+bug191983-test.xml
+bug205039-test.xml
 bug205977-1-test.xml
 bug205977-2-test.xml
-#no valid bug
+bug206927-test.xml
 bug218492-test.xml
-#no solution for
 bug220490-test.xml
-#transact in no longer needed
-bug205039-test.xml
-#not defined bahaviour of deleting a pattern
 bug220757-test.xml
-#different behaviour in autobuild
-bug217574-test.xml
-bug297795-1-test.xml
-#takesolution not support
-bug191983-test.xml
-#takesolution not support
 bug224698-test.xml
-#takesolution not support
 bug292077-test.xml
-#takesolution not support
-bug292077-test.xml
-#sat-solver tries all solution by default 
-bug191983-bare-test.xml
+bug297795-1-test.xml

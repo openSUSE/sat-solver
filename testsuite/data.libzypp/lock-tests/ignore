@@ -1,6 +1,3 @@
-#takesolution not support
-install-single-require-test.xml
-#incomplete
-exercise-obscureobsoletes-06-test.xml
-#incomplete
 exercise-obscureobsoletes-02-test.xml
+exercise-obscureobsoletes-06-test.xml
+install-single-require-test.xml
