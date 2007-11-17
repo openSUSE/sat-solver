@@ -1,0 +1,45 @@
+Load from File './data.libzypp/sat-tests/mm-system.xml.gz'
+Added repository '@system' with 6 resolvables
+Loaded 6 resolvables from mm-system.xml.gz.
+Load from File './data.libzypp/sat-tests/mm-packages.xml.gz'
+Added repository 'test' with 7 resolvables
+Loaded 7 resolvables from mm-packages.xml.gz.
+
+------------------------------------------------
+
+>!> Installing E from channel 
+
+Pruned solutions: 0
+Deferred solutions: 0
+
+Failed Solution: 
+Parent @ResolverContext with 4 entries
+U__s_[S2:0][package]C-2.0-1.noarch : U__s_X
+U__s_[S2:0][package]D-2.0-1.noarch : U__s_X
+U__s_[S2:0][package]C2-2.0-1.noarch : U__s_X
+U__s_[S2:0][package]D2-2.0-1.noarch : U__s_X
+
+ResolverContext with 4 entries
+U__s_[S2:0][package]C-2.0-1.noarch : U__s_X
+U__s_[S2:0][package]D-2.0-1.noarch : U__s_X
+U__s_[S2:0][package]C2-2.0-1.noarch : U__s_X
+U__s_[S2:0][package]D2-2.0-1.noarch : U__s_X
+ResolverContext with 1 entries
+I__s_[S1:0][package]D2-1.0-1.noarch : I_Ts_
+
+- - - - - - - - - -
+Failed Solution: 
+Parent @ResolverContext with 4 entries
+U__s_[S2:0][package]C-2.0-1.noarch : U__s_X
+U__s_[S2:0][package]D-2.0-1.noarch : U__s_X
+U__s_[S2:0][package]C2-2.0-1.noarch : U__s_X
+U__s_[S2:0][package]D2-2.0-1.noarch : U__s_X
+
+ResolverContext with 4 entries
+U__s_[S2:0][package]C-2.0-1.noarch : U__s_X
+U__s_[S2:0][package]D-2.0-1.noarch : U__s_X
+U__s_[S2:0][package]C2-2.0-1.noarch : U__s_X
+U__s_[S2:0][package]D2-2.0-1.noarch : U__s_X
+ResolverContext with 0 entries
+
+- - - - - - - - - -
