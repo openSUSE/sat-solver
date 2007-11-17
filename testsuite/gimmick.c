@@ -41,7 +41,7 @@ int main(int argc, char **argv)
   else
     id = rel2id(pool, str2id(pool, argv[1], 1), str2id(pool, argv[2], 1), atoi(argv[3]), 1);
 
-  pool_prepare(pool);
+  pool_createwhatprovides(pool);
 
   printf("%s:\n", dep2str(pool, id));
   FOR_PROVIDES(p, pp, id)

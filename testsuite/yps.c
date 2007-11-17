@@ -182,7 +182,7 @@ main(int argc, char **argv)
       queue_push(&job, id);
     }
 
-  pool_prepare(pool);
+  pool_createwhatprovides(pool);
 
   pool->promoteepoch = 0;
 
