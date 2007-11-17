@@ -45,10 +45,12 @@ select_solvable(Pool *pool, Repo *repo, char *name)
   id = str2id(pool, name, 1);
   queue_init( &plist);
   i = repo ? repo->start : 1;
-  end = repo ? repo->start + repo->nsolvables : pool->nsolvables;
+  end = repo ? repo->end : pool->nsolvables;
   for (; i < end; i++)
     {
       s = pool->solvables + i;
+      if (repo && s->repo != repo)
+	continue;
       if (!pool_installable(pool, s))
 	continue;
       if (s->name == id)

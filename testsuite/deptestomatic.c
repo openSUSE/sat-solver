@@ -584,6 +584,7 @@ add_repo( Parsedata *pd, const char *name, const char *file )
 static Id
 select_solvable( Pool *pool, Repo *repo, const char *name, const char *version, const char *arch )
 {
+  Solvable *s;
   Id id, archid;
   int i, end;
 
@@ -601,18 +602,23 @@ select_solvable( Pool *pool, Repo *repo, const char *name, const char *version, 
     }
 
   i = repo ? repo->start : 1;
-  end = repo ? repo->start + repo->nsolvables : pool->nsolvables;
-  for (; i < end; i++)
+  end = repo ? repo->end : pool->nsolvables;
+  s = pool_id2solvable(pool, i);
+  for (; i < end; i++, s++)
     {
-      if (archid && pool->solvables[i].arch != archid)
+      if (repo && s->repo != repo)
 	continue;
-      if (pool->solvables[i].name != id)
+      if (s->name != id)
+	continue;
+      if (archid && s->arch != archid)
 	continue;
       if (version)
 	{
-	  const char *sver = id2str(pool, pool->solvables[i].evr);
+	  const char *sver = id2str(pool, s->evr);
 	  const char *svere = strrchr(sver, '-');
-	  if (vercmp(version, version + strlen(version), sver, svere ? svere : sver + strlen(sver)))
+	  if (!svere)
+	    svere = sver + strlen(sver);
+	  if (vercmp(version, version + strlen(version), sver, svere))
 	    continue;
 	}
       return i;
@@ -666,15 +672,11 @@ static void insertLocale( Parsedata *pd, const char *name)
   id = str2id(pool, locale, 1);
 
   /* check if we already have that one */
-  for (i = pd->locales->start; i < pd->locales->start + pd->locales->nsolvables; i++)
-    if (pool->solvables[i].name == id)
+  for (i = pd->locales->start, s = pool_id2solvable(pool, i); i < pd->locales->end; i++, s++)
+    if (s->repo == pd->locales && s->name == id)
       return;
   
-  pool->solvables = realloc(pool->solvables, (pool->nsolvables + 1) * sizeof(Solvable));
-  s = pool->solvables + pool->nsolvables++;
-  pd->locales->nsolvables++;
-  memset(s, 0, sizeof(Solvable));
-  s->repo = pd->locales;
+  s = pool_id2solvable(pool, repo_add_solvable(pd->locales));
   s->name = id;
   s->arch = ARCH_NOARCH;
   s->evr = ID_EMPTY;
