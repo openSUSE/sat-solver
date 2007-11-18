@@ -59,7 +59,7 @@ extern "C"
   { return pool_installable($self,s); }
 
   void prepare()
-  { pool_prepare($self);}
+  { pool_createwhatprovides($self); }
 
   void each_repo()
   {
