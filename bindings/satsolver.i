@@ -67,6 +67,23 @@ extern "C"
       rb_yield(SWIG_NewPointerObj((void*) $self->repos[i], SWIGTYPE_p__Repo, 0));
   }
 
+  Solvable *id2solvable(Id p)
+  {
+    return pool_id2solvable($self, p);
+  }
+
+  void each_solvable()
+  {
+    Solvable *s;
+    Id p;
+    for (p = 1, s = $self->solvables + p; p < $self->nsolvables; p++, s++)
+    {
+      if (!s->name)
+        continue;
+      rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
+    }
+  }
+
   Solvable *
   select_solvable(Repo *repo, char *name)
   {
@@ -152,9 +169,16 @@ extern "C"
 %newobject queue_init;
 %delobject queue_free;
 
+
 %include "solvable.h"
 
 %extend Solvable {
+
+  Id id() {
+    if (!$self->repo)
+      return 0;
+    return $self - $self->repo->pool->solvables;
+  }
 
   //%typemap(ruby,in) Id {
   //  $1 = id2str($self->pool, $input);
@@ -186,6 +210,7 @@ extern "C"
 
 }
 
+
 %include "solver.h"
 
 %extend Solver {
@@ -209,7 +234,7 @@ extern "C"
     for (int i = 0; i < $self->decisionq.count; i++)
     {
       p = $self->decisionq.elements[i];
-      if (p < 0)
+      if (p <= 0)
         continue;       /* conflicting package, ignore */
       if (p == SYSTEMSOLVABLE)
         continue;       /* system resolvable, always installed */
@@ -231,16 +256,10 @@ extern "C"
     if (!$self->installed)
       return;
     /* solvables to be erased */
-    for (int i = $self->installed->start; i < $self->installed->end; i++)
+    FOR_REPO_SOLVABLES($self->installed, p, s)
     {
-      if ($self->decisionmap[i] >= 0)
+      if ($self->decisionmap[p] >= 0)
         continue;       /* we keep this package */
-
-      // getting repo
-      s = $self->pool->solvables + i;
-      Repo *repo = s->repo;
-      if (repo != $self->installed)
-        continue;
       rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
     }
   }
@@ -256,18 +275,17 @@ extern "C"
 
   void each_solvable()
   {
-    int i, endof;
+    Id p;
     Solvable *s;
-    i = $self ? $self->start : 1;
-    endof = $self ? $self->end : $self->pool->nsolvables;
-    for (; i < endof; i++)
+    FOR_REPO_SOLVABLES($self, p, s)
     {
-      s = $self->pool->solvables + i;
-      if (s->repo != $self)
-        continue;
-      //rb_yield(SWIG_NewPointerObj((void*) s, $descriptor(Solvable), 0));
       rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
     }
+  }
+
+  Solvable *add_solvable()
+  {
+    return pool_id2solvable($self->pool, repo_add_solvable($self));
   }
 
   void add_solv(FILE *fp)
