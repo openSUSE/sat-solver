@@ -196,16 +196,9 @@ extern "C"
   %rename("to_s") asString();
   const char * asString()
   {
-    std::stringstream ss;
     if ( $self->repo == NULL )
         return "<UNKNOWN>";
-      
-    ss << id2str($self->repo->pool, $self->name);
-    ss << "-";
-    ss << id2str($self->repo->pool, $self->evr);
-    ss << "-";
-    ss << id2str($self->repo->pool, $self->arch);
-    return ss.str().c_str();
+    return solvable2str($self->repo->pool, $self);
   }
 
 }
@@ -224,7 +217,7 @@ extern "C"
   %rename("allow_uninstall") allowuninstall;
   %rename("no_update_provide") noupdateprovide;
 
-  void solve(Queue *job) { solve($self, job); }
+  void solve(Queue *job) { solver_solve($self, job); }
   void print_decisions() { printdecisions($self); }
 
   void each_to_install()

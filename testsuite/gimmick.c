@@ -30,7 +30,6 @@ int main(int argc, char **argv)
   Pool *pool;
   Repo *repo;
   Id id;
-  Solvable *s;
   Id p, *pp;
 
   pool = pool_create();
@@ -45,10 +44,7 @@ int main(int argc, char **argv)
 
   printf("%s:\n", dep2str(pool, id));
   FOR_PROVIDES(p, pp, id)
-    {
-      s = pool->solvables + p;
-      printf("  %s-%s.%s\n", id2str(pool, s->name), id2str(pool, s->evr), id2str(pool, s->arch));
-    }
+    printf("  %s\n", solvable2str(pool, pool->solvables + p));
   pool_free(pool);
   return 0;
 }

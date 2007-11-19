@@ -1218,7 +1218,7 @@ endElement( void *userData, const char *name )
       pd->pool->verbose = verbose;
 
       // Solve !
-      solve( solv, &pd->trials );
+      solver_solve( solv, &pd->trials );
       // print result
       if (solv->problems.count)
 	printsolutions(solv, &pd->trials);

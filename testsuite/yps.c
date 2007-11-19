@@ -200,7 +200,7 @@ main(int argc, char **argv)
 
   if (all)
     solv->solution_callback = solution_callback;
-  solve(solv, &job);
+  solver_solve(solv, &job);
   if (solv->problems.count)
     printsolutions(solv, &job);
   else
