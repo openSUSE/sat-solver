@@ -91,5 +91,8 @@
 ./data.libzypp/basic-exercises/exercise-38-test.xml
 ./data.libzypp/basic-exercises/exercise-40-test.xml
 ./data.libzypp/basic-exercises/exercise-44-test.xml
+./data.libzypp/sat-tests/test-crappy-coolo-2-test.xml
+./data.libzypp/sat-tests/test-crappy-coolo-5-test.xml
+./data.libzypp/sat-tests/test-crappy-coolo-9-test.xml
 	the tests are really to be ignored
 
