@@ -30,6 +30,7 @@
 #include "repo_solv.h"
 #include "poolarch.h"
 #include "evr.h"
+#include "sat_debug.h"
 
 static int verbose = 0;
 static int redcarpet = 0;
@@ -1534,6 +1535,9 @@ main( int argc, char **argv )
       verbose++;
       ++argp;
     }
+
+  /* setting loglevel */
+  sat_set_debug (verbose, 0); /* Without logging source code lines */
 
   if (argp >= argc || !strcmp( argv[argp], "-h" ))
     {
