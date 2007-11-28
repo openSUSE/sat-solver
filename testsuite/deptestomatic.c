@@ -30,7 +30,6 @@
 #include "repo_solv.h"
 #include "poolarch.h"
 #include "evr.h"
-#include "sat_debug.h"
 
 static int verbose = 0;
 static int redcarpet = 0;
@@ -1216,7 +1215,6 @@ endElement( void *userData, const char *name )
       solv->allowuninstall = pd->allowuninstall;
       solv->allowarchchange = pd->allowarchchange;
       solv->noupdateprovide = 1;
-      pd->pool->verbose = verbose;
 
       // Solve !
       solver_solve( solv, &pd->trials );
@@ -1537,7 +1535,7 @@ main( int argc, char **argv )
     }
 
   /* setting loglevel */
-  sat_set_debug (verbose, 0); /* Without logging source code lines */
+  pool_setdebuglevel(pd.pool, verbose);
 
   if (argp >= argc || !strcmp( argv[argp], "-h" ))
     {

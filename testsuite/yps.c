@@ -94,10 +94,10 @@ main(int argc, char **argv)
   Id id;
   int erase = 0;
   int all = 0;
+  int debuglevel = 1;
 
   pool = pool_create();
   pool_setarch(pool, "i686");
-  pool->verbose = 1;
   queue_init(&job);
 
   if (argc < 3)
@@ -128,13 +128,14 @@ main(int argc, char **argv)
 	}
       if (!strcmp(argv[1], "-v"))
 	{
-	  pool->verbose++;
+	  debuglevel++;
 	  argc--;
 	  argv++;
 	  continue;
 	}
       break;
     }
+  pool_setdebuglevel(pool, debuglevel);
 
   // Load system file (installed packages)
 
