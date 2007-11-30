@@ -668,7 +668,7 @@ static void insertLocale( Parsedata *pd, const char *name)
     }
 
   strcpy(locale, "language:");
-  strncat(locale, name, MAXNAMELEN);
+  strncat(locale, name, MAXNAMELEN-sizeof("language:"));
   id = str2id(pool, locale, 1);
 
   /* check if we already have that one */
@@ -782,8 +782,7 @@ startElement( void *userData, const char *name, const char **atts )
 	if (file) 
 	  {
 	    char path[PATH_MAX];
-	    strncpy(path, pd->directory, sizeof(path));
-	    strncat(path, file, sizeof(path));
+	    snprintf(path, sizeof(path), "%s%s", pd->directory, file);
 
 	    if (!name)
 	      name = file;
@@ -829,8 +828,7 @@ startElement( void *userData, const char *name, const char **atts )
 	if (file) 
 	  {
 	    char path[PATH_MAX];
-	    strncpy(path, pd->directory, sizeof(path));
-	    strncat(path, file, sizeof(path));
+	    snprintf(path, sizeof(path), "%s%s", pd->directory, file);	    
 	    Repo *repo = add_repo( pd, "system", path );
 	    if (repo)
 	      pd->system = repo;
@@ -976,8 +974,7 @@ printf("hardware %s\n", dir);
 	if (dir)
 	  {
 	    char path[PATH_MAX];
-	    strncpy(path, pd->directory, sizeof(path));
-	    strncat(path, dir, sizeof(path));
+	    snprintf(path, sizeof(path), "%s%s", pd->directory, dir);	    	    
 	    pd->hardwareinfo = strdup(path);
             printf("Setting hardwareinfo to %s\n", path);
 	  } 
