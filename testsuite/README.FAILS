@@ -7,13 +7,10 @@
 
 ./data.libzypp/basic-exercises/Bug299819-2-test.xml
 ./data.libzypp/bugzilla-tests/bug308098-test.xml
-./data.libzypp/sat-tests/install-digikam-test.xml
-./data.libzypp/bugzilla-tests/bug308252-test.xml
 ./data.libzypp/freshen-tests/exercise-6-test.xml
 ./data.libzypp/freshen-tests/exercise-6f-test.xml
 ./data.libzypp/freshen-tests/exercise-7-test.xml
 ./data.libzypp/freshen-tests/exercise-7f-test.xml
-./data.libzypp/bugzilla-tests/bug230685-test.xml
        installs recommends
 
 ./data.libzypp/kernel-tests/kernel_kmp-test.xml
