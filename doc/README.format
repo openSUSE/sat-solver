@@ -2,9 +2,11 @@ Metadata information is stored as '.solv' files
 
 These files have the following format:
 
+V0 format
+=========
  
   MAGIC: 'SOLV'
-  U32:   SOLVVERSION
+  U32:   0
  
   -- sizes --
  
@@ -36,3 +38,58 @@ These files have the following format:
   U8*: BITS
   U8*: DATA
 
+
+V1 format
+=========
+
+  MAGIC: 'SOLV'
+  U32:   1
+
+  U32:   NUMID                       /* number of Ids (names) */
+  U32:   NUMREL                      /* number of RelDeps (dependencies) */
+  U32:   NUMITEM                     /* number of items (packages) */
+  U32:   NUMKEYS
+  U32:   NUMSCHEMATA                 /* number of schemata */
+  U32:   NUMINFO
+  U32:   FLAGS			     /* solv file flags */
+			1:HAS_PACKED_SIZES
+			2:VERTICAL_PACKING
+
+  -- string data --
+  ID:    SIZEID                      /* total size of string buffer */
+   U8*:  DICT (SIZE SIZEID)          /* (raw) string buffer */
+
+  -- reldep data --
+   U8*:  RELDICT                     /* Buffer for RandDeps (Id,Id,u8) */
+
+
+  -- key data --
+  NUMKEYS *
+    ID: name
+    ID: type
+    ID: expanded num/size
+
+  -- schemata data --
+  ID: expanded schemata size
+  NUMSCHEMATA *
+    IDARRAY* keys
+
+  -- file information --
+  NUMINFO *
+    ID schema
+    U8 *data
+
+  -- packed item sizes (optional) --
+  ID*: sizeis
+
+IF_HORIZONTAL
+  -- item data --
+  NUMITEM *
+    ID schema
+    U8* data
+
+IF_VERTICAL
+  -- item data --
+  NUMINFO *
+    ID schema
+  U8* data
