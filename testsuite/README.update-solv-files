@@ -1,0 +1,3 @@
+
+./gen-data.rb ~/prod/libzypp-testsuite/solver/data.deptestomatic/ data.libzypp
+for i in data.libzypp/sat-tests/*.xml.gz; do zcat $i | ../tools/helix2solv > ${i/xml.gz/solv}; done
