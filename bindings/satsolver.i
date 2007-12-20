@@ -1,9 +1,7 @@
-%module satsolverx
+%module SatSolver
 
 %{
 
-extern "C"
-{
 #include "ruby.h"
 #include "rubyio.h"
 #include "policy.h"
@@ -20,10 +18,13 @@ extern "C"
 #include "solver.h"
 #include "repo.h"
 #include "repo_solv.h"
-}
-#include <sstream>
+
+/*#include <sstream> */
 
 %}
+
+/*-------------------------------------------------------------*/
+/* types and typemaps */
 
 #if defined(SWIGRUBY)
 %typemap(in) FILE* {
@@ -34,38 +35,83 @@ extern "C"
   /*rb_io_check_writable(fptr);*/
   $1 = GetReadFile(fptr);
 }
+
+%typemap(in) Id {
+ $1 = (int) NUM2INT($input);
+}
+
+%typemap(in) Offset {
+ $1 = (unsigned int) NUM2INT($input);
+}
 #endif
 
-%include "bitmap.h"
-%include "evr.h"
-%include "hash.h"
-%include "poolarch.h"
+%nodefault _Repo;
+%rename(Repo) _Repo;
+typedef struct _Repo {} Repo;
 
+%nodefault _Solvable;
+%rename(Solvable) _Solvable;
+struct _Solvable {};
 
-%alias Pool::nsolvables "size"
-%include "pool.h"
-%extend _Pool {
+/*-------------------------------------------------------------*/
+/* Pool */
 
-  _Pool()
+%newobject pool_create;
+%delobject pool_free;
+
+typedef struct _Pool {} Pool;
+%rename(Pool) _Pool;
+
+%extend Pool {
+
+  /*
+   * Pool management
+   */
+   
+  Pool()
   { return pool_create(); }
 
-  ~_Pool()
+  ~Pool()
   { pool_free($self); }
 
-  void set_arch(const char *arch)
-  { pool_setarch($self, arch); }
+#if defined(SWIGRUBY)
+  %rename( "arch=" ) set_arch( const char *arch );
+#endif
+  void set_arch( const char *arch )
+  { pool_setarch( $self, arch ); }
 
-  int installable(Solvable *s)
-  { return pool_installable($self,s); }
+#if defined(SWIGRUBY)
+  %rename( "debug=" ) set_debug( int level );
+#endif
+  void set_debug( int level )
+  { pool_setdebuglevel( $self, level ); }
 
   void prepare()
-  { pool_createwhatprovides($self); }
+  { pool_createwhatprovides( $self ); }
+
+  /*
+   * Repo management
+   */
+
+  int repo_count()
+  { return $self->nrepos; }
 
   void each_repo()
   {
-    for (int i = 0; i < $self->nrepos; ++i )
+    int i;
+    for (i = 0; i < $self->nrepos; ++i )
       rb_yield(SWIG_NewPointerObj((void*) $self->repos[i], SWIGTYPE_p__Repo, 0));
   }
+
+  /*
+   * Solvable management
+   */
+
+  int size()
+  { return $self->nsolvables; }
+  
+  int installable( Solvable *s )
+  { return pool_installable( $self,s ); }
 
   Solvable *id2solvable(Id p)
   {
@@ -121,15 +167,85 @@ extern "C"
     return pool->solvables + id;
   }
 
+}
 
-  Repo* create_repo(const char *reponame)
+/*-------------------------------------------------------------*/
+/* Repo */
+
+%extend Repo {
+  Repo( Pool *pool, const char *reponame )
+  { return repo_create( pool, reponame ); }
+  int add_solv( FILE *fp )
+  { return repo_add_solv( $self, fp ); }
+  int add_solv( const char *fname )
   {
-    return repo_create($self, reponame);
+    int result = -1;
+    FILE *fp = fopen( fname, "r");
+    if (fp) {
+      result = repo_add_solv( $self, fp );
+      fclose( fp );
+    }
+    return result;
   }
-};
-%newobject pool_create;
-%delobject pool_free;
+  int size()
+  { return $self->nsolvables; }
+  const char *name()
+  { return $self->name; }
+  int priority()
+  { return $self->priority; }
+  Pool *pool()
+  { return $self->pool; }
+}
 
+#if 0
+
+
+/*-------------------------------------------------------------*/
+/* Solvable */
+
+%include "solvable.h"
+
+%extend Solvable {
+
+  Id id() {
+    if (!$self->repo)
+      return 0;
+    return $self - $self->repo->pool->solvables;
+  }
+
+  //%typemap(ruby,in) Id {
+  //  $1 = id2str($self->pool, $input);
+  //}
+
+  //%typemap(ruby,out) Id {
+  //  $result = rb_str_new2(str2id($self->pool,$1));
+  //}
+
+  //%rename(name_id) name();
+  %ignore name;
+  const char * name()
+  { return id2str($self->repo->pool, $self->name);}
+  %ignore arch;
+  const char * arch()
+  { return id2str($self->repo->pool, $self->arch);}
+  %ignore evr;
+  const char * evr()
+  { return id2str($self->repo->pool, $self->evr);}
+  %ignore vendor;
+  const char * vendor()
+  { return id2str($self->repo->pool, $self->vendor);}
+
+  %rename("to_s") asString();
+  const char * asString()
+  {
+    if ( !$self->repo )
+        return "<UNKNOWN>";
+    return solvable2str($self->repo->pool, $self);
+  }
+
+}
+
+/*-------------------------------------------------------------*/
 
 %include "poolid.h"
 %include "pooltypes.h"
@@ -169,39 +285,6 @@ extern "C"
 %newobject queue_init;
 %delobject queue_free;
 
-
-%include "solvable.h"
-
-%extend Solvable {
-
-  Id id() {
-    if (!$self->repo)
-      return 0;
-    return $self - $self->repo->pool->solvables;
-  }
-
-  //%typemap(ruby,in) Id {
-  //  $1 = id2str($self->pool, $input);
-  //}
-
-  //%typemap(ruby,out) Id {
-  //  $result = rb_str_new2(str2id($self->pool,$1));
-  //}
-
-  //%rename(name_id) name();
-  %ignore name;
-  const char * name()
-  { return id2str($self->repo->pool, $self->name);}
-
-  %rename("to_s") asString();
-  const char * asString()
-  {
-    if ( $self->repo == NULL )
-        return "<UNKNOWN>";
-    return solvable2str($self->repo->pool, $self);
-  }
-
-}
 
 
 %include "solver.h"
@@ -289,7 +372,4 @@ extern "C"
 
 %include "repo_solv.h"
 
-%typemap(in) Id {
- $1 = (int) NUM2INT($input);
- printf("Received an integer : %d\n",$1);
-}
+#endif
