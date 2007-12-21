@@ -1201,6 +1201,7 @@ endElement( void *userData, const char *name )
       else
 	pool_setarch( pd->pool, "i686" );
 
+      pool_addfileprovides( pd->pool );
       pool_createwhatprovides( pd->pool );
       if (redcarpet)
         pool->promoteepoch = 1;

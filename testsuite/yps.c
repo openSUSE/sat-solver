@@ -145,7 +145,11 @@ main(int argc, char **argv)
       exit(1);
     }
   system = repo_create(pool, "system");
-  repo_add_solv(system, fp);
+  if (repo_add_solv(system, fp))
+    {
+      fprintf(stderr, "could not add system repository\n");
+      exit(1);
+    }
   channel = 0;
   fclose(fp);
 
@@ -161,7 +165,11 @@ main(int argc, char **argv)
 	  exit(1);
 	}
       channel = repo_create(pool, argv[1]);
-      repo_add_solv(channel, fp);
+      if (repo_add_solv(channel, fp))
+	{
+	  fprintf(stderr, "could not add repository %s\n", argv[1]);
+	  exit(1);
+	}
       fclose(fp);
       argv++;
       argc--;
@@ -183,6 +191,7 @@ main(int argc, char **argv)
       queue_push(&job, id);
     }
 
+  pool_addfileprovides(pool);
   pool_createwhatprovides(pool);
 
   pool->promoteepoch = 0;
