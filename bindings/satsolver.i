@@ -21,6 +21,35 @@
 
 /*#include <sstream> */
 
+
+typedef struct _Relation {
+  Offset id;
+  Pool *pool;
+} Relation;
+static Relation *relation_new( Id id, Pool *pool )
+{
+  if (!id) return NULL;
+  Relation *relation = (Relation *)malloc( sizeof( Relation ));
+  relation->id = id;
+  relation->pool = pool;
+  return relation;
+}
+
+/* Collection of Relations -> Dependency */
+typedef struct _Dependency {
+  Offset relation;                 /* offset into repo->idarraydata */
+  Solvable *solvable;              /* solvable this dep belongs to */
+} Dependency;
+
+static Dependency *dependency_new( Offset relation, Solvable *solvable )
+{
+  if (!relation) return NULL;
+  Dependency *dependency = (Dependency *)malloc( sizeof( Dependency ));
+  dependency->relation = relation;
+  dependency->solvable = solvable;
+  return dependency;
+}
+
 %}
 
 /*-------------------------------------------------------------*/
@@ -36,14 +65,10 @@
   $1 = GetReadFile(fptr);
 }
 
-%typemap(in) Id {
- $1 = (int) NUM2INT($input);
-}
-
-%typemap(in) Offset {
- $1 = (unsigned int) NUM2INT($input);
-}
 #endif
+
+typedef int Id;
+typedef unsigned int Offset;
 
 %nodefault _Repo;
 %rename(Repo) _Repo;
@@ -51,7 +76,15 @@ typedef struct _Repo {} Repo;
 
 %nodefault _Solvable;
 %rename(Solvable) _Solvable;
-struct _Solvable {};
+typedef struct _Solvable {} Solvable;
+
+%nodefault _Relation;
+%rename(Relation) _Relation;
+typedef struct _Relation {} Relation;
+
+%nodefault _Dependency;
+%rename(Dependency) _Dependency;
+typedef struct _Dependency {} Dependency;
 
 /*-------------------------------------------------------------*/
 /* Pool */
@@ -113,10 +146,10 @@ typedef struct _Pool {} Pool;
   int installable( Solvable *s )
   { return pool_installable( $self,s ); }
 
+  /* without the %rename, swig converts it to id_2solvable. Ouch! */
+  %rename( "id2solvable" ) id2solvable( Id p );
   Solvable *id2solvable(Id p)
-  {
-    return pool_id2solvable($self, p);
-  }
+  { return pool_id2solvable( $self, p );  }
 
   void each_solvable()
   {
@@ -131,7 +164,7 @@ typedef struct _Pool {} Pool;
   }
 
   Solvable *
-  select_solvable(Repo *repo, char *name)
+  select_solvable( char *name, Repo *repo = NULL )
   {
     Id id;
     Queue plist;
@@ -195,15 +228,91 @@ typedef struct _Pool {} Pool;
   { return $self->priority; }
   Pool *pool()
   { return $self->pool; }
+
+  void each_solvable()
+  {
+    Solvable *s;
+    Id p;
+    for (p = 0, s = $self->pool->solvables + $self->start; p < $self->nsolvables; p++, s++)
+    {
+      if (!s->name)
+        continue;
+      rb_yield( SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0) );
+    }
+  }
+#if defined(SWIGRUBY)
+  /* %rename is rejected by swig for [] */
+  %alias get_solvable "[]";
+#endif
+  Solvable *get_solvable( int i )
+  {
+    if (i < 0) return NULL;
+    if (i >= $self->nsolvables) return NULL;
+    return pool_id2solvable( $self->pool, $self->start + i );
+  }
 }
 
-#if 0
+/*-------------------------------------------------------------*/
+/* Relation */
 
+%extend Relation {
+  Relation( Id id, Pool *pool)
+  { return relation_new( id, pool ); }
+  ~Relation()
+  { free( $self ); }
+  %rename("to_s") asString();
+  const char *asString()
+  {
+    return dep2str( $self->pool, $self->id );
+  }
+  const char *name()
+  { return id2str( $self->pool, $self->id ); }
+}
+
+/*-------------------------------------------------------------*/
+/* Dependency */
+
+%extend Dependency {
+  Dependency( Offset offset, Solvable *solvable )
+  { return dependency_new( offset, solvable ); }
+  ~Dependency()
+  { free( $self ); }
+  int size()
+  {
+    int i = 0;
+    if ($self->relation) {
+      Id *ids = $self->solvable->repo->idarraydata + $self->relation;
+      while (*ids++)
+        ++i;
+    }
+    return i;
+  }
+  void each()
+  {
+    if ($self->relation) {
+      Id *ids = $self->solvable->repo->idarraydata + $self->relation;
+      while (*ids) {
+        rb_yield( SWIG_NewPointerObj((void*) *ids, SWIGTYPE_p__Relation, 0) );
+	++ids;
+      }
+    }
+  }
+#if defined(SWIGRUBY)
+  /* %rename is rejected by swig for [] */
+  %alias get_relation "[]";
+#endif
+  Relation *get_relation( unsigned int i )
+  {
+    if (!$self->relation)
+      return NULL;
+    /* FIXME: check overflow */
+    Id *ids = $self->solvable->repo->idarraydata + $self->relation + i;
+    return relation_new( *ids, $self->solvable->repo->pool );
+  }
+}
 
 /*-------------------------------------------------------------*/
 /* Solvable */
-
-%include "solvable.h"
 
 %extend Solvable {
 
@@ -213,39 +322,55 @@ typedef struct _Pool {} Pool;
     return $self - $self->repo->pool->solvables;
   }
 
-  //%typemap(ruby,in) Id {
-  //  $1 = id2str($self->pool, $input);
-  //}
-
-  //%typemap(ruby,out) Id {
-  //  $result = rb_str_new2(str2id($self->pool,$1));
-  //}
-
-  //%rename(name_id) name();
-  %ignore name;
   const char * name()
-  { return id2str($self->repo->pool, $self->name);}
-  %ignore arch;
+  { return id2str( $self->repo->pool, $self->name ); }
+  Id name_id()
+  { return $self->name; }
   const char * arch()
-  { return id2str($self->repo->pool, $self->arch);}
-  %ignore evr;
+  { return id2str( $self->repo->pool, $self->arch ); }
+  Id arch_id()
+  { return $self->arch; }
   const char * evr()
-  { return id2str($self->repo->pool, $self->evr);}
-  %ignore vendor;
+  { return id2str( $self->repo->pool, $self->evr ); }
+  Id evr_id()
+  { return $self->evr; }
   const char * vendor()
-  { return id2str($self->repo->pool, $self->vendor);}
+  { return id2str( $self->repo->pool, $self->vendor ); }
+  Id vendor_id()
+  { return $self->vendor; }
 
   %rename("to_s") asString();
   const char * asString()
   {
     if ( !$self->repo )
         return "<UNKNOWN>";
-    return solvable2str($self->repo->pool, $self);
+    return solvable2str( $self->repo->pool, $self );
   }
 
+  /*
+   * Dependencies
+   */
+  Dependency *provides()
+  { return dependency_new( $self->provides, $self ); }
+  Dependency *requires()
+  { return dependency_new( $self->requires, $self ); }
+  Dependency *conflicts()
+  { return dependency_new( $self->conflicts, $self ); }
+  Dependency *obsoletes()
+  { return dependency_new( $self->obsoletes, $self ); }
+  Dependency *recommends()
+  { return dependency_new( $self->recommends, $self ); }
+  Dependency *suggests()
+  { return dependency_new( $self->suggests, $self ); }
+  Dependency *supplements()
+  { return dependency_new( $self->supplements, $self ); }
+  Dependency *enhances()
+  { return dependency_new( $self->enhances, $self ); }
 }
 
 /*-------------------------------------------------------------*/
+
+#if 0
 
 %include "poolid.h"
 %include "pooltypes.h"
