@@ -13,7 +13,9 @@ def show_dep name, deps
     i += 1
   end
 # does not work yet
-  deps.each { |d| puts d }
+  deps.each { |d|
+    puts "#{d.name} #{d.op} #{d.evr}"
+  }
 end
 
 class SolvableTest < Test::Unit::TestCase

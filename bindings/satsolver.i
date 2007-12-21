@@ -256,8 +256,24 @@ typedef struct _Pool {} Pool;
 /* Relation */
 
 %extend Relation {
+  %constant int REL_GT = 1;
+  %constant int REL_EQ = 2;
+  %constant int REL_LT = 4;
+  %constant int REL_AND = 16;
+  %constant int REL_OR = 17;
+  %constant int REL_WITH = 18;
+  %constant int REL_NAMESPACE = 18;
   Relation( Id id, Pool *pool)
   { return relation_new( id, pool ); }
+  Relation( Pool *pool, const char *name, int op = 0, const char *evr = NULL )
+  {
+    Id name_id = str2id( pool, name, 1 );
+    Id evr_id = 0;
+    if (evr)
+      evr_id = str2id( pool, evr, 1 );
+    Id rel = rel2id( pool, name_id, evr_id, op, 1 );
+    return relation_new( rel, pool );
+  }
   ~Relation()
   { free( $self ); }
   %rename("to_s") asString();
@@ -266,7 +282,30 @@ typedef struct _Pool {} Pool;
     return dep2str( $self->pool, $self->id );
   }
   const char *name()
-  { return id2str( $self->pool, $self->id ); }
+  {
+    Reldep *rd = GETRELDEP( $self->pool, $self->id );
+    return id2str( $self->pool, rd->name );
+  }
+  const char *evr()
+  {
+    Reldep *rd = GETRELDEP( $self->pool, $self->id );
+    return id2str( $self->pool, rd->evr );
+  }
+  int op()
+  {
+    Reldep *rd = GETRELDEP( $self->pool, $self->id );
+    return rd->flags;
+  }
+#if defined(SWIGRUBY)
+  %alias cmp "<=>";
+#endif
+  int cmp( const Relation *r )
+  { return evrcmp( $self->pool, $self->id, r->id, EVRCMP_COMPARE ); }
+#if defined(SWIGRUBY)
+  %alias match "=~";
+#endif
+  int match( const Relation *r )
+  { return evrcmp( $self->pool, $self->id, r->id, EVRCMP_MATCH_RELEASE ) == 0; }
 }
 
 /*-------------------------------------------------------------*/
