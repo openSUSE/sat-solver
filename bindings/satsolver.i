@@ -146,7 +146,7 @@ typedef struct _Pool {} Pool;
   int installable( Solvable *s )
   { return pool_installable( $self,s ); }
 
-  /* without the %rename, swig converts it to id_2solvable. Ouch! */
+  /* without the %rename, swig converts it to 'id_2solvable'. Ouch! */
   %rename( "id2solvable" ) id2solvable( Id p );
   Solvable *id2solvable(Id p)
   { return pool_id2solvable( $self, p );  }
@@ -235,7 +235,7 @@ typedef struct _Pool {} Pool;
     Id p;
     for (p = 0, s = $self->pool->solvables + $self->start; p < $self->nsolvables; p++, s++)
     {
-      if (!s->name)
+      if (!s)
         continue;
       rb_yield( SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0) );
     }
@@ -292,7 +292,7 @@ typedef struct _Pool {} Pool;
     if ($self->relation) {
       Id *ids = $self->solvable->repo->idarraydata + $self->relation;
       while (*ids) {
-        rb_yield( SWIG_NewPointerObj((void*) *ids, SWIGTYPE_p__Relation, 0) );
+        rb_yield( SWIG_NewPointerObj((void*) relation_new( *ids, $self->solvable->repo->pool ), SWIGTYPE_p__Relation, 0) );
 	++ids;
       }
     }

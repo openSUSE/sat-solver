@@ -22,4 +22,16 @@ class RepoTest < Test::Unit::TestCase
     puts repo.name
     puts repo.size
   end
+  def test_deps
+    pool = SatSolver::Pool.new
+    assert pool
+    repo = SatSolver::Repo.new( pool, "test" )
+    assert repo
+    pool.arch = "i686"
+    puts repo.add_solv( "../../../testsuite/data.libzypp/basic-exercises/exercise-1-packages.solv" )
+    repo.each_solvable{ |s|
+      puts s
+    }
+    assert true
+  end
 end
