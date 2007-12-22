@@ -18,9 +18,7 @@
 #include "solver.h"
 #include "repo.h"
 #include "repo_solv.h"
-
-/*#include <sstream> */
-
+#include "repo_rpmdb.h"
 
 typedef struct _Relation {
   Offset id;
@@ -126,7 +124,14 @@ typedef struct _Pool {} Pool;
    * Repo management
    */
 
-  int repo_count()
+  Repo *add_rpmdb( const char *rootdir )
+  {
+    Repo *repo = repo_create( $self, "system" );
+    repo_add_rpmdb( repo, NULL, rootdir );
+    return repo;
+  }
+
+  int size_repo()
   { return $self->nrepos; }
 
   void each_repo()
@@ -136,6 +141,16 @@ typedef struct _Pool {} Pool;
       rb_yield(SWIG_NewPointerObj((void*) $self->repos[i], SWIGTYPE_p__Repo, 0));
   }
 
+  Repo *find_repo( const char *name )
+  {
+    int i;
+    for (i = 0; i < $self->nrepos; ++i ) {
+      if (!strcmp( $self->repos[i]->name, name ))
+        return $self->repos[i];
+    }
+    return NULL;
+  }
+
   /*
    * Solvable management
    */
@@ -143,15 +158,18 @@ typedef struct _Pool {} Pool;
   int size()
   { return $self->nsolvables; }
   
+#if defined(SWIGRUBY)
+  %rename( "installable?" ) installable( Solvable *s );
+#endif
   int installable( Solvable *s )
-  { return pool_installable( $self,s ); }
+  { return pool_installable( $self, s ); }
 
   /* without the %rename, swig converts it to 'id_2solvable'. Ouch! */
   %rename( "id2solvable" ) id2solvable( Id p );
   Solvable *id2solvable(Id p)
   { return pool_id2solvable( $self, p );  }
 
-  void each_solvable()
+  void each()
   {
     Solvable *s;
     Id p;
@@ -164,7 +182,7 @@ typedef struct _Pool {} Pool;
   }
 
   Solvable *
-  select_solvable( char *name, Repo *repo = NULL )
+  find( char *name, Repo *repo = NULL )
   {
     Id id;
     Queue plist;
@@ -265,6 +283,7 @@ typedef struct _Pool {} Pool;
   %constant int REL_NAMESPACE = 18;
   Relation( Id id, Pool *pool)
   { return relation_new( id, pool ); }
+  %feature("autodoc", "1");
   Relation( Pool *pool, const char *name, int op = 0, const char *evr = NULL )
   {
     Id name_id = str2id( pool, name, 1 );
