@@ -24,6 +24,7 @@ typedef struct _Relation {
   Offset id;
   Pool *pool;
 } Relation;
+
 static Relation *relation_new( Id id, Pool *pool )
 {
   if (!id) return NULL;
@@ -46,6 +47,38 @@ static Dependency *dependency_new( Offset relation, Solvable *solvable )
   dependency->relation = relation;
   dependency->solvable = solvable;
   return dependency;
+}
+
+typedef struct _Action {
+  SolverCmd cmd;
+  Id id;
+} Action;
+
+static Action *action_new( SolverCmd cmd, Id id )
+{
+  Action *action = (Action *)malloc( sizeof( Action ));
+  action->cmd = cmd;
+  action->id = id;
+  return action;
+}
+
+typedef struct _Transaction {
+  Pool *pool;
+  Queue queue;
+} Transaction;
+
+static Transaction *transaction_new( Pool *pool )
+{
+  Transaction *t = (Transaction *)malloc( sizeof( Transaction ));
+  t->pool = pool;
+  queue_init( &(t->queue) );
+  return t;
+}
+
+static void transaction_free( Transaction *t )
+{
+  queue_free( &(t->queue) );
+  free( t );
 }
 
 %}
@@ -84,6 +117,14 @@ typedef struct _Relation {} Relation;
 %rename(Dependency) _Dependency;
 typedef struct _Dependency {} Dependency;
 
+%nodefault _Action;
+%rename(Action) _Action;
+typedef struct _Action {} Action;
+
+%nodefault _Transaction;
+%rename(Transaction) _Transaction;
+typedef struct _Transaction {} Transaction;
+
 /*-------------------------------------------------------------*/
 /* Pool */
 
@@ -119,6 +160,18 @@ typedef struct _Pool {} Pool;
 
   void prepare()
   { pool_createwhatprovides( $self ); }
+
+  /*
+   * Name management
+   */
+  Id intern( const char *name )
+  {
+    return str2id( $self, name, 1 );
+  }
+  const char *idname( Id id )
+  {
+    return id2str( $self, id );
+  }
 
   /*
    * Repo management
@@ -166,7 +219,7 @@ typedef struct _Pool {} Pool;
 
   /* without the %rename, swig converts it to 'id_2solvable'. Ouch! */
   %rename( "id2solvable" ) id2solvable( Id p );
-  Solvable *id2solvable(Id p)
+  Solvable *id2solvable( Id p )
   { return pool_id2solvable( $self, p );  }
 
   void each()
@@ -427,48 +480,114 @@ typedef struct _Pool {} Pool;
 }
 
 /*-------------------------------------------------------------*/
+/* Action */
+
+%extend Action {
+  %constant int INSTALL_SOLVABLE = 1;
+  %constant int ERASE_SOLVABLE = 2;
+  %constant int INSTALL_SOLVABLE_NAME = 3;
+  %constant int ERASE_SOLVABLE_NAME = 4;
+  %constant int INSTALL_SOLVABLE_PROVIDES = 5;
+  %constant int ERASE_SOLVABLE_PROVIDES = 6;
+  
+  Action( int cmd, Id id )
+  { return action_new( cmd, id ); }
+  ~Action()
+  { free( $self ); }
+  int cmd()
+  { return $self->cmd; }
+  Id id()
+  { return $self->id; }
+}
+
+/*-------------------------------------------------------------*/
+/* Transaction */
+
+%extend Transaction {
+  Transaction( Pool *pool )
+  { return transaction_new( pool ); }
+
+  ~Transaction()
+  { transaction_free( $self ); }
+
+  Action *shift()
+  {
+    int cmd = queue_shift( &($self->queue) );
+    Id id = queue_shift( &($self->queue) );
+    return action_new( cmd, id );
+  }
+  
+  void push( const Action *action )
+  {
+    queue_push( &($self->queue), action->cmd );
+    queue_push( &($self->queue), action->id );
+  }
+
+  void install( Solvable *s )
+  {
+    queue_push( &($self->queue), SOLVER_INSTALL_SOLVABLE );
+    /* FIXME: check: s->repo->pool == $self->pool */
+    queue_push( &($self->queue), (s - s->repo->pool->solvables) );
+  }
+  void erase( Solvable *s )
+  {
+    queue_push( &($self->queue), SOLVER_ERASE_SOLVABLE );
+    /* FIXME: check: s->repo->pool == $self->pool */
+    queue_push( &($self->queue), (s - s->repo->pool->solvables) );
+  }
+  void install( const char *name )
+  {
+    queue_push( &($self->queue), SOLVER_INSTALL_SOLVABLE_NAME );
+    queue_push( &($self->queue), str2id( $self->pool, name, 1 ));
+  }
+  void erase( const char *name )
+  {
+    queue_push( &($self->queue), SOLVER_ERASE_SOLVABLE_NAME );
+    queue_push( &($self->queue), str2id( $self->pool, name, 1 ));
+  }
+  void install( const Relation *rel )
+  {
+    queue_push( &($self->queue), SOLVER_INSTALL_SOLVABLE_PROVIDES );
+    /* FIXME: check: rel->pool == $self->pool */
+    Reldep *rd = GETRELDEP( rel->pool, rel->id );
+    queue_push( &($self->queue), rd->name );
+  }
+  void erase( const Relation *rel )
+  {
+    queue_push( &($self->queue), SOLVER_ERASE_SOLVABLE_PROVIDES );
+    /* FIXME: check: rel->pool == $self->pool */
+    Reldep *rd = GETRELDEP( rel->pool, rel->id );
+    queue_push( &($self->queue), rd->name );
+  }
+
+#if defined(SWIGRUBY)
+  %rename("empty?") empty();
+#endif
+  int empty()
+  { return ( $self->queue.count == 0 ); }
+
+  int size()
+  { return $self->queue.count >> 1; }
+
+#if defined(SWIGRUBY)
+  %rename("clear!") clear();
+#endif
+  void clear()
+  { queue_empty( &($self->queue) ); }
+
+  void each()
+  {
+    int i;
+    for (i = 0; i < $self->queue.count-1; ) {
+      int cmd = $self->queue.elements[i++];
+      Id id = $self->queue.elements[i++];
+      rb_yield(SWIG_NewPointerObj((void*) action_new( cmd, id ), SWIGTYPE_p__Action, 0));
+    }
+  }
+
+}
 
 #if 0
-
-%include "poolid.h"
-%include "pooltypes.h"
-
-%include "queue.h"
-
-%extend Queue {
-
-  Queue()
-  { Queue *q = new Queue(); queue_init(q); return q; }
-
-  ~Queue()
-  { queue_free($self); }
-
-  Queue* clone()
-  { Queue *t = new Queue(); queue_clone(t, $self); return t; }
-
-  Id shift()
-  { return queue_shift($self); }
-  
-  void push(Id id)
-  { /*printf("push id\n");*/ queue_push($self, id); }
-
-  void push( Solvable *s )
-  { /*printf("push solvable\n");*/ queue_push($self, (s - s->repo->pool->solvables)); }
-
-  void push_unique(Id id)
-  { queue_pushunique($self, id); }
-
-  %rename("empty?") empty();
-  bool empty()
-  { return ($self->count == 0); }
-
-  void clear()
-  { queue_empty($self); }
-};
-%newobject queue_init;
-%delobject queue_free;
-
-
 
 %include "solver.h"
 
