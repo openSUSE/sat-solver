@@ -1,7 +1,7 @@
 $: << "../../../build/bindings/ruby"
 # test Solvable
 require 'test/unit'
-require 'SatSolver'
+require 'satsolver'
 
 def show_dep name, deps
   return unless deps

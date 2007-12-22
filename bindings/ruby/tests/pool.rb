@@ -1,7 +1,7 @@
 $: << "../../../build/bindings/ruby"
 # test Pool
 require 'test/unit'
-require 'SatSolver'
+require 'satsolver'
 
 class PoolTest < Test::Unit::TestCase
   def test_pool
