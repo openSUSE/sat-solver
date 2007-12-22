@@ -125,6 +125,10 @@ typedef struct _Action {} Action;
 %rename(Transaction) _Transaction;
 typedef struct _Transaction {} Transaction;
 
+%nodefault solver;
+%rename(Solver) solver;
+typedef struct solver {} Solver;
+
 /*-------------------------------------------------------------*/
 /* Pool */
 
@@ -177,9 +181,27 @@ typedef struct _Pool {} Pool;
    * Repo management
    */
 
+  Repo *add_solv( FILE *fp )
+  {
+    Repo *repo = repo_create( $self, NULL );
+    repo_add_solv( repo, fp );
+    return repo;
+  }
+
+  Repo *add_solv( const char *fname )
+  {
+    Repo *repo = repo_create( $self, NULL );
+    FILE *fp = fopen( fname, "r");
+    if (fp) {
+      repo_add_solv( repo, fp );
+      fclose( fp );
+    }
+    return repo;
+  }
+
   Repo *add_rpmdb( const char *rootdir )
   {
-    Repo *repo = repo_create( $self, "system" );
+    Repo *repo = repo_create( $self, NULL );
     repo_add_rpmdb( repo, NULL, rootdir );
     return repo;
   }
@@ -222,6 +244,16 @@ typedef struct _Pool {} Pool;
   Solvable *id2solvable( Id p )
   { return pool_id2solvable( $self, p );  }
 
+#if defined(SWIGRUBY)
+  /* %rename is rejected by swig for [] */
+  %alias get_solvable "[]";
+#endif
+  Solvable *get_solvable( int i )
+  {
+    if (i < 0) return NULL;
+    if (i >= $self->nsolvables) return NULL;
+    return $self->solvables + i;
+  }
   void each()
   {
     Solvable *s;
@@ -279,24 +311,22 @@ typedef struct _Pool {} Pool;
 %extend Repo {
   Repo( Pool *pool, const char *reponame )
   { return repo_create( pool, reponame ); }
-  int add_solv( FILE *fp )
-  { return repo_add_solv( $self, fp ); }
-  int add_solv( const char *fname )
-  {
-    int result = -1;
-    FILE *fp = fopen( fname, "r");
-    if (fp) {
-      result = repo_add_solv( $self, fp );
-      fclose( fp );
-    }
-    return result;
-  }
   int size()
   { return $self->nsolvables; }
   const char *name()
   { return $self->name; }
+#if defined(SWIGRUBY)
+  %rename( "name=" ) set_name( const char *name );
+#endif
+  void set_name( const char *name )
+  { $self->name = name; }
   int priority()
   { return $self->priority; }
+#if defined(SWIGRUBY)
+  %rename( "priority=" ) set_priority( int i );
+#endif
+  void set_priority( int i )
+  { $self->priority = i; }
   Pool *pool()
   { return $self->pool; }
 
@@ -587,24 +617,65 @@ typedef struct _Pool {} Pool;
 
 }
 
-#if 0
-
-%include "solver.h"
+/*-------------------------------------------------------------*/
+/* Solver */
 
 %extend Solver {
-  
-  Solver( Pool *pool, Repo *installed ) { return solver_create(pool, installed); }
-  ~Solver() { solver_free($self); }
 
-  %rename("fix_system") fixsystem;
-  %rename("update_system") updatesystem;
-  %rename("allow_downgrade") allowdowngrade;
-  %rename("allow_uninstall") allowuninstall;
-  %rename("no_update_provide") noupdateprovide;
+  Solver( Pool *pool, Repo *installed )
+  { return solver_create( pool, installed ); }
+  ~Solver()
+  { solver_free( $self ); }
 
-  void solve(Queue *job) { solver_solve($self, job); }
-  void print_decisions() { printdecisions($self); }
+  /* yeah, thats awkward. But %including solver.h and adding lots
+     of %ignores is even worse ... */
 
+  int fix_system()
+  { return $self->fixsystem; }
+#if defined(SWIGRUBY)
+  %rename( "fix_system=" ) set_fix_system( int i );
+#endif
+  void set_fix_system( int i )
+  { $self->fixsystem = i; }
+
+  int update_system()
+  { return $self->updatesystem; }
+#if defined(SWIGRUBY)
+  %rename( "update_system=" ) set_update_system( int i );
+#endif
+  void set_update_system( int i )
+  { $self->updatesystem = i; }
+
+  int allow_downgrade()
+  { return $self->allowdowngrade; }
+#if defined(SWIGRUBY)
+  %rename( "allow_downgrade=" ) set_allow_downgrade( int i );
+#endif
+  void set_allow_downgrade( int i )
+  { $self->allowdowngrade = i; }
+
+  int allow_uninstall()
+  { return $self->allowuninstall; }
+#if defined(SWIGRUBY)
+  %rename( "allow_uninstall=" ) set_allow_uninstall( int i );
+#endif
+  void set_allow_uninstall( int i )
+  { $self->allowuninstall = i; }
+
+  int no_update_provide()
+  { return $self->noupdateprovide; }
+#if defined(SWIGRUBY)
+  %rename( "no_update_provide=" ) set_no_update_provide( int i );
+#endif
+  void set_no_update_provide( int i )
+  { $self->noupdateprovide = i; }
+
+  void solve( Transaction *t )
+  { solver_solve( $self, &(t->queue)); }
+  void print_decisions()
+  { printdecisions( $self ); }
+
+#if 0
   void each_to_install()
   {
     Id p;
@@ -641,7 +712,10 @@ typedef struct _Pool {} Pool;
       rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
     }
   }
+#endif
 };
+
+#if 0
 
 %include "repo.h"
 %include "repo_solv.h"
