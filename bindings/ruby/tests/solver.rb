@@ -19,6 +19,11 @@ class SolverTest < Test::Unit::TestCase
     solver = SatSolver::Solver.new( pool, system )
     solver.allow_uninstall = 1
     solver.solve( transaction )
-    solver.print_decisions
+    solver.each_to_install { |s|
+      puts "Install #{s}"
+    }
+    solver.each_to_erase { |s|
+      puts "Erase #{s}"
+    }
   end
 end

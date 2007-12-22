@@ -49,6 +49,18 @@ static Dependency *dependency_new( Offset relation, Solvable *solvable )
   return dependency;
 }
 
+static int dependency_size( const Dependency *dep )
+{
+  if (!dep) return 0;
+  int i = 0;
+  if (dep->relation) {
+    Id *ids = dep->solvable->repo->idarraydata + dep->relation;
+    while (*ids++)
+      ++i;
+  }
+  return i;
+}
+
 typedef struct _Action {
   SolverCmd cmd;
   Id id;
@@ -209,12 +221,21 @@ typedef struct _Pool {} Pool;
   int repo_count()
   { return $self->nrepos; }
 
+  Repo *get_repo( int i )
+  {
+    if ( i < 0 ) return NULL;
+    if ( i >= $self->nrepos ) return NULL;
+    return $self->repos[i];
+  }
+
+#if defined(SWIGRUBY)
   void each_repo()
   {
     int i;
     for (i = 0; i < $self->nrepos; ++i )
       rb_yield(SWIG_NewPointerObj((void*) $self->repos[i], SWIGTYPE_p__Repo, 0));
   }
+#endif
 
   Repo *find_repo( const char *name )
   {
@@ -254,6 +275,7 @@ typedef struct _Pool {} Pool;
     if (i >= $self->nsolvables) return NULL;
     return $self->solvables + i;
   }
+#if defined(SWIGRUBY)
   void each()
   {
     Solvable *s;
@@ -265,6 +287,7 @@ typedef struct _Pool {} Pool;
       rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
     }
   }
+#endif
 
   Solvable *
   find( char *name, Repo *repo = NULL )
@@ -330,7 +353,8 @@ typedef struct _Pool {} Pool;
   Pool *pool()
   { return $self->pool; }
 
-  void each_solvable()
+#if defined(SWIGRUBY)
+  void each()
   {
     Solvable *s;
     Id p;
@@ -341,6 +365,8 @@ typedef struct _Pool {} Pool;
       rb_yield( SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0) );
     }
   }
+#endif
+
 #if defined(SWIGRUBY)
   /* %rename is rejected by swig for [] */
   %alias get_solvable "[]";
@@ -419,15 +445,35 @@ typedef struct _Pool {} Pool;
   ~Dependency()
   { free( $self ); }
   int size()
+  { return dependency_size( $self ); }
+#if defined(SWIGRUBY)
+  %rename("empty?") empty();
+#endif
+  int empty()
+  { return dependency_size( $self ) == 0; }
+  
+#if defined(SWIGRUBY)
+  /* %rename is rejected by swig for [] */
+  %alias get_relation "[]";
+#endif
+  Relation *get_relation( int i )
   {
-    int i = 0;
     if ($self->relation) {
+      /* loop over it to detect end */
       Id *ids = $self->solvable->repo->idarraydata + $self->relation;
-      while (*ids++)
-        ++i;
+      while ( i-- >= 0 ) {
+        if ( !*ids )
+	  break;
+	if ( i == 0 ) {
+	  return relation_new( *ids, $self->solvable->repo->pool );
+	}
+        ++ids;
+      }
     }
-    return i;
+    return NULL;
   }
+
+#if defined(SWIGRUBY)
   void each()
   {
     if ($self->relation) {
@@ -438,6 +484,8 @@ typedef struct _Pool {} Pool;
       }
     }
   }
+#endif
+
 #if defined(SWIGRUBY)
   /* %rename is rejected by swig for [] */
   %alias get_relation "[]";
@@ -675,12 +723,12 @@ typedef struct _Pool {} Pool;
   void print_decisions()
   { printdecisions( $self ); }
 
-#if 0
   void each_to_install()
   {
     Id p;
     Solvable *s;
-    for (int i = 0; i < $self->decisionq.count; i++)
+    int i;
+    for ( i = 0; i < $self->decisionq.count; i++)
     {
       p = $self->decisionq.elements[i];
       if (p <= 0)
@@ -697,7 +745,7 @@ typedef struct _Pool {} Pool;
     }
   }
 
-  void each_to_remove()
+  void each_to_erase()
   {
     Id p;
     Solvable *s;
@@ -712,7 +760,7 @@ typedef struct _Pool {} Pool;
       rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
     }
   }
-#endif
+
 };
 
 #if 0

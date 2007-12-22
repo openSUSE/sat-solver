@@ -26,7 +26,7 @@ class RepoTest < Test::Unit::TestCase
     assert pool
     pool.arch = "i686"
     repo = pool.add_solv( "../../../testsuite/data.libzypp/basic-exercises/exercise-1-packages.solv" )
-    repo.each_solvable{ |s|
+    repo.each { |s|
       puts s
     }
     assert true

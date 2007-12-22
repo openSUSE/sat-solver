@@ -10,13 +10,16 @@ class SolvableTest < Test::Unit::TestCase
     @repo = SatSolver::Repo.new( @pool, "test" )
     assert @repo
     @pool.arch = "i686"
-    @repo.add_solv( "../../../testsuite/data.libzypp/basic-exercises/exercise-1-packages.solv" )
+    @repo = @pool.add_solv( "../../../testsuite/data.libzypp/basic-exercises/exercise-1-packages.solv" )
     assert @repo.size > 0
   end
   def test_relation
     rel = SatSolver::Relation.new( @pool, "A", SatSolver::REL_EQ, "1.0-0" )
     puts "Relation: #{rel}"
-    @repo.each_solvable{ |s|
+    @repo.each { |s|
+      unless (s.provides.empty?)
+	puts s.provides[0]
+      end
       s.provides.each { |p|
 	res1 = (p <=> rel)
 	puts "#{p} cmp #{rel} => #{res1}"
