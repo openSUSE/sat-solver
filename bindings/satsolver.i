@@ -1,4 +1,4 @@
-%module SatSolver
+%module satsolverx
 
 %{
 
@@ -206,7 +206,7 @@ typedef struct _Pool {} Pool;
     return repo;
   }
 
-  int size_repo()
+  int repo_count()
   { return $self->nrepos; }
 
   void each_repo()
