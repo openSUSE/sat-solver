@@ -1,3 +1,12 @@
+#
+# cmake description for satsolver Python bindings
+#
+# !!Attn!!: This creates two files
+#  1. _satsolverx.so
+#  2. satsolverx.py
+# and the .py file gets imported. See bindings/python/tests.
+#
+
 ADD_SUBDIRECTORY(tests)
 
 EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} -c 'import sys; print sys.path[2]' OUTPUT_VARIABLE PYTHON_LIB_DIR)
