@@ -2,8 +2,10 @@
 
 %{
 
+#if defined(SWIGRUBY)
 #include "ruby.h"
 #include "rubyio.h"
+#endif
 #include "policy.h"
 #include "bitmap.h"
 #include "evr.h"
@@ -694,6 +696,17 @@ typedef struct _Pool {} Pool;
   void clear()
   { queue_empty( &($self->queue) ); }
 
+  Action *get_action( unsigned int i )
+  {
+    i <<= 1;
+    int size = $self->queue.count;
+    if (i-1 >= size) return NULL;
+    int cmd = $self->queue.elements[i];
+    Id id = $self->queue.elements[i+1];
+    return action_new( cmd, id );
+  }
+
+#if defined(SWIGRUBY)
   void each()
   {
     int i;
@@ -703,7 +716,7 @@ typedef struct _Pool {} Pool;
       rb_yield(SWIG_NewPointerObj((void*) action_new( cmd, id ), SWIGTYPE_p__Action, 0));
     }
   }
-
+#endif
 }
 
 /*-------------------------------------------------------------*/
@@ -764,6 +777,7 @@ typedef struct _Pool {} Pool;
   void print_decisions()
   { printdecisions( $self ); }
 
+#if defined(SWIGRUBY)
   void each_to_install()
   {
     Id p;
@@ -801,6 +815,7 @@ typedef struct _Pool {} Pool;
       rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
     }
   }
+#endif
 
 };
 
