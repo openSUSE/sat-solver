@@ -174,6 +174,14 @@ typedef struct _Pool {} Pool;
   void set_debug( int level )
   { pool_setdebuglevel( $self, level ); }
 
+  int promoteepoch()
+  { return $self->promoteepoch; }
+#if defined(SWIGRUBY)
+  %rename( "promoteepoch=" ) set_promoteepoch( int level );
+#endif
+  void set_promoteepoch( int b )
+  { $self->promoteepoch = b; }
+
   void prepare()
   { pool_createwhatprovides( $self ); }
 
@@ -218,7 +226,10 @@ typedef struct _Pool {} Pool;
     return repo;
   }
 
-  int repo_count()
+  Repo *create_repo( const char *name )
+  { return repo_create( $self, name ); }
+
+  int count_repos()
   { return $self->nrepos; }
 
   Repo *get_repo( int i )
@@ -326,6 +337,20 @@ typedef struct _Pool {} Pool;
     return pool->solvables + id;
   }
 
+  /*
+   * Transaction management
+   */
+   
+  Transaction *create_transaction()
+  { return transaction_new( $self ); }
+
+  /*
+   * Solver management
+   */
+
+  Solver* create_solver( Repo *installed )
+  { return solver_create( $self, installed ); }
+
 }
 
 /*-------------------------------------------------------------*/
@@ -352,6 +377,22 @@ typedef struct _Pool {} Pool;
   { $self->priority = i; }
   Pool *pool()
   { return $self->pool; }
+
+  void add_solv( FILE *fp )
+  { repo_add_solv( $self, fp ); }
+
+  void add_solv( const char *fname )
+  {
+    FILE *fp = fopen( fname, "r");
+    if (fp) {
+      repo_add_solv( $self, fp );
+      fclose( fp );
+    }
+  }
+
+  void add_rpmdb( const char *rootdir )
+  { repo_add_rpmdb( $self, NULL, rootdir ); }
+
 
 #if defined(SWIGRUBY)
   void each()
@@ -562,11 +603,11 @@ typedef struct _Pool {} Pool;
 
 %extend Action {
   %constant int INSTALL_SOLVABLE = 1;
-  %constant int ERASE_SOLVABLE = 2;
+  %constant int REMOVE_SOLVABLE = 2;
   %constant int INSTALL_SOLVABLE_NAME = 3;
-  %constant int ERASE_SOLVABLE_NAME = 4;
+  %constant int REMOVE_SOLVABLE_NAME = 4;
   %constant int INSTALL_SOLVABLE_PROVIDES = 5;
-  %constant int ERASE_SOLVABLE_PROVIDES = 6;
+  %constant int REMOVE_SOLVABLE_PROVIDES = 6;
   
   Action( int cmd, Id id )
   { return action_new( cmd, id ); }
@@ -607,7 +648,7 @@ typedef struct _Pool {} Pool;
     /* FIXME: check: s->repo->pool == $self->pool */
     queue_push( &($self->queue), (s - s->repo->pool->solvables) );
   }
-  void erase( Solvable *s )
+  void remove( Solvable *s )
   {
     queue_push( &($self->queue), SOLVER_ERASE_SOLVABLE );
     /* FIXME: check: s->repo->pool == $self->pool */
@@ -618,7 +659,7 @@ typedef struct _Pool {} Pool;
     queue_push( &($self->queue), SOLVER_INSTALL_SOLVABLE_NAME );
     queue_push( &($self->queue), str2id( $self->pool, name, 1 ));
   }
-  void erase( const char *name )
+  void remove( const char *name )
   {
     queue_push( &($self->queue), SOLVER_ERASE_SOLVABLE_NAME );
     queue_push( &($self->queue), str2id( $self->pool, name, 1 ));
@@ -630,7 +671,7 @@ typedef struct _Pool {} Pool;
     Reldep *rd = GETRELDEP( rel->pool, rel->id );
     queue_push( &($self->queue), rd->name );
   }
-  void erase( const Relation *rel )
+  void remove( const Relation *rel )
   {
     queue_push( &($self->queue), SOLVER_ERASE_SOLVABLE_PROVIDES );
     /* FIXME: check: rel->pool == $self->pool */
@@ -745,14 +786,14 @@ typedef struct _Pool {} Pool;
     }
   }
 
-  void each_to_erase()
+  void each_to_remove()
   {
     Id p;
     Solvable *s;
 
     if (!$self->installed)
       return;
-    /* solvables to be erased */
+    /* solvables to be removed */
     FOR_REPO_SOLVABLES($self->installed, p, s)
     {
       if ($self->decisionmap[p] >= 0)
