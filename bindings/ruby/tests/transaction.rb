@@ -18,18 +18,18 @@ class TransactionTest < Test::Unit::TestCase
     transaction.install( "foo" )
     transaction.install( repo[0] )
     transaction.install( SatSolver::Relation.new( pool, "foo", SatSolver::REL_EQ, "42-7" ) )
-    transaction.erase( "bar" )
-    transaction.erase( repo[1] )
-    transaction.erase( SatSolver::Relation.new( pool, "bar", SatSolver::REL_EQ, "42-7" ) )
+    transaction.remove( "bar" )
+    transaction.remove( repo[1] )
+    transaction.remove( SatSolver::Relation.new( pool, "bar", SatSolver::REL_EQ, "42-7" ) )
     assert transaction.size == 6
     transaction.each { |a|
       cmd = case a.cmd
             when SatSolver::INSTALL_SOLVABLE: "install"
-	    when SatSolver::ERASE_SOLVABLE: "erase"
-	    when SatSolver::INSTALL_SOLVABLE_NAME: "install name"
-	    when SatSolver::ERASE_SOLVABLE_NAME: "erase name"
-	    when SatSolver::INSTALL_SOLVABLE_PROVIDES: "install relation"
-	    when SatSolver::ERASE_SOLVABLE_PROVIDES: "erase relation"
+	    when SatSolver::REMOVE_SOLVABLE: "remove"
+	    when SatSolver::INSTALL_SOLVABLE_NAME: "install by name"
+	    when SatSolver::REMOVE_SOLVABLE_NAME: "remove by name"
+	    when SatSolver::INSTALL_SOLVABLE_PROVIDES: "install by relation"
+	    when SatSolver::REMOVE_SOLVABLE_PROVIDES: "remove by relation"
 	    else "<NONE>"
 	    end
       puts "#{cmd}: #{pool.idname(a.id)}"

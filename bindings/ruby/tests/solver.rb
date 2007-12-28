@@ -14,7 +14,7 @@ class SolverTest < Test::Unit::TestCase
     
     transaction = SatSolver::Transaction.new( pool )
     transaction.install( "A" )
-    transaction.erase( "xorg-x11" )
+    transaction.remove( "xorg-x11" )
     
     solver = SatSolver::Solver.new( pool, system )
     solver.allow_uninstall = 1
@@ -22,8 +22,8 @@ class SolverTest < Test::Unit::TestCase
     solver.each_to_install { |s|
       puts "Install #{s}"
     }
-    solver.each_to_erase { |s|
-      puts "Erase #{s}"
+    solver.each_to_remove { |s|
+      puts "Remove #{s}"
     }
   end
 end
