@@ -1,7 +1,7 @@
 $: << "../../../build/bindings/ruby"
 # test Relation
 require 'test/unit'
-require 'SatSolver'
+require 'satsolver'
 
 class SolvableTest < Test::Unit::TestCase
   def setup

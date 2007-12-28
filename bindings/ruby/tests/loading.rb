@@ -4,7 +4,7 @@ require 'test/unit'
 
 class LoadTest < Test::Unit::TestCase
   def test_loading
-    require 'SatSolver'
+    require 'satsolver'
     assert true
   end
 end

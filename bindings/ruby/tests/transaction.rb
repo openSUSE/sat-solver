@@ -1,7 +1,7 @@
 $: << "../../../build/bindings/ruby"
 # test Transction
 require 'test/unit'
-require 'SatSolver'
+require 'satsolver'
 
 class TransactionTest < Test::Unit::TestCase
   def test_transaction

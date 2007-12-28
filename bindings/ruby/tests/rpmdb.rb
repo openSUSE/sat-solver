@@ -1,7 +1,7 @@
 $: << "../../../build/bindings/ruby"
 # test adding rpmdb
 require 'test/unit'
-require 'SatSolver'
+require 'satsolver'
 
 class RpmdbTest < Test::Unit::TestCase
   def test_rpmdb

@@ -1,7 +1,11 @@
 ADD_SUBDIRECTORY(tests)
+<<<<<<< .mine
+
+=======
 
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/tools")
 
+>>>>>>> .r8155
 EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print Config::CONFIG['vendorarchdir']" OUTPUT_VARIABLE RUBY_VENDOR_ARCH_DIR)
 
 MESSAGE(STATUS "Ruby executable: ${RUBY_EXECUTABLE}")
@@ -24,15 +28,33 @@ ADD_CUSTOM_TARGET( glue
    DEPENDS ${SWIG_OUTPUT}
 )
 
+<<<<<<< .mine
+SET(satsolverx_SRCS "${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c"  "${CMAKE_SOURCE_DIR}/tools/repo_rpmdb.c" )
+ADD_LIBRARY( satsolverx SHARED ${satsolverx_SRCS} )
+SET_TARGET_PROPERTIES( satsolverx PROPERTIES PREFIX "" )
+ADD_DEPENDENCIES( satsolverx glue )
+=======
 SET(satsolverx_SRCS "${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c"   )
 ADD_LIBRARY( satsolverx SHARED "${satsolverx_SRCS}" )
 SET_TARGET_PROPERTIES( satsolverx PROPERTIES PREFIX "" )
 ADD_DEPENDENCIES( satsolverx glue )
+>>>>>>> .r8155
 
+<<<<<<< .mine
+INCLUDE_DIRECTORIES( ${RUBY_INCLUDE_PATH} ${CMAKE_SOURCE_DIR}/tools )
+TARGET_LINK_LIBRARIES( satsolverx satsolver )
+TARGET_LINK_LIBRARIES( satsolverx ${RUBY_LIBRARY} )
+TARGET_LINK_LIBRARIES( satsolverx ${DB43_LIBRARY} )
+=======
 INCLUDE_DIRECTORIES( ${RUBY_INCLUDE_PATH} )
 TARGET_LINK_LIBRARIES( satsolverx satsolver )
 TARGET_LINK_LIBRARIES( satsolverx ${RUBY_LIBRARY} )
+>>>>>>> .r8155
 
+<<<<<<< .mine
+INSTALL(TARGETS satsolverx LIBRARY DESTINATION ${RUBY_VENDOR_ARCH_DIR})
+INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/satsolver.rb DESTINATION ${RUBY_VENDORLIB_DIR} )=======
 INSTALL(TARGETS satsolverx LIBRARY DESTINATION ${RUBY_VENDOR_ARCH_DIR})
 CONFIGURE_FILE(  ${CMAKE_CURRENT_SOURCE_DIR}/satsolver.rb  ${CMAKE_CURRENT_BINARY_DIR}/satsolver.rb COPYONLY )
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/satsolver.rb DESTINATION ${RUBY_VENDORLIB_DIR} )
+>>>>>>> .r8155

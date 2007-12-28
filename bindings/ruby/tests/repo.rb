@@ -1,7 +1,7 @@
 $: << "../../../build/bindings/ruby"
 # test Repo
 require 'test/unit'
-require 'SatSolver'
+require 'satsolver'
 
 class RepoTest < Test::Unit::TestCase
   def test_repo_create
