@@ -37,7 +37,7 @@ typedef struct _Relation {
   Pool *pool;
 } Relation;
 
-static Relation *relation_new( Id id, Pool *pool )
+static Relation *relation_new( Pool *pool, Id id )
 {
   if (!id) return NULL;
   Relation *relation = (Relation *)malloc( sizeof( Relation ));
@@ -172,7 +172,21 @@ static Decision *decision_new( int op, Solvable *solvable, Solvable *reason )
 }
 
 typedef struct _Problem {
+  int reason;
+  Solvable *source;
+  Relation *relation;
+  Solvable *target;
 } Problem;
+
+static Problem *problem_new( int reason, Solvable *source, Relation *relation, Solvable *target )
+{
+  Problem *p = (Problem *)malloc( sizeof( Problem ));
+  p->reason = reason;
+  p->source = source;
+  p->relation = relation;
+  p->target = target;
+  return p;
+}
 
 %}
 
@@ -534,8 +548,6 @@ typedef struct _Pool {} Pool;
 #define REL_WITH 18
 #define REL_NAMESPACE 18
 
-  Relation( Id id, Pool *pool)
-  { return relation_new( id, pool ); }
   %feature("autodoc", "1");
   Relation( Pool *pool, const char *name, int op = 0, const char *evr = NULL )
   {
@@ -544,7 +556,7 @@ typedef struct _Pool {} Pool;
     if (evr)
       evr_id = str2id( pool, evr, 1 );
     Id rel = rel2id( pool, name_id, evr_id, op, 1 );
-    return relation_new( rel, pool );
+    return relation_new( pool, rel );
   }
   ~Relation()
   { free( $self ); }
@@ -627,7 +639,7 @@ typedef struct _Pool {} Pool;
       if ( !*ids )
 	 break;
       if ( i == 0 ) {
-	return relation_new( *ids, $self->solvable->repo->pool );
+	return relation_new( $self->solvable->repo->pool, *ids );
       }
       ++ids;
     }
@@ -639,7 +651,7 @@ typedef struct _Pool {} Pool;
   {
     Id *ids = $self->solvable->repo->idarraydata + *($self->relations);
     while (*ids) {
-      rb_yield( SWIG_NewPointerObj((void*) relation_new( *ids, $self->solvable->repo->pool ), SWIGTYPE_p__Relation, 0) );
+      rb_yield( SWIG_NewPointerObj((void*) relation_new( $self->solvable->repo->pool, *ids ), SWIGTYPE_p__Relation, 0) );
       ++ids;
     }
   }
@@ -853,6 +865,29 @@ typedef struct _Pool {} Pool;
 }
 
 /*-------------------------------------------------------------*/
+/* Problem */
+
+%extend Problem {
+  %constant int SOLVER_PROBLEM_UPDATE_RULE = 1;
+  %constant int SOLVER_PROBLEM_JOB_RULE = 2;
+  %constant int SOLVER_PROBLEM_JOB_NOTHING_PROVIDES_DEP = 3;
+  %constant int SOLVER_PROBLEM_NOT_INSTALLABLE = 4;
+  %constant int SOLVER_PROBLEM_NOTHING_PROVIDES_DEP = 5;
+  %constant int SOLVER_PROBLEM_SAME_NAME = 6;
+  %constant int SOLVER_PROBLEM_PACKAGE_CONFLICT = 7;
+  %constant int SOLVER_PROBLEM_PACKAGE_OBSOLETES = 8;
+  %constant int SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE = 8;
+  int reason()
+  { return $self->reason; }
+  Solvable *source()
+  { return $self->source; }
+  Relation *relation()
+  { return $self->relation; }
+  Solvable *target()
+  { return $self->target; }
+}
+
+/*-------------------------------------------------------------*/
 /* Solver */
 
 %extend Solver {
@@ -918,7 +953,7 @@ typedef struct _Pool {} Pool;
     Solvable *s, *r;
     int op;
     Decision *d;
-    
+#if 0   
     if (installed) {
       FOR_REPO_SOLVABLES(installed, p, s) {
 	if ($self->decisionmap[p] >= 0)
@@ -932,35 +967,45 @@ typedef struct _Pool {} Pool;
         rb_yield(SWIG_NewPointerObj((void*) d, SWIGTYPE_p__Decision, 0));
       }
     }
-
+#endif
     int i;
     for ( i = 0; i < $self->decisionq.count; i++)
     {
       p = $self->decisionq.elements[i];
+      r = NULL;
 
       if (p < 0) {     /* remove */
-        continue;
+        p = -p;
+        s = pool_id2solvable( pool, p );
+	if (obsoletesmap[p]) {
+	  op = DEC_OBSOLETE;
+	  r = pool_id2solvable( pool, obsoletesmap[p] );
+        }
+	else {
+	  op = DEC_REMOVE;
+	}
       }
       else if (p == SYSTEMSOLVABLE) {
         continue;
       }
-      s = pool->solvables + p;
-      r = NULL;
-      if (installed && s->repo == installed)
-	continue;
-
-      if (!obsoletesmap[p]) {
-        op = DEC_INSTALL;
-      }
       else {
-        op = DEC_UPDATE;
-	int j;
-	for (j = installed->start; j < installed->end; j++) {
-	  if (obsoletesmap[j] == p) {
-	    r = pool_id2solvable( pool, j );
-	    break;
+        s = pool->solvables + p;
+        if (installed && s->repo == installed)
+	  continue;
+
+        if (!obsoletesmap[p]) {
+          op = DEC_INSTALL;
+        }
+        else {
+          op = DEC_UPDATE;
+	  int j;
+	  for (j = installed->start; j < installed->end; j++) {
+	    if (obsoletesmap[j] == p) {
+	      r = pool_id2solvable( pool, j );
+	      break;
+	    }
 	  }
-	}
+        }
       }
       d = decision_new( op, s, r );
       rb_yield(SWIG_NewPointerObj((void*) d, SWIGTYPE_p__Decision, 0));
@@ -974,8 +1019,26 @@ typedef struct _Pool {} Pool;
 #endif
   int problems_found()
   { return $self->problems.count != 0; }
-  void print_decisions()
-  { printdecisions( $self ); }
+#if defined(SWIGRUBY)
+  void each_problem( Transaction *t )
+  {
+    Pool *pool = $self->pool;
+    Queue *transaction = &(t->queue);
+
+    Id problem = 0;
+    while ((problem = solver_next_problem( $self, problem )) != 0) {
+      Id prule;
+      Id dep, source, target;
+      Problem *p;
+      int reason;
+
+      prule = solver_findproblemrule( $self, problem );
+      reason = solver_problemruleinfo( $self, transaction, prule, &dep, &source, &target ); 
+      p = problem_new( reason, pool_id2solvable( pool, source ), relation_new( pool, dep ), pool_id2solvable( pool, target ) );
+      rb_yield( SWIG_NewPointerObj((void*) p, SWIGTYPE_p__Problem, 0) );
+    }
+  }
+#endif
 
 #if defined(SWIGRUBY)
   void each_to_install()

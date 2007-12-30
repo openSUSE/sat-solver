@@ -7,13 +7,13 @@ class DecisionTest < Test::Unit::TestCase
   def test_decision
     pool = SatSolver::Pool.new
     assert pool
-    pool.arch = "i686"
     
     installed = pool.create_repo( 'system' )
     assert installed
     installed.create_solvable( 'A', '0.0-0' )
     installed.create_solvable( 'B', '1.0-0' )
-    installed.create_solvable( 'C', '2.0-0' )
+    solv = installed.create_solvable( 'C', '2.0-0' )
+    solv.requires << SatSolver::Relation.new( pool, "D", SatSolver::REL_EQ, "3.0-0" )
     installed.create_solvable( 'D', '3.0-0' )
 
     repo = pool.create_repo( 'test' )
@@ -24,12 +24,12 @@ class DecisionTest < Test::Unit::TestCase
     solv1.obsoletes << SatSolver::Relation.new( pool, "C" )
     solv1.requires << SatSolver::Relation.new( pool, "B", SatSolver::REL_GE, "2.0-0" )
     
-    solv2 = repo.create_solvable( 'B', '2.0-0', 'noarch' )
+    solv2 = repo.create_solvable( 'B', '2.0-0' )
     assert solv2
     
-    solv3 = repo.create_solvable( 'CC', '3.3-0', 'noarch' )
+    solv3 = repo.create_solvable( 'CC', '3.3-0' )
     solv3.requires << SatSolver::Relation.new( pool, "A", SatSolver::REL_GT, "0.0-0" )
-    repo.create_solvable( 'DD', '4.4-0', 'noarch' )
+    repo.create_solvable( 'DD', '4.4-0' )
 
     
     transaction = pool.create_transaction
