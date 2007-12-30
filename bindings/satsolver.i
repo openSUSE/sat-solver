@@ -151,6 +151,29 @@ static void transaction_free( Transaction *t )
   free( t );
 }
 
+#define DEC_INSTALL 1
+#define DEC_REMOVE 2
+#define DEC_UPDATE 3
+#define DEC_OBSOLETE 4
+
+typedef struct _Decision {
+  int op;               /* DEC_{INSTALL,UPDATE,OBSOLETE,REMOVE} */
+  Solvable *solvable;
+  Solvable *reason;
+} Decision;
+
+static Decision *decision_new( int op, Solvable *solvable, Solvable *reason )
+{
+  Decision *d = (Decision *)malloc( sizeof( Decision ));
+  d->op = op;
+  d->solvable = solvable;
+  d->reason = reason;
+  return d;
+}
+
+typedef struct _Problem {
+} Problem;
+
 %}
 
 /*-------------------------------------------------------------*/
@@ -198,6 +221,14 @@ typedef struct _Transaction {} Transaction;
 %nodefault solver;
 %rename(Solver) solver;
 typedef struct solver {} Solver;
+
+%nodefault _Decision;
+%rename(Decision) _Decision;
+typedef struct _Decision {} Decision;
+
+%nodefault _Problem;
+%rename(Problem) _Problem;
+typedef struct _Problem {} Problem;
 
 /*-------------------------------------------------------------*/
 /* Pool */
@@ -801,6 +832,27 @@ typedef struct _Pool {} Pool;
 }
 
 /*-------------------------------------------------------------*/
+/* Decision */
+
+%extend Decision {
+  %constant int DEC_INSTALL = 1;
+  %constant int DEC_REMOVE = 2;
+  %constant int DEC_UPDATE = 3;
+  %constant int DEC_OBSOLETE = 4;
+  
+  Decision( int op, Solvable *solvable, Solvable *reason = NULL )
+  { return decision_new( op, solvable, reason ); }
+  ~Decision()
+  { free( $self ); }
+  int op()
+  { return $self->op; }
+  Solvable *solvable()
+  { return $self->solvable; }
+  Solvable *reason()
+  { return $self->reason; }
+}
+
+/*-------------------------------------------------------------*/
 /* Solver */
 
 %extend Solver {
@@ -855,6 +907,73 @@ typedef struct _Pool {} Pool;
 
   void solve( Transaction *t )
   { solver_solve( $self, &(t->queue)); }
+  int decision_count()
+  { return $self->decisionq.count; }
+#if defined(SWIGRUBY)
+  void each_decision()
+  {
+    Pool *pool = $self->pool;
+    Repo *installed = $self->installed;
+    Id p, *obsoletesmap = create_obsoletesmap( $self );
+    Solvable *s, *r;
+    int op;
+    Decision *d;
+    
+    if (installed) {
+      FOR_REPO_SOLVABLES(installed, p, s) {
+	if ($self->decisionmap[p] >= 0)
+	  continue;
+	if (obsoletesmap[p]) {
+	  d = decision_new( DEC_OBSOLETE, s, pool_id2solvable( pool, obsoletesmap[p] ) );
+        }
+	else {
+          d = decision_new( DEC_REMOVE, s, NULL );
+	}
+        rb_yield(SWIG_NewPointerObj((void*) d, SWIGTYPE_p__Decision, 0));
+      }
+    }
+
+    int i;
+    for ( i = 0; i < $self->decisionq.count; i++)
+    {
+      p = $self->decisionq.elements[i];
+
+      if (p < 0) {     /* remove */
+        continue;
+      }
+      else if (p == SYSTEMSOLVABLE) {
+        continue;
+      }
+      s = pool->solvables + p;
+      r = NULL;
+      if (installed && s->repo == installed)
+	continue;
+
+      if (!obsoletesmap[p]) {
+        op = DEC_INSTALL;
+      }
+      else {
+        op = DEC_UPDATE;
+	int j;
+	for (j = installed->start; j < installed->end; j++) {
+	  if (obsoletesmap[j] == p) {
+	    r = pool_id2solvable( pool, j );
+	    break;
+	  }
+	}
+      }
+      d = decision_new( op, s, r );
+      rb_yield(SWIG_NewPointerObj((void*) d, SWIGTYPE_p__Decision, 0));
+    }
+  }
+#endif
+  int problem_count()
+  { return $self->problems.count; }
+#if defined(SWIGRUBY)
+  %rename("problems?") problems_found();
+#endif
+  int problems_found()
+  { return $self->problems.count != 0; }
   void print_decisions()
   { printdecisions( $self ); }
 
@@ -896,6 +1015,17 @@ typedef struct _Pool {} Pool;
       rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
     }
   }
+
+  void each_suggested()
+  {
+    int i;
+    Solvable *s;
+    for (i = 0; i < $self->suggestions.count; i++) {
+      s = $self->pool->solvables + $self->suggestions.elements[i];
+      rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
+    }
+  }
+
 #endif
 
 };
