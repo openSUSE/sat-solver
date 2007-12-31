@@ -3,49 +3,18 @@ $: << "../../../build/bindings/ruby"
 require 'test/unit'
 require 'satsolver'
 
-class ProblemTest < Test::Unit::TestCase
-  def test_problems
-    pool = SatSolver::Pool.new
-    assert pool
-    
-    installed = pool.create_repo( 'system' )
-    assert installed
-    installed.create_solvable( 'A', '0.0-0' )
-    installed.create_solvable( 'B', '1.0-0' )
-    solv = installed.create_solvable( 'C', '2.0-0' )
-    solv.requires << SatSolver::Relation.new( pool, "D", SatSolver::REL_EQ, "3.0-0" )
-    installed.create_solvable( 'D', '3.0-0' )
-
-    repo = pool.create_repo( 'test' )
-    assert repo
-    
-    solv1 = repo.create_solvable( 'A', '1.0-0' )
-    assert solv1
-    solv1.obsoletes << SatSolver::Relation.new( pool, "C" )
-    solv1.requires << SatSolver::Relation.new( pool, "B", SatSolver::REL_GT, "2.0-0" )
-    
-    solv2 = repo.create_solvable( 'B', '2.0-0' )
-    assert solv2
-    
-    solv3 = repo.create_solvable( 'CC', '3.3-0' )
-#    solv3.requires << SatSolver::Relation.new( pool, "Z" )
-    repo.create_solvable( 'DD', '4.4-0' )
-
-    
-    transaction = pool.create_transaction
-    transaction.install( solv1 )
-    transaction.remove( "Z" )
-    
-    solver = pool.create_solver( installed )
-#    solver.allow_uninstall = 1;
-#    @pool.debug = 255
-    solver.solve( transaction )
-    assert solver.problems?
-    puts "Problems found"
-    i = 0
-    solver.each_problem( transaction ) { |p|
-      i += 1
-      case p.reason
+def solve_and_check pool, installed, transaction, problem
+  
+  solver = pool.create_solver( installed )
+  solver.solve( transaction )
+  assert solver.problems?
+  puts "Problems found"
+  i = 0
+  found = false
+  solver.each_problem( transaction ) { |p|
+    found = true if p.reason == problem
+    i += 1
+    case p.reason
       when SatSolver::SOLVER_PROBLEM_UPDATE_RULE
 	reason = "problem with installed"
       when SatSolver::SOLVER_PROBLEM_JOB_RULE
@@ -66,8 +35,69 @@ class ProblemTest < Test::Unit::TestCase
 	reason = "source requires rel but no providers are installable"
       else
 	reason = "**unknown**"
-      end
-      puts "#{i}: [#{reason}] Source #{p.source}, Rel #{p.relation}, Target #{p.target}"
-    }
+    end
+    puts "#{i}: [#{reason}] Source #{p.source}, Rel #{p.relation}, Target #{p.target}"
+  }
+  return found
+end
+
+class ProblemTest < Test::Unit::TestCase
+  def setup
+    @pool = SatSolver::Pool.new
+    assert @pool
+    
+    @installed = @pool.create_repo( 'system' )
+    assert @installed
+    @installed.create_solvable( 'A', '0.0-0' )
+    @installed.create_solvable( 'B', '1.0-0' )
+    @installed.create_solvable( 'C', '2.0-0' )
+    @installed.create_solvable( 'D', '3.0-0' )
+    
+    @repo = @pool.create_repo( 'test' )
+    assert @repo
+    @repo.create_solvable( 'A', '1.0-0' )
+    @repo.create_solvable( 'B', '2.0-0' )
+    @repo.create_solvable( 'CC', '3.3-0' )
+    @repo.create_solvable( 'DD', '4.4-0' )
+
+  end
+  
+  def test_update_rule
+    transaction = @pool.create_transaction
+    assert solve_and_check( @pool, @installed, transaction, SatSolver::SOLVER_PROBLEM_UPDATE_RULE )
+  end
+  def test_job_rule
+    transaction = @pool.create_transaction
+    assert solve_and_check( @pool, @installed, transaction, SatSolver::SOLVER_PROBLEM_JOB_RULE )
+  end
+  def test_job_nothing_provides
+    transaction = @pool.create_transaction
+    solv = @pool.find( "A", @repo )
+    solv.requires << @pool.create_relation( "ZZ" )
+    assert solve_and_check( @pool, @installed, transaction, SatSolver::SOLVER_PROBLEM_JOB_NOTHING_PROVIDES_DEP )
+  end
+  def test_not_installable
+    transaction = @pool.create_transaction
+    assert solve_and_check( @pool, @installed, transaction, SatSolver::SOLVER_PROBLEM_NOT_INSTALLABLE )
+  end
+  def test_nothing_provides
+    transaction = @pool.create_transaction
+    assert solve_and_check( @pool, @installed, transaction, SatSolver::SOLVER_PROBLEM_NOTHING_PROVIDES_DEP )
+  end
+  def test_same_name
+    transaction = @pool.create_transaction
+    assert solve_and_check( @pool, @installed, transaction, SatSolver::SOLVER_PROBLEM_SAME_NAME )
+  end
+  def test_package_conflict
+    transaction = @pool.create_transaction
+    assert solve_and_check( @pool, @installed, transaction, SatSolver::SOLVER_PROBLEM_PACKAGE_CONFLICT )
+  end
+  def test_package_obsoletes
+    transaction = @pool.create_transaction
+    assert solve_and_check( @pool, @installed, transaction, SatSolver::SOLVER_PROBLEM_PACKAGE_OBSOLETES )
+  end
+  def test_providers_not_installable
+    transaction = @pool.create_transaction
+    assert solve_and_check( @pool, @installed, transaction, SatSolver::SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE )
   end
 end

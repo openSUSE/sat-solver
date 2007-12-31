@@ -181,6 +181,7 @@ typedef struct _Problem {
   Id target; /* solvable id */
 } Problem;
 
+#if defined(SWIGRUBY)
 static Problem *problem_new( Solver *s, Transaction *t, Id id )
 {
   Id prule;
@@ -193,6 +194,7 @@ static Problem *problem_new( Solver *s, Transaction *t, Id id )
   p->reason = solver_problemruleinfo( s, &(t->queue), prule, &(p->relation), &(p->source), &(p->target) ); 
   return p;
 }
+#endif
 
 #define SOLUTION_UNKNOWN 0
 #define SOLUTION_NOKEEP_INSTALLED 1
@@ -219,6 +221,7 @@ typedef struct _Solution {
   Id n2;
 } Solution;
 
+#if defined(SWIGRUBY)
 static Solution *solution_new( Pool *pool, int solution, Id s1, Id n1, Id s2, Id n2 )
 {
   Solution *s = (Solution *)malloc( sizeof( Solution ));
@@ -230,6 +233,7 @@ static Solution *solution_new( Pool *pool, int solution, Id s1, Id n1, Id s2, Id
   s->n2 = n2;
   return s;
 }
+#endif
 
 %}
 
@@ -406,6 +410,20 @@ typedef struct _Pool {} Pool;
         return $self->repos[i];
     }
     return NULL;
+  }
+
+  /*
+   * Relation management
+   */
+
+  Relation *create_relation( const char *name, int op = 0, const char *evr = NULL )
+  {
+    Id name_id = str2id( $self, name, 1 );
+    Id evr_id = 0;
+    if (evr)
+      evr_id = str2id( $self, evr, 1 );
+    Id rel = rel2id( $self, name_id, evr_id, op, 1 );
+    return relation_new( $self, rel );
   }
 
   /*
