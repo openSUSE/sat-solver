@@ -172,20 +172,63 @@ static Decision *decision_new( int op, Solvable *solvable, Solvable *reason )
 }
 
 typedef struct _Problem {
+  Solver *solver;
+  Transaction *transaction;
+  Id id; /* problem id */
   int reason;
-  Solvable *source;
-  Relation *relation;
-  Solvable *target;
+  Id source; /* solvable id */
+  Id relation; /* relation id */
+  Id target; /* solvable id */
 } Problem;
 
-static Problem *problem_new( int reason, Solvable *source, Relation *relation, Solvable *target )
+static Problem *problem_new( Solver *s, Transaction *t, Id id )
 {
+  Id prule;
+
   Problem *p = (Problem *)malloc( sizeof( Problem ));
-  p->reason = reason;
-  p->source = source;
-  p->relation = relation;
-  p->target = target;
+  p->solver = s;
+  p->transaction = t;
+  p->id = id;
+  prule = solver_findproblemrule( s, id );
+  p->reason = solver_problemruleinfo( s, &(t->queue), prule, &(p->relation), &(p->source), &(p->target) ); 
   return p;
+}
+
+#define SOLUTION_UNKNOWN 0
+#define SOLUTION_NOKEEP_INSTALLED 1
+#define SOLUTION_NOINSTALL_SOLV 2
+#define SOLUTION_NOREMOVE_SOLV 3
+#define SOLUTION_NOFORBID_INSTALL 4
+#define SOLUTION_NOINSTALL_NAME 5
+#define SOLUTION_NOREMOVE_NAME 6
+#define SOLUTION_NOINSTALL_REL 7
+#define SOLUTION_NOREMOVE_REL 8
+#define SOLUTION_NOUPDATE 9
+#define SOLUTION_ALLOW_DOWNGRADE 10
+#define SOLUTION_ALLOW_ARCHCHANGE 11
+#define SOLUTION_ALLOW_VENDORCHANGE 12
+#define SOLUTION_ALLOW_REPLACEMENT 13
+#define SOLUTION_ALLOW_REMOVE 14
+
+typedef struct _Solution {
+  Pool *pool;
+  int solution;
+  Id s1;
+  Id n1;
+  Id s2;
+  Id n2;
+} Solution;
+
+static Solution *solution_new( Pool *pool, int solution, Id s1, Id n1, Id s2, Id n2 )
+{
+  Solution *s = (Solution *)malloc( sizeof( Solution ));
+  s->pool = pool;
+  s->solution = solution;
+  s->s1 = s1;
+  s->n1 = n1;
+  s->s2 = s2;
+  s->n2 = n2;
+  return s;
 }
 
 %}
@@ -243,6 +286,10 @@ typedef struct _Decision {} Decision;
 %nodefault _Problem;
 %rename(Problem) _Problem;
 typedef struct _Problem {} Problem;
+
+%nodefault _Solution;
+%rename(Solution) _Solution;
+typedef struct _Solution {} Solution;
 
 /*-------------------------------------------------------------*/
 /* Pool */
@@ -877,16 +924,141 @@ typedef struct _Pool {} Pool;
   %constant int SOLVER_PROBLEM_PACKAGE_CONFLICT = 7;
   %constant int SOLVER_PROBLEM_PACKAGE_OBSOLETES = 8;
   %constant int SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE = 8;
+  ~Problem()
+  { free ($self); }
   int reason()
   { return $self->reason; }
   Solvable *source()
-  { return $self->source; }
+  { return pool_id2solvable( $self->solver->pool, $self->source); }
   Relation *relation()
-  { return $self->relation; }
+  { return relation_new( $self->solver->pool, $self->relation); }
   Solvable *target()
-  { return $self->target; }
+  { return pool_id2solvable( $self->solver->pool, $self->target); }
+#if defined(SWIGRUBY)
+  void each_solution()
+  {
+    Id solution = 0;
+    while ((solution = solver_next_solution( $self->solver, $self->id, solution )) != 0) {
+      Id p, rp, element, what;
+
+      Id s1, s2, n1, n2;
+      int code = SOLUTION_UNKNOWN;
+
+      Solver *solver = $self->solver;
+      Pool *pool = solver->pool;
+      element = 0;
+      s1 = s2 = n1 = n2 = 0;
+      
+      while ((element = solver_next_solutionelement( solver, $self->id, solution, element, &p, &rp)) != 0) {
+	if (p == 0) {
+
+          /* job, rp is index into job queue */
+          what = $self->transaction->queue.elements[rp];
+
+          switch ($self->transaction->queue.elements[rp - 1]) {
+	    case SOLVER_INSTALL_SOLVABLE:
+	      s1 = what;
+	      if (solver->installed
+	          && (pool->solvables + s1)->repo == solver->installed)
+		code = SOLUTION_NOKEEP_INSTALLED; /* s1 */
+	      else
+		code = SOLUTION_NOINSTALL_SOLV; /* s1 */
+	    break;
+	    case SOLVER_ERASE_SOLVABLE:
+	      s1 = what;
+	      if (solver->installed
+	          && (pool->solvables + s1)->repo == solver->installed)
+	        code = SOLUTION_NOREMOVE_SOLV; /* s1 */
+	      else
+		code = SOLUTION_NOFORBID_INSTALL; /* s1 */
+	    break;
+	    case SOLVER_INSTALL_SOLVABLE_NAME:
+	      n1 = what;
+	      code = SOLUTION_NOINSTALL_NAME; /* n1 */
+	    break;
+	    case SOLVER_ERASE_SOLVABLE_NAME:
+	      n1 = what;
+	      code = SOLUTION_NOREMOVE_NAME; /* n1 */
+	    break;
+	    case SOLVER_INSTALL_SOLVABLE_PROVIDES:
+	      n1 = what;
+	      code = SOLUTION_NOINSTALL_REL; /* r1 */
+	      break;
+	    case SOLVER_ERASE_SOLVABLE_PROVIDES:
+	      n1 = what;
+	      code = SOLUTION_NOREMOVE_REL; /* r1 */
+	      break;
+	    case SOLVER_INSTALL_SOLVABLE_UPDATE:
+	      s1 = what;
+	      code = SOLUTION_NOUPDATE;
+	      break;
+	    default:
+	      code = SOLUTION_UNKNOWN;
+	      break;
+	  }
+	}
+	else {
+	  s1 = p;
+	  s2 = rp;
+	  /* policy, replace p with rp */
+	  Solvable *sp = pool->solvables + p;
+	  Solvable *sr = rp ? pool->solvables + rp : 0;
+	  if (sr) {
+	    if (!solver->allowdowngrade
+	        && evrcmp( pool, sp->evr, sr->evr, EVRCMP_MATCH_RELEASE ) > 0) {
+	      code = SOLUTION_ALLOW_DOWNGRADE;
+	    }
+	    else if (!solver->allowarchchange
+	             && sp->name == sr->name
+		     && sp->arch != sr->arch
+		     && policy_illegal_archchange( pool, sp, sr ) ) {
+	      code = SOLUTION_ALLOW_ARCHCHANGE; /* s1, s2 */
+	    }
+	    else if (!solver->allowvendorchange
+	             && sp->name == sr->name
+		     && sp->vendor != sr->vendor
+		     && policy_illegal_vendorchange( pool, sp, sr ) ) {
+	      n1 = sp->vendor;
+	      n2 = sr->vendor;
+	      code = SOLUTION_ALLOW_VENDORCHANGE;
+	    }
+	    else {
+	      code = SOLUTION_ALLOW_REPLACEMENT;
+	    }
+	  }
+	  else {
+	    code = SOLUTION_ALLOW_REMOVE; /* s1 */
+	  }
+
+	}
+      }
+      Solution *s = solution_new( $self->solver->pool, code, s1, n1, s2, n2 );
+      rb_yield( SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solution, 0) );
+    }
+  }
+#endif
 }
 
+/*-------------------------------------------------------------*/
+/* Solution */
+
+%extend Solution {
+  %constant int SOLUTION_UPDATE_RULE = 1;
+  ~Solution()
+  { free ($self); }
+  int solution()
+  { return $self->solution; }
+  Solvable *s1()
+  { return pool_id2solvable( $self->pool, $self->s1 ); }
+  const char *n1()
+  { return id2str( $self->pool, $self->n1 ); }
+  Relation *r1()
+  { return relation_new( $self->pool, $self->n1 ); }
+  Solvable *s2()
+  { return pool_id2solvable( $self->pool, $self->s2 ); }
+  const char *n2()
+  { return id2str( $self->pool, $self->n2 ); }
+}
 /*-------------------------------------------------------------*/
 /* Solver */
 
@@ -1012,8 +1184,6 @@ typedef struct _Pool {} Pool;
     }
   }
 #endif
-  int problem_count()
-  { return $self->problems.count; }
 #if defined(SWIGRUBY)
   %rename("problems?") problems_found();
 #endif
@@ -1022,19 +1192,10 @@ typedef struct _Pool {} Pool;
 #if defined(SWIGRUBY)
   void each_problem( Transaction *t )
   {
-    Pool *pool = $self->pool;
-    Queue *transaction = &(t->queue);
-
     Id problem = 0;
     while ((problem = solver_next_problem( $self, problem )) != 0) {
-      Id prule;
-      Id dep, source, target;
       Problem *p;
-      int reason;
-
-      prule = solver_findproblemrule( $self, problem );
-      reason = solver_problemruleinfo( $self, transaction, prule, &dep, &source, &target ); 
-      p = problem_new( reason, pool_id2solvable( pool, source ), relation_new( pool, dep ), pool_id2solvable( pool, target ) );
+      p = problem_new( $self, t, problem );
       rb_yield( SWIG_NewPointerObj((void*) p, SWIGTYPE_p__Problem, 0) );
     }
   }

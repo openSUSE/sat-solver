@@ -40,7 +40,7 @@ class DecisionTest < Test::Unit::TestCase
     solver.allow_uninstall = 1;
 #    @pool.debug = 255
     solver.solve( transaction )
-    puts "#{solver.problem_count} problems found"
+    puts "** Problems found" if solver.problems?
     assert solver.decision_count > 0
     i = 0
     solver.each_decision { |d|

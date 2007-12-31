@@ -40,8 +40,8 @@ class ProblemTest < Test::Unit::TestCase
 #    solver.allow_uninstall = 1;
 #    @pool.debug = 255
     solver.solve( transaction )
-    puts "#{solver.problem_count} problems found"
-    assert solver.problem_count > 0
+    assert solver.problems?
+    puts "Problems found"
     i = 0
     solver.each_problem( transaction ) { |p|
       i += 1
