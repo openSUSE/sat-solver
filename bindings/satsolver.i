@@ -1043,19 +1043,39 @@ typedef struct _Pool {} Pool;
 /* Solution */
 
 %extend Solution {
-  %constant int SOLUTION_UPDATE_RULE = 1;
+  %constant int SOLUTION_UNKNOWN = 0;
+  %constant int SOLUTION_NOKEEP_INSTALLED = 1;
+  %constant int SOLUTION_NOINSTALL_SOLV = 2;
+  %constant int SOLUTION_NOREMOVE_SOLV = 3;
+  %constant int SOLUTION_NOFORBID_INSTALL = 4;
+  %constant int SOLUTION_NOINSTALL_NAME = 5;
+  %constant int SOLUTION_NOREMOVE_NAME = 6;
+  %constant int SOLUTION_NOINSTALL_REL = 7;
+  %constant int SOLUTION_NOREMOVE_REL = 8;
+  %constant int SOLUTION_NOUPDATE = 9;
+  %constant int SOLUTION_ALLOW_DOWNGRADE = 10;
+  %constant int SOLUTION_ALLOW_ARCHCHANGE = 11;
+  %constant int SOLUTION_ALLOW_VENDORCHANGE = 12;
+  %constant int SOLUTION_ALLOW_REPLACEMENT = 13;
+  %constant int SOLUTION_ALLOW_REMOVE = 14;
   ~Solution()
   { free ($self); }
   int solution()
   { return $self->solution; }
+  /* without the %rename, swig converts it to 's_1'. Ouch! */
+  %rename( "s1" ) s1( );
   Solvable *s1()
   { return pool_id2solvable( $self->pool, $self->s1 ); }
+  %rename( "n1" ) n1( );
   const char *n1()
   { return id2str( $self->pool, $self->n1 ); }
+  %rename( "r1" ) r1( );
   Relation *r1()
   { return relation_new( $self->pool, $self->n1 ); }
+  %rename( "s2" ) s2( );
   Solvable *s2()
   { return pool_id2solvable( $self->pool, $self->s2 ); }
+  %rename( "n2" ) n2( );
   const char *n2()
   { return id2str( $self->pool, $self->n2 ); }
 }
