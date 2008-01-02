@@ -32,7 +32,7 @@ class TransactionTest < Test::Unit::TestCase
 	    when SatSolver::REMOVE_SOLVABLE_PROVIDES: "remove by relation"
 	    else "<NONE>"
 	    end
-      puts "#{cmd}: #{pool.idname(a.id)}"
+      puts "#{cmd}: #{pool.id2str(a.id)}"
     }
     transaction.clear!
     assert transaction.empty?
