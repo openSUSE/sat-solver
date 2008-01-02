@@ -1,5 +1,15 @@
-%module satsolverx
-
+%{
+/* Document-module: Satsolverx
+ *
+ * SatSolver is the module namespace for sat-solver bindings.
+ *
+ * sat-solver is a dependency solver for rpm-style dependencies
+ * based on a Satifyability engine.
+ *
+ */
+%}
+%module Satsolverx
+%feature("autodoc","1");
 %{
 
 #if defined(SWIGRUBY)
@@ -305,12 +315,21 @@ typedef struct _Solution {} Solution;
 typedef struct _Pool {} Pool;
 %rename(Pool) _Pool;
 
+%{
+/*
+ * Document-class: Satsolverx::Pool
+ *
+ * The <code>Pool</code> is main data structure. Everything is reachable via the pool.
+ * To solve dependencies of <code>Solvable</code>s, you organize them in <code>Repo</code>s
+ * (repositories). The pool knows about all repositories and can
+ * create a <code>Solver</code> for solving <code>Transaction</code>s
+ */
+%}
 %extend Pool {
 
   /*
    * Pool management
    */
-   
   Pool()
   { return pool_create(); }
 
@@ -318,6 +337,19 @@ typedef struct _Pool {} Pool;
   { pool_free($self); }
 
 #if defined(SWIGRUBY)
+%{
+/*
+  Document-method: Satsolverx::Pool.set_arch
+  
+  Defines the architecture of the pool. Only Solvables with a compatible
+  architecture will be considered.
+  Setting the architecture to "i686" is a good choice for most 32bit
+  systems, 64bit systems most probably need "x86_64"
+
+  call-seq:
+    pool.arch = "i686"
+*/
+%}
   %rename( "arch=" ) set_arch( const char *arch );
 #endif
   void set_arch( const char *arch )
@@ -326,6 +358,7 @@ typedef struct _Pool {} Pool;
 #if defined(SWIGRUBY)
   %rename( "debug=" ) set_debug( int level );
 #endif
+  %feature("autodoc", "Makes the stuff noisy on stderr.") set_debug;
   void set_debug( int level )
   { pool_setdebuglevel( $self, level ); }
 
@@ -687,9 +720,9 @@ typedef struct _Pool {} Pool;
   { return dependency_size( $self ) == 0; }
 
 #if defined(SWIGRUBY)
-  %alias add_relation "<<";
+  %alias add "<<";
 #endif
-  Dependency *add_relation( Relation *rel, int pre = 0 )
+  Dependency *add( Relation *rel, int pre = 0 )
   {
     *($self->relations) = repo_addid_dep( $self->solvable->repo, *($self->relations), rel->id, pre ? SOLVABLE_PREREQMARKER : 0 );
     return $self;
@@ -697,9 +730,9 @@ typedef struct _Pool {} Pool;
   
 #if defined(SWIGRUBY)
   /* %rename is rejected by swig for [] */
-  %alias get_relation "[]";
+  %alias get "[]";
 #endif
-  Relation *get_relation( int i )
+  Relation *get( int i )
   {
     /* loop over it to detect end */
     Id *ids = $self->solvable->repo->idarraydata + *($self->relations);
