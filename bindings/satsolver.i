@@ -241,15 +241,16 @@ static Solution *solution_new( Pool *pool, int solution, Id s1, Id n1, Id s2, Id
 /* types and typemaps */
 
 #if defined(SWIGRUBY)
-%typemap(in) FILE* {
+/* copied from /usr/share/swig/ruby/file.i */
+%typemap(in) FILE *READ_NOCHECK {
   OpenFile *fptr;
 
   Check_Type($input, T_FILE);
   GetOpenFile($input, fptr);
   /*rb_io_check_writable(fptr);*/
   $1 = GetReadFile(fptr);
+  rb_read_check($1)
 }
-
 #endif
 
 typedef int Id;
@@ -342,10 +343,12 @@ typedef struct _Pool {} Pool;
   /*
    * Name management
    */
+  %rename( "str2id" ) str2id( const char *name );
   Id str2id( const char *name )
   {
     return str2id( $self, name, 1 );
   }
+  %rename( "id2str" ) id2str( Id id );
   const char *id2str( Id id )
   {
     return my_id2str( $self, id );
