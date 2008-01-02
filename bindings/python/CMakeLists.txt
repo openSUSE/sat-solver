@@ -21,7 +21,7 @@ SET( SWIG_INPUT "${CMAKE_CURRENT_SOURCE_DIR}/satsolver.i" )
 ADD_CUSTOM_COMMAND (
    OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c
    COMMAND ${CMAKE_COMMAND} -E echo_append "Creating wrapper code for Python ..."
-   COMMAND ${SWIG_EXECUTABLE} -python -o ${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c -I${CMAKE_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/../satsolver.i
+   COMMAND ${SWIG_EXECUTABLE} -python -features autodoc -o ${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c -I${CMAKE_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/../satsolver.i
    COMMAND ${CMAKE_COMMAND} -E echo "Done."
    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../*.i
