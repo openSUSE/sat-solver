@@ -8,7 +8,7 @@
  *
  */
 %}
-%module Satsolverx
+%module satsolverx
 %feature("autodoc","1");
 %{
 
