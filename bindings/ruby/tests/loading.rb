@@ -1,3 +1,7 @@
+#
+# Test loading of the bindings
+#
+
 $: << "../../../build/bindings/ruby"
 # test loading of extension
 require 'test/unit'

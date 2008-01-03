@@ -482,9 +482,9 @@ typedef struct _Pool {} Pool;
 
 #if defined(SWIGRUBY)
   /* %rename is rejected by swig for [] */
-  %alias get_solvable "[]";
+  %alias get "[]";
 #endif
-  Solvable *get_solvable( int i )
+  Solvable *get( int i )
   {
     if (i < 0) return NULL;
     if (i >= $self->nsolvables) return NULL;
@@ -518,8 +518,7 @@ typedef struct _Pool {} Pool;
     queue_init( &plist);
     i = repo ? repo->start : 1;
     end = repo ? repo->start + repo->nsolvables : pool->nsolvables;
-    for (; i < end; i++)
-    {
+    for (; i < end; i++) {
       s = pool->solvables + i;
       if (!pool_installable(pool, s))
         continue;
@@ -529,10 +528,8 @@ typedef struct _Pool {} Pool;
 
     prune_best_version_arch(pool, &plist);
 
-    if (plist.count == 0)
-    {
-      printf("unknown package '%s'\n", name);
-      exit(1);
+    if (plist.count == 0) {
+      return NULL;
     }
 
     id = plist.elements[0];
@@ -623,14 +620,49 @@ typedef struct _Pool {} Pool;
 
 #if defined(SWIGRUBY)
   /* %rename is rejected by swig for [] */
-  %alias get_solvable "[]";
+  %alias get "[]";
 #endif
-  Solvable *get_solvable( int i )
+  Solvable *get( int i )
   {
     if (i < 0) return NULL;
     if (i >= $self->nsolvables) return NULL;
     return pool_id2solvable( $self->pool, $self->start + i );
   }
+
+  Solvable *
+  find( char *name )
+  {
+    Id id;
+    Queue plist;
+    int i, end;
+    Solvable *s;
+    Pool *pool;
+
+    pool = $self->pool;
+    id = str2id( pool, name, 1 );
+    queue_init( &plist);
+    i = $self->start;
+    end = $self->start + $self->nsolvables;
+    for (; i < end; i++) {
+      s = pool->solvables + i;
+      if (!pool_installable( pool, s ))
+        continue;
+      if (s->name == id)
+        queue_push( &plist, i );
+    }
+
+    prune_best_version_arch( pool, &plist );
+
+    if (plist.count == 0) {
+      return NULL;
+    }
+
+    id = plist.elements[0];
+    queue_free(&plist);
+
+    return pool->solvables + id;
+  }
+
 }
 
 /*-------------------------------------------------------------*/

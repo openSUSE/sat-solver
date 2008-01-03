@@ -1,3 +1,14 @@
+#
+# Load repository from rpm database
+#
+#   repo = pool.add_rpmdb( "/root/dir/of/system" )
+# will create an unnamed repository by reading the rpm database
+# and create a solvable for each installed package.
+# Use
+#   repo.name = "..."
+# to name the repository
+#
+#
 $: << "../../../build/bindings/ruby"
 # test adding rpmdb
 require 'test/unit'

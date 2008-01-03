@@ -1,3 +1,9 @@
+#
+# Solutions provide 'exit strategies' for Problems.
+#
+# Solutions are enumeratable through Problem.each_solution
+#
+#
 $: << "../../../build/bindings/ruby"
 # test Solutions
 require 'test/unit'

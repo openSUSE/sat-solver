@@ -1,3 +1,22 @@
+#
+# Relations are the primary means to specify dependencies.
+# Relations combine names and version through an operator.
+# Relations can be compared (<=> operator) or matched (=~ operator)
+#
+# The following operators are defined:
+#   REL_GT: greater than
+#   REL_EQ: equals
+#   REL_GE: greater equal
+#   REL_LT: less than
+#   REL_NE: not equal
+#   REL_LE: less equal
+# Future extensions (not fully defined currently)
+#   REL_AND:  and
+#   REL_OR:   or
+#   REL_WITH: with
+#   REL_NAMESPACE: namespace
+#
+#
 $: << "../../../build/bindings/ruby"
 # test Relation
 require 'test/unit'
@@ -15,6 +34,7 @@ class SolvableTest < Test::Unit::TestCase
   end
   def test_relation
     rel = SatSolver::Relation.new( @pool, "A", SatSolver::REL_EQ, "1.0-0" )
+    # equivalent: @pool.create_relation( "A", SatSolver::REL_EQ, "1.0-0" )
     puts "Relation: #{rel}"
     @repo.each { |s|
       unless (s.provides.empty?)

@@ -1,3 +1,44 @@
+#
+# In case the Solver cannot find a solution (Solver.problems? true),
+# it reports Problems through Solver.each_problem.
+#
+# There is no 'problem count' provided by the Solver, only the
+# existance of problems is reported via Solver.problems?
+#
+# Linked to each problem is a set of solutions, accessible
+# through Problem.each_solution
+#
+# Each problem contains
+#  - a problem identifier (Problem.id)
+#  - a reason code (Problem.reason)
+#     see below
+#  - a source identifier
+#  - a relation identifier
+#  - a target identifier
+#
+# The identifiers can have various meanings (name, relation, solvable), depending
+# on the reason.
+#
+# The following reasons are defined
+#  SOLVER_PROBLEM_UPDATE_RULE
+#    problem with installed source
+#  SOLVER_PROBLEM_JOB_RULE
+#    conflicting requests
+#  SOLVER_PROBLEM_JOB_NOTHING_PROVIDES_DEP
+#    nothing provides requested relation
+#  SOLVER_PROBLEM_NOT_INSTALLABLE
+#    source not installable
+#  SOLVER_PROBLEM_NOTHING_PROVIDES_DEP
+#    nothing provides relation required by source
+#  SOLVER_PROBLEM_SAME_NAME
+#    cannot install both source and target
+#  SOLVER_PROBLEM_PACKAGE_CONFLICT
+#    source conflicts with relation provided by target
+#  SOLVER_PROBLEM_PACKAGE_OBSOLETES
+#    source obsoletes relation provided by target
+#  SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE
+#    source requires relation but no providers are installable
+#
 $: << "../../../build/bindings/ruby"
 # test Problems
 require 'test/unit'

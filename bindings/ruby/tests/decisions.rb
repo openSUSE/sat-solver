@@ -1,3 +1,24 @@
+#
+# After successful solving, the solver returns the result as list of Decisions.
+#
+# A Decision consitst of
+#  - an operation (see below)
+#  - a solvable (affected by the operation)
+#  - a reason (the reason for the decision)
+#
+# Operation can be one of
+#  - DEC_INSTALL
+#     install solvable, required by 'reason' (if reason is set)
+#  - DEC_REMOVE
+#     remove solvable, updated/obsoleted/conflicted by 'reason' (if reason is set)
+#  - DEC_OBSOLETE
+#     auto-remove solvable through an obsoletes/update coming from 'reason'
+#  - DEC_UPDATE
+#     install solvable, thereby updating 'reason'
+#
+# The number of decision steps is available through Solver.decision_count
+#
+
 $: << "../../../build/bindings/ruby"
 # test Decisions
 require 'test/unit'
