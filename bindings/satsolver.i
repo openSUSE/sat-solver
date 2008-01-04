@@ -49,8 +49,9 @@ typedef struct _Relation {
 
 static Relation *relation_new( Pool *pool, Id id )
 {
+  Relation *relation;
   if (!id) return NULL;
-  Relation *relation = (Relation *)malloc( sizeof( Relation ));
+  relation = (Relation *)malloc( sizeof( Relation ));
   relation->id = id;
   relation->pool = pool;
   return relation;
@@ -99,9 +100,8 @@ static Dependency *dependency_new( Solvable *solvable, Offset *relations, int de
 
 static int dependency_size( const Dependency *dep )
 {
-  if (!dep) return 0;
   int i = 0;
-  if (dep->relations) {
+  if (dep && dep->relations) {
     Id *ids = dep->solvable->repo->idarraydata + *(dep->relations);
     while (*ids++)
       ++i;
@@ -115,14 +115,15 @@ Solvable *solvable_new( Repo *repo, const char *name, const char *evr, const cha
   Solvable *s = pool_id2solvable( repo->pool, repo_add_solvable( repo ) );
   Id nameid = str2id( repo->pool, name, 1 );
   Id evrid = str2id( repo->pool, evr, 1 );
+  Id archid, rel;
   if (arch == NULL) arch = "noarch";
-  Id archid = str2id( repo->pool, arch, 1 );
+  archid = str2id( repo->pool, arch, 1 );
   s->name = nameid;
   s->evr = evrid;
   s->arch = archid;
 
   /* add self-provides */
-  Id rel = rel2id( repo->pool, nameid, evrid, REL_EQ, 1 );
+  rel = rel2id( repo->pool, nameid, evrid, REL_EQ, 1 );
   s->provides = repo_addid_dep( repo, s->provides, rel, 0 );
 
   return s;
@@ -465,9 +466,10 @@ typedef struct _Pool {} Pool;
   {
     Id name_id = str2id( $self, name, 1 );
     Id evr_id = 0;
+    Id rel;
     if (evr)
       evr_id = str2id( $self, evr, 1 );
-    Id rel = rel2id( $self, name_id, evr_id, op, 1 );
+    rel = rel2id( $self, name_id, evr_id, op, 1 );
     return relation_new( $self, rel );
   }
 
@@ -695,9 +697,10 @@ typedef struct _Pool {} Pool;
   {
     Id name_id = str2id( pool, name, 1 );
     Id evr_id = 0;
+    Id rel;
     if (evr)
       evr_id = str2id( pool, evr, 1 );
-    Id rel = rel2id( pool, name_id, evr_id, op, 1 );
+    rel = rel2id( pool, name_id, evr_id, op, 1 );
     return relation_new( pool, rel );
   }
   ~Relation()
@@ -934,16 +937,18 @@ typedef struct _Pool {} Pool;
   }
   void install( const Relation *rel )
   {
+    Reldep *rd;
     queue_push( &($self->queue), SOLVER_INSTALL_SOLVABLE_PROVIDES );
     /* FIXME: check: rel->pool == $self->pool */
-    Reldep *rd = GETRELDEP( rel->pool, rel->id );
+    rd = GETRELDEP( rel->pool, rel->id );
     queue_push( &($self->queue), rd->name );
   }
   void remove( const Relation *rel )
   {
+    Reldep *rd;
     queue_push( &($self->queue), SOLVER_ERASE_SOLVABLE_PROVIDES );
     /* FIXME: check: rel->pool == $self->pool */
-    Reldep *rd = GETRELDEP( rel->pool, rel->id );
+    rd = GETRELDEP( rel->pool, rel->id );
     queue_push( &($self->queue), rd->name );
   }
 
@@ -964,11 +969,13 @@ typedef struct _Pool {} Pool;
 
   Action *get_action( unsigned int i )
   {
+    int size, cmd;
+    Id id;
     i <<= 1;
-    int size = $self->queue.count;
+    size = $self->queue.count;
     if (i-1 >= size) return NULL;
-    int cmd = $self->queue.elements[i];
-    Id id = $self->queue.elements[i+1];
+    cmd = $self->queue.elements[i];
+    id = $self->queue.elements[i+1];
     return action_new( cmd, id );
   }
 
@@ -1377,6 +1384,8 @@ typedef struct _Pool {} Pool;
         SV *res  = 0;
         int len = self->decisionq.count;
         for (b = 0; b < len; b++) {
+	    Solvable *s;
+            char *myel;
             Id p = self->decisionq.elements[b];
             if (p < 0) {
                 continue; // ignore conflict
@@ -1384,9 +1393,9 @@ typedef struct _Pool {} Pool;
             if (p == SYSTEMSOLVABLE) {
                 continue; // ignore system solvable
             }
-            Solvable *s = self->pool->solvables + p;
+            s = self->pool->solvables + p;
             //printf ("SOLVER NAME: %d %s\n",p,id2str(pool, s->name));
-            char* myel = (char*)id2str(pool, s->name);
+            myel = (char*)id2str(pool, s->name);
             mysv = sv_newmortal();
             mysv = perl_get_sv (myel,TRUE);
             sv_setpv(mysv, myel);
