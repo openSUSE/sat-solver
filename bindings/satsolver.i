@@ -755,6 +755,9 @@ typedef struct _Pool {} Pool;
   ~Dependency()
   { free( $self ); }
 
+  Solvable *solvable()
+  { return $self->solvable; }
+
   int size()
   { return dependency_size( $self ); }
 #if defined(SWIGRUBY)
