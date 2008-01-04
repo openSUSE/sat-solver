@@ -13,8 +13,8 @@
 %{
 
 #if defined(SWIGRUBY)
-#include "ruby.h"
-#include "rubyio.h"
+#include <ruby.h>
+#include <rubyio.h>
 #endif
 #include "policy.h"
 #include "bitmap.h"
@@ -260,6 +260,15 @@ static Solution *solution_new( Pool *pool, int solution, Id s1, Id n1, Id s2, Id
   /*rb_io_check_writable(fptr);*/
   $1 = GetReadFile(fptr);
   rb_read_check($1)
+}
+#endif
+
+//==================================
+// Typemap: Allow FILE* as PerlIO
+//----------------------------------
+#if defined(SWIGPERL)
+%typemap(in) FILE* {
+    $1 = PerlIO_findFILE(IoIFP(sv_2io($input)));
 }
 #endif
 
@@ -1356,6 +1365,37 @@ typedef struct _Pool {} Pool;
     }
   }
 
+#endif
+
+
+#if defined(SWIGPERL)
+    SV* getInstallList (Pool *pool)
+    {
+        int b = 0;
+        AV *myav = newAV();
+        SV *mysv = 0;
+        SV *res  = 0;
+        int len = self->decisionq.count;
+        for (b = 0; b < len; b++) {
+            Id p = self->decisionq.elements[b];
+            if (p < 0) {
+                continue; // ignore conflict
+            }
+            if (p == SYSTEMSOLVABLE) {
+                continue; // ignore system solvable
+            }
+            Solvable *s = self->pool->solvables + p;
+            //printf ("SOLVER NAME: %d %s\n",p,id2str(pool, s->name));
+            char* myel = (char*)id2str(pool, s->name);
+            mysv = sv_newmortal();
+            mysv = perl_get_sv (myel,TRUE);
+            sv_setpv(mysv, myel);
+            av_push (myav,mysv);
+        }
+        res = newRV((SV*)myav);
+        sv_2mortal (res);
+        return res;
+    }
 #endif
 
 };

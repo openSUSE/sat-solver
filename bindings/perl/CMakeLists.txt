@@ -9,16 +9,23 @@
 
 ADD_SUBDIRECTORY(tests)
 
+EXECUTE_PROCESS(COMMAND ${PERL_EXECUTABLE} -e "use Config; print \$Config{archlib}" OUTPUT_VARIABLE PERL_LIB_DIR)
+EXECUTE_PROCESS(COMMAND ${PERL_EXECUTABLE} -e "use Config; print \$Config{installvendorarch}" OUTPUT_VARIABLE PERL_VENDOR_ARCH)
+EXECUTE_PROCESS(COMMAND ${PERL_EXECUTABLE} -e "use Config; print \$Config{installvendorlib}" OUTPUT_VARIABLE PERL_VENDOR_LIB)
+EXECUTE_PROCESS(COMMAND ${PERL_EXECUTABLE} -e "use Config; print \$Config{ccdlflags}" OUTPUT_VARIABLE PERL_LINK_FLAGS)
+
 MESSAGE(STATUS "Perl executable: ${PERL_EXECUTABLE}")
 MESSAGE(STATUS "Perl lib dir: ${PERL_LIB_DIR}")
-MESSAGE(STATUS "Perl site dir: ${PERL_LIB_DIR}/site-packages")
+MESSAGE(STATUS "Perl inc dir: ${PERL_LIB_DIR}")
+MESSAGE(STATUS "Perl vendor arch dir: ${PERL_VENDOR_ARCH}")
+MESSAGE(STATUS "Perl vendor lib dir: ${PERL_VENDOR_LIB}")
 
 SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c" )
 SET( SWIG_INPUT "${CMAKE_CURRENT_SOURCE_DIR}/satsolver.i" )
 
 ADD_CUSTOM_COMMAND (
    OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c
-   COMMAND ${CMAKE_COMMAND} -E echo_append "Creating wrapper code for Python ..."
+   COMMAND ${CMAKE_COMMAND} -E echo_append "Creating wrapper code for Perl ..."
    COMMAND ${SWIG_EXECUTABLE} -perl -features autodoc -o ${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c -I${CMAKE_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/../satsolver.i
    COMMAND ${CMAKE_COMMAND} -E echo "Done."
    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
@@ -34,12 +41,12 @@ ADD_LIBRARY( _satsolverx SHARED ${satsolverx_SRCS} )
 SET_TARGET_PROPERTIES( _satsolverx PROPERTIES PREFIX "" )
 ADD_DEPENDENCIES( _satsolverx glue )
 
-INCLUDE_DIRECTORIES( ${PERL_INCLUDE_PATH} ${CMAKE_SOURCE_DIR}/tools )
+INCLUDE_DIRECTORIES( ${PERL_LIB_DIR}/CORE ${CMAKE_SOURCE_DIR}/tools )
 
 TARGET_LINK_LIBRARIES( _satsolverx satsolver )
-TARGET_LINK_LIBRARIES( _satsolverx ${PERL_LIBRARIES} )
+TARGET_LINK_LIBRARIES( _satsolverx perl )
 TARGET_LINK_LIBRARIES( _satsolverx ${DB43_LIBRARY} )
 
-INSTALL(TARGETS _satsolverx LIBRARY DESTINATION ${PERL_LIB_DIR}/site-packages)
+INSTALL(TARGETS _satsolverx LIBRARY DESTINATION ${PERL_VENDOR_ARCH} )
 
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/satsolverx.pm DESTINATION ${PERL_LIB_DIR}/site-packages )
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/satsolverx.pm DESTINATION ${PERL_VENDOR_LIB} )
