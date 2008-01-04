@@ -560,7 +560,7 @@ typedef struct _Pool {} Pool;
    * Solver management
    */
 
-  Solver* create_solver( Repo *installed )
+  Solver* create_solver( Repo *installed = NULL )
   { return solver_create( $self, installed ); }
 
 }
@@ -1186,7 +1186,7 @@ typedef struct _Pool {} Pool;
 
 %extend Solver {
 
-  Solver( Pool *pool, Repo *installed )
+  Solver( Pool *pool, Repo *installed = NULL )
   { return solver_create( pool, installed ); }
   ~Solver()
   { solver_free( $self ); }
@@ -1376,7 +1376,7 @@ typedef struct _Pool {} Pool;
 
 
 #if defined(SWIGPERL)
-    SV* getInstallList (Pool *pool)
+    SV* getInstallList()
     {
         int b = 0;
         AV *myav = newAV();
@@ -1394,8 +1394,8 @@ typedef struct _Pool {} Pool;
                 continue; // ignore system solvable
             }
             s = self->pool->solvables + p;
-            //printf ("SOLVER NAME: %d %s\n",p,id2str(pool, s->name));
-            myel = (char*)id2str(pool, s->name);
+            //printf ("SOLVER NAME: %d %s\n",p,id2str(self->pool, s->name));
+            myel = (char*)id2str(self->pool, s->name);
             mysv = sv_newmortal();
             mysv = perl_get_sv (myel,TRUE);
             sv_setpv(mysv, myel);
