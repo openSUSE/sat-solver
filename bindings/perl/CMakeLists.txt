@@ -1,6 +1,10 @@
 #
 # cmake description for satsolver Perl bindings
 #
+# !!Attn!!: This creates two files
+#  1. _satsolverx.so
+#  2. satsolverx.pm
+# and the .pm file gets loaded. See bindings/perl/tests.
 #
 
 ADD_SUBDIRECTORY(tests)
@@ -38,4 +42,4 @@ TARGET_LINK_LIBRARIES( _satsolverx ${DB43_LIBRARY} )
 
 INSTALL(TARGETS _satsolverx LIBRARY DESTINATION ${PERL_LIB_DIR}/site-packages)
 
-#INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/satsolverx.py DESTINATION ${PERL_LIB_DIR}/site-packages )
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/satsolverx.pm DESTINATION ${PERL_LIB_DIR}/site-packages )
