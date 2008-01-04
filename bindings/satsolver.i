@@ -820,6 +820,9 @@ typedef struct _Pool {} Pool;
     return $self - $self->repo->pool->solvables;
   }
 
+  Repo *repo()
+  { return $self->repo; }
+
   const char *name()
   { return my_id2str( $self->repo->pool, $self->name ); }
   Id name_id()
