@@ -3,6 +3,8 @@ FIND_PACKAGE(Ruby)
 FIND_PACKAGE(PythonLibs)
 
 # doesn't work yet :-(
+# CMake problem, FindPerlLibs.cmake is in a _really_ bad, bad state :-((
+# see e.g. http://www.vtk.org/Bug/print_bug_page.php?bug_id=3665
 #FIND_PACKAGE(PerlLibs)
 
 IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
