@@ -30,9 +30,7 @@ class SolvableTest < Test::Unit::TestCase
     solv = @pool[2]
     assert solv
     puts solv
-    puts "#{solv.id}: #{solv.name}-#{solv.evr}.#{solv.arch}[#{solv.vendor}]"
-    solv = @pool.id2solvable solv.id
-    puts "#{solv.id}: #{solv.name}-#{solv.evr}.#{solv.arch}[#{solv.vendor}]"
+    puts "#{solv.name}-#{solv.evr}.#{solv.arch}[#{solv.vendor}]"
   end
   def test_deps
     return
