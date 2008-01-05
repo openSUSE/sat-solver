@@ -561,7 +561,10 @@ typedef struct _Pool {} Pool;
    */
 
   Solver* create_solver( Repo *installed = NULL )
-  { return solver_create( $self, installed ); }
+  { 
+    pool_createwhatprovides( $self );
+    return solver_create( $self, installed );
+  }
 
 }
 
