@@ -6,6 +6,10 @@
  * sat-solver is a dependency solver for rpm-style dependencies
  * based on a Satifyability engine.
  *
+ *
+ * It might make a lot of sense to make Pool* a singular within
+ * the module and use this pointer globally instead of carrying
+ * it around in every data structure.
  */
 %}
 %module satsolverx
@@ -31,6 +35,58 @@
 #include "repo.h"
 #include "repo_solv.h"
 #include "repo_rpmdb.h"
+
+/*
+ * we cannot use a Solvable pointer since the Pool might realloc them
+ * so we use a combination of Solvable Id and Pool the Solvable belongs
+ * to. pool_id2solvable() gives us the pointer.
+ *
+ * And we cannot use Solvable because its already defined in solvable.h
+ * Later, when defining the bindings, a %rename is used to make
+ * 'Solvable' available in the target language. Swig tightrope walk.
+ */
+
+typedef struct _xsolvable {
+  Pool *pool;
+  Id id;
+} XSolvable;
+
+XSolvable *xsolvable_new( Pool *pool, Id id )
+{
+  XSolvable *xsolvable = (XSolvable *)malloc( sizeof( XSolvable ));
+  xsolvable->pool = pool;
+  xsolvable->id = id;
+  
+  return xsolvable;
+}
+
+XSolvable *xsolvable_create( Repo *repo, const char *name, const char *evr, const char *arch )
+{
+  Id sid = repo_add_solvable( repo );
+  Pool *pool = repo->pool;
+  XSolvable *xsolvable = xsolvable_new( pool, sid );
+  Solvable *s = pool_id2solvable( pool, sid );
+  Id nameid = str2id( pool, name, 1 );
+  Id evrid = str2id( pool, evr, 1 );
+  Id archid, rel;
+  if (arch == NULL) arch = "noarch";
+  archid = str2id( pool, arch, 1 );
+  s->name = nameid;
+  s->evr = evrid;
+  s->arch = archid;
+
+  /* add self-provides */
+  rel = rel2id( pool, nameid, evrid, REL_EQ, 1 );
+  s->provides = repo_addid_dep( repo, s->provides, rel, 0 );
+
+  return xsolvable;
+}
+
+
+Solvable *xsolvable_solvable( XSolvable *xs )
+{
+  return pool_id2solvable( xs->pool, xs->id );
+}
 
 static const char *
 my_id2str( Pool *pool, Id id )
@@ -59,9 +115,8 @@ static Relation *relation_new( Pool *pool, Id id )
 
 /* Collection of Relations -> Dependency */
 typedef struct _Dependency {
-  Offset *relations;               /* ptr to solvable deps (requires, provides, ...)
-                                      (offset into repo->idarraydata) */
-  Solvable *solvable;              /* solvable this dep belongs to */
+  int dep;                         /* type of dep, any of DEP_xxx */
+  XSolvable *xsolvable;            /* xsolvable this dep belongs to */
 } Dependency;
 
 #define DEP_PRV 1
@@ -73,62 +128,49 @@ typedef struct _Dependency {
 #define DEP_SUP 7
 #define DEP_ENH 8
 
-static Dependency *dependency_new( Solvable *solvable, Offset *relations, int dep )
+static Dependency *dependency_new( XSolvable *xsolvable, int dep )
 {
   Dependency *dependency = (Dependency *)malloc( sizeof( Dependency ));
-  dependency->solvable = solvable;
-  if (relations) {
-    dependency->relations = relations;
-  }
-  else {
-    switch( dep ) {
-      case DEP_PRV: dependency->relations = &(solvable->provides); break;
-      case DEP_REQ: dependency->relations = &(solvable->requires); break;
-      case DEP_CON: dependency->relations = &(solvable->conflicts); break;
-      case DEP_OBS: dependency->relations = &(solvable->obsoletes); break;
-      case DEP_REC: dependency->relations = &(solvable->recommends); break;
-      case DEP_SUG: dependency->relations = &(solvable->suggests); break;
-      case DEP_SUP: dependency->relations = &(solvable->supplements); break;
-      case DEP_ENH: dependency->relations = &(solvable->enhances); break;
-      default:
-        /* FIXME: raise exception */
-	return NULL;
-    }
-  }
+  dependency->dep = dep;
+  dependency->xsolvable = xsolvable;
   return dependency;
 }
+
+/* get pointer to offset for dependency */
+static Offset *dependency_relations( const Dependency *dep )
+{
+  Solvable *s;
+  if (!dep) return NULL;
+
+  s = xsolvable_solvable( dep->xsolvable );
+  switch (dep->dep) {
+      case DEP_PRV: return &(s->provides); break;
+      case DEP_REQ: return &(s->requires); break;
+      case DEP_CON: return &(s->conflicts); break;
+      case DEP_OBS: return &(s->obsoletes); break;
+      case DEP_REC: return &(s->recommends); break;
+      case DEP_SUG: return &(s->suggests); break;
+      case DEP_SUP: return &(s->supplements); break;
+      case DEP_ENH: return &(s->enhances); break;
+  }
+  return NULL;
+}
+
 
 static int dependency_size( const Dependency *dep )
 {
   int i = 0;
-  if (dep && dep->relations) {
-    Id *ids = dep->solvable->repo->idarraydata + *(dep->relations);
+  Solvable *s;
+  Id *ids;
+  Offset *relations = dependency_relations( dep );
+  if (relations) {
+    s = xsolvable_solvable( dep->xsolvable );
+    ids = s->repo->idarraydata + *relations;
     while (*ids++)
       ++i;
   }
   return i;
 }
-
-
-Solvable *solvable_new( Repo *repo, const char *name, const char *evr, const char *arch )
-{
-  Solvable *s = pool_id2solvable( repo->pool, repo_add_solvable( repo ) );
-  Id nameid = str2id( repo->pool, name, 1 );
-  Id evrid = str2id( repo->pool, evr, 1 );
-  Id archid, rel;
-  if (arch == NULL) arch = "noarch";
-  archid = str2id( repo->pool, arch, 1 );
-  s->name = nameid;
-  s->evr = evrid;
-  s->arch = archid;
-
-  /* add self-provides */
-  rel = rel2id( repo->pool, nameid, evrid, REL_EQ, 1 );
-  s->provides = repo_addid_dep( repo, s->provides, rel, 0 );
-
-  return s;
-}
-
 
 typedef struct _Action {
   SolverCmd cmd;
@@ -169,13 +211,15 @@ static void transaction_free( Transaction *t )
 
 typedef struct _Decision {
   int op;               /* DEC_{INSTALL,UPDATE,OBSOLETE,REMOVE} */
-  Solvable *solvable;
-  Solvable *reason;
+  Pool *pool;
+  Id solvable;
+  Id reason;
 } Decision;
 
-static Decision *decision_new( int op, Solvable *solvable, Solvable *reason )
+static Decision *decision_new( Pool *pool, int op, Id solvable, Id reason )
 {
   Decision *d = (Decision *)malloc( sizeof( Decision ));
+  d->pool = pool;
   d->op = op;
   d->solvable = solvable;
   d->reason = reason;
@@ -282,7 +326,7 @@ typedef struct _Repo {} Repo;
 
 %nodefault _Solvable;
 %rename(Solvable) _Solvable;
-typedef struct _Solvable {} Solvable;
+typedef struct _Solvable {} XSolvable;
 
 %nodefault _Relation;
 %rename(Relation) _Relation;
@@ -481,25 +525,20 @@ typedef struct _Pool {} Pool;
   { return $self->nsolvables; }
   
 #if defined(SWIGRUBY)
-  %rename( "installable?" ) installable( Solvable *s );
+  %rename( "installable?" ) installable( XSolvable *s );
 #endif
-  int installable( Solvable *s )
-  { return pool_installable( $self, s ); }
-
-  /* without the %rename, swig converts it to 'id_2solvable'. Ouch! */
-  %rename( "id2solvable" ) id2solvable( Id p );
-  Solvable *id2solvable( Id p )
-  { return pool_id2solvable( $self, p );  }
+  int installable( XSolvable *s )
+  { return pool_installable( $self, pool_id2solvable( s->pool, s->id ) ); }
 
 #if defined(SWIGRUBY)
   /* %rename is rejected by swig for [] */
   %alias get "[]";
 #endif
-  Solvable *get( int i )
+  XSolvable *get( int i )
   {
     if (i < 0) return NULL;
     if (i >= $self->nsolvables) return NULL;
-    return $self->solvables + i;
+    return xsolvable_new( $self, i );
   }
 #if defined(SWIGRUBY)
   void each()
@@ -510,12 +549,12 @@ typedef struct _Pool {} Pool;
     {
       if (!s->name)
         continue;
-      rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
+      rb_yield(SWIG_NewPointerObj((void*) xsolvable_new( $self, p ), SWIGTYPE_p__Solvable, 0));
     }
   }
 #endif
 
-  Solvable *
+  XSolvable *
   find( char *name, Repo *repo = NULL )
   {
     Id id;
@@ -546,7 +585,7 @@ typedef struct _Pool {} Pool;
     id = plist.elements[0];
     queue_free(&plist);
 
-    return pool->solvables + id;
+    return xsolvable_new( pool, id );
   }
 
   /*
@@ -615,8 +654,8 @@ typedef struct _Pool {} Pool;
   void add_rpmdb( const char *rootdir )
   { repo_add_rpmdb( $self, NULL, rootdir ); }
 
-  Solvable *create_solvable( const char *name, const char *evr, const char *arch = NULL )
-  { return solvable_new( $self, name, evr, arch ); }
+  XSolvable *create_solvable( const char *name, const char *evr, const char *arch = NULL )
+  { return xsolvable_create( $self, name, evr, arch ); }
 
 #if defined(SWIGRUBY)
   void each()
@@ -627,7 +666,7 @@ typedef struct _Pool {} Pool;
     {
       if (!s)
         continue;
-      rb_yield( SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0) );
+      rb_yield( SWIG_NewPointerObj((void*) xsolvable_new( $self->pool, $self->start + p ), SWIGTYPE_p__Solvable, 0) );
     }
   }
 #endif
@@ -636,14 +675,14 @@ typedef struct _Pool {} Pool;
   /* %rename is rejected by swig for [] */
   %alias get "[]";
 #endif
-  Solvable *get( int i )
+  XSolvable *get( int i )
   {
     if (i < 0) return NULL;
     if (i >= $self->nsolvables) return NULL;
-    return pool_id2solvable( $self->pool, $self->start + i );
+    return xsolvable_new( $self->pool, $self->start + i );
   }
 
-  Solvable *
+  XSolvable *
   find( char *name )
   {
     Id id;
@@ -654,7 +693,7 @@ typedef struct _Pool {} Pool;
 
     pool = $self->pool;
     id = str2id( pool, name, 1 );
-    queue_init( &plist);
+    queue_init( &plist );
     i = $self->start;
     end = $self->start + $self->nsolvables;
     for (; i < end; i++) {
@@ -672,9 +711,9 @@ typedef struct _Pool {} Pool;
     }
 
     id = plist.elements[0];
-    queue_free(&plist);
+    queue_free( &plist );
 
-    return pool->solvables + id;
+    return xsolvable_new( pool, id );
   }
 
 }
@@ -753,13 +792,13 @@ typedef struct _Pool {} Pool;
 #define DEP_SUP 7
 #define DEP_ENH 8
 
-  Dependency( Solvable *solvable, int dep )
-  { return dependency_new( solvable, NULL, dep ); }
+  Dependency( XSolvable *xsolvable, int dep )
+  { return dependency_new( xsolvable, dep ); }
   ~Dependency()
   { free( $self ); }
 
-  Solvable *solvable()
-  { return $self->solvable; }
+  XSolvable *solvable()
+  { return $self->xsolvable; }
 
   int size()
   { return dependency_size( $self ); }
@@ -774,7 +813,9 @@ typedef struct _Pool {} Pool;
 #endif
   Dependency *add( Relation *rel, int pre = 0 )
   {
-    *($self->relations) = repo_addid_dep( $self->solvable->repo, *($self->relations), rel->id, pre ? SOLVABLE_PREREQMARKER : 0 );
+    Solvable *s = xsolvable_solvable( $self->xsolvable );
+    Offset *relations = dependency_relations( $self );
+    *relations = repo_addid_dep( s->repo, *relations, rel->id, pre ? SOLVABLE_PREREQMARKER : 0 );
     return $self;
   }
   
@@ -784,13 +825,15 @@ typedef struct _Pool {} Pool;
 #endif
   Relation *get( int i )
   {
+    Solvable *s = xsolvable_solvable( $self->xsolvable );
+    Offset *relations = dependency_relations( $self );
     /* loop over it to detect end */
-    Id *ids = $self->solvable->repo->idarraydata + *($self->relations);
+    Id *ids = s->repo->idarraydata + *relations;
     while ( i-- >= 0 ) {
       if ( !*ids )
 	 break;
       if ( i == 0 ) {
-	return relation_new( $self->solvable->repo->pool, *ids );
+	return relation_new( s->repo->pool, *ids );
       }
       ++ids;
     }
@@ -800,9 +843,11 @@ typedef struct _Pool {} Pool;
 #if defined(SWIGRUBY)
   void each()
   {
-    Id *ids = $self->solvable->repo->idarraydata + *($self->relations);
+    Solvable *s = xsolvable_solvable( $self->xsolvable );
+    Offset *relations = dependency_relations( $self );
+    Id *ids = s->repo->idarraydata + *relations;
     while (*ids) {
-      rb_yield( SWIG_NewPointerObj((void*) relation_new( $self->solvable->repo->pool, *ids ), SWIGTYPE_p__Relation, 0) );
+      rb_yield( SWIG_NewPointerObj((void*) relation_new( s->repo->pool, *ids ), SWIGTYPE_p__Relation, 0) );
       ++ids;
     }
   }
@@ -813,69 +858,53 @@ typedef struct _Pool {} Pool;
 /*-------------------------------------------------------------*/
 /* Solvable */
 
-%extend Solvable {
-  Solvable( Repo *repo, const char *name, const char *evr, const char *arch = NULL )
-  { return solvable_new( repo, name, evr, arch ); }
-
-  Id id() {
-    if (!$self->repo)
-      return 0;
-    return $self - $self->repo->pool->solvables;
-  }
+%extend XSolvable {
+  XSolvable( Repo *repo, const char *name, const char *evr, const char *arch = NULL )
+  { return xsolvable_create( repo, name, evr, arch ); }
 
   Repo *repo()
-  { return $self->repo; }
+  { return xsolvable_solvable($self)->repo; }
 
   const char *name()
-  { return my_id2str( $self->repo->pool, $self->name ); }
-  Id name_id()
-  { return $self->name; }
+  { return my_id2str( $self->pool, xsolvable_solvable($self)->name ); }
   const char *arch()
-  { return my_id2str( $self->repo->pool, $self->arch ); }
-  Id arch_id()
-  { return $self->arch; }
+  { return my_id2str( $self->pool, xsolvable_solvable($self)->arch ); }
   const char *evr()
-  { return my_id2str( $self->repo->pool, $self->evr ); }
-  Id evr_id()
-  { return $self->evr; }
+  { return my_id2str( $self->pool, xsolvable_solvable($self)->evr ); }
 
   const char *vendor()
-  { return my_id2str( $self->repo->pool, $self->vendor ); }
+  { return my_id2str( $self->pool, xsolvable_solvable($self)->vendor ); }
 #if defined(SWIGRUBY)
   %rename( "vendor=" ) set_vendor( const char *vendor );
 #endif
   void set_vendor(const char *vendor)
-  { $self->vendor = str2id( $self->repo->pool, vendor, 1 ); }
-  Id vendor_id()
-  { return $self->vendor; }
+  { xsolvable_solvable($self)->vendor = str2id( $self->pool, vendor, 1 ); }
 
   %rename("to_s") asString();
-  const char * asString()
+  const char *asString()
   {
-    if ( !$self->repo )
-        return "<UNKNOWN>";
-    return solvable2str( $self->repo->pool, $self );
+    return solvable2str( $self->pool, xsolvable_solvable( $self ) );
   }
 
   /*
    * Dependencies
    */
   Dependency *provides()
-  { return dependency_new( $self, &(self->provides), 0 ); }
+  { return dependency_new( $self, DEP_PRV ); }
   Dependency *requires()
-  { return dependency_new( $self, &(self->requires), 0 ); }
+  { return dependency_new( $self, DEP_REQ ); }
   Dependency *conflicts()
-  { return dependency_new( $self, &(self->conflicts), 0 ); }
+  { return dependency_new( $self, DEP_CON ); }
   Dependency *obsoletes()
-  { return dependency_new( $self, &(self->obsoletes), 0 ); }
+  { return dependency_new( $self, DEP_OBS ); }
   Dependency *recommends()
-  { return dependency_new( $self, &(self->recommends), 0 ); }
+  { return dependency_new( $self, DEP_REC ); }
   Dependency *suggests()
-  { return dependency_new( $self, &(self->suggests), 0 ); }
+  { return dependency_new( $self, DEP_SUG ); }
   Dependency *supplements()
-  { return dependency_new( $self, &(self->supplements), 0 ); }
+  { return dependency_new( $self, DEP_SUP ); }
   Dependency *enhances()
-  { return dependency_new( $self, &(self->enhances), 0 ); }
+  { return dependency_new( $self, DEP_ENH ); }
 }
 
 /*-------------------------------------------------------------*/
@@ -922,17 +951,17 @@ typedef struct _Pool {} Pool;
     queue_push( &($self->queue), action->id );
   }
 
-  void install( Solvable *s )
+  void install( XSolvable *s )
   {
     queue_push( &($self->queue), SOLVER_INSTALL_SOLVABLE );
     /* FIXME: check: s->repo->pool == $self->pool */
-    queue_push( &($self->queue), (s - s->repo->pool->solvables) );
+    queue_push( &($self->queue), s->id );
   }
-  void remove( Solvable *s )
+  void remove( XSolvable *s )
   {
     queue_push( &($self->queue), SOLVER_ERASE_SOLVABLE );
     /* FIXME: check: s->repo->pool == $self->pool */
-    queue_push( &($self->queue), (s - s->repo->pool->solvables) );
+    queue_push( &($self->queue), s->id );
   }
   void install( const char *name )
   {
@@ -1010,16 +1039,18 @@ typedef struct _Pool {} Pool;
   %constant int DEC_UPDATE = 3;
   %constant int DEC_OBSOLETE = 4;
   
-  Decision( int op, Solvable *solvable, Solvable *reason = NULL )
-  { return decision_new( op, solvable, reason ); }
+  Decision( Pool *pool, int op, Id solvable, Id reason = 0 )
+  { return decision_new( pool, op, solvable, reason ); }
   ~Decision()
   { free( $self ); }
+  Pool *pool()
+  { return $self->pool; }
   int op()
   { return $self->op; }
-  Solvable *solvable()
-  { return $self->solvable; }
-  Solvable *reason()
-  { return $self->reason; }
+  XSolvable *solvable()
+  { return xsolvable_new( $self->pool, $self->solvable ); }
+  XSolvable *reason()
+  { return xsolvable_new( $self->pool, $self->reason ); }
 }
 
 /*-------------------------------------------------------------*/
@@ -1039,12 +1070,12 @@ typedef struct _Pool {} Pool;
   { free ($self); }
   int reason()
   { return $self->reason; }
-  Solvable *source()
-  { return pool_id2solvable( $self->solver->pool, $self->source); }
+  XSolvable *source()
+  { return xsolvable_new( $self->solver->pool, $self->source ); }
   Relation *relation()
-  { return relation_new( $self->solver->pool, $self->relation); }
-  Solvable *target()
-  { return pool_id2solvable( $self->solver->pool, $self->target); }
+  { return relation_new( $self->solver->pool, $self->relation ); }
+  XSolvable *target()
+  { return xsolvable_new( $self->solver->pool, $self->target ); }
 #if defined(SWIGRUBY)
   void each_solution()
   {
@@ -1175,8 +1206,8 @@ typedef struct _Pool {} Pool;
   { return $self->solution; }
   /* without the %rename, swig converts it to 's_1'. Ouch! */
   %rename( "s1" ) s1( );
-  Solvable *s1()
-  { return pool_id2solvable( $self->pool, $self->s1 ); }
+  XSolvable *s1()
+  { return xsolvable_new( $self->pool, $self->s1 ); }
   %rename( "n1" ) n1( );
   const char *n1()
   { return id2str( $self->pool, $self->n1 ); }
@@ -1184,8 +1215,8 @@ typedef struct _Pool {} Pool;
   Relation *r1()
   { return relation_new( $self->pool, $self->n1 ); }
   %rename( "s2" ) s2( );
-  Solvable *s2()
-  { return pool_id2solvable( $self->pool, $self->s2 ); }
+  XSolvable *s2()
+  { return xsolvable_new( $self->pool, $self->s2 ); }
   %rename( "n2" ) n2( );
   const char *n2()
   { return id2str( $self->pool, $self->n2 ); }
@@ -1253,7 +1284,7 @@ typedef struct _Pool {} Pool;
     Pool *pool = $self->pool;
     Repo *installed = $self->installed;
     Id p, *obsoletesmap = create_obsoletesmap( $self );
-    Solvable *s, *r;
+    Id s, r;
     int op;
     Decision *d;
 #if 0   
@@ -1262,10 +1293,10 @@ typedef struct _Pool {} Pool;
 	if ($self->decisionmap[p] >= 0)
 	  continue;
 	if (obsoletesmap[p]) {
-	  d = decision_new( DEC_OBSOLETE, s, pool_id2solvable( pool, obsoletesmap[p] ) );
+	  d = decision_new( pool, DEC_OBSOLETE, s, pool_id2solvable( pool, obsoletesmap[p] ) );
         }
 	else {
-          d = decision_new( DEC_REMOVE, s, NULL );
+          d = decision_new( pool, DEC_REMOVE, s, NULL );
 	}
         rb_yield(SWIG_NewPointerObj((void*) d, SWIGTYPE_p__Decision, 0));
       }
@@ -1275,14 +1306,14 @@ typedef struct _Pool {} Pool;
     for ( i = 0; i < $self->decisionq.count; i++)
     {
       p = $self->decisionq.elements[i];
-      r = NULL;
+      r = 0;
 
       if (p < 0) {     /* remove */
         p = -p;
-        s = pool_id2solvable( pool, p );
+        s = p;
 	if (obsoletesmap[p]) {
 	  op = DEC_OBSOLETE;
-	  r = pool_id2solvable( pool, obsoletesmap[p] );
+	  r = obsoletesmap[p];
         }
 	else {
 	  op = DEC_REMOVE;
@@ -1292,10 +1323,12 @@ typedef struct _Pool {} Pool;
         continue;
       }
       else {
-        s = pool->solvables + p;
-        if (installed && s->repo == installed)
-	  continue;
-
+        s = p;
+        if (installed) {
+	  Solvable *solv = pool_id2solvable( pool, p );
+	  if (solv->repo == installed)
+	    continue;
+	}
         if (!obsoletesmap[p]) {
           op = DEC_INSTALL;
         }
@@ -1304,13 +1337,13 @@ typedef struct _Pool {} Pool;
 	  int j;
 	  for (j = installed->start; j < installed->end; j++) {
 	    if (obsoletesmap[j] == p) {
-	      r = pool_id2solvable( pool, j );
+	      r = j;
 	      break;
 	    }
 	  }
         }
       }
-      d = decision_new( op, s, r );
+      d = decision_new( pool, op, s, r );
       rb_yield(SWIG_NewPointerObj((void*) d, SWIGTYPE_p__Decision, 0));
     }
   }
@@ -1351,7 +1384,7 @@ typedef struct _Pool {} Pool;
       Repo *repo = s->repo;
       if (!repo || repo == $self->installed)
         continue;       /* already installed resolvable */
-      rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
+      rb_yield(SWIG_NewPointerObj((void*) xsolvable_new( $self->pool, p ), SWIGTYPE_p__Solvable, 0));
     }
   }
 
@@ -1367,7 +1400,7 @@ typedef struct _Pool {} Pool;
     {
       if ($self->decisionmap[p] >= 0)
         continue;       /* we keep this package */
-      rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solvable, 0));
+      rb_yield(SWIG_NewPointerObj((void*) xsolvable_new( $self->pool, p ), SWIGTYPE_p__Solvable, 0));
     }
   }
 
