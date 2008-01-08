@@ -384,8 +384,12 @@ typedef struct _Pool {} Pool;
   /*
    * Pool management
    */
-  Pool()
-  { return pool_create(); }
+  Pool( const char *arch = NULL )
+  {
+    Pool *pool = pool_create();
+    if (arch) pool_setarch( pool, arch );
+    return pool;
+  }
 
   ~Pool()
   { pool_free($self); }
