@@ -24,7 +24,7 @@ class TransactionTest < Test::Unit::TestCase
     assert transaction.size == 6
     transaction.each { |a|
       cmd = case a.cmd
-            when SatSolver::INSTALL_SOLVABLE: "install"
+            when SatSolver::INSTALL_SOLVABLE: puts "install a."
 	    when SatSolver::REMOVE_SOLVABLE: "remove"
 	    when SatSolver::INSTALL_SOLVABLE_NAME: "install by name"
 	    when SatSolver::REMOVE_SOLVABLE_NAME: "remove by name"
@@ -32,7 +32,7 @@ class TransactionTest < Test::Unit::TestCase
 	    when SatSolver::REMOVE_SOLVABLE_PROVIDES: "remove by relation"
 	    else "<NONE>"
 	    end
-      puts "#{cmd}: #{pool.id2str(a.id)}"
+      puts "#{cmd}: #{a.id}"
     }
     transaction.clear!
     assert transaction.empty?
