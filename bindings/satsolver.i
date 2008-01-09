@@ -229,13 +229,15 @@ static int dependency_size( const Dependency *dep )
  */
  
 typedef struct _Action {
+  Pool *pool;
   SolverCmd cmd;
   Id id;
 } Action;
 
-static Action *action_new( SolverCmd cmd, Id id )
+static Action *action_new( Pool *pool, SolverCmd cmd, Id id )
 {
   Action *action = (Action *)malloc( sizeof( Action ));
+  action->pool = pool;
   action->cmd = cmd;
   action->id = id;
   return action;
@@ -975,6 +977,7 @@ typedef struct _Pool {} Pool;
   %rename("to_s") asString();
   const char *asString()
   {
+    if ( $self->id == ID_NULL ) return "";
     return solvable2str( $self->pool, xsolvable_solvable( $self ) );
   }
 
@@ -1005,21 +1008,47 @@ typedef struct _Pool {} Pool;
 /* Action */
 
 %extend Action {
-  %constant int INSTALL_SOLVABLE = 1;
-  %constant int REMOVE_SOLVABLE = 2;
-  %constant int INSTALL_SOLVABLE_NAME = 3;
-  %constant int REMOVE_SOLVABLE_NAME = 4;
-  %constant int INSTALL_SOLVABLE_PROVIDES = 5;
-  %constant int REMOVE_SOLVABLE_PROVIDES = 6;
-  
-  Action( int cmd, Id id )
-  { return action_new( cmd, id ); }
+  %constant int INSTALL_SOLVABLE = SOLVER_INSTALL_SOLVABLE;
+  %constant int REMOVE_SOLVABLE = SOLVER_ERASE_SOLVABLE;
+  %constant int INSTALL_SOLVABLE_NAME = SOLVER_INSTALL_SOLVABLE_NAME;
+  %constant int REMOVE_SOLVABLE_NAME = SOLVER_ERASE_SOLVABLE_NAME;
+  %constant int INSTALL_SOLVABLE_PROVIDES = SOLVER_INSTALL_SOLVABLE_PROVIDES;
+  %constant int REMOVE_SOLVABLE_PROVIDES = SOLVER_ERASE_SOLVABLE_PROVIDES;
+
+  /* no constructor defined, Actions are created by accessing a
+     Transaction */
   ~Action()
   { free( $self ); }
+  
   int cmd()
   { return $self->cmd; }
-  Id id()
-  { return $self->id; }
+
+  XSolvable *solvable()
+  {
+    if ($self->cmd == SOLVER_INSTALL_SOLVABLE
+        || $self->cmd == SOLVER_ERASE_SOLVABLE) {
+      return xsolvable_new( $self->pool, $self->id );
+    }
+    return NULL;
+  }
+
+  const char *name()
+  {
+    if ($self->cmd == SOLVER_INSTALL_SOLVABLE_NAME
+        || $self->cmd == SOLVER_ERASE_SOLVABLE_NAME) {
+      return my_id2str( $self->pool, $self->id );
+    }
+    return NULL;
+  }
+
+  Relation *relation()
+  {
+    if ($self->cmd == SOLVER_INSTALL_SOLVABLE_PROVIDES
+        || $self->cmd == SOLVER_ERASE_SOLVABLE_PROVIDES) {
+      return relation_new( $self->pool, $self->id );
+    }
+    return NULL;
+  }
 }
 
 /*-------------------------------------------------------------*/
@@ -1036,7 +1065,7 @@ typedef struct _Pool {} Pool;
   {
     int cmd = queue_shift( &($self->queue) );
     Id id = queue_shift( &($self->queue) );
-    return action_new( cmd, id );
+    return action_new( $self->pool, cmd, id );
   }
   
   void push( const Action *action )
@@ -1075,23 +1104,19 @@ typedef struct _Pool {} Pool;
   }
   void install( const Relation *rel )
   {
-    Reldep *rd;
     if (rel == NULL)
       SWIG_exception( SWIG_NullReferenceError, "bad Relation" );
     queue_push( &($self->queue), SOLVER_INSTALL_SOLVABLE_PROVIDES );
     /* FIXME: check: rel->pool == $self->pool */
-    rd = GETRELDEP( rel->pool, rel->id );
-    queue_push( &($self->queue), rd->name );
+    queue_push( &($self->queue), rel->id );
   }
   void remove( const Relation *rel )
   {
-    Reldep *rd;
     if (rel == NULL)
       SWIG_exception( SWIG_NullReferenceError, "bad Relation" );
     queue_push( &($self->queue), SOLVER_ERASE_SOLVABLE_PROVIDES );
     /* FIXME: check: rel->pool == $self->pool */
-    rd = GETRELDEP( rel->pool, rel->id );
-    queue_push( &($self->queue), rd->name );
+    queue_push( &($self->queue), rel->id );
   }
 
 #if defined(SWIGRUBY)
@@ -1120,7 +1145,7 @@ typedef struct _Pool {} Pool;
     if (i-1 >= size) return NULL;
     cmd = $self->queue.elements[i];
     id = $self->queue.elements[i+1];
-    return action_new( cmd, id );
+    return action_new( $self->pool, cmd, id );
   }
 
 #if defined(SWIGRUBY)
@@ -1130,7 +1155,7 @@ typedef struct _Pool {} Pool;
     for (i = 0; i < $self->queue.count-1; ) {
       int cmd = $self->queue.elements[i++];
       Id id = $self->queue.elements[i++];
-      rb_yield(SWIG_NewPointerObj((void*) action_new( cmd, id ), SWIGTYPE_p__Action, 0));
+      rb_yield(SWIG_NewPointerObj((void*) action_new( $self->pool, cmd, id ), SWIGTYPE_p__Action, 0));
     }
   }
 #endif
