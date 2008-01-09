@@ -36,7 +36,9 @@
 #include "repo_solv.h"
 #include "repo_rpmdb.h"
 
-/*
+/************************************************
+ * XSolvable
+ *
  * we cannot use a Solvable pointer since the Pool might realloc them
  * so we use a combination of Solvable Id and Pool the Solvable belongs
  * to. pool_id2solvable() gives us the pointer.
@@ -88,6 +90,12 @@ Solvable *xsolvable_solvable( XSolvable *xs )
   return pool_id2solvable( xs->pool, xs->id );
 }
 
+
+/************************************************
+ * Id
+ *
+ */
+ 
 static const char *
 my_id2str( Pool *pool, Id id )
 {
@@ -98,6 +106,12 @@ my_id2str( Pool *pool, Id id )
   return id2str( pool, id );
 }
 
+
+/************************************************
+ * Relation
+ *
+ */
+ 
 typedef struct _Relation {
   Offset id;
   Pool *pool;
@@ -113,7 +127,22 @@ static Relation *relation_new( Pool *pool, Id id )
   return relation;
 }
 
-/* Collection of Relations -> Dependency */
+
+static Id relation_evrid( const Relation *r )
+{
+  if (ISRELDEP( r->id )) {
+    Reldep *rd = GETRELDEP( r->pool, r->id );
+    return rd->evr;
+  }
+  return ID_NULL;
+}
+
+/************************************************
+ * Dependency
+ *
+ * Collection of Relations -> Dependency
+ */
+ 
 typedef struct _Dependency {
   int dep;                         /* type of dep, any of DEP_xxx */
   XSolvable *xsolvable;            /* xsolvable this dep belongs to */
@@ -172,6 +201,14 @@ static int dependency_size( const Dependency *dep )
   return i;
 }
 
+
+/************************************************
+ * Action
+ *
+ * A single 'job' item of a Transaction
+ *
+ */
+ 
 typedef struct _Action {
   SolverCmd cmd;
   Id id;
@@ -185,6 +222,14 @@ static Action *action_new( SolverCmd cmd, Id id )
   return action;
 }
 
+
+/************************************************
+ * Transaction
+ *
+ * A set of Actions to be solved by the Solver
+ *
+ */
+ 
 typedef struct _Transaction {
   Pool *pool;
   Queue queue;
@@ -204,6 +249,16 @@ static void transaction_free( Transaction *t )
   free( t );
 }
 
+
+/************************************************
+ * Decision
+ *
+ * A successful solver result.
+ *
+ * Set of 'job items' needed to solve the Transaction.
+ *
+ */
+ 
 #define DEC_INSTALL 1
 #define DEC_REMOVE 2
 #define DEC_UPDATE 3
@@ -225,6 +280,17 @@ static Decision *decision_new( Pool *pool, int op, Id solvable, Id reason )
   d->reason = reason;
   return d;
 }
+
+
+/************************************************
+ * Problem
+ *
+ * An unsuccessful solver result
+ *
+ * If a transaction is not solvable, one or more
+ * Problems will be reported by the Solver.
+ *
+ */
 
 typedef struct _Problem {
   Solver *solver;
@@ -251,6 +317,17 @@ static Problem *problem_new( Solver *s, Transaction *t, Id id )
 }
 #endif
 
+
+/************************************************
+ * Solution
+ *
+ * A possible solution to a Problem.
+ *
+ * For each reported Problem, the Solver might generate
+ * one or more Solutions to make the Transaction solvable.
+ *
+ */
+ 
 #define SOLUTION_UNKNOWN 0
 #define SOLUTION_NOKEEP_INSTALLED 1
 #define SOLUTION_NOINSTALL_SOLV 2
@@ -758,29 +835,38 @@ typedef struct _Pool {} Pool;
   }
   const char *name()
   {
-    Reldep *rd = GETRELDEP( $self->pool, $self->id );
-    return my_id2str( $self->pool, rd->name );
+    Id nameid;
+    if (ISRELDEP( $self->id )) {
+      Reldep *rd = GETRELDEP( $self->pool, $self->id );
+      nameid = rd->name;
+    }
+    else {
+      nameid = $self->id;
+    }
+    return my_id2str( $self->pool, nameid );
   }
   const char *evr()
   {
-    Reldep *rd = GETRELDEP( $self->pool, $self->id );
-    return my_id2str( $self->pool, rd->evr );
+    return my_id2str( $self->pool, relation_evrid( $self ) );
   }
   int op()
   {
-    Reldep *rd = GETRELDEP( $self->pool, $self->id );
-    return rd->flags;
+    if (ISRELDEP( $self->id )) {
+      Reldep *rd = GETRELDEP( $self->pool, $self->id );
+      return rd->flags;
+    }
+    return 0;
   }
 #if defined(SWIGRUBY)
   %alias cmp "<=>";
 #endif
   int cmp( const Relation *r )
-  { return evrcmp( $self->pool, $self->id, r->id, EVRCMP_COMPARE ); }
+  { return evrcmp( $self->pool, relation_evrid( $self ), relation_evrid( r ), EVRCMP_COMPARE ); }
 #if defined(SWIGRUBY)
   %alias match "=~";
 #endif
   int match( const Relation *r )
-  { return evrcmp( $self->pool, $self->id, r->id, EVRCMP_MATCH_RELEASE ) == 0; }
+  { return evrcmp( $self->pool, relation_evrid( $self ), relation_evrid( r ), EVRCMP_MATCH_RELEASE ) == 0; }
 }
 
 /*-------------------------------------------------------------*/
