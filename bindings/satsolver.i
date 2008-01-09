@@ -528,20 +528,6 @@ typedef struct _Pool {} Pool;
   { pool_createwhatprovides( $self ); }
 
   /*
-   * Name management
-   */
-  %rename( "str2id" ) str2id( const char *name );
-  Id str2id( const char *name )
-  {
-    return str2id( $self, name, 1 );
-  }
-  %rename( "id2str" ) id2str( Id id );
-  const char *id2str( Id id )
-  {
-    return my_id2str( $self, id );
-  }
-
-  /*
    * Repo management
    */
 
