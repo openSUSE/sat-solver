@@ -156,6 +156,7 @@ typedef struct _Dependency {
 #define DEP_SUG 6
 #define DEP_SUP 7
 #define DEP_ENH 8
+#define DEP_FRE 9
 
 static Dependency *dependency_new( XSolvable *xsolvable, int dep )
 {
@@ -181,6 +182,7 @@ static Offset *dependency_relations( const Dependency *dep )
       case DEP_SUG: return &(s->suggests); break;
       case DEP_SUP: return &(s->supplements); break;
       case DEP_ENH: return &(s->enhances); break;
+      case DEP_FRE: return &(s->freshens); break;
   }
   return NULL;
 }
@@ -817,7 +819,7 @@ typedef struct _Pool {} Pool;
 #define REL_NAMESPACE 18
 
   %feature("autodoc", "1");
-  Relation( Pool *pool, const char *name, int op = 0, const char *evr = NULL )
+  Relation( Pool *pool, const char *name, int op = REL_NONE, const char *evr = NULL )
   {
     Id name_id = str2id( pool, name, 1 );
     Id evr_id = 0;
@@ -829,11 +831,16 @@ typedef struct _Pool {} Pool;
   }
   ~Relation()
   { free( $self ); }
+
   %rename("to_s") asString();
   const char *asString()
   {
     return dep2str( $self->pool, $self->id );
   }
+
+  Pool *pool()
+  { return $self->pool; }
+  
   const char *name()
   {
     Id nameid;
@@ -846,10 +853,10 @@ typedef struct _Pool {} Pool;
     }
     return my_id2str( $self->pool, nameid );
   }
+  
   const char *evr()
-  {
-    return my_id2str( $self->pool, relation_evrid( $self ) );
-  }
+  { return my_id2str( $self->pool, relation_evrid( $self ) ); }
+  
   int op()
   {
     if (ISRELDEP( $self->id )) {
@@ -858,11 +865,13 @@ typedef struct _Pool {} Pool;
     }
     return 0;
   }
+  
 #if defined(SWIGRUBY)
   %alias cmp "<=>";
 #endif
   int cmp( const Relation *r )
   { return evrcmp( $self->pool, relation_evrid( $self ), relation_evrid( r ), EVRCMP_COMPARE ); }
+  
 #if defined(SWIGRUBY)
   %alias match "=~";
 #endif
@@ -882,6 +891,7 @@ typedef struct _Pool {} Pool;
 #define DEP_SUG 6
 #define DEP_SUP 7
 #define DEP_ENH 8
+#define DEP_FRE 9
 
   Dependency( XSolvable *xsolvable, int dep )
   { return dependency_new( xsolvable, dep ); }
@@ -996,6 +1006,8 @@ typedef struct _Pool {} Pool;
   { return dependency_new( $self, DEP_SUP ); }
   Dependency *enhances()
   { return dependency_new( $self, DEP_ENH ); }
+  Dependency *freshens()
+  { return dependency_new( $self, DEP_FRE ); }
 }
 
 /*-------------------------------------------------------------*/
