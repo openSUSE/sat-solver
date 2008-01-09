@@ -804,6 +804,7 @@ typedef struct _Pool {} Pool;
 
 %extend Relation {
 /* operation */
+#define REL_NONE 0
 #define REL_GT 1
 #define REL_EQ 2
 #define REL_GE 3
