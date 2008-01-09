@@ -38,6 +38,7 @@ class RepoTest < Test::Unit::TestCase
     # equivalent: repo = pool.create_repo( "test" )
     assert repo
     assert repo.size == 0
+    assert repo.empty?
     assert repo.name == "test"
   end
   def test_repo_add

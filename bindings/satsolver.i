@@ -604,6 +604,8 @@ typedef struct _Pool {} Pool;
   
 #if defined(SWIGRUBY)
   %rename( "installable?" ) installable( XSolvable *s );
+  %typemap(out) int installable
+    "$result = ($1 != 0) ? Qtrue : Qfalse;";
 #endif
   int installable( XSolvable *s )
   { return pool_installable( $self, pool_id2solvable( s->pool, s->id ) ); }
@@ -696,6 +698,8 @@ typedef struct _Pool {} Pool;
   { return $self->nsolvables; }
 #if defined(SWIGRUBY)
   %rename("empty?") empty();
+  %typemap(out) int empty
+    "$result = ($1 != 0) ? Qtrue : Qfalse;";
 #endif
   int empty()
   { return $self->nsolvables == 0; }
@@ -890,6 +894,8 @@ typedef struct _Pool {} Pool;
   { return dependency_size( $self ); }
 #if defined(SWIGRUBY)
   %rename("empty?") empty();
+  %typemap(out) int empty
+    "$result = ($1 != 0) ? Qtrue : Qfalse;";
 #endif
   int empty()
   { return dependency_size( $self ) == 0; }
@@ -1090,6 +1096,8 @@ typedef struct _Pool {} Pool;
 
 #if defined(SWIGRUBY)
   %rename("empty?") empty();
+  %typemap(out) int empty
+    "$result = ($1 != 0) ? Qtrue : Qfalse;";
 #endif
   int empty()
   { return ( $self->queue.count == 0 ); }
@@ -1459,6 +1467,8 @@ typedef struct _Pool {} Pool;
 #endif
 #if defined(SWIGRUBY)
   %rename("problems?") problems_found();
+  %typemap(out) int problems_found
+    "$result = ($1 != 0) ? Qtrue : Qfalse;";
 #endif
   int problems_found()
   { return $self->problems.count != 0; }
