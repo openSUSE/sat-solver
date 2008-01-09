@@ -16,6 +16,8 @@
 %feature("autodoc","1");
 %{
 
+extern void SWIG_exception( int code, const char *msg );
+
 #if defined(SWIGRUBY)
 #include <ruby.h>
 #include <rubyio.h>
@@ -111,7 +113,9 @@ my_id2str( Pool *pool, Id id )
  * Relation
  *
  */
- 
+
+#define REL_NONE 0
+
 typedef struct _Relation {
   Offset id;
   Pool *pool;
@@ -127,6 +131,19 @@ static Relation *relation_new( Pool *pool, Id id )
   return relation;
 }
 
+static Relation *relation_create( Pool *pool, const char *name, int op, const char *evr )
+{
+  Id name_id = str2id( pool, name, 1 );
+  Id evr_id;
+  Id rel;
+  if (op == REL_NONE)
+    return relation_new( pool, name_id );
+  if (!evr)
+    SWIG_exception( SWIG_NullReferenceError, "REL_NONE operator with NULL evr" );
+  evr_id = str2id( pool, evr, 1 );
+  rel = rel2id( pool, name_id, evr_id, op, 1 );
+  return relation_new( pool, rel );
+}
 
 static Id relation_evrid( const Relation *r )
 {
@@ -297,11 +314,11 @@ static Decision *decision_new( Pool *pool, int op, Id solvable, Id reason )
 typedef struct _Problem {
   Solver *solver;
   Transaction *transaction;
-  Id id; /* problem id */
+  Id id;                    /* [PRIVATE] problem id */
   int reason;
-  Id source; /* solvable id */
-  Id relation; /* relation id */
-  Id target; /* solvable id */
+  Id source;                /* solvable id */
+  Id relation;              /* relation id */
+  Id target;                /* solvable id */
 } Problem;
 
 #if defined(SWIGRUBY)
@@ -589,16 +606,8 @@ typedef struct _Pool {} Pool;
    * Relation management
    */
 
-  Relation *create_relation( const char *name, int op = 0, const char *evr = NULL )
-  {
-    Id name_id = str2id( $self, name, 1 );
-    Id evr_id = 0;
-    Id rel;
-    if (evr)
-      evr_id = str2id( $self, evr, 1 );
-    rel = rel2id( $self, name_id, evr_id, op, 1 );
-    return relation_new( $self, rel );
-  }
+  Relation *create_relation( const char *name, int op = REL_NONE, const char *evr = NULL )
+  { return relation_create( $self, name, op, evr ); }
 
   /*
    * Solvable management
@@ -820,23 +829,13 @@ typedef struct _Pool {} Pool;
 
   %feature("autodoc", "1");
   Relation( Pool *pool, const char *name, int op = REL_NONE, const char *evr = NULL )
-  {
-    Id name_id = str2id( pool, name, 1 );
-    Id evr_id = 0;
-    Id rel;
-    if (evr)
-      evr_id = str2id( pool, evr, 1 );
-    rel = rel2id( pool, name_id, evr_id, op, 1 );
-    return relation_new( pool, rel );
-  }
+  { return relation_create( pool, name, op, evr ); }
   ~Relation()
   { free( $self ); }
 
   %rename("to_s") asString();
   const char *asString()
-  {
-    return dep2str( $self->pool, $self->id );
-  }
+  { return dep2str( $self->pool, $self->id ); }
 
   Pool *pool()
   { return $self->pool; }
@@ -1050,18 +1049,24 @@ typedef struct _Pool {} Pool;
   
   void push( const Action *action )
   {
+    if (action == NULL)
+      SWIG_exception( SWIG_NullReferenceError, "bad Action" );
     queue_push( &($self->queue), action->cmd );
     queue_push( &($self->queue), action->id );
   }
 
   void install( XSolvable *s )
   {
+    if (s == NULL)
+      SWIG_exception( SWIG_NullReferenceError, "bad Solvable" );
     queue_push( &($self->queue), SOLVER_INSTALL_SOLVABLE );
     /* FIXME: check: s->repo->pool == $self->pool */
     queue_push( &($self->queue), s->id );
   }
   void remove( XSolvable *s )
   {
+    if (s == NULL)
+      SWIG_exception( SWIG_NullReferenceError, "bad Solvable" );
     queue_push( &($self->queue), SOLVER_ERASE_SOLVABLE );
     /* FIXME: check: s->repo->pool == $self->pool */
     queue_push( &($self->queue), s->id );
@@ -1079,6 +1084,8 @@ typedef struct _Pool {} Pool;
   void install( const Relation *rel )
   {
     Reldep *rd;
+    if (rel == NULL)
+      SWIG_exception( SWIG_NullReferenceError, "bad Relation" );
     queue_push( &($self->queue), SOLVER_INSTALL_SOLVABLE_PROVIDES );
     /* FIXME: check: rel->pool == $self->pool */
     rd = GETRELDEP( rel->pool, rel->id );
@@ -1087,6 +1094,8 @@ typedef struct _Pool {} Pool;
   void remove( const Relation *rel )
   {
     Reldep *rd;
+    if (rel == NULL)
+      SWIG_exception( SWIG_NullReferenceError, "bad Relation" );
     queue_push( &($self->queue), SOLVER_ERASE_SOLVABLE_PROVIDES );
     /* FIXME: check: rel->pool == $self->pool */
     rd = GETRELDEP( rel->pool, rel->id );
@@ -1171,14 +1180,25 @@ typedef struct _Pool {} Pool;
   %constant int SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE = 8;
   ~Problem()
   { free ($self); }
+
+  Solver *solver()
+  { return $self->solver; }
+  
+  Transaction *transaction()
+  { return $self->transaction; }
+  
   int reason()
   { return $self->reason; }
+  
   XSolvable *source()
   { return xsolvable_new( $self->solver->pool, $self->source ); }
+  
   Relation *relation()
   { return relation_new( $self->solver->pool, $self->relation ); }
+  
   XSolvable *target()
   { return xsolvable_new( $self->solver->pool, $self->target ); }
+  
 #if defined(SWIGRUBY)
   void each_solution()
   {
