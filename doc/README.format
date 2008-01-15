@@ -39,14 +39,15 @@ V0 format
   U8*: DATA
 
 
-V1 format
+V4 format
 =========
 
   MAGIC: 'SOLV'
-  U32:   1
+  U32:   4
 
   U32:   NUMID                       /* number of Ids (names) */
   U32:   NUMREL                      /* number of RelDeps (dependencies) */
+  U32:   NUMDIR                      /* number of directories */
   U32:   NUMITEM                     /* number of items (packages) */
   U32:   NUMKEYS
   U32:   NUMSCHEMATA                 /* number of schemata */
@@ -62,6 +63,8 @@ V1 format
   -- reldep data --
    U8*:  RELDICT                     /* Buffer for RandDeps (Id,Id,u8) */
 
+  -- directory data --
+   U8*:  DIRDICT                     /* Buffer for dirs (Id,Id) */
 
   -- key data --
   NUMKEYS *
