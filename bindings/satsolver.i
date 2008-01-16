@@ -622,12 +622,16 @@ typedef struct _Pool {} Pool;
     if (i >= $self->nsolvables) return NULL;
     return xsolvable_new( $self, i );
   }
+  XSolvable *system( )
+  {
+    return xsolvable_new( $self, SYSTEMSOLVABLE );
+  }
 #if defined(SWIGRUBY)
   void each()
   {
     Solvable *s;
     Id p;
-    for (p = 1, s = $self->solvables + p; p < $self->nsolvables; p++, s++)
+    for (p = 0, s = $self->solvables + p; p < $self->nsolvables; p++, s++)
     {
       if (!s->name)
         continue;
