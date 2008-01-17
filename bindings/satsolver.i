@@ -388,6 +388,43 @@ static Solution *solution_new( Pool *pool, int solution, Id s1, Id n1, Id s2, Id
 }
 #endif
 
+
+/************************************************
+ * Pool/Repo
+ *
+ */
+
+XSolvable *
+pool_find( Pool *pool, char *name, Repo *repo )
+{
+  Id id;
+  Queue plist;
+  int i, end;
+  Solvable *s;
+
+  id = str2id( pool, name, 1 );
+  queue_init( &plist);
+  i = repo ? repo->start : 1;
+  end = repo ? repo->start + repo->nsolvables : pool->nsolvables;
+  for (; i < end; i++) {
+    s = pool->solvables + i;
+    if (!pool_installable(pool, s))
+      continue;
+    if (s->name == id)
+      queue_push(&plist, i);
+  }
+
+  prune_best_version_arch(pool, &plist);
+  if (plist.count == 0) {
+    return NULL;
+  }
+
+  id = plist.elements[0];
+  queue_free(&plist);
+
+  return xsolvable_new( pool, id );
+}
+
 %}
 
 /*-------------------------------------------------------------*/
@@ -601,8 +638,11 @@ typedef struct _Pool {} Pool;
    * Solvable management
    */
 
+  /* number of solvables in pool
+   * decrease by one since Id 0 is reserved
+   */
   int size()
-  { return $self->nsolvables; }
+  { return $self->nsolvables - 1; }
   
 #if defined(SWIGRUBY)
   %rename( "installable?" ) installable( XSolvable *s );
@@ -616,9 +656,16 @@ typedef struct _Pool {} Pool;
   /* %rename is rejected by swig for [] */
   %alias get "[]";
 #endif
+  /*
+   * get solvable by index (0..size-1)
+   * index is _not_ the internal id, but used as an array index
+   * Index 0 is reserved for the 'system' solvable (which can
+   * also be accessed by system().
+   */
   XSolvable *get( int i )
   {
-    if (i < 0) return NULL;
+    ++i; /* adapt to internal Id */
+    if (i <= 0) return NULL;
     if (i >= $self->nsolvables) return NULL;
     return xsolvable_new( $self, i );
   }
@@ -631,7 +678,7 @@ typedef struct _Pool {} Pool;
   {
     Solvable *s;
     Id p;
-    for (p = 0, s = $self->solvables + p; p < $self->nsolvables; p++, s++)
+    for (p = 1, s = $self->solvables + p; p < $self->nsolvables; p++, s++)
     {
       if (!s->name)
         continue;
@@ -642,37 +689,7 @@ typedef struct _Pool {} Pool;
 
   XSolvable *
   find( char *name, Repo *repo = NULL )
-  {
-    Id id;
-    Queue plist;
-    int i, end;
-    Solvable *s;
-    Pool *pool;
-
-    pool = $self;
-    id = str2id(pool, name, 1);
-    queue_init( &plist);
-    i = repo ? repo->start : 1;
-    end = repo ? repo->start + repo->nsolvables : pool->nsolvables;
-    for (; i < end; i++) {
-      s = pool->solvables + i;
-      if (!pool_installable(pool, s))
-        continue;
-      if (s->name == id)
-        queue_push(&plist, i);
-    }
-
-    prune_best_version_arch(pool, &plist);
-
-    if (plist.count == 0) {
-      return NULL;
-    }
-
-    id = plist.elements[0];
-    queue_free(&plist);
-
-    return xsolvable_new( pool, id );
-  }
+  { return pool_find( $self, name, repo ); }
 
   /*
    * Transaction management
@@ -763,6 +780,9 @@ typedef struct _Pool {} Pool;
   /* %rename is rejected by swig for [] */
   %alias get "[]";
 #endif
+  /*
+   * get solvable by index
+   */
   XSolvable *get( int i )
   {
     if (i < 0) return NULL;
@@ -770,39 +790,12 @@ typedef struct _Pool {} Pool;
     return xsolvable_new( $self->pool, $self->start + i );
   }
 
+  /*
+   * find (best) solvable by name
+   */
   XSolvable *
   find( char *name )
-  {
-    Id id;
-    Queue plist;
-    int i, end;
-    Solvable *s;
-    Pool *pool;
-
-    pool = $self->pool;
-    id = str2id( pool, name, 1 );
-    queue_init( &plist );
-    i = $self->start;
-    end = $self->start + $self->nsolvables;
-    for (; i < end; i++) {
-      s = pool->solvables + i;
-      if (!pool_installable( pool, s ))
-        continue;
-      if (s->name == id)
-        queue_push( &plist, i );
-    }
-
-    prune_best_version_arch( pool, &plist );
-
-    if (plist.count == 0) {
-      return NULL;
-    }
-
-    id = plist.elements[0];
-    queue_free( &plist );
-
-    return xsolvable_new( pool, id );
-  }
+  { return pool_find( $self->pool, name, $self ); }
 
 }
 
