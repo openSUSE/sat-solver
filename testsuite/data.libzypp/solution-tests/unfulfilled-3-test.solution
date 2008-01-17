@@ -1,14 +1,26 @@
->!> Installing unfulfilled1 from channel test
->!> Installing unfulfilled2 from channel test
->!> Installing unfulfilled3 from channel test
->!> Installing unfulfilled4 from channel test
->!> 1 problems found:
->!> Problem:
->!> unfulfilled4 cannot be installed due missing dependencies
->!> There are no installable providers of nothere for unfulfilled4-1.0-1.noarch[test]
->!>    Solution:
->!>       do not install unfulfilled4
->!>       do not install unfulfilled4-1.0-1.noarch[test]
->!>    Solution:
->!>       Ignore this requirement just here
->!>       
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+nothing provides nothere needed by unfulfilled1-1.0-1.noarch
+
+- do not install unfulfilled1-1.0-1.noarch
+
+Problem 2:
+====================================
+nothing provides nothere needed by unfulfilled2-1.0-1.noarch
+
+- do not install unfulfilled2-1.0-1.noarch
+
+Problem 3:
+====================================
+nothing provides nothere needed by unfulfilled3-1.0-1.noarch
+
+- do not install unfulfilled3-1.0-1.noarch
+
+Problem 4:
+====================================
+nothing provides nothere needed by unfulfilled4-1.0-1.noarch
+
+- do not install unfulfilled4-1.0-1.noarch
+

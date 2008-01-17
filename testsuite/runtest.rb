@@ -87,23 +87,51 @@ class Solution
   def Solution.read fname
     solutions = Array.new
     solution = nil
+    problemFound = false
     
     # read solution and filter irrelevant lines
     IO.foreach( fname ) { |l|
+      l = l + "\n"
       case l.chomp!
-      when /Installing/, /unflag/
-	next
       when /Solution \#([0-9]+):/
+	if solution && !solution.empty?
+	   if problemFound
+	      solutions << solution # no sorting
+           else
+	      solutions << solution.sort!
+	   end 
+        end
 	solution = Array.new
-      when /installs=/
-	solutions << solution.sort! unless solution.empty?
-	solution = nil
+	problemFound = false
+      when /Problem ([0-9]+):/
+	if solution && !solution.empty?
+	   if problemFound
+	      solutions << solution # no sorting
+           else
+	      solutions << solution.sort!
+	   end 
+        end
+	solution = Array.new
+	problemFound = true
       when /> install /, /> upgrade /, /> remove /
 	STDERR.puts "No 'Solution' in #{fname}" unless solution
 	solution << l
+      else
+	if problemFound
+	   solution << l
+        end
       end
     }
     
+    # last entry insert
+    if solution && !solution.empty?
+       if problemFound
+	      solutions << solution # no sorting
+       else
+	      solutions << solution.sort!
+       end 
+    end
+
     solutions
   end
 
@@ -116,10 +144,10 @@ class Solution
       STDERR.puts "Cannot open #{rname}"
       return CompareResult::Incomplete
     end
-    
+
     solutions = Solution.read sname
     results = Solution.read rname
-    
+
     if (solutions.empty? && results.empty?)
       if ( $fails.member?( rname ) )
 	STDERR.puts "#{rname} passed"
@@ -129,34 +157,51 @@ class Solution
       end
     end
 
-    r = results.first
-    solutions.each { |s|
-      if s == r
-	if ( $fails.member?( rname ) )
-	  STDERR.puts "#{rname} passed"
-	  return CompareResult::UnexpectedPass
-	else
-	  return CompareResult::KnownPass  
-	end
-      end
-    }
-    
+    # solutions,results is an array of sulutions AND problems
+    # As the SAT solver does returns only one sulution and one or more
+    # problems ALL these entries has to fit to the given solution
+
+    if solutions.size == results.size
+       solutionFit = false
+       results.each { |r|
+          solutionFit = false
+          solutions.each { |s|
+	     if s == r
+	        solutionFit = true
+                break
+             end
+          }
+       }
+       if solutionFit
+	   if ( $fails.member?( rname ) )
+	     STDERR.puts "#{rname} passed"
+	     return CompareResult::UnexpectedPass
+	   else
+	     return CompareResult::KnownPass  
+	   end
+       end
+    else
+       if $verbose
+         puts "The number of results does not fit to the number of given solutions."
+       end
+    end
+
     if ( $fails.member?( rname ) )
       return CompareResult::KnownFailure
     end
 
     case sname
-    when /\.solution[23]$/
+    when /\.solution([2-9]+)$/
       # we print error with solution1
       return CompareResult::UnexpectedFailure
     end
 
+
     STDERR.puts "#{rname} failed"
-    system( "./diffres #{sname} #{rname}")
-    #STDERR.puts "Solution:"
-    #pp solutions.first
-    #STDERR.puts "Result:"
-    #pp r
+    if $verbose
+	Solution.filediff( sname, rname)
+#      system( "diff -U 0 #{sname} #{rname}")
+    end
     return CompareResult::UnexpectedFailure
   end
 
@@ -173,7 +218,9 @@ class Tester < Test::Unit::TestCase
     puts "#{$tests.size} tests ahead"
     $tests.sort!
     $tests.each { |test|
-#      puts "Testing #{test}"
+      if $verbose
+         puts "Testing #{test}"
+      end
       basename = File.basename(test, ".xml")
       #print "."
       #STDOUT.flush
@@ -228,7 +275,7 @@ class Runner
     if File.directory?( fullname )
       rundir( fullname, recurse ) 
     elsif (arg =~ /test.xml$/)
-#      puts "Run #{fullname}"
+#         puts "Run #{fullname}"
       $tests << fullname
     end
   end

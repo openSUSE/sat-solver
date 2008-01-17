@@ -70,7 +70,6 @@
 ./data.libzypp/simple-tests/arch3-test.xml
 ./data.libzypp/simple-tests/vendor-test.xml
 ./data.libzypp/solution-tests/conflict-bug153328-test.xml
-./data.libzypp/solution-tests/conflict-postfix-sendmail-test.xml
 ./data.libzypp/solution-tests/conflict-test.xml
 ./data.libzypp/solution-tests/conflict3-test.xml
 ./data.libzypp/solution-tests/parallel-test.xml
