@@ -1,1 +1,10 @@
->!> Installing C from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package C-1.0-1.noarch conflicts with a < 1.5 provided by A-1.0-1.noarch
+
+- allow deinstallation of A-1.0-1.noarch
+
+- do not install C-1.0-1.noarch
+

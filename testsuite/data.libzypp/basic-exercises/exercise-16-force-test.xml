@@ -15,5 +15,6 @@
 <trial>
   <install channel="test" package="C"/>
   <install channel="test" package="G"/>
+  <reportproblems/>
 </trial>
 </test>

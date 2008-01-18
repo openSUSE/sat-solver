@@ -28,7 +28,8 @@
 
 ./data.libzypp/lock-tests/install-single-test.xml
 ./data.libzypp/lock-tests/remove-single-test.xml
-        lock should be broken by a (un)install (possibly not a solver bug)
+        eiter a resolvable is locked OR it will be transacted. So this testcase
+        are useless
 
 ./data.libzypp/bugzilla-tests/bug225278-test.xml
 	weired test case in general

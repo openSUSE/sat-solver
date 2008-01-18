@@ -1,1 +1,10 @@
->!> Installing gaim-gnome from channel channel
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package gaim-gnome-1:0.11.0pre9-ximian.3.noarch conflicts with gaim provided by gaim-1:0.11.0pre9-ximian.3.noarch
+
+- allow deinstallation of gaim-1:0.11.0pre9-ximian.3.noarch
+
+- do not install gaim-gnome-1:0.11.0pre9-ximian.3.noarch
+

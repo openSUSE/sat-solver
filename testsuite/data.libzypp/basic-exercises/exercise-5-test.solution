@@ -1,1 +1,10 @@
->!> Installing B from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package B-1.0-1.noarch conflicts with c <=> 1.0 provided by C-1.0-1.noarch
+
+- allow deinstallation of C-1.0-1.noarch
+
+- do not install B-1.0-1.noarch
+

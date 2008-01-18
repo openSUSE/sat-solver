@@ -1,1 +1,11 @@
->!> Installing H from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package H-1.0-1.noarch conflicts with x <=> 1.0 provided by G-1.0-1.noarch
+
+- allow deinstallation of G-1.0-1.noarch
+- allow deinstallation of F-1.0-1.noarch
+
+- do not install H-1.0-1.noarch
+

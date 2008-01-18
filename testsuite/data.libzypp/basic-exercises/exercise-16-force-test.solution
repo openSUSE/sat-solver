@@ -32,3 +32,13 @@
 >!> installs=5, upgrades=0, uninstalls=1
 >!> Installing C from channel test
 >!> Installing G from channel test
+>!> 1 problems found:
+>!> Problem:
+>!> G cannot be installed due to missing dependencies
+>!> There are no installable providers of d for G-1.0-1.noarch[test]
+>!>    Solution:
+>!>       do not install G
+>!>       do not install G-1.0-1.noarch[test]
+>!>    Solution:
+>!>       Ignore this requirement just here
+>!>       

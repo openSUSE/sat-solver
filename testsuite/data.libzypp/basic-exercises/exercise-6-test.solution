@@ -1,14 +1,10 @@
->!> Installing CC from channel test
->!> 1 problems found:
->!> Problem:
->!> Cannot install AA-1.0-1.noarch[test] because it is conflicting with A
->!> A conflict over a == 2.3 (a != 2.0) requires the removal of to-be-installed AA-1.0-1.noarch[test]
->!>    Solution:
->!>       do not install AA
->!>       do not install AA-1.0-1.noarch[test]
->!>    Solution:
->!>       delete A
->!>       delete A-1.0-1.noarch
->!>    Solution:
->!>       Ignore this conflict of AA
->!>       
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package CC-1.0-1.noarch requires a > 2.0, but none of the providers can be installed
+
+- allow deinstallation of A-1.0-1.noarch
+
+- do not install CC-1.0-1.noarch
+

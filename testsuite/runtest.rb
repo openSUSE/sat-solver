@@ -264,7 +264,7 @@ class Tester < Test::Unit::TestCase
 	puts "#{test} is incomplete"
       end
     }
-    puts "\n\t==> #{$tests.size} tests: (#{epassed}/#{upassed}) passed, (#{efailed}/#{ufailed}) failed, #{$ignorecount} ignored <==\n"
+    puts "\n\t==> #{$tests.size} tests: (exp:#{epassed}/unexp:#{upassed}) passed, (exp:#{efailed}/unexp:#{ufailed}) failed, #{$ignorecount} ignored <==\n"
   end
 end
 
