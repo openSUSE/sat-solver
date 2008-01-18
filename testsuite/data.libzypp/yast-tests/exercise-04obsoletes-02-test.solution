@@ -1,2 +1,11 @@
->!> Installing barnew from channel test
->!> Installing barc from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package barc-1.0-1.noarch conflicts with bar provided by barnew-2.0-1.noarch
+
+- do not install barc-1.0-1.noarch
+
+- do not install barnew-2.0-1.noarch
+- allow deinstallation of bar-1.0-1.noarch
+

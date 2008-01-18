@@ -1,2 +1,10 @@
->!> Installing A from channel test
->!> Installing B from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package B-1.0-1.noarch obsoletes A provided by A-1.0-1.noarch
+
+- do not install B-1.0-1.noarch
+
+- do not install A-1.0-1.noarch
+

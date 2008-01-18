@@ -1,3 +1,20 @@
->!> Installing foo2a from channel test
->!> Installing foo2b from channel test
->!> Installing foo2c from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+nothing provides bar2 >= 1.0 needed by foo2a-1.0-1.noarch
+
+- do not install foo2a-1.0-1.noarch
+
+Problem 2:
+====================================
+nothing provides bar2 <= 1.1 needed by foo2b-1.0-1.noarch
+
+- do not install foo2b-1.0-1.noarch
+
+Problem 3:
+====================================
+nothing provides bar2 > 1.0 needed by foo2c-1.0-1.noarch
+
+- do not install foo2c-1.0-1.noarch
+

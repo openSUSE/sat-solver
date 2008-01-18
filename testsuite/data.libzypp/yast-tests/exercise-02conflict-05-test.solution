@@ -1,1 +1,10 @@
->!> Installing libc6 from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package smail-1.0-1.noarch requires libc6 < 2.1, but none of the providers can be installed
+
+- allow deinstallation of smail-1.0-1.noarch
+
+- do not install libc6-2.1.0-1.noarch
+

@@ -1,2 +1,14 @@
->!> Installing jdk-shared from channel test
->!> Installing jdk-static from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+nothing provides libXm.so.2 needed by jdk-1.0.2-8.noarch
+
+- do not install jdk-static-1.0.2-8.noarch
+
+Problem 2:
+====================================
+nothing provides libXm.so.2 needed by jdk-1.0.2-8.noarch
+
+- do not install jdk-shared-1.0.2-8.noarch
+

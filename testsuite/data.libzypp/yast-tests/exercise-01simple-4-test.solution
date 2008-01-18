@@ -1,1 +1,8 @@
->!> Installing foo2 from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+nothing provides bar2 >= 1.0 needed by foo2-1.0-1.noarch
+
+- do not install foo2-1.0-1.noarch
+

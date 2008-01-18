@@ -1,2 +1,10 @@
->!> Installing eee from channel test
->!> Installing fff from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package fff-1.0-1.noarch obsoletes eee provided by eee-1.0-1.noarch
+
+- do not install fff-1.0-1.noarch
+
+- do not install eee-1.0-1.noarch
+

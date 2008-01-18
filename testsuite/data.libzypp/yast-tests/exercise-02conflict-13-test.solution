@@ -1,1 +1,10 @@
->!> Installing required3 from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package requirerer3-2.0-1.noarch requires required3 < 2.0, but none of the providers can be installed
+
+- allow downgrade of requirerer3-2.0-1.noarch to requirerer3-1.0-1.noarch
+
+- do not install required3-2.0-1.noarch
+

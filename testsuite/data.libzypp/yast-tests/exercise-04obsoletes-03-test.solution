@@ -1,0 +1,11 @@
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package bazc-1.0-1.noarch conflicts with baz <= 1.2 provided by baznew-2.0-1.noarch
+
+- do not install bazc-1.0-1.noarch
+
+- do not install baznew-2.0-1.noarch
+- allow deinstallation of baz-1.0-1.noarch
+

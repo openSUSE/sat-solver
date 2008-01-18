@@ -1,1 +1,8 @@
->!> Installing alt-conflict-unresolvable from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+nothing provides something = 4.0-1 needed by alt-conflict-unresolvable-1.0-1.noarch
+
+- do not install alt-conflict-unresolvable-1.0-1.noarch
+

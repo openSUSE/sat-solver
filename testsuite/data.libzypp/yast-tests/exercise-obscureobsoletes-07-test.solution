@@ -1,2 +1,10 @@
->!> Installing aaa from channel test
->!> Installing bbb from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package aaa-1.0-1.noarch obsoletes bbb provided by bbb-2.0-1.noarch
+
+- do not install bbb-2.0-1.noarch
+
+- do not install aaa-1.0-1.noarch
+

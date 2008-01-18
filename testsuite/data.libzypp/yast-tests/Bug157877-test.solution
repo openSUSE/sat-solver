@@ -1,16 +1,10 @@
->!> Requesting locale de
->!> Requesting locale de_DE
->!> Uninstalling gnokii
->!> 1 problems found:
->!> Problem:
->!> xgnokii has missing dependencies
->!> There are no alternative providers of gnokii installed for xgnokii-0.6.10-6.i586
->!>    Solution:
->!>       keep gnokii
->!>       keep gnokii-0.6.10-6.i586
->!>    Solution:
->!>       delete xgnokii
->!>       delete xgnokii-0.6.10-6.i586
->!>    Solution:
->!>       Ignore this requirement just here
->!>       
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package xgnokii-0.6.10-6.i586 requires gnokii, but none of the providers can be installed
+
+- allow deinstallation of xgnokii-0.6.10-6.i586
+
+- do not deinstall gnokii
+

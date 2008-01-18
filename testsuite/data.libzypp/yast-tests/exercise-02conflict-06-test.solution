@@ -1,1 +1,11 @@
->!> Installing test3 from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package test3-1.0-1.noarch conflicts with test2 provided by test2-1.0-1.noarch
+
+- allow deinstallation of test2-1.0-1.noarch
+- allow deinstallation of test1-1.0-1.noarch
+
+- do not install test3-1.0-1.noarch
+

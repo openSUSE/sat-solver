@@ -1,1 +1,10 @@
->!> Installing libfoo2 from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package something-1.0-1.noarch requires libfoo, but none of the providers can be installed
+
+- allow deinstallation of something-1.0-1.noarch
+
+- do not install libfoo2-2.0-1.noarch
+

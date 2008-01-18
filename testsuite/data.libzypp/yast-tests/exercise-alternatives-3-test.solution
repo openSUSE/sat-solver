@@ -1,1 +1,10 @@
->!> Installing alt-conflict from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package alt-conflict-1.0-1.noarch conflicts with foo provided by foo-1.0-1.noarch
+
+- allow deinstallation of foo-1.0-1.noarch
+
+- do not install alt-conflict-1.0-1.noarch
+

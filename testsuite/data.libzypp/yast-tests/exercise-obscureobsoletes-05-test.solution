@@ -1,1 +1,10 @@
->!> Installing barold2 from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package bar2-devel-1.1-1.noarch requires bar2 = 1.0-1, but none of the providers can be installed
+
+- allow deinstallation of bar2-devel-1.1-1.noarch
+
+- do not install barold2-4.0-1.noarch
+

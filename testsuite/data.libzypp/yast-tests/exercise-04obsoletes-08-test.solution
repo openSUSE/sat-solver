@@ -1,2 +1,10 @@
->!> Installing B from channel test
->!> Installing C from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package B-1.0-1.noarch obsoletes C provided by C-1.0-1.noarch
+
+- do not install C-1.0-1.noarch
+
+- do not install B-1.0-1.noarch
+

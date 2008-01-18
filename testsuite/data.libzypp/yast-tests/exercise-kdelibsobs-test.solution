@@ -1,2 +1,17 @@
->!> Installing kdelibs3-devel from channel test
->!> Installing kdelibs3 from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+nothing provides kdelibs3 = 3.1 needed by kdelibs3-devel-<NULL>.noarch
+
+- do not install kdelibs3-devel-<NULL>.noarch
+
+Problem 2:
+====================================
+nothing provides kdelibs3 = 3.1 needed by kdelibs3-devel-<NULL>.noarch
+
+- allow deinstallation of kdesupport-devel-2.0.1-5.noarch
+- allow deinstallation of kdelibs-devel-2.0.1-4.noarch
+
+- do not install kdelibs3-<NULL>.noarch
+

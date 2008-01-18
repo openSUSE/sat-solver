@@ -1,15 +1,10 @@
->!> Installing B from channel test
->!> Installing C from channel test
->!> 1 problems found:
->!> Problem:
->!> Cannot install C, because it is conflicting with B
->!> A conflict over A (A) requires the removal of C-2.0-1.noarch[test] which is scheduled for installation
->!>    Solution:
->!>       do not install C
->!>       do not install C-2.0-1.noarch[test]
->!>    Solution:
->!>       do not install B
->!>       do not install B-2.0-1.noarch[test]
->!>    Solution:
->!>       Ignore this conflict of C
->!>       
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package C-2.0-1.noarch obsoletes A provided by B-2.0-1.noarch
+
+- do not install C-2.0-1.noarch
+
+- do not install B-2.0-1.noarch
+

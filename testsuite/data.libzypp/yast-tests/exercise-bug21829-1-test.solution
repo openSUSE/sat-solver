@@ -1,3 +1,10 @@
->!> Installing lsb from channel test
->!> Installing lprng from channel test
->!> Installing cups-client from channel test
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package lprng-1.0-1.noarch conflicts with cups-client provided by cups-client-1.0-1.noarch
+
+- do not install cups-client-1.0-1.noarch
+
+- do not install lprng-1.0-1.noarch
+
