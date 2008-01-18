@@ -1,14 +1,10 @@
->!> Uninstalling A
->!> 1 problems found:
->!> Problem:
->!> B has missing dependencies
->!> There are no alternative providers of A installed for B-1.0-1.noarch
->!>    Solution:
->!>       keep A
->!>       keep A-1.0-1.noarch
->!>    Solution:
->!>       delete B
->!>       delete B-1.0-1.noarch
->!>    Solution:
->!>       Ignore this requirement just here
->!>       
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package B-1.0-1.noarch requires A, but none of the providers can be installed
+
+- allow deinstallation of B-1.0-1.noarch
+
+- do not deinstall A
+
