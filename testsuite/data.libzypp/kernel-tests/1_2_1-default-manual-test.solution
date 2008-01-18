@@ -1,9 +1,13 @@
->!> setting HardwareInfo to: ./kernel-hardware
->!> Installing kernel-default from channel packages
->!> 1 problems found:
->!> Problem:
->!> This would invalidate novfs-kmp-default-1.2.0_2.6.16_rc5_git14_2-8.i586.
->!> novfs-kmp-default-1.2.0_2.6.16_rc5_git14_2-8.i586 has unfulfilled requirements
->!>    Solution:
->!>       delete novfs-kmp-default
->!>       delete novfs-kmp-default-1.2.0_2.6.16_rc5_git14_2-8.i586
+hardware kernel-hardware
+Setting hardwareinfo to ./data.libzypp/kernel-tests/kernel-hardware
+Encountered problems! Here are the solutions:
+
+Problem 1:
+====================================
+package cloop-kmp-default-2.01_2.6.16_rc5_git14_2-15.i586 requires kernel(default:kernel) = f422d0960a93a2a7, but none of the providers can be installed
+
+- allow deinstallation of cloop-kmp-default-2.01_2.6.16_rc5_git14_2-15.i586
+- allow deinstallation of novfs-kmp-default-1.2.0_2.6.16_rc5_git14_2-8.i586
+
+- do not install kernel-default-2.6.16_rc5_git14-3c.i586
+

@@ -59,7 +59,6 @@
 ./data.libzypp/bugzilla-tests/bug217574-test.xml
 ./data.libzypp/bugzilla-tests/bug224698-test.xml
 ./data.libzypp/bugzilla-tests/bug297795-1-test.xml
-./data.libzypp/distupgrade-tests/exercise-bug150844-test.xml
 ./data.libzypp/lock-tests/exercise-obscureobsoletes-02-test.xml
 ./data.libzypp/lock-tests/exercise-obscureobsoletes-06-test.xml
 ./data.libzypp/lock-tests/install-single-require-test.xml
