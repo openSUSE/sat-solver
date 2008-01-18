@@ -1,21 +1,56 @@
 >!> Installing apache2-mod_python from channel sles10
 >!> Installing apache2-prefork from channel sles10
->!> 2 problems found:
->!> Problem:
->!> Cannot install apache2
->!> Can't install apache2-2.2.0-21.2.i586[sles10], because apache2-2.2.2-5.i586[stable] is already marked as needed to for installation
->!>    Solution:
->!>       do not install apache2-2.2.0-21.2.i586[sles10]
->!>       
->!>    Solution:
->!>       do not install apache2-2.2.2-5.i586[stable]
->!>       
->!>    Solution:
->!>       Ignore that apache2 is already set to install
->!>       
->!> Problem:
->!> No valid solution found with just resolvables of best architecture.
->!> With this run only resolvables with the best architecture have been regarded.
->!>    Solution:
->!>       Make a solver run with ALL possibilities.
->!>       Regarding all resolvables with a compatible architecture.
+>!> Solution #1:
+>!> install apache2-mod_python-3.1.3-60.2.i586[sles10]
+>!> install apache2-prefork-2.2.0-21.2.i586[sles10]
+>!> install apache2-2.2.0-21.2.i586[sles10]
+>!> install bash-3.1-27.i586[stable]
+>!> install db-4.3.29-15.2.i686[sles10]
+>!> install expat-2.0.0-13.2.i586[sles10]
+>!> install glibc-2.4-31.2.i686[sles10]
+>!> install libapr-util1-1.2.7-3.i586[stable]
+>!> install libapr1-1.2.7-3.i586[stable]
+>!> install openldap2-client-2.3.24-2.i586[stable]
+>!> install openssl-0.9.8a-19.i586[stable]
+>!> install pcre-6.7-2.i586[stable]
+>!> install python-2.4.3-3.i586[stable]
+>!> install aaa_base-10.1.1-4.i586[stable]
+>!> install coreutils-5.97-2.i586[stable]
+>!> install fillup-1.42-119.i586[stable]
+>!> install grep-2.5.1a-22.i586[stable]
+>!> install insserv-1.04.0-22.i586[stable]
+>!> install logrotate-3.7.4-2.i586[stable]
+>!> install perl-5.8.8-14.2.i586[sles10]
+>!> install permissions-2006.6.27-2.i586[stable]
+>!> install pwdutils-3.0.7.1-22.i586[stable]
+>!> install sed-4.1.4-20.i586[stable]
+>!> install zlib-1.2.3-15.2.i586[sles10]
+>!> install info-4.8-23.i586[stable]
+>!> install bzip2-1.0.3-17.2.i586[sles10]
+>!> install gdbm-1.8.3-243.2.i586[sles10]
+>!> install libgcc-4.1.2_20060705-3.i586[stable]
+>!> install libstdc++-4.1.2_20060705-3.i586[stable]
+>!> install ncurses-5.5-19.i586[stable]
+>!> install readline-5.1-27.i586[stable]
+>!> install libnscd-2.0-2.i586[stable]
+>!> install libxcrypt-2.4-12.2.i586[sles10]
+>!> install openslp-1.2.0-23.i586[stable]
+>!> install pam-0.99.5.0-2.i586[stable]
+>!> install pam-modules-10.1.1-1.i586[stable]
+>!> install cracklib-2.8.6-16.i586[stable]
+>!> install cyrus-sasl-2.1.22-2.i586[stable]
+>!> install popt-1.7-272.i586[stable]
+>!> install libzio-0.2-2.i586[stable]
+>!> install libacl-2.2.34-14.2.i586[sles10]
+>!> install libattr-2.4.28-16.2.i586[sles10]
+>!> install aaa_skel-2006.5.19-2.i586[stable]
+>!> install ash-1.6.1-15.2.i586[sles10]
+>!> install cpio-2.6-19.2.i586[sles10]
+>!> install diffutils-2.8.7-17.2.i586[sles10]
+>!> install filesystem-10.1.1-1.i586[stable]
+>!> install findutils-4.2.27-15.i586[stable]
+>!> install mingetty-0.9.6s-89.i586[stable]
+>!> install mktemp-1.5-745.i586[stable]
+>!> install openSUSE-release-10.1.42-2.i586[stable]
+>!> install gzip-1.3.5-159.2.i586[sles10]
+>!> installs=52, upgrades=0, uninstalls=0

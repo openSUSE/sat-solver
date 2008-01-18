@@ -6,7 +6,6 @@
        libzypp removes packages if the pattern is deinstalled
 
 ./data.libzypp/basic-exercises/Bug299819-2-test.xml
-./data.libzypp/bugzilla-tests/bug308098-test.xml
 ./data.libzypp/freshen-tests/exercise-6-test.xml
 ./data.libzypp/freshen-tests/exercise-6f-test.xml
 ./data.libzypp/freshen-tests/exercise-7-test.xml
@@ -37,7 +36,6 @@
 # BUGS
 
 # MISSINGS
-./data.libzypp/bugzilla-tests/bug239199-test.xml
 ./data.libzypp/patch-tests/jumbo-patch-test.xml
 ./data.libzypp/patch-tests/kernel-single-update-test.xml
 ./data.libzypp/patch-tests/kernel-update-test.xml
@@ -57,7 +55,6 @@
 ./data.libzypp/basic-exercises/exercise-48-test.xml
 ./data.libzypp/basic-exercises/exercise-60-test.xml
 ./data.libzypp/basic-exercises/provide-1-test.xml
-./data.libzypp/bugzilla-tests/bug191983-bare-test.xml
 ./data.libzypp/bugzilla-tests/bug191983-test.xml
 ./data.libzypp/bugzilla-tests/bug217574-test.xml
 ./data.libzypp/bugzilla-tests/bug224698-test.xml
