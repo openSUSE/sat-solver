@@ -12,9 +12,17 @@
  * it around in every data structure.
  */
 %}
+
 %module satsolverx
 %feature("autodoc","1");
+
+
 %{
+
+/*=============================================================*/
+/* HELPER CODE                                                 */
+/*=============================================================*/
+
 
 extern void SWIG_exception( int code, const char *msg );
 
@@ -292,6 +300,7 @@ typedef struct _Decision {
   Id reason;
 } Decision;
 
+#if defined(SWIGRUBY)
 static Decision *decision_new( Pool *pool, int op, Id solvable, Id reason )
 {
   Decision *d = (Decision *)malloc( sizeof( Decision ));
@@ -301,7 +310,7 @@ static Decision *decision_new( Pool *pool, int op, Id solvable, Id reason )
   d->reason = reason;
   return d;
 }
-
+#endif
 
 /************************************************
  * Problem
@@ -425,7 +434,36 @@ pool_find( Pool *pool, char *name, Repo *repo )
   return xsolvable_new( pool, id );
 }
 
+/************************************************
+ * Covenant
+ *
+ * Covenants ensure specific dependencies in the (installed) system.
+ * They are usually used to implement locks.
+ *
+ */
+ 
+typedef struct _Covenant {
+  Pool *pool;
+  SolverCmd cmd;
+  Id id;
+} Covenant;
+
+static Covenant *covenant_new( Pool *pool, SolverCmd cmd, Id id )
+{
+  Covenant *covenant = (Covenant *)malloc( sizeof( Covenant ));
+  covenant->pool = pool;
+  covenant->cmd = cmd;
+  covenant->id = id;
+  return covenant;
+}
+
+
 %}
+
+/*=============================================================*/
+/* BINDING CODE                                                */
+/*=============================================================*/
+
 
 /*-------------------------------------------------------------*/
 /* types and typemaps */
@@ -494,6 +532,10 @@ typedef struct _Problem {} Problem;
 %nodefault _Solution;
 %rename(Solution) _Solution;
 typedef struct _Solution {} Solution;
+
+%nodefault _Covenant;
+%rename(Covenant) _Covenant;
+typedef struct _Covenant {} Covenant;
 
 /*-------------------------------------------------------------*/
 /* Pool */
@@ -566,7 +608,7 @@ typedef struct _Pool {} Pool;
   void prepare()
   { pool_createwhatprovides( $self ); }
 
-  /*
+  /**************************
    * Repo management
    */
 
@@ -627,7 +669,7 @@ typedef struct _Pool {} Pool;
     return NULL;
   }
 
-  /*
+  /**************************
    * Relation management
    */
 
@@ -691,14 +733,14 @@ typedef struct _Pool {} Pool;
   find( char *name, Repo *repo = NULL )
   { return pool_find( $self, name, repo ); }
 
-  /*
+  /**************************
    * Transaction management
    */
    
   Transaction *create_transaction()
   { return transaction_new( $self ); }
 
-  /*
+  /**************************
    * Solver management
    */
 
@@ -1058,21 +1100,9 @@ typedef struct _Pool {} Pool;
   ~Transaction()
   { transaction_free( $self ); }
 
-  Action *shift()
-  {
-    int cmd = queue_shift( &($self->queue) );
-    Id id = queue_shift( &($self->queue) );
-    return action_new( $self->pool, cmd, id );
-  }
-  
-  void push( const Action *action )
-  {
-    if (action == NULL)
-      SWIG_exception( SWIG_NullReferenceError, "bad Action" );
-    queue_push( &($self->queue), action->cmd );
-    queue_push( &($self->queue), action->id );
-  }
-
+  /*
+   * Install (specific) solvable
+   */
   void install( XSolvable *s )
   {
     if (s == NULL)
@@ -1081,6 +1111,10 @@ typedef struct _Pool {} Pool;
     /* FIXME: check: s->repo->pool == $self->pool */
     queue_push( &($self->queue), s->id );
   }
+
+  /*
+   * Remove (specific) solvable
+   */
   void remove( XSolvable *s )
   {
     if (s == NULL)
@@ -1089,16 +1123,32 @@ typedef struct _Pool {} Pool;
     /* FIXME: check: s->repo->pool == $self->pool */
     queue_push( &($self->queue), s->id );
   }
+
+  /*
+   * Install solvable by name
+   * The solver is free to choose any solvable with the given name.
+   */
   void install( const char *name )
   {
     queue_push( &($self->queue), SOLVER_INSTALL_SOLVABLE_NAME );
     queue_push( &($self->queue), str2id( $self->pool, name, 1 ));
   }
+
+  /*
+   * Remove solvable by name
+   * The solver is free to choose any solvable with the given name.
+   */
   void remove( const char *name )
   {
     queue_push( &($self->queue), SOLVER_ERASE_SOLVABLE_NAME );
     queue_push( &($self->queue), str2id( $self->pool, name, 1 ));
   }
+  
+  /*
+   * Install solvable by relation
+   * The solver is free to choose any solvable providing the given
+   * relation.
+   */
   void install( const Relation *rel )
   {
     if (rel == NULL)
@@ -1107,6 +1157,12 @@ typedef struct _Pool {} Pool;
     /* FIXME: check: rel->pool == $self->pool */
     queue_push( &($self->queue), rel->id );
   }
+  
+  /*
+   * Remove solvable by relation
+   * The solver is free to choose any solvable providing the given
+   * relation.
+   */
   void remove( const Relation *rel )
   {
     if (rel == NULL)
@@ -1119,21 +1175,40 @@ typedef struct _Pool {} Pool;
 #if defined(SWIGRUBY)
   %rename("empty?") empty();
   %typemap(out) int empty
-    "$result = ($1 != 0) ? Qtrue : Qfalse;";
+    "$result = $1 ? Qtrue : Qfalse;";
 #endif
+  /*
+   * Check if the transaction has any actions attached.
+   */
   int empty()
   { return ( $self->queue.count == 0 ); }
 
+  /*
+   * Return number of actions of this transaction
+   */
   int size()
   { return $self->queue.count >> 1; }
 
 #if defined(SWIGRUBY)
   %rename("clear!") clear();
 #endif
+  /*
+   * Remove all actions of this transaction
+   */
   void clear()
   { queue_empty( &($self->queue) ); }
 
-  Action *get_action( unsigned int i )
+#if defined(SWIGRUBY)
+  %alias get "[]";
+#endif
+  /*
+   * Get action by index
+   * The index is just a convenience access method and
+   * does NOT imply any preference/ordering of the Actions.
+   *
+   * A Transaction is always considered a set of Actions.
+   */
+  Action *get( unsigned int i )
   {
     int size, cmd;
     Id id;
@@ -1146,6 +1221,9 @@ typedef struct _Pool {} Pool;
   }
 
 #if defined(SWIGRUBY)
+  /*
+   * Iterate over each Action of the Transaction.
+   */
   void each()
   {
     int i;
@@ -1167,8 +1245,9 @@ typedef struct _Pool {} Pool;
   %constant int DEC_UPDATE = 3;
   %constant int DEC_OBSOLETE = 4;
   
-  Decision( Pool *pool, int op, Id solvable, Id reason = 0 )
-  { return decision_new( pool, op, solvable, reason ); }
+  /* no constructor defined, Decisions are created by accessing
+     the Solver result. See 'Solver.each_decision'. */
+     
   ~Decision()
   { free( $self ); }
   Pool *pool()
@@ -1194,6 +1273,10 @@ typedef struct _Pool {} Pool;
   %constant int SOLVER_PROBLEM_PACKAGE_CONFLICT = 7;
   %constant int SOLVER_PROBLEM_PACKAGE_OBSOLETES = 8;
   %constant int SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE = 8;
+
+  /* no constructor defined, Problems are created by accessing
+     the Solver result. See 'Solver.each_problem'. */
+
   ~Problem()
   { free ($self); }
 
@@ -1360,6 +1443,56 @@ typedef struct _Pool {} Pool;
   const char *n2()
   { return id2str( $self->pool, $self->n2 ); }
 }
+
+
+/*-------------------------------------------------------------*/
+/* Covenant */
+
+%extend Covenant {
+  %constant int INCLUDE_SOLVABLE = SOLVER_INSTALL_SOLVABLE;
+  %constant int EXCLUDE_SOLVABLE = SOLVER_ERASE_SOLVABLE;
+  %constant int INCLUDE_SOLVABLE_NAME = SOLVER_INSTALL_SOLVABLE_NAME;
+  %constant int EXCLUDE_SOLVABLE_NAME = SOLVER_ERASE_SOLVABLE_NAME;
+  %constant int INCLUDE_SOLVABLE_PROVIDES = SOLVER_INSTALL_SOLVABLE_PROVIDES;
+  %constant int EXCLUDE_SOLVABLE_PROVIDES = SOLVER_ERASE_SOLVABLE_PROVIDES;
+
+  /* no constructor defined, Covenants are created through the Solver,
+     see 'Solver.include' and 'Solver.excluding' */
+  ~Covenant()
+  { free( $self ); }
+  
+  int cmd()
+  { return $self->cmd; }
+
+  XSolvable *solvable()
+  {
+    if ($self->cmd == SOLVER_INSTALL_SOLVABLE
+        || $self->cmd == SOLVER_ERASE_SOLVABLE) {
+      return xsolvable_new( $self->pool, $self->id );
+    }
+    return NULL;
+  }
+
+  const char *name()
+  {
+    if ($self->cmd == SOLVER_INSTALL_SOLVABLE_NAME
+        || $self->cmd == SOLVER_ERASE_SOLVABLE_NAME) {
+      return my_id2str( $self->pool, $self->id );
+    }
+    return NULL;
+  }
+
+  Relation *relation()
+  {
+    if ($self->cmd == SOLVER_INSTALL_SOLVABLE_PROVIDES
+        || $self->cmd == SOLVER_ERASE_SOLVABLE_PROVIDES) {
+      return relation_new( $self->pool, $self->id );
+    }
+    return NULL;
+  }
+}
+
+
 /*-------------------------------------------------------------*/
 /* Solver */
 
@@ -1370,6 +1503,10 @@ typedef struct _Pool {} Pool;
   ~Solver()
   { solver_free( $self ); }
 
+  /**************************
+   * Solver policies
+   */
+   
   /* yeah, thats awkward. But %including solver.h and adding lots
      of %ignores is even worse ... */
 
@@ -1412,9 +1549,169 @@ typedef struct _Pool {} Pool;
 #endif
   void set_no_update_provide( int i )
   { $self->noupdateprovide = i; }
+  
 
-  void solve( Transaction *t )
-  { solver_solve( $self, &(t->queue)); }
+  /**************************
+   * Covenants
+   */
+ 
+  int covenants_count()
+  { return $self->covenantq.count >> 1; }
+
+#if defined(SWIGRUBY)
+  %rename("covenants_empty?") covenants_empty();
+  %typemap(out) int covenants_empty
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  int covenants_empty()
+  { return $self->covenantq.count == 0; }
+
+#if defined(SWIGRUBY)
+  %rename("covenants_clear!") covenants_clear();
+#endif
+  /*
+   * Remove all covenants from this solver
+   */
+  void covenants_clear()
+  { queue_empty( &($self->covenantq) ); }
+
+  /*
+   * Include (specific) solvable
+   * Including a solvable means that it must be installed.
+   */
+  void include( XSolvable *s )
+  {
+    if (s == NULL)
+      SWIG_exception( SWIG_NullReferenceError, "bad Solvable" );
+    queue_push( &($self->covenantq), SOLVER_INSTALL_SOLVABLE );
+    /* FIXME: check: s->repo->pool == $self->pool */
+    queue_push( &($self->covenantq), s->id );
+  }
+
+  /*
+   * Exclude (specific) solvable
+   * Excluding a (specific) solvable means that it must not
+   * be installed.
+   */
+  void exclude( XSolvable *s )
+  {
+    if (s == NULL)
+      SWIG_exception( SWIG_NullReferenceError, "bad Solvable" );
+    queue_push( &($self->covenantq), SOLVER_ERASE_SOLVABLE );
+    /* FIXME: check: s->repo->pool == $self->pool */
+    queue_push( &($self->covenantq), s->id );
+  }
+
+  /*
+   * Include solvable by name
+   * Including a solvable by name means that any solvable
+   * with the given name must be installed.
+   */
+  void include( const char *name )
+  {
+    queue_push( &($self->covenantq), SOLVER_INSTALL_SOLVABLE_NAME );
+    queue_push( &($self->covenantq), str2id( $self->pool, name, 1 ));
+  }
+
+  /*
+   * Exclude solvable by name
+   * Excluding a solvable by name means that any solvable
+   * with the given name must not be installed.
+   */
+  void exclude( const char *name )
+  {
+    queue_push( &($self->covenantq), SOLVER_ERASE_SOLVABLE_NAME );
+    queue_push( &($self->covenantq), str2id( $self->pool, name, 1 ));
+  }
+  
+  /*
+   * Include solvable by relation
+   * Including a solvable by relation means that any solvable
+   * providing the given relation must be installed.
+   */
+  void include( const Relation *rel )
+  {
+    if (rel == NULL)
+      SWIG_exception( SWIG_NullReferenceError, "bad Relation" );
+    queue_push( &($self->covenantq), SOLVER_INSTALL_SOLVABLE_PROVIDES );
+    /* FIXME: check: rel->pool == $self->pool */
+    queue_push( &($self->covenantq), rel->id );
+  }
+  
+  /*
+   * Exclude solvable by relation
+   * Excluding a solvable by relation means that any solvable
+   * providing the given relation must be installed.
+   */
+  void exclude( const Relation *rel )
+  {
+    if (rel == NULL)
+      SWIG_exception( SWIG_NullReferenceError, "bad Relation" );
+    queue_push( &($self->covenantq), SOLVER_ERASE_SOLVABLE_PROVIDES );
+    /* FIXME: check: rel->pool == $self->pool */
+    queue_push( &($self->covenantq), rel->id );
+  }
+
+  /*
+   * Get Covenant by index
+   * The index is just a convenience access method and
+   * does NOT imply any preference/ordering of the Covenants.
+   *
+   * The solver always considers Covenants as a set.
+   */
+  Covenant *get_covenant( unsigned int i )
+  {
+    int size, cmd;
+    Id id;
+    i <<= 1;
+    size = $self->covenantq.count;
+    if (i-1 >= size) return NULL;
+    cmd = $self->covenantq.elements[i];
+    id = $self->covenantq.elements[i+1];
+    return covenant_new( $self->pool, cmd, id );
+  }
+
+#if defined(SWIGRUBY)
+  /*
+   * Iterate over each Covenant of the Solver.
+   */
+  void each_covenant()
+  {
+    int i;
+    for (i = 0; i < $self->covenantq.count-1; ) {
+      int cmd = $self->covenantq.elements[i++];
+      Id id = $self->covenantq.elements[i++];
+      rb_yield(SWIG_NewPointerObj((void*) covenant_new( $self->pool, cmd, id ), SWIGTYPE_p__Covenant, 0));
+    }
+  }
+#endif
+
+
+  /**************************
+   * Solve the given Transaction
+   * Returns true if a solution was found, else false.
+   */
+#if defined(SWIGRUBY)
+  %typemap(out) int solve
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  int solve( Transaction *t )
+  {
+    if ($self->covenantq.count) {
+      /* Honor covenants */
+    }
+    solver_solve( $self, &(t->queue));
+    return $self->problems.count == 0;
+  }
+
+  /*
+   * Return the number of decisions after solving.
+   * If its >0, a solution of the Transaction was found.
+   * If its ==0, and 'Solver.problems_found' (resp. 'Solver.problems?' for Ruby)
+   *   returns true, the Transaction couldn't be solved.
+   * If its ==0, and 'Solver.problems_found' (resp. 'Solver.problems?' for Ruby)
+   *   returns false, the Transaction is trivially solved.
+   */
   int decision_count()
   { return $self->decisionq.count; }
 #if defined(SWIGRUBY)
@@ -1487,11 +1784,18 @@ typedef struct _Pool {} Pool;
     }
   }
 #endif
+
 #if defined(SWIGRUBY)
   %rename("problems?") problems_found();
   %typemap(out) int problems_found
     "$result = ($1 != 0) ? Qtrue : Qfalse;";
 #endif
+  /*
+   * Return if problems where found during solving.
+   *
+   * There is no 'number of problems' available, but it can be computed
+   * by iterating over the problems.
+   */
   int problems_found()
   { return $self->problems.count != 0; }
 #if defined(SWIGRUBY)
