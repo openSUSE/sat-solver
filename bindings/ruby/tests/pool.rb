@@ -14,7 +14,9 @@
 #
 # For Repos there is each_repo, count_repos, get_repo and find_repo.
 #
-$: << "../../../build/bindings/ruby"
+
+$:.unshift "../../../build/bindings/ruby"
+
 # test Pool
 require 'test/unit'
 require 'satsolver'

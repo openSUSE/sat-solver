@@ -1,5 +1,7 @@
 $:.unshift "../../../build/bindings/ruby"
+
 # test Covenants
+
 require 'test/unit'
 require 'satsolver'
 

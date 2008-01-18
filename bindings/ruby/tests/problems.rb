@@ -39,7 +39,9 @@
 #  SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE
 #    source requires relation but no providers are installable
 #
-$: << "../../../build/bindings/ruby"
+
+$:.unshift "../../../build/bindings/ruby"
+
 # test Problems
 require 'test/unit'
 require 'satsolver'

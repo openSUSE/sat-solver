@@ -17,7 +17,9 @@
 #   REL_NAMESPACE: namespace
 #
 #
-$: << "../../../build/bindings/ruby"
+
+$:.unshift "../../../build/bindings/ruby"
+
 # test Relation
 require 'test/unit'
 require 'satsolver'

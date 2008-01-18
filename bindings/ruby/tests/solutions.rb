@@ -4,7 +4,9 @@
 # Solutions are enumeratable through Problem.each_solution
 #
 #
-$: << "../../../build/bindings/ruby"
+
+$:.unshift "../../../build/bindings/ruby"
+
 # test Solutions
 require 'test/unit'
 require 'satsolver'

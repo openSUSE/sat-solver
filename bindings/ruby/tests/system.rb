@@ -5,8 +5,11 @@
 # Its used to represent dependencies of the system, like
 # looks or hardware (modalias).
 #
-$: << "../../../build/bindings/ruby"
+
+$:.unshift "../../../build/bindings/ruby"
+
 # test Pool:system
+
 require 'test/unit'
 require 'satsolver'
 

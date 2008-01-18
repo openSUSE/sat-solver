@@ -1,5 +1,7 @@
-$: << "../../../build/bindings/ruby"
+$:.unshift "../../../build/bindings/ruby"
+
 # test Transction
+
 require 'test/unit'
 require 'satsolver'
 

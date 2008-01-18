@@ -19,7 +19,8 @@
 # The number of decision steps is available through Solver.decision_count
 #
 
-$: << "../../../build/bindings/ruby"
+$:.unshift "../../../build/bindings/ruby"
+
 # test Decisions
 require 'test/unit'
 require 'satsolver'

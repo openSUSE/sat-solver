@@ -25,7 +25,9 @@
 #   repo.find( "A" )
 #   this will return the 'best' solvable named 'A' or nil if no such solvable exists.
 #
-$: << "../../../build/bindings/ruby"
+
+$:.unshift "../../../build/bindings/ruby"
+
 # test Repo
 require 'test/unit'
 require 'satsolver'

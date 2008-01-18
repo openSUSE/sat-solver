@@ -9,7 +9,9 @@
 # to name the repository
 #
 #
-$: << "../../../build/bindings/ruby"
+
+$:.unshift "../../../build/bindings/ruby"
+
 # test adding rpmdb
 require 'test/unit'
 require 'satsolver'
