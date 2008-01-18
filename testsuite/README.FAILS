@@ -63,7 +63,6 @@
 ./data.libzypp/lock-tests/exercise-obscureobsoletes-06-test.xml
 ./data.libzypp/lock-tests/install-single-require-test.xml
 ./data.libzypp/patch-tests/wrong-mutt-test.xml
-./data.libzypp/selection-tests/install-simple-test.xml
 ./data.libzypp/simple-tests/arch3-test.xml
 ./data.libzypp/simple-tests/vendor-test.xml
 ./data.libzypp/solution-tests/conflict-bug153328-test.xml
