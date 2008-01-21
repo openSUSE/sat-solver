@@ -19,7 +19,8 @@ class SolverTest < Test::Unit::TestCase
     transaction.remove( "xorg-x11" )
     
     solver = SatSolver::Solver.new( pool, system )
-    solver.allow_uninstall = 1
+    solver.allow_uninstall = true
+    assert solver.allow_uninstall
     pool.prepare
     solver.solve( transaction )
     solver.each_to_install { |s|

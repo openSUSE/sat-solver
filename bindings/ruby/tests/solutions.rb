@@ -45,7 +45,7 @@ class SolutionTest < Test::Unit::TestCase
     transaction.remove( "Z" )
     
     solver = pool.create_solver( installed )
-#    solver.allow_uninstall = 1;
+#    solver.allow_uninstall = true;
 #    @pool.debug = 255
     solver.solve( transaction )
     assert solver.problems?

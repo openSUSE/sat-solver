@@ -478,6 +478,11 @@ static Covenant *covenant_new( Pool *pool, SolverCmd cmd, Id id )
   $1 = GetReadFile(fptr);
   rb_read_check($1)
 }
+
+/* boolean input argument */
+%typemap(in) (int bflag) {
+   $1 = RTEST( $input );
+}
 #endif
 
 //==================================
@@ -1523,10 +1528,10 @@ typedef struct _Pool {} Pool;
   int fix_system()
   { return $self->fixsystem; }
 #if defined(SWIGRUBY)
-  %rename( "fix_system=" ) set_fix_system( int i );
+  %rename( "fix_system=" ) set_fix_system( int bflag );
 #endif
-  void set_fix_system( int i )
-  { $self->fixsystem = i; }
+  void set_fix_system( int bflag )
+  { $self->fixsystem = bflag; }
 
 #if defined(SWIGRUBY)
   %typemap(out) int update_system
@@ -1535,10 +1540,10 @@ typedef struct _Pool {} Pool;
   int update_system()
   { return $self->updatesystem; }
 #if defined(SWIGRUBY)
-  %rename( "update_system=" ) set_update_system( int i );
+  %rename( "update_system=" ) set_update_system( int bflag );
 #endif
-  void set_update_system( int i )
-  { $self->updatesystem = i; }
+  void set_update_system( int bflag )
+  { $self->updatesystem = bflag; }
 
 #if defined(SWIGRUBY)
   %typemap(out) int allow_downgrade
@@ -1547,10 +1552,10 @@ typedef struct _Pool {} Pool;
   int allow_downgrade()
   { return $self->allowdowngrade; }
 #if defined(SWIGRUBY)
-  %rename( "allow_downgrade=" ) set_allow_downgrade( int i );
+  %rename( "allow_downgrade=" ) set_allow_downgrade( int bflag );
 #endif
-  void set_allow_downgrade( int i )
-  { $self->allowdowngrade = i; }
+  void set_allow_downgrade( int bflag )
+  { $self->allowdowngrade = bflag; }
 
   /*
    * On package removal, also remove dependant packages.
@@ -1569,10 +1574,10 @@ typedef struct _Pool {} Pool;
   int allow_uninstall()
   { return $self->allowuninstall; }
 #if defined(SWIGRUBY)
-  %rename( "allow_uninstall=" ) set_allow_uninstall( int i );
+  %rename( "allow_uninstall=" ) set_allow_uninstall( int bflag );
 #endif
-  void set_allow_uninstall( int i )
-  { $self->allowuninstall = i; }
+  void set_allow_uninstall( int bflag )
+  { $self->allowuninstall = bflag; }
 
 #if defined(SWIGRUBY)
   %typemap(out) int no_update_provide
@@ -1581,10 +1586,10 @@ typedef struct _Pool {} Pool;
   int no_update_provide()
   { return $self->noupdateprovide; }
 #if defined(SWIGRUBY)
-  %rename( "no_update_provide=" ) set_no_update_provide( int i );
+  %rename( "no_update_provide=" ) set_no_update_provide( int bflag );
 #endif
-  void set_no_update_provide( int i )
-  { $self->noupdateprovide = i; }
+  void set_no_update_provide( int bflag )
+  { $self->noupdateprovide = bflag; }
   
 
   /**************************

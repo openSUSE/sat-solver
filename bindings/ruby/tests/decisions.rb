@@ -59,7 +59,7 @@ class DecisionTest < Test::Unit::TestCase
     transaction.remove( "D" )
     
     solver = pool.create_solver( installed )
-    solver.allow_uninstall = 1;
+    solver.allow_uninstall = true;
 #    @pool.debug = 255
     solver.solve( transaction )
     puts "** Problems found" if solver.problems?
