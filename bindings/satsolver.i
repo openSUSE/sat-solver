@@ -681,10 +681,14 @@ typedef struct _Pool {} Pool;
    */
 
   /* number of solvables in pool
-   * decrease by one since Id 0 is reserved
    */
   int size()
-  { return $self->nsolvables - 1; }
+  { /* decrease by one since Id 0 is reserved
+     * decrease by one since Id 1 is the system solvable and not
+     * accessible to the outside
+     */
+    return $self->nsolvables - 1 - 1;
+  }
   
 #if defined(SWIGRUBY)
   %rename( "installable?" ) installable( XSolvable *s );
@@ -701,26 +705,21 @@ typedef struct _Pool {} Pool;
   /*
    * get solvable by index (0..size-1)
    * index is _not_ the internal id, but used as an array index
-   * Index 0 is reserved for the 'system' solvable (which can
-   * also be accessed by system().
    */
   XSolvable *get( int i )
   {
-    ++i; /* adapt to internal Id */
+    i += 2; /* adapt to internal Id, see size() above */
     if (i <= 0) return NULL;
     if (i >= $self->nsolvables) return NULL;
     return xsolvable_new( $self, i );
-  }
-  XSolvable *system( )
-  {
-    return xsolvable_new( $self, SYSTEMSOLVABLE );
   }
 #if defined(SWIGRUBY)
   void each()
   {
     Solvable *s;
     Id p;
-    for (p = 1, s = $self->solvables + p; p < $self->nsolvables; p++, s++)
+    /* skip Id 0 and Id 1, see size() above */
+    for (p = 2, s = $self->solvables + p; p < $self->nsolvables; p++, s++)
     {
       if (!s->name)
         continue;
@@ -1510,6 +1509,14 @@ typedef struct _Pool {} Pool;
   /* yeah, thats awkward. But %including solver.h and adding lots
      of %ignores is even worse ... */
 
+  /*
+   * Check and fix inconsistencies of the installed system
+   *
+   * Normally, broken dependencies in the RPM database are silently
+   * ignored in order to prevent clutter in the solution.
+   * Setting fix_system to 'true' will repair broken system
+   * dependencies.
+   */
   int fix_system()
   { return $self->fixsystem; }
 #if defined(SWIGRUBY)
@@ -1534,6 +1541,16 @@ typedef struct _Pool {} Pool;
   void set_allow_downgrade( int i )
   { $self->allowdowngrade = i; }
 
+  /*
+   * On package removal, also remove dependant packages.
+   *
+   * If removal of a package breaks dependencies, the transaction is
+   * usually considered not solvable. The dependencies of installed
+   * packages take precedence over transaction actions.
+   *
+   * Setting allow_uninstall to 'true' will revert the precedence
+   * and remove all dependant packages.
+   */
   int allow_uninstall()
   { return $self->allowuninstall; }
 #if defined(SWIGRUBY)
