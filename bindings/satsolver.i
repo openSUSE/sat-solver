@@ -16,7 +16,6 @@
 %module satsolverx
 %feature("autodoc","1");
 
-
 %{
 
 /*=============================================================*/
@@ -1517,6 +1516,10 @@ typedef struct _Pool {} Pool;
    * Setting fix_system to 'true' will repair broken system
    * dependencies.
    */
+#if defined(SWIGRUBY)
+  %typemap(out) int fix_system
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
   int fix_system()
   { return $self->fixsystem; }
 #if defined(SWIGRUBY)
@@ -1525,6 +1528,10 @@ typedef struct _Pool {} Pool;
   void set_fix_system( int i )
   { $self->fixsystem = i; }
 
+#if defined(SWIGRUBY)
+  %typemap(out) int update_system
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
   int update_system()
   { return $self->updatesystem; }
 #if defined(SWIGRUBY)
@@ -1533,6 +1540,10 @@ typedef struct _Pool {} Pool;
   void set_update_system( int i )
   { $self->updatesystem = i; }
 
+#if defined(SWIGRUBY)
+  %typemap(out) int allow_downgrade
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
   int allow_downgrade()
   { return $self->allowdowngrade; }
 #if defined(SWIGRUBY)
@@ -1551,6 +1562,10 @@ typedef struct _Pool {} Pool;
    * Setting allow_uninstall to 'true' will revert the precedence
    * and remove all dependant packages.
    */
+#if defined(SWIGRUBY)
+  %typemap(out) int allow_uninstall
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
   int allow_uninstall()
   { return $self->allowuninstall; }
 #if defined(SWIGRUBY)
@@ -1559,6 +1574,10 @@ typedef struct _Pool {} Pool;
   void set_allow_uninstall( int i )
   { $self->allowuninstall = i; }
 
+#if defined(SWIGRUBY)
+  %typemap(out) int no_update_provide
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
   int no_update_provide()
   { return $self->noupdateprovide; }
 #if defined(SWIGRUBY)
