@@ -48,6 +48,29 @@
 ./data.libzypp/freshen-tests/exercise-8-test.xml
 ./data.libzypp/bugzilla-tests/bug238284-test.xml
 	patches pretty much unimplemented - very likely not a solver problem
+./data.libzypp/basic-exercises/Bug299486-test.xml
+./data.libzypp/basic-exercises/conflict-1-test.xml
+./data.libzypp/basic-exercises/exercise-15-test.xml
+./data.libzypp/basic-exercises/exercise-16-force-test.xml
+./data.libzypp/basic-exercises/exercise-41-test.xml
+./data.libzypp/basic-exercises/exercise-46-test.xml
+./data.libzypp/basic-exercises/require-3-test.xml
+./data.libzypp/bugzilla-tests/bug208784-test.xml
+./data.libzypp/bugzilla-tests/bug326384-test.xml
+./data.libzypp/bugzilla-tests/bug328081-test.xml
+./data.libzypp/distupgrade-tests/exercise-bug150844-test.xml
+./data.libzypp/patch-tests/parallel-atmos-fail-test.xml
+./data.libzypp/selection-tests/install-simple-test.xml
+./data.libzypp/simple-tests/vendor-test.xml
+./data.libzypp/yast-tests/Bug162887-test.xml
+./data.libzypp/yast-tests/exercise-01simple-6-test.xml
+./data.libzypp/yast-tests/exercise-inconsistent2-test.xml
+./data.libzypp/yast-tests/exercise-inconsistent4-test.xml
+./data.libzypp/yast-tests/exercise-inconsistent6-test.xml
+./data.libzypp/yast-tests/exercise-obscureobsoletes-11-test.xml
+./data.libzypp/yast-tests/kernel1-test.xml
+./data.libzypp/zen-tests/2-test.xml
+
 
 # TO BE IGNORED
 ./data.libzypp/basic-exercises/exercise-43-test.xml
