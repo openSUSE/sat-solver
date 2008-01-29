@@ -96,3 +96,15 @@ IF_VERTICAL
   NUMINFO *
     ID schema
   U8* data
+
+
+
+
+---
+
+key sizes for storage types:
+
+
+KEY_STORAGE_VERTICAL_OFFSET: packed size
+KEY_STORAGE_INCORE: packed size
+KEY_STORAGE_SOLVABLE: unpacked size
