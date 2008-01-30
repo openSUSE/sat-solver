@@ -1378,13 +1378,13 @@ typedef struct _Pool {} Pool;
 	    else if (!solver->allowarchchange
 	             && sp->name == sr->name
 		     && sp->arch != sr->arch
-		     && policy_illegal_archchange(NULL,  pool, sp, sr ) ) {
+		     && policy_illegal_archchange(NULL, sp, sr ) ) {
 	      code = SOLUTION_ALLOW_ARCHCHANGE; /* s1, s2 */
 	    }
 	    else if (!solver->allowvendorchange
 	             && sp->name == sr->name
 		     && sp->vendor != sr->vendor
-		     && policy_illegal_vendorchange( NULL, pool, sp, sr ) ) {
+		     && policy_illegal_vendorchange( NULL, sp, sr ) ) {
 	      n1 = sp->vendor;
 	      n2 = sr->vendor;
 	      code = SOLUTION_ALLOW_VENDORCHANGE;
