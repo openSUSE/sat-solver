@@ -67,7 +67,7 @@ XSolvable *xsolvable_new( Pool *pool, Id id )
   XSolvable *xsolvable = (XSolvable *)malloc( sizeof( XSolvable ));
   xsolvable->pool = pool;
   xsolvable->id = id;
-  
+
   return xsolvable;
 }
 
@@ -104,7 +104,7 @@ Solvable *xsolvable_solvable( XSolvable *xs )
  * Id
  *
  */
- 
+
 static const char *
 my_id2str( Pool *pool, Id id )
 {
@@ -166,7 +166,7 @@ static Id relation_evrid( const Relation *r )
  *
  * Collection of Relations -> Dependency
  */
- 
+
 typedef struct _Dependency {
   int dep;                         /* type of dep, any of DEP_xxx */
   XSolvable *xsolvable;            /* xsolvable this dep belongs to */
@@ -234,7 +234,7 @@ static int dependency_size( const Dependency *dep )
  * A single 'job' item of a Transaction
  *
  */
- 
+
 typedef struct _Action {
   Pool *pool;
   SolverCmd cmd;
@@ -257,7 +257,7 @@ static Action *action_new( Pool *pool, SolverCmd cmd, Id id )
  * A set of Actions to be solved by the Solver
  *
  */
- 
+
 typedef struct _Transaction {
   Pool *pool;
   Queue queue;
@@ -286,7 +286,7 @@ static void transaction_free( Transaction *t )
  * Set of 'job items' needed to solve the Transaction.
  *
  */
- 
+
 #define DEC_INSTALL 1
 #define DEC_REMOVE 2
 #define DEC_UPDATE 3
@@ -341,7 +341,7 @@ static Problem *problem_new( Solver *s, Transaction *t, Id id )
   p->transaction = t;
   p->id = id;
   prule = solver_findproblemrule( s, id );
-  p->reason = solver_problemruleinfo( s, &(t->queue), prule, &(p->relation), &(p->source), &(p->target) ); 
+  p->reason = solver_problemruleinfo( s, &(t->queue), prule, &(p->relation), &(p->source), &(p->target) );
   return p;
 }
 #endif
@@ -356,7 +356,7 @@ static Problem *problem_new( Solver *s, Transaction *t, Id id )
  * one or more Solutions to make the Transaction solvable.
  *
  */
- 
+
 #define SOLUTION_UNKNOWN 0
 #define SOLUTION_NOKEEP_INSTALLED 1
 #define SOLUTION_NOINSTALL_SOLV 2
@@ -440,7 +440,7 @@ pool_find( Pool *pool, char *name, Repo *repo )
  * They are usually used to implement locks.
  *
  */
- 
+
 typedef struct _Covenant {
   Pool *pool;
   SolverCmd cmd;
@@ -579,7 +579,7 @@ typedef struct _Pool {} Pool;
 %{
 /*
   Document-method: Satsolverx::Pool.set_arch
-  
+
   Defines the architecture of the pool. Only Solvables with a compatible
   architecture will be considered.
   Setting the architecture to "i686" is a good choice for most 32bit
@@ -693,7 +693,7 @@ typedef struct _Pool {} Pool;
      */
     return $self->nsolvables - 1 - 1;
   }
-  
+
 #if defined(SWIGRUBY)
   %rename( "installable?" ) installable( XSolvable *s );
   %typemap(out) int installable
@@ -739,7 +739,7 @@ typedef struct _Pool {} Pool;
   /**************************
    * Transaction management
    */
-   
+
   Transaction *create_transaction()
   { return transaction_new( $self ); }
 
@@ -748,7 +748,7 @@ typedef struct _Pool {} Pool;
    */
 
   Solver* create_solver( Repo *installed = NULL )
-  { 
+  {
     pool_createwhatprovides( $self );
     return solver_create( $self, installed );
   }
@@ -873,7 +873,7 @@ typedef struct _Pool {} Pool;
 
   Pool *pool()
   { return $self->pool; }
-  
+
   const char *name()
   {
     Id nameid;
@@ -886,10 +886,10 @@ typedef struct _Pool {} Pool;
     }
     return my_id2str( $self->pool, nameid );
   }
-  
+
   const char *evr()
   { return my_id2str( $self->pool, relation_evrid( $self ) ); }
-  
+
   int op()
   {
     if (ISRELDEP( $self->id )) {
@@ -898,13 +898,13 @@ typedef struct _Pool {} Pool;
     }
     return 0;
   }
-  
+
 #if defined(SWIGRUBY)
   %alias cmp "<=>";
 #endif
   int cmp( const Relation *r )
   { return evrcmp( $self->pool, relation_evrid( $self ), relation_evrid( r ), EVRCMP_COMPARE ); }
-  
+
 #if defined(SWIGRUBY)
   %alias match "=~";
 #endif
@@ -954,7 +954,7 @@ typedef struct _Pool {} Pool;
     *relations = repo_addid_dep( s->repo, *relations, rel->id, pre ? SOLVABLE_PREREQMARKER : 0 );
     return $self;
   }
-  
+
 #if defined(SWIGRUBY)
   /* %rename is rejected by swig for [] */
   %alias get "[]";
@@ -1061,7 +1061,7 @@ typedef struct _Pool {} Pool;
      Transaction */
   ~Action()
   { free( $self ); }
-  
+
   int cmd()
   { return $self->cmd; }
 
@@ -1146,7 +1146,7 @@ typedef struct _Pool {} Pool;
     queue_push( &($self->queue), SOLVER_ERASE_SOLVABLE_NAME );
     queue_push( &($self->queue), str2id( $self->pool, name, 1 ));
   }
-  
+
   /*
    * Install solvable by relation
    * The solver is free to choose any solvable providing the given
@@ -1160,7 +1160,7 @@ typedef struct _Pool {} Pool;
     /* FIXME: check: rel->pool == $self->pool */
     queue_push( &($self->queue), rel->id );
   }
-  
+
   /*
    * Remove solvable by relation
    * The solver is free to choose any solvable providing the given
@@ -1247,10 +1247,10 @@ typedef struct _Pool {} Pool;
   %constant int DEC_REMOVE = 2;
   %constant int DEC_UPDATE = 3;
   %constant int DEC_OBSOLETE = 4;
-  
+
   /* no constructor defined, Decisions are created by accessing
      the Solver result. See 'Solver.each_decision'. */
-     
+
   ~Decision()
   { free( $self ); }
   Pool *pool()
@@ -1285,22 +1285,22 @@ typedef struct _Pool {} Pool;
 
   Solver *solver()
   { return $self->solver; }
-  
+
   Transaction *transaction()
   { return $self->transaction; }
-  
+
   int reason()
   { return $self->reason; }
-  
+
   XSolvable *source()
   { return xsolvable_new( $self->solver->pool, $self->source ); }
-  
+
   Relation *relation()
   { return relation_new( $self->solver->pool, $self->relation ); }
-  
+
   XSolvable *target()
   { return xsolvable_new( $self->solver->pool, $self->target ); }
-  
+
 #if defined(SWIGRUBY)
   void each_solution()
   {
@@ -1315,7 +1315,7 @@ typedef struct _Pool {} Pool;
       Pool *pool = solver->pool;
       element = 0;
       s1 = s2 = n1 = n2 = 0;
-      
+
       while ((element = solver_next_solutionelement( solver, $self->id, solution, element, &p, &rp)) != 0) {
 	if (p == 0) {
 
@@ -1378,13 +1378,13 @@ typedef struct _Pool {} Pool;
 	    else if (!solver->allowarchchange
 	             && sp->name == sr->name
 		     && sp->arch != sr->arch
-		     && policy_illegal_archchange(NULL, sp, sr ) ) {
+		     && policy_illegal_archchange(solver, sp, sr ) ) {
 	      code = SOLUTION_ALLOW_ARCHCHANGE; /* s1, s2 */
 	    }
 	    else if (!solver->allowvendorchange
 	             && sp->name == sr->name
 		     && sp->vendor != sr->vendor
-		     && policy_illegal_vendorchange( NULL, sp, sr ) ) {
+		     && policy_illegal_vendorchange( solver, sp, sr ) ) {
 	      n1 = sp->vendor;
 	      n2 = sr->vendor;
 	      code = SOLUTION_ALLOW_VENDORCHANGE;
@@ -1463,7 +1463,7 @@ typedef struct _Pool {} Pool;
      see 'Solver.include' and 'Solver.excluding' */
   ~Covenant()
   { free( $self ); }
-  
+
   int cmd()
   { return $self->cmd; }
 
@@ -1509,7 +1509,7 @@ typedef struct _Pool {} Pool;
   /**************************
    * Solver policies
    */
-   
+
   /* yeah, thats awkward. But %including solver.h and adding lots
      of %ignores is even worse ... */
 
@@ -1590,12 +1590,12 @@ typedef struct _Pool {} Pool;
 #endif
   void set_no_update_provide( int bflag )
   { $self->noupdateprovide = bflag; }
-  
+
 
   /**************************
    * Covenants
    */
- 
+
   int covenants_count()
   { return $self->covenantq.count >> 1; }
 
@@ -1664,7 +1664,7 @@ typedef struct _Pool {} Pool;
     queue_push( &($self->covenantq), SOLVER_ERASE_SOLVABLE_NAME );
     queue_push( &($self->covenantq), str2id( $self->pool, name, 1 ));
   }
-  
+
   /*
    * Include solvable by relation
    * Including a solvable by relation means that any solvable
@@ -1678,7 +1678,7 @@ typedef struct _Pool {} Pool;
     /* FIXME: check: rel->pool == $self->pool */
     queue_push( &($self->covenantq), rel->id );
   }
-  
+
   /*
    * Exclude solvable by relation
    * Excluding a solvable by relation means that any solvable
@@ -1764,7 +1764,7 @@ typedef struct _Pool {} Pool;
     Id s, r;
     int op;
     Decision *d;
-#if 0   
+#if 0
     if (installed) {
       FOR_REPO_SOLVABLES(installed, p, s) {
 	if ($self->decisionmap[p] >= 0)
