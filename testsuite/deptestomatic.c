@@ -174,6 +174,9 @@ typedef struct _parsedata {
   Repo *system;	// system repo
   Repo *locales;      // where we store locales
 
+  Id *languages;
+  int nlanguages;
+
   Id arch;              // set architecture
 
   int fixsystem;                 /* 0/1, if fix system (?) */
@@ -182,6 +185,7 @@ typedef struct _parsedata {
   int allowuninstall;            /* 0/1, if solver should remove installed package for solution */ 
   int allowvirtualconflicts;     /* 0/1, if conflicts specify package names or package provides */
   int allowarchchange;           /* 0/1, if packages can change architecture */
+  int dosplitprovides;           /* 0/1, if splitprovides should be looked at */
 
   struct stateswitch *swtab[NUMSTATES];
   enum state sbtab[NUMSTATES];
@@ -271,6 +275,13 @@ nscallback(Pool *pool, void *data, Id name, Id evr)
   char dir[PATH_MAX];
   int i;
 
+  if (name == NAMESPACE_LANGUAGE && !ISRELDEP(evr))
+    {
+      for (i = 0; i < pd->nlanguages; i++)
+	if (evr == pd->languages[i])
+	  return 1;
+      return 0;
+    }
   if (name != NAMESPACE_MODALIAS || ISRELDEP(evr))
     return 0;
   if (pd->nmodaliases == -1)
@@ -648,6 +659,7 @@ static void getPackageName( const char **atts, char package[] )
 }
 
 
+#if 0
 static void insertLocale( Parsedata *pd, const char *name)
 {
   Pool *pool = pd->pool;
@@ -685,6 +697,24 @@ static void insertLocale( Parsedata *pd, const char *name)
   queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
   queue_push( &(pd->trials), s - pool->solvables );
 }
+
+#else
+
+static void insertLocale(Parsedata *pd, const char *name)
+{
+  int i;
+  Id id;
+
+  id = str2id(pd->pool, name, 1);
+  for (i = 0; i < pd->nlanguages; i++)
+    if (pd->languages[i] == id)
+      return;
+  pd->languages = realloc(pd->languages, (pd->nlanguages + 1) * sizeof(Id));
+  pd->languages[pd->nlanguages++] = id;
+}
+
+#endif
+
 
 /*----------------------------------------------------------------*/
 
@@ -1134,6 +1164,7 @@ printf("hardware %s\n", dir);
       //pd->fixsystem = 1;
       pd->allowuninstall = 1;
       pd->allowdowngrade = 1;
+      pd->dosplitprovides = 1;
       break;
 
     case STATE_UPGRADE: {
@@ -1212,6 +1243,7 @@ endElement( void *userData, const char *name )
       solv->allowdowngrade = pd->allowdowngrade;
       solv->allowuninstall = pd->allowuninstall;
       solv->allowarchchange = pd->allowarchchange;
+      solv->dosplitprovides = pd->dosplitprovides;
       solv->noupdateprovide = 1;
 
       // Solve !
