@@ -40,6 +40,56 @@ static void rc_printdecisions(Solver *solv, Queue *job);
 
 #define MAXNAMELEN 100
 
+static Pool *decision_data;
+
+/*-----------------------------------------------------------------*/
+
+/*
+ *   sorting queue by name
+ */
+
+static int
+decision_sortcmp(const void *ap, const void *bp)
+{
+  Pool *pool = decision_data;
+  int r;
+  Id a = *(Id *)ap;
+  Id b = *(Id *)bp;
+  r = pool->solvables[a].name - pool->solvables[b].name;
+  if (r)
+    {
+      const char *na, *nb;
+      /* different names. We use real strcmp here so that the result
+       * is not depending on some random solvable order */
+      na = id2str(pool, pool->solvables[a].name);
+      nb = id2str(pool, pool->solvables[b].name);
+      /* bring selections and patterns to the front */
+      if (!strncmp(na, "pattern:", 8))
+	{
+          if (strncmp(nb, "pattern:", 8))
+	    return -1;
+	}
+      else if (!strncmp(nb, "pattern:", 8))
+	{
+          if (strncmp(na, "pattern:", 8))
+	    return 1;
+	}
+      if (!strncmp(na, "selection:", 10))
+	{
+          if (strncmp(nb, "selection:", 10))
+	    return -1;
+	}
+      else if (!strncmp(nb, "selection:", 10))
+	{
+          if (strncmp(na, "selection:", 10))
+	    return 1;
+	}
+      return strcmp(na, nb);
+    }
+  return a - b;
+}
+
+
 static void
 err( const char *msg, ...)
 {
@@ -1415,6 +1465,10 @@ rc_printdecisions(Solver *solv, Queue *job)
     }
 
   /* print solvables to be installed */
+
+  /* sorting */
+  decision_data = solv->pool;
+  qsort(solv->decisionq.elements, solv->decisionq.count, sizeof(Id), decision_sortcmp);  
 
   for (i = 0; i < solv->decisionq.count; i++)
     {
