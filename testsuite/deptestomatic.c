@@ -40,6 +40,7 @@ static void rc_printdecisions(Solver *solv, Queue *job);
 
 #define MAXNAMELEN 100
 
+
 static Pool *decision_data;
 
 /*-----------------------------------------------------------------*/
@@ -55,6 +56,11 @@ decision_sortcmp(const void *ap, const void *bp)
   int r;
   Id a = *(Id *)ap;
   Id b = *(Id *)bp;
+  if (a<0) a = -a;
+  if (b<0) b = -b;
+  if (a == SYSTEMSOLVABLE
+      || b == SYSTEMSOLVABLE)
+      return 0;
   r = pool->solvables[a].name - pool->solvables[b].name;
   if (r)
     {
@@ -78,7 +84,6 @@ decision_sortcmp(const void *ap, const void *bp)
     }
   return a - b;
 }
-
 
 static void
 err( const char *msg, ...)
@@ -1458,7 +1463,7 @@ rc_printdecisions(Solver *solv, Queue *job)
 
   /* sorting */
   decision_data = solv->pool;
-  qsort(solv->decisionq.elements, solv->decisionq.count, sizeof(Id), decision_sortcmp);  
+  qsort(solv->decisionq.elements, solv->decisionq.count, sizeof(Id), decision_sortcmp);
 
   for (i = 0; i < solv->decisionq.count; i++)
     {
