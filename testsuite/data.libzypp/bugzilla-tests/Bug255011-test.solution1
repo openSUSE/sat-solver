@@ -290,7 +290,6 @@
 >!> install krb5-1.4.3-19.11.i586[1]
 >!> install ksh-93r-12.22.i586[1]
 >!> install ksymoops-2.4.11-17.4.i586[1]
->!> install language:en-.noarch
 >!> install latex2html-pngicons-2002.2.1-379.4.noarch[1]
 >!> install ldapcpplib-0.0.4-14.8.i586[1]
 >!> install less-394-14.4.i586[1]

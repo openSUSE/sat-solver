@@ -422,7 +422,7 @@ pool_find( Pool *pool, char *name, Repo *repo )
       queue_push(&plist, i);
   }
 
-  prune_best_version_arch(NULL, pool, &plist);
+  prune_best_arch_name_version(NULL, pool, &plist);
   if (plist.count == 0) {
     return NULL;
   }

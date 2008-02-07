@@ -57,7 +57,7 @@ select_solvable(Solver *solv, Pool *pool, Repo *repo, char *name)
 	queue_push(&plist, i);
     }
 
-  prune_best_version_arch(solv, pool, &plist);
+  prune_best_arch_name_version(solv, pool, &plist);
 
   if (plist.count == 0)
     {
