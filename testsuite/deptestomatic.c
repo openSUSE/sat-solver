@@ -619,15 +619,26 @@ add_repo( Parsedata *pd, const char *name, const char *file )
   strcpy( solvname + l, ".solv" );
 
   if (verbose) fprintf( stdout, "%s:%s -> %s", name, file, solvname );
+  
+  Repo *s = repo_create(pd->pool, name);
   FILE *fp = fopen( solvname, "r" );
   if (!fp)
     {
-      perror( solvname );
-      return NULL;
+	/* try to use the original helix xml file instead*/
+	FILE *fpHelix = fopen( file, "r" );
+	if (!fpHelix)
+	{
+           perror( file );
+           return NULL;
+	}
+	repo_add_helix(s, fpHelix);
+        fclose( fpHelix );	
     }
-  Repo *s = repo_create(pd->pool, name);
-  repo_add_solv(s, fp);
-  fclose( fp );
+  else
+    {  
+      repo_add_solv(s, fp);
+      fclose( fp );
+    } 
   return s;
 }
 
