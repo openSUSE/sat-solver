@@ -11,7 +11,7 @@ class TransactionTest < Test::Unit::TestCase
     assert pool
     pool.arch = "i686"
     repo = pool.add_solv( "../../../testsuite/data.libzypp/basic-exercises/exercise-1-packages.solv" )
-    repo.name = "test"
+    repo.name = "test1"
     
     transaction = SatSolver::Transaction.new( pool )
     assert transaction

@@ -29,7 +29,7 @@ LINK_DIRECTORIES( ${PERL_CORE_DIR} )
 ADD_CUSTOM_COMMAND (
    OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c
    COMMAND ${CMAKE_COMMAND} -E echo_append "Creating wrapper code for Perl ..."
-   COMMAND ${SWIG_EXECUTABLE} -perl -features autodoc -o ${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c -I${CMAKE_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/../satsolver.i
+   COMMAND ${SWIG_EXECUTABLE} -perl -features autodoc -o ${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c ${CMAKE_CURRENT_SOURCE_DIR}/../satsolver.i
    COMMAND ${CMAKE_COMMAND} -E echo "Done."
    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../*.i
@@ -44,9 +44,10 @@ ADD_LIBRARY( satsolverx SHARED ${satsolverx_SRCS} )
 SET_TARGET_PROPERTIES( satsolverx PROPERTIES PREFIX "" )
 ADD_DEPENDENCIES( satsolverx glue )
 
-INCLUDE_DIRECTORIES( ${PERL_CORE_DIR} ${CMAKE_SOURCE_DIR}/tools )
+INCLUDE_DIRECTORIES( ${PERL_CORE_DIR} ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/applayer ${CMAKE_SOURCE_DIR}/tools )
 
 TARGET_LINK_LIBRARIES( satsolverx satsolver )
+TARGET_LINK_LIBRARIES( satsolverx appsatsolver )
 TARGET_LINK_LIBRARIES( satsolverx perl )
 TARGET_LINK_LIBRARIES( satsolverx ${DB43_LIBRARY} )
 

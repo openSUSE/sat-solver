@@ -48,12 +48,11 @@ class DecisionTest < Test::Unit::TestCase
     
     solv2 = repo.create_solvable( 'B', '2.0-0' )
     assert solv2
-    
+
     solv3 = repo.create_solvable( 'CC', '3.3-0' )
     solv3.requires << SatSolver::Relation.new( pool, "A", SatSolver::REL_GT, "0.0-0" )
     repo.create_solvable( 'DD', '4.4-0' )
 
-    
     transaction = pool.create_transaction
     transaction.install( solv3 )
     transaction.remove( "D" )

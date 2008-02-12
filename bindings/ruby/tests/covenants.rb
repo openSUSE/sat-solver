@@ -15,6 +15,9 @@ class CovenantTest < Test::Unit::TestCase
     solver = pool.create_solver
 
     solver.include( "foo" )
+      puts "Hi"
+      puts "#{repo[0]}"
+      puts "Ho"
     solver.include( repo[0] )
     solver.include( SatSolver::Relation.new( pool, "foo", SatSolver::REL_EQ, "42-7" ) )
     solver.exclude( "bar" )
