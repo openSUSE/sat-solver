@@ -12,7 +12,7 @@ ADD_LIBRARY(appsatsolver STATIC ${libappsatsolver_SRCS})
 SET(libappsatsolver_HEADERS action.h applayer.h covenant.h decision.h dependency.h
       problem.h relation.h solution.h transaction.h xsolvable.h)
 
-SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC" )
+SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -Wall -Werror" )
 
 INSTALL(  FILES ${libappsatsolver_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/satsolver" )
 INSTALL(TARGETS appsatsolver LIBRARY DESTINATION ${LIB_INSTALL_DIR} ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
