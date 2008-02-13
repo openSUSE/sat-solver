@@ -8,7 +8,7 @@
 #ifndef SATSOLVER_RELATION_H
 #define SATSOLVER_RELATION_H
 
-#include "pool.h"
+#include <pool.h>
 
 /************************************************
  * Relation
@@ -24,6 +24,7 @@ typedef struct _Relation {
 
 Relation *relation_new( Pool *pool, Id id );
 Relation *relation_create( Pool *pool, const char *name, int op, const char *evr );
+void relation_free( Relation *r );
 Id relation_evrid( const Relation *r );
 
 #endif  /* SATSOLVER_RELATION_H */

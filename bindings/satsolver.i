@@ -89,7 +89,7 @@ solver_problems_iterate_callback( const Problem *p )
 }
 
 static int
-solver_xsolvables_iterate_callback( const XSolvable *xs )
+generic_xsolvables_iterate_callback( const XSolvable *xs )
 {
 #if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
@@ -321,10 +321,12 @@ typedef struct _Pool {} Pool;
 
   Relation *create_relation( const char *name, int op = REL_NONE, const char *evr = NULL )
   {
-    if (!evr)
-      SWIG_exception( SWIG_NullReferenceError, "REL_NONE operator with NULL evr" );
+    if ((op =! REL_NONE) && !evr)
+      SWIG_exception( SWIG_NullReferenceError, "Relation operator with NULL evr" );
     return relation_create( $self, name, op, evr );
+#if defined(SWIGPYTHON) || defined(SWIGPERL)
     fail:
+#endif
     return NULL;
   }
 
@@ -335,12 +337,7 @@ typedef struct _Pool {} Pool;
   /* number of solvables in pool
    */
   int size()
-  { /* decrease by one since Id 0 is reserved
-     * decrease by one since Id 1 is the system solvable and not
-     * accessible to the outside
-     */
-    return $self->nsolvables - 1 - 1;
-  }
+  { return pool_size( $self ); }
 
 #if defined(SWIGRUBY)
   %rename( "installable?" ) installable( XSolvable *s );
@@ -363,17 +360,7 @@ typedef struct _Pool {} Pool;
 
 #if defined(SWIGRUBY)
   void each()
-  {
-    Solvable *s;
-    Id p;
-    /* skip Id 0 and Id 1, see size() above */
-    for (p = 2, s = $self->solvables + p; p < $self->nsolvables; p++, s++)
-    {
-      if (!s->name)
-        continue;
-      rb_yield(SWIG_NewPointerObj((void*) xsolvable_new( $self, p ), SWIGTYPE_p__Solvable, 0));
-    }
-  }
+  { pool_xsolvables_iterate( $self, generic_xsolvables_iterate_callback ); }
 #endif
 
   XSolvable *
@@ -1202,13 +1189,13 @@ typedef struct _Pool {} Pool;
   { return solver_problems_iterate( $self, t, solver_problems_iterate_callback ); }
 
   void each_to_install()
-  { return solver_installs_iterate( $self, solver_xsolvables_iterate_callback ); }
+  { return solver_installs_iterate( $self, generic_xsolvables_iterate_callback ); }
 
   void each_to_remove()
-  { return solver_removals_iterate( $self, solver_xsolvables_iterate_callback ); }
+  { return solver_removals_iterate( $self, generic_xsolvables_iterate_callback ); }
 
   void each_suggested()
-  { return solver_suggestions_iterate( $self, solver_xsolvables_iterate_callback); }
+  { return solver_suggestions_iterate( $self, generic_xsolvables_iterate_callback); }
 
 #if defined(SWIGPERL)
     SV* getInstallList()

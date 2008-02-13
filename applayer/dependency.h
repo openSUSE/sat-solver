@@ -35,6 +35,7 @@ typedef struct _Dependency {
 } Dependency;
 
 Dependency *dependency_new( XSolvable *xsolvable, int dep );
+void dependency_free( Dependency *dep );
 
 /* get pointer to offset for dependency */
 Offset *dependency_relations( const Dependency *dep );

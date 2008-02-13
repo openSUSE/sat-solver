@@ -39,6 +39,8 @@ ADD_CUSTOM_TARGET( glue
    DEPENDS ${SWIG_OUTPUT}
 )
 
+SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall" )
+
 SET(satsolverx_SRCS "${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c" "${CMAKE_SOURCE_DIR}/tools/repo_rpmdb.c" )
 ADD_LIBRARY( satsolverx SHARED ${satsolverx_SRCS} )
 SET_TARGET_PROPERTIES( satsolverx PROPERTIES PREFIX "" )
