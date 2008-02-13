@@ -34,6 +34,18 @@ transaction_free( Transaction *t )
 }
 
 
+/*
+ * number of actions in transaction
+ * every two queue elements make one action
+ */
+
+int
+transaction_size( Transaction *t )
+{
+  return t->queue.count >> 1;
+}
+
+
 void
 transaction_install_xsolvable( Transaction *t, XSolvable *xs )
 {
@@ -98,4 +110,18 @@ transaction_action_get( Transaction *t, int i )
   cmd = t->queue.elements[i];
   id = t->queue.elements[i+1];
   return action_new( t->pool, cmd, id );
+}
+
+
+void
+transaction_actions_iterate( Transaction *t, int (*callback)( const Action *a))
+{
+  int i;
+  for (i = 0; i < t->queue.count-1; )
+    {
+      int cmd = t->queue.elements[i++];
+      Id id = t->queue.elements[i++];
+      if (callback( action_new( t->pool, cmd, id ) ) )
+	break;
+    }
 }

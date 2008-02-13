@@ -33,6 +33,9 @@ void transaction_install_name( Transaction *t, const char *name );
 void transaction_remove_name( Transaction *t, const char *name );
 void transaction_install_relation( Transaction *t, const Relation *rel );
 void transaction_remove_relation( Transaction *t, const Relation *rel );
+int transaction_size( Transaction *t );
 Action *transaction_action_get( Transaction *t, int i );
+
+void transaction_actions_iterate( Transaction *t, int (*callback)( const Action *a));
 
 #endif  /* SATSOLVER_TRANSACTION_H */

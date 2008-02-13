@@ -196,3 +196,18 @@ solver_suggestions_iterate( Solver *solver, int (*callback)( const XSolvable *xs
 	break;
     }
 }
+
+
+void
+repo_xsolvables_iterate( Repo *repo, int (*callback)( const XSolvable *xs ) )
+{
+  Solvable *s;
+  Id p;
+  for (p = 0, s = repo->pool->solvables + repo->start; p < repo->nsolvables; p++, s++)
+    {
+      if (!s)
+        continue;
+      if (callback( xsolvable_new( repo->pool, repo->start + p ) ) )
+	break;
+    }
+}

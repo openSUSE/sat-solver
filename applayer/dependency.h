@@ -44,5 +44,6 @@ int dependency_size( const Dependency *dep );
 
 void dependency_relation_add( Dependency *dep, Relation *rel, int pre );
 Relation *dependency_relation_get( Dependency *dep, int i );
+void dependency_relations_iterate( Dependency *dep, int (*callback)(const Relation *rel));
 
 #endif  /* SATSOLVER_DEPENDENCY_H */

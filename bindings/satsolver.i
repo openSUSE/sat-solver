@@ -98,6 +98,26 @@ generic_xsolvables_iterate_callback( const XSolvable *xs )
   return 0;
 }
 
+static int
+dependency_relations_iterate_callback( const Relation *rel )
+{
+#if defined(SWIGRUBY)
+  /* FIXME: how to pass 'break' back to the caller ? */
+  rb_yield( SWIG_NewPointerObj((void*) rel, SWIGTYPE_p__Relation, 0) );
+#endif
+  return 0;
+}
+
+static int
+transaction_actions_iterate_callback( const Action *a )
+{
+#if defined(SWIGRUBY)
+  /* FIXME: how to pass 'break' back to the caller ? */
+  rb_yield(SWIG_NewPointerObj((void*) a, SWIGTYPE_p__Action, 0));
+#endif
+  return 0;
+}
+
 %}
 
 /*=============================================================*/
@@ -358,10 +378,8 @@ typedef struct _Pool {} Pool;
   XSolvable *get( int i )
   { return xsolvable_get( $self, i, NULL );  }
 
-#if defined(SWIGRUBY)
   void each()
   { pool_xsolvables_iterate( $self, generic_xsolvables_iterate_callback ); }
-#endif
 
   XSolvable *
   find( char *name, Repo *repo = NULL )
@@ -438,19 +456,8 @@ typedef struct _Pool {} Pool;
   XSolvable *create_solvable( const char *name, const char *evr, const char *arch = NULL )
   { return xsolvable_create( $self, name, evr, arch ); }
 
-#if defined(SWIGRUBY)
   void each()
-  {
-    Solvable *s;
-    Id p;
-    for (p = 0, s = $self->pool->solvables + $self->start; p < $self->nsolvables; p++, s++)
-    {
-      if (!s)
-        continue;
-      rb_yield( SWIG_NewPointerObj((void*) xsolvable_new( $self->pool, $self->start + p ), SWIGTYPE_p__Solvable, 0) );
-    }
-  }
-#endif
+  { repo_xsolvables_iterate( $self, generic_xsolvables_iterate_callback ); }
 
 #if defined(SWIGRUBY)
   /* %rename is rejected by swig for [] */
@@ -586,18 +593,8 @@ typedef struct _Pool {} Pool;
   Relation *get( int i )
   { return dependency_relation_get( $self, i ); }
 
-#if defined(SWIGRUBY)
   void each()
-  {
-    Solvable *s = xsolvable_solvable( $self->xsolvable );
-    Offset *relations = dependency_relations( $self );
-    Id *ids = s->repo->idarraydata + *relations;
-    while (*ids) {
-      rb_yield( SWIG_NewPointerObj((void*) relation_new( s->repo->pool, *ids ), SWIGTYPE_p__Relation, 0) );
-      ++ids;
-    }
-  }
-#endif
+  { dependency_relations_iterate( $self, dependency_relations_iterate_callback ); }
 
 }
 
@@ -759,7 +756,7 @@ typedef struct _Pool {} Pool;
    * Return number of actions of this transaction
    */
   int size()
-  { return $self->queue.count >> 1; }
+  { return transaction_size( $self ); }
 
 #if defined(SWIGRUBY)
   %rename("clear!") clear();
@@ -783,20 +780,11 @@ typedef struct _Pool {} Pool;
   Action *get( unsigned int i )
   { return transaction_action_get( $self, i ); }
 
-#if defined(SWIGRUBY)
   /*
    * Iterate over each Action of the Transaction.
    */
   void each()
-  {
-    int i;
-    for (i = 0; i < $self->queue.count-1; ) {
-      int cmd = $self->queue.elements[i++];
-      Id id = $self->queue.elements[i++];
-      rb_yield(SWIG_NewPointerObj((void*) action_new( $self->pool, cmd, id ), SWIGTYPE_p__Action, 0));
-    }
-  }
-#endif
+  { transaction_actions_iterate( $self, transaction_actions_iterate_callback ); }
 }
 
 /*-------------------------------------------------------------*/
