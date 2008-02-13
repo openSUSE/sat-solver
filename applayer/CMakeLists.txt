@@ -1,3 +1,8 @@
+#
+# CMakeLists.txt for sat-solver/applayer
+#
+
+ADD_SUBDIRECTORY(tests)
 
 SET(libappsatsolver_SRCS action.c applayer.c covenant.c decision.c dependency.c
       problem.c relation.c solution.c transaction.c xsolvable.c)
