@@ -319,9 +319,9 @@ typedef struct _Pool {} Pool;
    * Relation management
    */
 
-  Relation *create_relation( const char *name, int op = REL_NONE, const char *evr = NULL )
+  Relation *create_relation( const char *name, int op = 0, const char *evr = NULL )
   {
-    if ((op =! REL_NONE) && !evr)
+    if (op && !evr)
       SWIG_exception( SWIG_NullReferenceError, "Relation operator with NULL evr" );
     return relation_create( $self, name, op, evr );
 #if defined(SWIGPYTHON) || defined(SWIGPERL)
@@ -475,20 +475,20 @@ typedef struct _Pool {} Pool;
 
 %extend Relation {
 /* operation */
-#define REL_NONE 0
-#define REL_GT 1
-#define REL_EQ 2
-#define REL_GE 3
-#define REL_LT 4
-#define REL_NE 5
-#define REL_LE 6
-#define REL_AND 16
-#define REL_OR 17
-#define REL_WITH 18
-#define REL_NAMESPACE 18
+  %constant int REL_NONE = 0;
+  %constant int REL_GT = REL_GT;
+  %constant int REL_EQ = REL_EQ;
+  %constant int REL_GE = (REL_GT|REL_EQ);
+  %constant int REL_LT = REL_LT;
+  %constant int REL_NE = (REL_LT|REL_GT);
+  %constant int REL_LE = (REL_LT|REL_EQ);
+  %constant int REL_AND = REL_AND;
+  %constant int REL_OR = REL_OR;
+  %constant int REL_WITH = REL_WITH;
+  %constant int REL_NAMESPACE = REL_NAMESPACE;
 
   %feature("autodoc", "1");
-  Relation( Pool *pool, const char *name, int op = REL_NONE, const char *evr = NULL )
+  Relation( Pool *pool, const char *name, int op = 0, const char *evr = NULL )
   { return relation_create( pool, name, op, evr ); }
   ~Relation()
   { relation_free( $self ); }
@@ -542,15 +542,15 @@ typedef struct _Pool {} Pool;
 /* Dependency */
 
 %extend Dependency {
-#define DEP_PRV 1
-#define DEP_REQ 2
-#define DEP_CON 3
-#define DEP_OBS 4
-#define DEP_REC 5
-#define DEP_SUG 6
-#define DEP_SUP 7
-#define DEP_ENH 8
-#define DEP_FRE 9
+  %constant int DEP_PRV = DEP_PRV;
+  %constant int DEP_REQ = DEP_REQ;
+  %constant int DEP_CON = DEP_CON;
+  %constant int DEP_OBS = DEP_OBS;
+  %constant int DEP_REC = DEP_REC;
+  %constant int DEP_SUG = DEP_SUG;
+  %constant int DEP_SUP = DEP_SUP;
+  %constant int DEP_ENH = DEP_ENH;
+  %constant int DEP_FRE = DEP_FRE;
 
   Dependency( XSolvable *xsolvable, int dep )
   { return dependency_new( xsolvable, dep ); }
