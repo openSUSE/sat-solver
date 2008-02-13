@@ -28,6 +28,7 @@
 
 #include "solver.h"
 #include "repo_solv.h"
+#include "repo_helix.h"
 #include "poolarch.h"
 #include "evr.h"
 
