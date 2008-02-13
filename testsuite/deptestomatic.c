@@ -1,4 +1,5 @@
-/*
+/*  -*- mode: C; c-file-style: "gnu"; fill-column: 78 -*-
+ *
  * Copyright (c) 2007, Novell Inc.
  *
  * This program is licensed under the BSD license, read LICENSE.BSD
@@ -602,6 +603,7 @@ add_repo( Parsedata *pd, const char *name, const char *file )
       return NULL;
     }
 
+  int gzip = 0;
   const char *ptr = file + l - 1;
   while (*ptr)
     {
@@ -609,10 +611,13 @@ add_repo( Parsedata *pd, const char *name, const char *file )
 	break;
       if (*ptr == '.')
 	{
-	  if (!strncmp( ptr, ".xml", 4 )) {
-	    l = ptr - file;
-	    break;
-	  }
+	  if (!strncmp( ptr, ".gz", 3))
+	    gzip = 1;
+	  if (!strncmp( ptr, ".xml", 4 )) 
+	    {
+	      l = ptr - file;
+	      break;
+	    }
 	}
       --ptr;
     }
@@ -625,15 +630,20 @@ add_repo( Parsedata *pd, const char *name, const char *file )
   FILE *fp = fopen( solvname, "r" );
   if (!fp)
     {
-	/* try to use the original helix xml file instead*/
-	FILE *fpHelix = fopen( file, "r" );
-	if (!fpHelix)
+      char command[PATH_MAX];
+      if (gzip)
+	snprintf(command, PATH_MAX, "zcat %s", file);
+      else
+	snprintf(command, PATH_MAX, "cat %s", file);
+      /* try to use the original helix xml file instead*/
+      FILE *fpHelix = popen( command, "r" );
+      if (!fpHelix)
 	{
-           perror( file );
-           return NULL;
+	  perror( file );
+	  return NULL;
 	}
-	repo_add_helix(s, fpHelix);
-        fclose( fpHelix );	
+      repo_add_helix(s, fpHelix);
+      pclose( fpHelix );
     }
   else
     {  
