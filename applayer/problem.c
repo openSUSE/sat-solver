@@ -16,6 +16,8 @@
  */
 
 #include <stdlib.h>
+#include <policy.h>
+
 #include "problem.h"
 #include "evr.h"
 

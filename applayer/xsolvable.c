@@ -18,6 +18,8 @@
  */
 
 #include <stdlib.h>
+#include <policy.h>
+
 #include "xsolvable.h"
 
 
