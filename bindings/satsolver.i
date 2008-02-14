@@ -59,6 +59,18 @@
 #include "covenant.h"
 
 
+static FILE *
+poolloadcallback( Pool *pool, Repodata *data, void *vdata )
+{
+  FILE *fp = 0;
+  if (data->location) {
+    fp = fopen( data->location, "r" );
+    fprintf( stderr, "*** reading %s as %p\n", data->location, fp );
+  }
+  return fp;
+}
+
+					
 static int
 problem_solutions_iterate_callback( const Solution *s )
 {
@@ -118,6 +130,80 @@ transaction_actions_iterate_callback( const Action *a )
 #endif
   return 0;
 }
+
+
+#if defined(SWIGRUBY)
+static int
+xsolvable_attr_lookup_callback( void *cbdata, Solvable *s, Repodata *data, Repokey *key, KeyValue *kv )
+{
+  VALUE *result = (VALUE *)cbdata;
+  switch( key->type )
+    {
+      case TYPE_VOID: *result = Qtrue; break;
+      case TYPE_ID:
+        if (data->localpool)
+	  *result = rb_str_new2( stringpool_id2str( &data->spool, kv->id ) );
+	else
+	  *result = rb_str_new2( id2str( data->repo->pool, kv->id ) );
+      break;
+      case TYPE_IDARRAY:
+        *result = Qnil; /*FIXME*/
+      break;
+      case TYPE_STR:
+        *result = rb_str_new2( kv->str );
+      break;
+      case TYPE_REL_IDARRAY:
+        *result = Qnil; /*FIXME*/
+      break;
+
+      case TYPE_ATTR_INT:
+        *result = Qnil; /*FIXME*/
+      break;
+      case TYPE_ATTR_CHUNK:
+        *result = Qnil; /*FIXME*/
+      break;
+      case TYPE_ATTR_STRING:
+        *result = Qnil; /*FIXME*/
+      break;
+      case TYPE_ATTR_INTLIST:
+        *result = Qnil; /*FIXME*/
+      break;
+      case TYPE_ATTR_LOCALIDS:
+        *result = Qnil; /*FIXME*/
+      break;
+
+      case TYPE_COUNT_NAMED:
+        *result = Qnil; /*FIXME*/
+      break;
+      case TYPE_COUNTED:
+        *result = Qnil; /*FIXME*/
+      break;
+
+      case TYPE_IDVALUEARRAY:
+        *result = Qnil; /*FIXME*/
+      break;
+
+      case TYPE_DIR:
+        *result = Qnil; /*FIXME*/
+      break;
+      case TYPE_DIRNUMNUMARRAY:
+        *result = Qnil; /*FIXME*/
+      break;
+      case TYPE_DIRSTRARRAY:
+        *result = Qnil; /*FIXME*/
+      break;
+
+      case TYPE_U32:
+      /*FALLTHRU*/
+      case TYPE_CONSTANT:
+      /*FALLTHRU*/
+      case TYPE_NUM:
+        *result = INT2FIX( kv->num );
+      break;
+    }
+  return 1;
+}
+#endif
 
 %}
 
@@ -216,14 +302,12 @@ typedef struct _Solution {} Solution;
 %rename(Covenant) _Covenant;
 typedef struct _Covenant {} Covenant;
 
-/*-------------------------------------------------------------*/
-/* Pool */
-
-%newobject pool_create;
-%delobject pool_free;
-
+%nodefault _Pool;
 typedef struct _Pool {} Pool;
 %rename(Pool) _Pool;
+
+/*-------------------------------------------------------------*/
+/* Pool */
 
 %{
 /*
@@ -238,12 +322,15 @@ typedef struct _Pool {} Pool;
 %extend Pool {
 
   /*
-   * Pool management
+   * Pool creation
    */
   Pool( const char *arch = NULL )
   {
     Pool *pool = pool_create();
+  
     if (arch) pool_setarch( pool, arch );
+    pool_setloadcallback( pool, poolloadcallback, 0 );
+
     return pool;
   }
 
@@ -575,7 +662,7 @@ typedef struct _Pool {} Pool;
     VALUE type = Qnil;
     switch( key->type )
     {
-      case TYPE_VOID: type = rb_cNilClass; break;
+      case TYPE_VOID: type = rb_cTrueClass; break;
       case TYPE_ID: type = rb_cString; break;
       case TYPE_IDARRAY: type = rb_cArray; break;
       case TYPE_STR: type = rb_cString; break;
@@ -800,6 +887,21 @@ typedef struct _Pool {} Pool;
   { return dependency_new( $self, DEP_ENH ); }
   Dependency *freshens()
   { return dependency_new( $self, DEP_FRE ); }
+  
+  /*
+   * Attributes (from Repodata / Repokey)
+   */
+#if defined(SWIGRUBY)
+  VALUE attr( const char *keyname )
+  { 
+    Id key = str2id( $self->pool, keyname, 0);
+    Solvable *s = xsolvable_solvable($self);
+    VALUE result;
+    if (repo_lookup( s, key, xsolvable_attr_lookup_callback, &result ))
+      return result;
+    return Qnil;
+  }
+#endif
 }
 
 /*-------------------------------------------------------------*/
@@ -813,8 +915,8 @@ typedef struct _Pool {} Pool;
   %constant int INSTALL_SOLVABLE_PROVIDES = SOLVER_INSTALL_SOLVABLE_PROVIDES;
   %constant int REMOVE_SOLVABLE_PROVIDES = SOLVER_ERASE_SOLVABLE_PROVIDES;
 
-  /* no constructor defined, Actions are created by accessing a
-     Transaction */
+  /* no constructor defined, Actions are created by accessing
+     a Transaction */
   ~Action()
   { action_free( $self ); }
 

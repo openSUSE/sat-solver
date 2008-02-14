@@ -33,5 +33,12 @@ class RepodataTest < Test::Unit::TestCase
     repodata.each_key { |k|
       puts "  Key '#{k.name}' is #{k.type} with #{k.size} bytes"
     }
+    
+    i = 0
+    repo.each { |s|
+      puts "Solvable #{s}: group #{s.group}, time #{s.time}, downloadsize #{s.downloadsize}, installsize #{s.installsize}"
+      i += 1
+      break if i == 10
+    }
   end
 end
