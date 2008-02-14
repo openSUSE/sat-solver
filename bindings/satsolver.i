@@ -4,7 +4,7 @@
  * SatSolver is the module namespace for sat-solver bindings.
  *
  * sat-solver is a dependency solver for rpm-style dependencies
- * based on a Satifyability engine.
+ * based on a Satisfyability engine.
  *
  *
  * It might make a lot of sense to make Pool* a singular within
@@ -48,6 +48,7 @@
 /* satsolver application layer includes */
 #include "applayer.h"
 #include "xsolvable.h"
+#include "xrepokey.h"
 #include "relation.h"
 #include "dependency.h"
 #include "action.h"
@@ -159,13 +160,25 @@ transaction_actions_iterate_callback( const Action *a )
 typedef int Id;
 typedef unsigned int Offset;
 
+/*
+ * just define empty structs to expose the type to SWIG
+ */
+
 %nodefault _Repo;
 %rename(Repo) _Repo;
 typedef struct _Repo {} Repo;
 
+%nodefault _Repodata;
+%rename(Repodata) _Repodata;
+typedef struct _Repodata {} Repodata;
+
+%nodefault _Repokey;
+%rename(Repokey) _Repokey;
+typedef struct _Repokey {} XRepokey; /* expose XRepokey as 'Repokey' */
+
 %nodefault _Solvable;
 %rename(Solvable) _Solvable;
-typedef struct _Solvable {} XSolvable;
+typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
 
 %nodefault _Relation;
 %rename(Relation) _Relation;
@@ -464,7 +477,7 @@ typedef struct _Pool {} Pool;
   %alias get "[]";
 #endif
   /*
-   * get solvable by index
+   * get xsolvable by index
    */
   XSolvable *get( int i )
   { return xsolvable_get( $self->pool, i, $self ); }
@@ -475,6 +488,97 @@ typedef struct _Pool {} Pool;
   XSolvable *find( char *name )
   { return xsolvable_find( $self->pool, name, $self ); }
 
+  /* return number of attached Repodata(s) */
+  int datasize()
+  { return $self->nrepodata; }
+
+  /*
+   * get Repodata by index
+   */
+  Repodata *data( int i )
+  {
+    if (i >= 0 && i < $self->nrepodata)
+      return $self->repodata + i;
+    return NULL;
+  }
+
+#if defined(SWIGRUBY)
+  /*
+   * Iterate over each Repodata
+   */
+  void each_data()
+  {
+    int i;
+    for (i = 0; i < $self->nrepodata; ++i ) {
+      rb_yield( SWIG_NewPointerObj((void*) $self->repodata + i, SWIGTYPE_p__Repodata, 0) );
+    }
+  }
+#endif
+}
+
+/*-------------------------------------------------------------*/
+/* Repodata */
+
+%extend Repodata {
+  /* no constructor, Repodata is embedded in Repo */
+  
+  /* number of keys in this Repodata */
+  int keysize()
+  { return $self->nkeys-1; } /* key 0 is reserved */
+
+  /* (File) location of this Repodata, nil if embedded */
+  const char *location()
+  { return $self->location; }
+
+  /* access Repokey by index */
+  XRepokey *key( int i )
+  {
+    if (i >= 0 && i < $self->nkeys-1)
+      return xrepokey_new( $self, i+1 ); /* key 0 is reserved */
+    return NULL;
+  }
+  
+#if defined(SWIGRUBY)
+  /*
+   * Iterate over each key
+   */
+  void each_key()
+  {
+    int i;
+    for (i = 1; i < $self->nkeys; ++i ) {
+      rb_yield( SWIG_NewPointerObj((void*) xrepokey_new( $self, i ), SWIGTYPE_p__Repokey, 0) );
+    }
+  }
+#endif
+}
+
+/*-------------------------------------------------------------*/
+/* XRepokey */
+
+%extend XRepokey {
+  /* no explicit constructor, Repokey is embedded in Repodata */
+
+  ~XRepokey()
+  { xrepokey_free( $self ); }
+  
+  /* name of key */
+  const char *name()
+  {
+    Repokey *key = xrepokey_repokey( $self );
+    return my_id2str( $self->repodata->repo->pool, key->name );
+  }
+  /* type of key */
+  int type()
+  {
+    Repokey *key = xrepokey_repokey( $self );
+    return key->type;
+  }
+  /* size of key */
+  int size()
+  {
+    Repokey *key = xrepokey_repokey( $self );
+    return key->size;
+  }
 }
 
 /*-------------------------------------------------------------*/
@@ -611,7 +715,9 @@ typedef struct _Pool {} Pool;
 	    
   XSolvable( Repo *repo, const char *name, const char *evr, const char *arch = NULL )
   { return xsolvable_create( repo, name, evr, arch ); }
-
+  ~XSolvable()
+  { return xsolvable_free( $self ); }
+  
   Repo *repo()
   { return xsolvable_solvable($self)->repo; }
 
