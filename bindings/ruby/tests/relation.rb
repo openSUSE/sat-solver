@@ -48,8 +48,7 @@ class SolvableTest < Test::Unit::TestCase
   end
   
   def test_relation
-    rel = SatSolver::Relation.new( @pool, "A", SatSolver::REL_EQ, "1.0-0" )
-    # equivalent: @pool.create_relation( "A", SatSolver::REL_EQ, "1.0-0" )
+    rel = @pool.create_relation( "A", SatSolver::REL_EQ, "1.0-0" )
     assert rel
     puts "Relation: #{rel}"
     @repo.each { |s|
