@@ -11,6 +11,9 @@ all:
 
 	ruby solvable.rb
 	ruby relation.rb
+	ruby repodata.rb
+
+	ruby providers.rb
 
 	ruby transaction.rb
 	ruby covenants.rb

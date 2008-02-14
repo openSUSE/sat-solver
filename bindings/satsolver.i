@@ -451,6 +451,31 @@ typedef struct _Pool {} Pool;
   }
 
   /*
+   * iterate over providers of relation
+   */
+  void each_provider( Relation *rel )
+  {
+    Id p, *pp;
+    Pool *pool = $self;
+    if (!$self->whatprovides)
+      pool_createwhatprovides( $self );
+
+    FOR_PROVIDES(p, pp, rel->id) 
+      generic_xsolvables_iterate_callback( xsolvable_new( $self, p ) );
+  }
+
+  void each_provider( const char *name )
+  {
+    Id p, *pp;
+    Pool *pool = $self;
+    if (!$self->whatprovides)
+      pool_createwhatprovides( $self );
+	  
+    FOR_PROVIDES(p, pp, str2id( $self, name, 0) ) 
+      generic_xsolvables_iterate_callback( xsolvable_new( $self, p ) );
+  }
+
+  /*
    * Solvable management
    */
 
