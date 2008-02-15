@@ -13,6 +13,8 @@
 #include <solvable.h>
 #include <solver.h>
 
+#include "kinds.h"
+
 /************************************************
  * XSolvable - eXternally visible Solvable
  *
@@ -28,6 +30,7 @@
 typedef struct _xsolvable {
   Pool *pool;
   Id id;
+  unsigned int kind;           /* one of KIND_xxx */
 } XSolvable;
 
 XSolvable *xsolvable_new( Pool *pool, Id id );
