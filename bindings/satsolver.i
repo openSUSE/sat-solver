@@ -1256,14 +1256,6 @@ typedef struct _Pool {} Pool;
   void set_allow_downgrade( int bflag )
   { $self->allowdowngrade = bflag; }
 
-  solvable_kind limit_to_kind()
-  { return $self->limittokind; }
-#if defined(SWIGRUBY)
-  %rename( "limit_to_kind=" ) set_limit_to_kind( solvable_kind kind );
-#endif
-  void set_limit_to_kind( solvable_kind kind )
-  { $self->limittokind = kind; }
-
   /*
    * On package removal, also remove dependant packages.
    *
