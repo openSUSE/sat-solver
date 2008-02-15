@@ -854,14 +854,13 @@ typedef struct _Pool {} Pool;
 /* Solvable */
 
 %extend XSolvable {
-#if 0
+
   %constant int KIND_PACKAGE  = KIND_PACKAGE;
   %constant int KIND_PRODUCT  = KIND_PRODUCT;
   %constant int KIND_PATCH    = KIND_PATCH;
   %constant int KIND_SOURCE   = KIND_SOURCE;
   %constant int KIND_PATTERN  = KIND_PATTERN;
   %constant int KIND_NOSOURCE = KIND_PATTERN;
-#endif
 	    
   XSolvable( Repo *repo, const char *name, const char *evr, const char *arch = NULL )
   { return xsolvable_create( repo, name, evr, arch ); }
