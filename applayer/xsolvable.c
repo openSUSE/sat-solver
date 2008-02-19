@@ -207,6 +207,8 @@ repo_xsolvables_iterate( Repo *repo, int (*callback)( const XSolvable *xs ) )
     {
       if (!s)
         continue;
+      if (!s->name)
+        continue;
       if (callback( xsolvable_new( repo->pool, repo->start + p ) ) )
 	break;
     }
