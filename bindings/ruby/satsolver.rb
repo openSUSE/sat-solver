@@ -7,9 +7,10 @@ module Satsolverx
 #     end
 #  end
   class Solvable
-    def Solvable.method_missing(meth, *args)
-      puts "Method missing"
-      puts "Solvable #{meth.id2name}"
+    def method_missing(meth, *args)
+      attr meth.id2name
+#      puts "Method missing"
+#      puts "Solvable #{meth.id2name}"
     end
   end
 end
