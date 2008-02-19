@@ -130,16 +130,25 @@ xsolvable_get( Pool *pool, int i, const Repo *repo )
 }
 
 
+/*
+ * Iterate over all installs
+ */
+
 void
-solver_installs_iterate( Solver *solver, int (*callback)( const XSolvable *xs ) )
+solver_installs_iterate( Solver *solver, int all, int (*callback)( const XSolvable *xs ) )
 {
   Id p;
   Solvable *s;
   int i;
+  Id *obsoletesmap;
+  Repo *installed = solver->installed; /* repo of installed solvables */
 
   if (!callback)
     return;
 
+  if (!all)
+    obsoletesmap = create_decisions_obsoletesmap( solver );
+  
   for ( i = 0; i < solver->decisionq.count; i++)
     {
       p = solver->decisionq.elements[i];
@@ -151,36 +160,87 @@ solver_installs_iterate( Solver *solver, int (*callback)( const XSolvable *xs ) 
       // getting repo
       s = solver->pool->solvables + p;
       Repo *repo = s->repo;
-      if (!repo || repo == solver->installed)
+      if (!repo || repo == installed)
         continue;       /* already installed resolvable */
-      
-      if (callback( xsolvable_new( solver->pool, p ) ) )
-	break;
+
+      if (!obsoletesmap || !obsoletesmap[p])
+	if (callback( xsolvable_new( solver->pool, p ) ) )
+	  break;
     }
+  if (obsoletesmap)
+    sat_free( obsoletesmap );
 }
 
 
+/*
+ * Iterate over all removals
+ */
+
 void
-solver_removals_iterate( Solver *solver, int (*callback)( const XSolvable *xs ) )
+solver_removals_iterate( Solver *solver, int all, int (*callback)( const XSolvable *xs ) )
 {
   Id p;
   Solvable *s;
+  Id *obsoletesmap = NULL;
+  Repo *installed = solver->installed; /* repo of installed solvables */
 
   if (!callback)
     return;
   
-  if (!solver->installed)
+  if (!installed)
     return;
 
+  if (!all)
+    obsoletesmap = create_decisions_obsoletesmap( solver );
+  
   /* solvables to be removed */
-  FOR_REPO_SOLVABLES(solver->installed, p, s)
+  FOR_REPO_SOLVABLES(installed, p, s)
     {
       if (solver->decisionmap[p] >= 0)
         continue;       /* we keep this package */
+      if (obsoletesmap && obsoletesmap[p])
+	continue;       /* its being obsoleted (updated) */
       if (callback( xsolvable_new( solver->pool, p ) ) )
 	break;
     }
+  if (obsoletesmap)
+    sat_free( obsoletesmap );
 }
+
+
+/*
+ * Iterate over all updates
+ */
+
+void
+solver_updates_iterate( Solver *solver, int (*callback)( const XSolvable *xs_old, const XSolvable *xs_new ) )
+{
+  Id p;
+  Solvable *s;
+  Id *obsoletesmap = NULL;
+  Repo *installed = solver->installed; /* repo of installed solvables */
+
+  if (!callback)
+    return;
+  
+  
+  if (!installed)
+    return;
+
+  obsoletesmap = create_decisions_obsoletesmap( solver );
+
+  /* solvables to be removed */
+  FOR_REPO_SOLVABLES(installed, p, s)
+    {
+      if (solver->decisionmap[p] >= 0)
+        continue;       /* we keep this package */
+      if (obsoletesmap[p])
+	if (callback( xsolvable_new( solver->pool, p ), xsolvable_new( solver->pool, obsoletesmap[p] ) ) )
+	  break;
+    }
+  sat_free( obsoletesmap );
+}
+
 
 void
 solver_suggestions_iterate( Solver *solver, int (*callback)( const XSolvable *xs ) )

@@ -106,7 +106,17 @@ generic_xsolvables_iterate_callback( const XSolvable *xs )
 {
 #if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
-  rb_yield(SWIG_NewPointerObj((void*)xs, SWIGTYPE_p__Solvable, 0));
+  rb_yield( SWIG_NewPointerObj((void*)xs, SWIGTYPE_p__Solvable, 0) );
+#endif
+  return 0;
+}
+
+static int
+update_xsolvables_iterate_callback( const XSolvable *xs_old, const XSolvable *xs_new )
+{
+#if defined(SWIGRUBY)
+  /* FIXME: how to pass 'break' back to the caller ? */
+  rb_yield_values( 2, SWIG_NewPointerObj((void*)xs_old, SWIGTYPE_p__Solvable, 0), SWIG_NewPointerObj((void*)xs_new, SWIGTYPE_p__Solvable, 0) );
 #endif
   return 0;
 }
@@ -1438,11 +1448,27 @@ typedef struct _Pool {} Pool;
   void each_problem( Transaction *t )
   { return solver_problems_iterate( $self, t, solver_problems_iterate_callback ); }
 
-  void each_to_install()
-  { return solver_installs_iterate( $self, generic_xsolvables_iterate_callback ); }
+  /*
+   * iterate over all to-be-*newly*-installed solvables
+   *   those brought in for update reasons are normally *not* reported.
+   *
+   * if true (resp '1') is passed, iterate over *all* to-be-installed
+   * solvables
+   */
+  void each_to_install(int bflag = 0)
+  { return solver_installs_iterate( $self, bflag, generic_xsolvables_iterate_callback ); }
 
-  void each_to_remove()
-  { return solver_removals_iterate( $self, generic_xsolvables_iterate_callback ); }
+  void each_to_update()
+  { return solver_updates_iterate( $self, update_xsolvables_iterate_callback ); }
+
+  /*
+   * iterate over all to-be-removed-without-replacement solvables
+   *   those replaced by an updated are normally *not* reported.
+   *
+   * if true (resp '1') is passed, iterate over *all* to-be-removed solvables
+   */
+  void each_to_remove(int bflag = 0)
+  { return solver_removals_iterate( $self, bflag, generic_xsolvables_iterate_callback ); }
 
   void each_suggested()
   { return solver_suggestions_iterate( $self, generic_xsolvables_iterate_callback); }

@@ -33,18 +33,66 @@ typedef struct _xsolvable {
   unsigned int kind;           /* one of KIND_xxx */
 } XSolvable;
 
+/*
+ * Create a new XSolvable in pool from Solvable id
+ */
 XSolvable *xsolvable_new( Pool *pool, Id id );
+
+/*
+ * Create a new XSolvable in pool from name, evr, arch
+ */
 XSolvable *xsolvable_create( Repo *repo, const char *name, const char *evr, const char *arch );
+
+/*
+ * Free a previously created XSolvable
+ */
 void xsolvable_free( XSolvable *xs );
+
+/*
+ * Return the Solvable corresponding to the given XSolvable
+ */
 Solvable *xsolvable_solvable( const XSolvable *xs );
+
+/*
+ * Find XSolvable by name in pool (and repo)
+ * If repo == NULL, search the complete pool
+ * If repo != NULL, limit search to the given repo
+ */
 XSolvable *xsolvable_find( Pool *pool, char *name, const Repo *repo );
+
+/*
+ * Get XSolvable by index in pool (and repo)
+ * If repo == NULL, count index from beginning of pool
+ * If repo != NULL, count index from the given repo
+ */
 XSolvable *xsolvable_get( Pool *pool, int i, const Repo *repo );
 
 
-void solver_installs_iterate( Solver *solver, int (*callback)( const XSolvable *xs ) );
-void solver_removals_iterate( Solver *solver, int (*callback)( const XSolvable *xs ) );
+/* iterate over all (newly-)to-be-installed solvables
+ * if all = 0, only report *newly* installed ones (non-updates)
+ * if all = 1, report all to-be-installed ones
+ */
+void solver_installs_iterate( Solver *solver, int all, int (*callback)( const XSolvable *xs ) );
+
+/* iterate over all to-be-removed solvables
+ * if all = 0, only report *dropped* ones (non-updates)
+ * if all = 1, report all to-be-removed  ones
+ */
+void solver_removals_iterate( Solver *solver, int all, int (*callback)( const XSolvable *xs ) );
+
+/*
+ * Iterate over all solvables which update installed ones
+ */
+void solver_updates_iterate( Solver *solver, int (*callback)( const XSolvable *xs_old, const XSolvable *xs_new ) );
+
+/*
+ * Iterate over all solvables being suggested in the last solver run
+ */
 void solver_suggestions_iterate( Solver *solver, int (*callback)( const XSolvable *xs ) );
 
+/*
+ * Iterate over all solvables of the given repo
+ */
 void repo_xsolvables_iterate( Repo *repo, int (*callback)( const XSolvable *xs ) );
 
 #endif  /* SATSOLVER_XSOLVABLE_H */
