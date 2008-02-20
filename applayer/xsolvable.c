@@ -140,7 +140,7 @@ solver_installs_iterate( Solver *solver, int all, int (*callback)( const XSolvab
   Id p;
   Solvable *s;
   int i;
-  Id *obsoletesmap;
+  Id *obsoletesmap = 0;
   Repo *installed = solver->installed; /* repo of installed solvables */
 
   if (!callback)
