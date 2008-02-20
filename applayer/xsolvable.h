@@ -60,6 +60,11 @@ int xsolvable_equal( XSolvable *xs1, XSolvable *xs2 );
 Solvable *xsolvable_solvable( const XSolvable *xs );
 
 /*
+ * Add an existing solvable to Repo
+ */
+XSolvable *xsolvable_add( Repo *repo, XSolvable *xs );
+
+/*
  * Find XSolvable by name in pool (and repo)
  * If repo == NULL, search the complete pool
  * If repo != NULL, limit search to the given repo

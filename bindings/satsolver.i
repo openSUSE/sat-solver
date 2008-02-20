@@ -591,6 +591,12 @@ typedef struct _Pool {} Pool;
   XSolvable *create_solvable( const char *name, const char *evr, const char *arch = NULL )
   { return xsolvable_create( $self, name, evr, arch ); }
 
+#if defined(SWIGRUBY)
+  %alias add "<<";
+#endif
+  XSolvable *add( XSolvable *xs )
+  { return xsolvable_add( $self, xs); }
+
   void each()
   { repo_xsolvables_iterate( $self, generic_xsolvables_iterate_callback ); }
 

@@ -18,6 +18,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include <policy.h>
 
 #include "xsolvable.h"
@@ -87,6 +88,25 @@ xsolvable_equal( XSolvable *xs1, XSolvable *xs2 )
     }
   }
   return 1;
+}
+
+
+/*
+ * crude hack of adding an existing Solvable to another Repp
+ */
+
+XSolvable *
+xsolvable_add( Repo *repo, XSolvable *xs )
+{
+  if (repo->pool != xs->pool)
+    return NULL;                       /* must be of same repo */
+  Id sid = repo_add_solvable( repo );
+  Solvable *old_s = pool_id2solvable( xs->pool, xs->id );
+  Solvable *new_s = pool_id2solvable( repo->pool, sid );
+  memcpy( new_s, old_s, sizeof( Solvable ) );
+  new_s->repo = repo;
+
+  return xsolvable_new( repo->pool, sid );
 }
 
 /************************************************
