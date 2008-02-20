@@ -902,6 +902,45 @@ typedef struct _Pool {} Pool;
     return solvable2str( $self->pool, xsolvable_solvable( $self ) );
   }
 
+#if defined(SWIGRUBY)
+  %rename( "==" ) equal( const XSolvable *xs );
+  %typemap(out) int equal
+    "$result = ($1 != 0) ? Qtrue : Qfalse;";
+#endif
+  int equal( XSolvable *xs )
+  { return xsolvable_equal( $self, xs); }
+
+#if defined(SWIGRUBY)
+  %alias cmp "<=>";
+#endif
+  int cmp( XSolvable *xs )
+  {
+    Solvable *s1 = xsolvable_solvable( $self );
+    Solvable *s2 = xsolvable_solvable( xs );
+    const char *n1 = 0, *n2 = 0;
+    int i = 0;
+
+    if (($self->pool != xs->pool)
+        || (s1->name != s2->name))
+      {
+        n1 = id2str( $self->pool, s1->name );
+	n2 = id2str( xs->pool, s2->name );
+	i = strcmp( n1, n2 );
+      }
+    if (i == 0) /* names are equal */
+      {
+        if ($self->pool == xs->pool)
+	  i = evrcmp( $self->pool, s1->evr, s2->evr, EVRCMP_COMPARE );
+	else
+	{
+          n1 = id2str( $self->pool, s1->evr );
+	  n2 = id2str( xs->pool, s2->evr );
+	  i = strcmp( n1, n2 );
+	}
+      }
+    return i;
+  }
+  
   /*
    * Dependencies
    */

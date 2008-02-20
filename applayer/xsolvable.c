@@ -71,6 +71,23 @@ xsolvable_solvable( const XSolvable *xs )
   return pool_id2solvable( xs->pool, xs->id );
 }
 
+/*
+ * equality
+ */
+
+int
+xsolvable_equal( XSolvable *xs1, XSolvable *xs2 )
+{
+  if (xs1 != xs2)
+  {
+    if ((xs1->pool != xs2->pool)
+        || (xs1->id != xs2->id))
+    {
+      return 0;
+    }
+  }
+  return 1;
+}
 
 /************************************************
  * Pool/Repo

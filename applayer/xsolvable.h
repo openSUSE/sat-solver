@@ -49,6 +49,12 @@ XSolvable *xsolvable_create( Repo *repo, const char *name, const char *evr, cons
 void xsolvable_free( XSolvable *xs );
 
 /*
+ * Check for equality
+ * Two XSolvables are equal if they both reference the same Id of the same pool.
+ */
+int xsolvable_equal( XSolvable *xs1, XSolvable *xs2 );
+
+/*
  * Return the Solvable corresponding to the given XSolvable
  */
 Solvable *xsolvable_solvable( const XSolvable *xs );
