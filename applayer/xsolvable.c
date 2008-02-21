@@ -72,6 +72,7 @@ xsolvable_solvable( const XSolvable *xs )
   return pool_id2solvable( xs->pool, xs->id );
 }
 
+
 /*
  * equality
  */
@@ -79,32 +80,59 @@ xsolvable_solvable( const XSolvable *xs )
 int
 xsolvable_equal( XSolvable *xs1, XSolvable *xs2 )
 {
-  if (xs1 != xs2)
-  {
-    if ((xs1->pool != xs2->pool)
-        || (xs1->id != xs2->id))
+/*  fprintf(stderr, "%p[%p/%d] == %p[%p/%d] ?\n", xs1, xs1->pool, xs1->id, xs2, xs2->pool, xs2->id); */
+  if ((xs1 == xs2)
+      || ((xs1->pool == xs2->pool)
+         && (xs1->id == xs2->id)))
     {
-      return 0;
+      return 1;
     }
-  }
-  return 1;
+  return 0;
 }
 
 
+static void
+copy_deps( Repo *repo, Offset *ndeps, Id *odeps )
+{
+  while (*odeps) {
+    *ndeps = repo_addid( repo, *ndeps, *odeps );
+    ++odeps;
+  }
+}
+
 /*
- * crude hack of adding an existing Solvable to another Repp
+ * crude hack of adding an existing Solvable to another Repo
  */
 
 XSolvable *
 xsolvable_add( Repo *repo, XSolvable *xs )
 {
+  Id sid;
+  Solvable *old_s, *new_s;
+  
   if (repo->pool != xs->pool)
     return NULL;                       /* must be of same repo */
-  Id sid = repo_add_solvable( repo );
-  Solvable *old_s = pool_id2solvable( xs->pool, xs->id );
-  Solvable *new_s = pool_id2solvable( repo->pool, sid );
-  memcpy( new_s, old_s, sizeof( Solvable ) );
-  new_s->repo = repo;
+
+  sid = repo_add_solvable( repo );
+
+  old_s = pool_id2solvable( xs->pool, xs->id );
+  new_s = pool_id2solvable( repo->pool, sid );
+
+  new_s->name = old_s->name;
+  new_s->evr = old_s->evr;
+  new_s->arch = old_s->arch;
+  new_s->vendor = old_s->vendor;
+
+  copy_deps( repo, &(new_s->provides), old_s->repo->idarraydata + old_s->provides );
+  copy_deps( repo, &(new_s->requires), old_s->repo->idarraydata + old_s->requires );
+  copy_deps( repo, &(new_s->obsoletes), old_s->repo->idarraydata + old_s->obsoletes );
+  copy_deps( repo, &(new_s->conflicts), old_s->repo->idarraydata + old_s->conflicts );
+
+  copy_deps( repo, &(new_s->recommends), old_s->repo->idarraydata + old_s->recommends );
+  copy_deps( repo, &(new_s->suggests), old_s->repo->idarraydata + old_s->suggests );
+  copy_deps( repo, &(new_s->supplements), old_s->repo->idarraydata + old_s->supplements );
+  copy_deps( repo, &(new_s->enhances), old_s->repo->idarraydata + old_s->enhances );
+  copy_deps( repo, &(new_s->freshens), old_s->repo->idarraydata + old_s->freshens );
 
   return xsolvable_new( repo->pool, sid );
 }
@@ -129,6 +157,8 @@ xsolvable_find( Pool *pool, char *name, const Repo *repo )
   for (; i < end; i++) {
     s = pool->solvables + i;
     if (!pool_installable(pool, s))
+      continue;
+    if (repo && (s->repo != repo))
       continue;
     if (s->name == id)
       queue_push(&plist, i);
@@ -300,7 +330,7 @@ repo_xsolvables_iterate( Repo *repo, int (*callback)( const XSolvable *xs ) )
 {
   Solvable *s;
   Id p;
-  for (p = 0, s = repo->pool->solvables + repo->start; p < repo->nsolvables; p++, s++)
+  FOR_REPO_SOLVABLES(repo, p, s)
     {
       if (!s)
         continue;
