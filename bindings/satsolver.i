@@ -595,7 +595,7 @@ typedef struct _Pool {} Pool;
   %alias add "<<";
 #endif
   XSolvable *add( XSolvable *xs )
-  { return xsolvable_add( $self, xs); }
+  { return xsolvable_add( $self, xs ); }
 
   void each()
   { repo_xsolvables_iterate( $self, generic_xsolvables_iterate_callback ); }
@@ -909,7 +909,7 @@ typedef struct _Pool {} Pool;
   }
 
 #if defined(SWIGRUBY)
-  %rename( "==" ) equal( const XSolvable *xs );
+  %alias equal "==";
   %typemap(out) int equal
     "$result = ($1 != 0) ? Qtrue : Qfalse;";
 #endif
