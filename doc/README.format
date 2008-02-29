@@ -39,11 +39,11 @@ V0 format
   U8*: DATA
 
 
-V4 format
+V6 format
 =========
 
   MAGIC: 'SOLV'
-  U32:   4
+  U32:   6
 
   U32:   NUMID                       /* number of Ids (names) */
   U32:   NUMREL                      /* number of RelDeps (dependencies) */
@@ -53,8 +53,7 @@ V4 format
   U32:   NUMSCHEMATA                 /* number of schemata */
   U32:   NUMINFO
   U32:   FLAGS			     /* solv file flags */
-			1:HAS_PACKED_SIZES
-			2:VERTICAL_PACKING
+                        4:PREFIX_POOL
 
   -- string data --
   ID:    SIZEID                      /* total size of string buffer */
@@ -78,27 +77,24 @@ V4 format
     IDARRAY* keys
 
   -- file information --
+  ID maxinfolen  (IF NUMINFO)
+  ID allinfolen  (IF NUMINFO)
   NUMINFO *
     ID schema
     U8 *data
 
-  -- packed item sizes (optional) --
-  ID*: sizeis
-
-IF_HORIZONTAL
   -- item data --
+  ID maxitemlen  (IF NUMITEM)
+  ID allitemlen  (IF NUMITEM)
   NUMITEM *
     ID schema
     U8* data
 
-IF_VERTICAL
-  -- item data --
-  NUMINFO *
-    ID schema
-  U8* data
-
-
-
+  -- paged vertical data --
+  U32 pagesize
+  NPAGES *
+    U32 len * 2 + compressedflag
+    U8* data
 
 ---
 

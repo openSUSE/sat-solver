@@ -79,6 +79,20 @@ solution_callback(Solver *solv, void *data)
   return 0;
 }
 
+static FILE *
+load_callback(Pool *pool, Repodata *data, void *cbdata)
+{
+  FILE *fp = 0;
+  if (data->location)
+    {
+      printf("loading %s\n", data->location);
+      fp = fopen (data->location, "r");
+      if (!fp)
+        perror(data->location);
+    }
+  return fp;
+}
+
 //-----------------------------------------------
 
 int
@@ -95,8 +109,10 @@ main(int argc, char **argv)
   int erase = 0;
   int all = 0;
   int debuglevel = 1;
+  int force = 0;
 
   pool = pool_create();
+  pool_setloadcallback(pool, load_callback, 0);
   pool_setarch(pool, "i686");
   queue_init(&job);
 
@@ -115,6 +131,13 @@ main(int argc, char **argv)
       if (!strcmp(argv[1], "-e"))
 	{
 	  erase = 1;
+	  argc--;
+	  argv++;
+	  continue;
+	}
+      if (!strcmp(argv[1], "-f"))
+	{
+	  force = 1;
 	  argc--;
 	  argv++;
 	  continue;
@@ -204,7 +227,7 @@ main(int argc, char **argv)
   solv->fixsystem = 0;
   solv->updatesystem = 0;
   solv->allowdowngrade = 0;
-  solv->allowuninstall = 0;
+  solv->allowuninstall = force ? 1 : 0;
   solv->noupdateprovide = 0;
 
   // Solve !
@@ -215,7 +238,20 @@ main(int argc, char **argv)
   if (solv->problems.count)
     printsolutions(solv, &job);
   else
-    printdecisions(solv);
+    {
+      DUChanges duc[4];
+      int i;
+
+      duc[0].path = "/";
+      duc[1].path = "/usr/share/man";
+      duc[2].path = "/sbin";
+      duc[3].path = "/etc";
+      printdecisions(solv);
+      solver_calc_duchanges(solv, duc, 4);
+      for (i = 0; i < 4; i++)
+        printf("duchanges %s: %d %d\n", duc[i].path, duc[i].kbytes, duc[i].files);
+      printf("install size change: %d\n", solver_calc_installsizechange(solv));
+    }
 
   // clean up
 
