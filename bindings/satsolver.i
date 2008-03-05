@@ -149,65 +149,38 @@ xsolvable_attr_lookup_callback( void *cbdata, Solvable *s, Repodata *data, Repok
   VALUE *result = (VALUE *)cbdata;
   switch( key->type )
     {
-      case TYPE_VOID: *result = Qtrue; break;
-      case TYPE_ID:
+      case REPOKEY_TYPE_VOID: *result = Qtrue; break;
+      case REPOKEY_TYPE_ID:
         if (data->localpool)
 	  *result = rb_str_new2( stringpool_id2str( &data->spool, kv->id ) );
 	else
 	  *result = rb_str_new2( id2str( data->repo->pool, kv->id ) );
       break;
-      case TYPE_IDARRAY:
+      case REPOKEY_TYPE_IDARRAY:
         *result = Qnil; /*FIXME*/
       break;
-      case TYPE_STR:
+      case REPOKEY_TYPE_STR:
         *result = rb_str_new2( kv->str );
       break;
-      case TYPE_REL_IDARRAY:
+      case REPOKEY_TYPE_REL_IDARRAY:
         *result = Qnil; /*FIXME*/
       break;
-
-      case TYPE_ATTR_INT:
+      case REPOKEY_TYPE_DIR:
         *result = Qnil; /*FIXME*/
       break;
-      case TYPE_ATTR_CHUNK:
+      case REPOKEY_TYPE_DIRNUMNUMARRAY:
         *result = Qnil; /*FIXME*/
       break;
-      case TYPE_ATTR_STRING:
+      case REPOKEY_TYPE_DIRSTRARRAY:
         *result = Qnil; /*FIXME*/
       break;
-      case TYPE_ATTR_INTLIST:
-        *result = Qnil; /*FIXME*/
-      break;
-      case TYPE_ATTR_LOCALIDS:
-        *result = Qnil; /*FIXME*/
-      break;
-
-      case TYPE_COUNT_NAMED:
-        *result = Qnil; /*FIXME*/
-      break;
-      case TYPE_COUNTED:
-        *result = Qnil; /*FIXME*/
-      break;
-
-      case TYPE_IDVALUEARRAY:
-        *result = Qnil; /*FIXME*/
-      break;
-
-      case TYPE_DIR:
-        *result = Qnil; /*FIXME*/
-      break;
-      case TYPE_DIRNUMNUMARRAY:
-        *result = Qnil; /*FIXME*/
-      break;
-      case TYPE_DIRSTRARRAY:
-        *result = Qnil; /*FIXME*/
-      break;
-
-      case TYPE_U32:
+      case REPOKEY_TYPE_U32:
       /*FALLTHRU*/
-      case TYPE_CONSTANT:
+      case REPOKEY_TYPE_CONSTANT:
       /*FALLTHRU*/
-      case TYPE_NUM:
+      case REPOKEY_TYPE_CONSTANTID:
+      /*FALLTHRU*/
+      case REPOKEY_TYPE_NUM:
         *result = INT2FIX( kv->num );
       break;
     }
@@ -703,30 +676,18 @@ typedef struct _Pool {} Pool;
     VALUE type = Qnil;
     switch( key->type )
     {
-      case TYPE_VOID: type = rb_cTrueClass; break;
-      case TYPE_ID: type = rb_cString; break;
-      case TYPE_IDARRAY: type = rb_cArray; break;
-      case TYPE_STR: type = rb_cString; break;
-      case TYPE_U32: type = rb_cInteger; break;
-      case TYPE_REL_IDARRAY: type = rb_cArray; break;
-
-      case TYPE_ATTR_INT: type = rb_cInteger; break;
-      case TYPE_ATTR_CHUNK: type = rb_cString; break;
-      case TYPE_ATTR_STRING: type = rb_cString; break;
-      case TYPE_ATTR_INTLIST: type = rb_cArray; break;
-      case TYPE_ATTR_LOCALIDS: type = rb_cString; break;
-
-      case TYPE_COUNT_NAMED: type = rb_cInteger; break;
-      case TYPE_COUNTED: type = rb_cInteger; break;
-
-      case TYPE_IDVALUEARRAY: type = rb_cArray; break;
-
-      case TYPE_DIR: type = rb_cDir; break;
-      case TYPE_DIRNUMNUMARRAY: type = rb_cArray; break;
-      case TYPE_DIRSTRARRAY: type = rb_cArray; break;
-
-      case TYPE_CONSTANT: type = rb_cInteger; break;
-      case TYPE_NUM: type = rb_cNumeric; break;
+      case REPOKEY_TYPE_VOID: type = rb_cTrueClass; break;
+      case REPOKEY_TYPE_CONSTANTID: type = rb_cString; break;
+      case REPOKEY_TYPE_CONSTANT: type = rb_cInteger; break;
+      case REPOKEY_TYPE_ID: type = rb_cString; break;
+      case REPOKEY_TYPE_IDARRAY: type = rb_cArray; break;
+      case REPOKEY_TYPE_STR: type = rb_cString; break;
+      case REPOKEY_TYPE_U32: type = rb_cInteger; break;
+      case REPOKEY_TYPE_REL_IDARRAY: type = rb_cArray; break;
+      case REPOKEY_TYPE_DIR: type = rb_cDir; break;
+      case REPOKEY_TYPE_DIRNUMNUMARRAY: type = rb_cArray; break;
+      case REPOKEY_TYPE_DIRSTRARRAY: type = rb_cArray; break;
+      case REPOKEY_TYPE_NUM: type = rb_cNumeric; break;
     }
     return type;
   }
