@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+#  -*- mode: ruby; fill-column: 78 -*-
 #
 # runtest.rb
 #
@@ -314,6 +315,124 @@ class Runner
   
 end
 
+class Recurse
+  def initialize dir
+    raise "<origin> is not a directory" unless File.directory?( dir )
+    @from = Dir.new( dir )               # absolute path to origin
+    @path = ""                                # relative path within
+  end
+
+private
+  
+  def check_name name
+    case name
+    when /-test/
+      "cat"
+    else
+      "|../tools/helix2solv"
+    end
+  end
+  
+  def process_file name
+    dots = name.split "."
+    #return if dots.size < 2
+    cmd = nil
+    srcdir = File.join( @from.path, @path )
+    srcname = File.join( srcdir, name )
+    suffix = nil
+    case dots.last
+    when "bz2"
+      chk = check_name name
+      return unless chk
+      cmd = "bzcat #{srcname} "
+      cmd += chk
+      suffix = "solv"
+      name = File.basename name, ".bz2"
+    when "gz"
+      chk = check_name name
+      return unless chk
+      cmd = "zcat #{srcname} "
+      cmd += chk
+      suffix = "solv"
+      name = File.basename name, ".gz"
+    when "xml"
+      cmd = check_name name
+      return unless cmd
+      if cmd[0,1] == "|"
+	cmd = "cat #{srcname} " + cmd
+	suffix = "solv"
+      else
+        return
+      end
+    else
+      return
+    end
+    destname = File.basename name, ".*"
+    destname += ".#{suffix}" if suffix
+    cmd += " > "
+    fulldest = File.join( srcdir, destname )
+    cmd += fulldest
+    return if File.exists?( fulldest )
+    print "Generating #{fulldest}\n"
+    puts "*** FAILED: #{fulldest}" unless system cmd
+  end
+  
+  def process_dir name
+    return if name[0,1] == "."
+    #print "#{name} "
+    STDOUT.flush
+    start = @path
+    @path = File.join( @path, name )
+    process
+    @path = start
+  end
+
+public
+  # process current directory
+  #
+  def process
+    from = Dir.new( File.join( @from.path, @path ) )
+    
+    from.each { |fname|
+      if File.directory?( File.join( from.path, fname ) )
+	process_dir fname
+      else
+	process_file fname
+      end
+    }
+    
+  end
+  
+end
+
+def recurse path
+  return unless File.directory?( path )
+  dir = Dir.new path
+  dir.each{ |fname|
+    next if fname[0,1] == '.'
+    fullname = dir.path + "/" + fname
+    if File.directory?( fullname )
+      #puts "Dir #{fullname}"
+      next unless recursive
+      if tags.include?( fname )
+	STDERR.puts "Directory #{fname} already seen, symlink loop ?"
+	next
+      end
+      tags.push fname.downcase
+      import( [ Dir.new( fullname ), recursive, tags ] )
+      tags.pop
+    elsif File.file?( fullname )
+      #puts "File #{fullname}"
+      args = [ "-t" ]
+      args << tags.join(",")
+      args << fullname
+      add( args )
+    else
+      STDERR.puts "Unknown file #{fullname} : #{File.stat(fullname).ftype}, skipping"
+    end
+  }															    
+end
+
 #----------------------------
 
 def usage err=nil
@@ -356,6 +475,9 @@ if File.readable?("README.FAILS")
     end
   }
 end
+
+preproc = Recurse.new Dir.getwd
+preproc.process
 
 r = Runner.new
 
