@@ -660,7 +660,7 @@ add_repo( Parsedata *pd, const char *name, const char *file )
 //
 
 static Id
-select_solvable( Pool *pool, Repo *repo, const char *name, const char *version, const char *arch )
+select_solvable( Pool *pool, Repo *repo, const char *name, const char *version, const char *arch, const char *release )
 {
   Solvable *s;
   Id id, archid;
@@ -690,7 +690,12 @@ select_solvable( Pool *pool, Repo *repo, const char *name, const char *version, 
 	continue;
       if (archid && s->arch != archid)
 	continue;
-      if (version)
+      if (version && release && *release)
+	{
+	  if (evrmatch(pool, s->evr, 0, version, release))
+	    continue;
+	}
+      else if (version)
 	{
 	  const char *sver = id2str(pool, s->evr);
 	  const char *svere = strrchr(sver, '-');
@@ -701,6 +706,10 @@ select_solvable( Pool *pool, Repo *repo, const char *name, const char *version, 
 	}
       return i;
     }
+  /* Fallback code for inconsistent testcase which require non-existent
+     releases.  */
+  if (release && *release)
+    return select_solvable(pool, repo, name, version, arch, 0);
 
   return ID_NULL;
 }
@@ -1038,7 +1047,7 @@ startElement( void *userData, const char *name, const char **atts )
 	  }
 	if (repo)
 	  {
-	    Id id = select_solvable( pool, repo, package, version, arch );
+	    Id id = select_solvable( pool, repo, package, version, arch, 0 );
 	    if (id == ID_NULL) 
 	      {
 		err( "Install: Package '%s' not found", package );
@@ -1050,7 +1059,7 @@ startElement( void *userData, const char *name, const char **atts )
 	  }
 	else 			       /* no channel given, lock installed */
 	  {
-	    Id id = select_solvable( pool, pd->system, package, version, arch );
+	    Id id = select_solvable( pool, pd->system, package, version, arch, 0 );
 	    queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
 	    queue_push( &(pd->trials), id );
 	  }
@@ -1096,6 +1105,7 @@ printf("hardware %s\n", dir);
 	const char *channel = attrval( atts, "channel" );
 	const char *arch = attrval( atts, "arch" );
         const char *version = attrval( atts, "version" );
+	const char *release = attrval( atts, "release" );
 	char package[MAXNAMELEN];
 	getPackageName( atts, package );
 
@@ -1124,13 +1134,19 @@ printf("hardware %s\n", dir);
 		  }
 		++i;
 	      }
-	    Id id = select_solvable( pool, repo, package, version, arch );
+	    Id id = select_solvable( pool, repo, package, version, arch, release );
 	    if (id == ID_NULL) 
 	      {
 		err( "Install: Package '%s' not found", package );
 		if (repo) err( " in channel '%s'", channel );
 		exit( 1 );
 	      }
+	    queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
+	    queue_push( &(pd->trials), id );
+	  }
+	else if (version)
+	  {
+	    Id id = select_solvable( pool, 0, package, version, arch, release);
 	    queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
 	    queue_push( &(pd->trials), id );
 	  }
@@ -1158,7 +1174,7 @@ printf("hardware %s\n", dir);
 	    err( "No system channel defined to <uninstall> from" );
 	    exit( 1 );
 	  }
-	Id id = select_solvable( pool, pd->system, package, 0, 0 );
+	Id id = select_solvable( pool, pd->system, package, 0, 0, 0 );
 	if (id == ID_NULL) 
 	  {
 	    err( "Remove: Package '%s' is not installed", package );
@@ -1250,7 +1266,7 @@ printf("hardware %s\n", dir);
 	err( "No package given in <keep>" );
 	exit( 1 );
       }
-      Id id = select_solvable( pool, pd->system, package, version, arch );
+      Id id = select_solvable( pool, pd->system, package, version, arch, 0 );
       queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
       queue_push( &(pd->trials), id );
     }
