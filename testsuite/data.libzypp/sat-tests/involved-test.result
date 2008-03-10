@@ -4,5 +4,8 @@ Problem 1:
 ====================================
 package epiphany-2.20.1-23.x86_64 requires mozilla-xulrunner181 = 1.8.1.4, but none of the providers can be installed
 
+- do not install epiphany-2.20.1-23.x86_64
+- do not install epiphany-extensions-2.20.1-23.x86_64
+
 - do not install mozilla-xulrunner181-1.8.1.10-0.1.x86_64
 
