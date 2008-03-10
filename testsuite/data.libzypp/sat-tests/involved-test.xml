@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<test>
+<setup arch="x86_64">
+    <system file="involved-system.xml.gz"/>
+    <channel file="involved1-package.xml.gz" name="involved1" />
+    <channel file="involved2-package.xml.gz" name="involved2" />
+</setup>
+<trial>
+<upgrade/>
+<install kind="package" name="mozilla-xulrunner181" version="1.8.1.10" release="0.1" arch="x86_64"/>
+<install kind="package" name="epiphany" version="2.20.1" release="23" arch="x86_64"/>
+<install kind="package" name="epiphany-extensions" version="2.20.1" release="23" arch="x86_64"/>
+<reportproblems/>
+</trial>
+</test>
