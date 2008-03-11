@@ -14,6 +14,8 @@
  *
  */
 
+#define _GNU_SOURCE
+
 #include <sys/types.h>
 #include <unistd.h>
 #include <fnmatch.h>
@@ -26,6 +28,7 @@
 #include <expat.h>
 #include <libgen.h>
 #include <dirent.h>
+#include <zlib.h>
 
 #include "solver.h"
 #include "repo_solv.h"
@@ -582,6 +585,39 @@ adddep( Pool *pool, Parsedata *pd, unsigned int olddeps, const char **atts, int 
 
 /*----------------------------------------------------------------*/
 
+static ssize_t
+cookie_gzread(void *cookie, char *buf, size_t nbytes)
+{
+  return gzread((gzFile *)cookie, buf, nbytes);
+}
+
+static int
+cookie_gzclose(void *cookie)
+{
+  return gzclose((gzFile *)cookie);
+}
+
+FILE *
+myfopen(const char *fn)
+{
+  cookie_io_functions_t cio;
+  char *suf;
+  gzFile *gzf;
+
+  if (!fn)
+    return 0;
+  suf = strrchr(fn, '.');
+  if (!suf || strcmp(suf, ".gz") != 0)
+    return fopen(fn, "r");
+  gzf = gzopen(fn, "r");
+  if (!gzf)
+    return 0;
+  memset(&cio, 0, sizeof(cio));
+  cio.read = cookie_gzread;
+  cio.close = cookie_gzclose;
+  return  fopencookie(gzf, "r", cio);
+}
+
 /*
  * read repo from file as name
  *
@@ -603,7 +639,6 @@ add_repo( Parsedata *pd, const char *name, const char *file )
       return NULL;
     }
 
-  int gzip = 0;
   const char *ptr = file + l - 1;
   while (*ptr)
     {
@@ -611,8 +646,6 @@ add_repo( Parsedata *pd, const char *name, const char *file )
 	break;
       if (*ptr == '.')
 	{
-	  if (!strncmp( ptr, ".gz", 3))
-	    gzip = 1;
 	  if (!strncmp( ptr, ".xml", 4 )) 
 	    {
 	      l = ptr - file;
@@ -630,25 +663,26 @@ add_repo( Parsedata *pd, const char *name, const char *file )
   FILE *fp = fopen( solvname, "r" );
   if (!fp)
     {
-      char command[PATH_MAX];
-      if (gzip)
-	snprintf(command, PATH_MAX, "zcat %s", file);
+      if (!access(file, R_OK))
+	fp = myfopen(file);
       else
-	snprintf(command, PATH_MAX, "cat %s", file);
-      /* try to use the original helix xml file instead*/
-      FILE *fpHelix = popen( command, "r" );
-      if (!fpHelix)
 	{
-	  perror( file );
+	  char gzfile[PATH_MAX];
+	  snprintf(gzfile, PATH_MAX, "%s.gz", file);
+	  fp = myfopen(gzfile);
+	}
+      if (!fp)
+	{
+	  perror(file);
 	  return NULL;
 	}
-      repo_add_helix(s, fpHelix);
-      pclose( fpHelix );
+      repo_add_helix(s, fp);
+      fclose(fp);
     }
   else
     {  
       repo_add_solv(s, fp);
-      fclose( fp );
+      fclose(fp);
     } 
   return s;
 }

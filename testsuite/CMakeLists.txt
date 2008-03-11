@@ -10,4 +10,4 @@ TARGET_LINK_LIBRARIES(gimmick satsolver)
 
 SET(deptestomatic_SOURCES deptestomatic.c)
 ADD_EXECUTABLE(deptestomatic ${deptestomatic_SOURCES})
-TARGET_LINK_LIBRARIES(deptestomatic satsolver ${EXPAT_LIBRARY})
+TARGET_LINK_LIBRARIES(deptestomatic satsolver ${EXPAT_LIBRARY} ${ZLIB_LIBRARY})
