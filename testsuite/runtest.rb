@@ -273,10 +273,11 @@ class Runner
  
   def run wd, arg, recurse=nil
     fullname = File.join( wd, arg )
+    puts "Examine #{fullname}"
     if File.directory?( fullname )
       rundir( fullname, recurse ) 
     elsif (arg =~ /test.xml$/)
-#         puts "Run #{fullname}"
+         puts "Run #{fullname}"
       $tests << fullname
     end
   end
@@ -284,7 +285,7 @@ class Runner
   # process current directory
   #
   def rundir path, recurse
-    #puts "Rundir #{path}"
+    puts "Rundir #{path}"
     ignores = Array.new
     ignorefile = File.join( path, "ignore" )
     if File.readable?( ignorefile )
@@ -302,7 +303,7 @@ class Runner
       if File.directory?( name )
 	rundir File.join( path, name ), recurse if recurse
       else
-	#puts name, $ignores.member?(name)
+	puts name, ignores.member?(name)
 	if !ignores.member?(name)
 	  run path, name
 	else
