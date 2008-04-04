@@ -1084,7 +1084,7 @@ startElement( void *userData, const char *name, const char **atts )
 	    Id id = select_solvable( pool, repo, package, version, arch, 0 );
 	    if (id == ID_NULL) 
 	      {
-		err( "Install: Package '%s' not found", package );
+		err( "keep uninstalled lock: Package '%s' not found", package );
 		if (repo) err( " in channel '%s'", channel );
 		exit( 1 );
 	      }
@@ -1093,9 +1093,28 @@ startElement( void *userData, const char *name, const char **atts )
 	  }
 	else 			       /* no channel given, lock installed */
 	  {
+	    if (!pd->system)
+	      {
+		err( "keep installed lock: no system repository defined");
+		exit( 1 );
+	      }
 	    Id id = select_solvable( pool, pd->system, package, version, arch, 0 );
-	    queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
-	    queue_push( &(pd->trials), id );
+	    if (id == 0)
+	      {
+		id = select_solvable( pool, 0, package, version, arch, 0 );
+		if (id)
+		  {
+		    queue_push( &(pd->trials), SOLVER_ERASE_SOLVABLE );
+		    queue_push( &(pd->trials), id );
+		  }
+		else
+		  err( "keep installed lock: Package '%s' not found", package );
+	      }
+            else
+	      {
+		queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
+		queue_push( &(pd->trials), id );
+	      }
 	  }
       }
       break;
