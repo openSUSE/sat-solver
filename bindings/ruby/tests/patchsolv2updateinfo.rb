@@ -37,6 +37,8 @@ def xmlout tag, indent, attrs=nil
     if attrs.empty?                    # empty string? -> close tag immediately
       puts "/>"
     else
+      attrs.gsub!( "<", "&lt;" )
+      attrs.gsub!( ">", "&gt;" )
       puts ">#{attrs}</#{tag}>"        # text</tag>
     end
     return nil
@@ -62,7 +64,9 @@ Dir.foreach( "patches" ) { |solvname|
 #  STDERR.puts "Reading #{solvname}"
   next if solvname[0,1] == "."
   repo.add_solv( "patches/#{solvname}" )
-}    
+}
+
+STDERR.puts "Converting now ..."
 patches = solv2patches nil, repo
 
 puts "<?xml version=\"1.0\"?>"
@@ -70,6 +74,7 @@ puts "<updates>"
 
 indent = 1
 patches.each { |p|
+#  STDERR.puts "#{p.name}-#{p.evr}"
   endtag = xmlout "update", indent, "from" => "maint-coord@suse.de", "status"=>"stable", "type"=>p.category, "version"=>"11.0"
   indent += 1
   xmlout "id", indent, "#{p.name}-#{p.evr}"
@@ -86,6 +91,8 @@ patches.each { |p|
     vr = item.evr.split "-"
     pkgend = xmlout "package", indent, "name" => item.name, "version" => vr[0], "release" => vr[1], "arch" => item.arch
     xmlout "filename", indent+1, "#{item.name}-#{item.evr}.#{item.arch}.rpm"
+    xmlout( "reboot_suggested", indent+1, "True" ) if p.reboot
+    xmlout( "restart_suggested", indent+1, "True" ) if p.restart
     puts pkgend
   }
   indent -= 1

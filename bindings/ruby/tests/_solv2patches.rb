@@ -65,6 +65,8 @@ def solv2patches solvname, repo
     end
   }
 
+  STDERR.puts "Splitted into #{patches.size} patches and #{atoms.size} atoms"
+
   #
   # Now iterate through all patches
   # - ensure that it requires just atoms
@@ -76,12 +78,15 @@ def solv2patches solvname, repo
   out_patches = []
   
   patches.each { |name,store|
+#    STDERR.puts "Patch #{name}"
     store.each { |evr,patch|
-
+#      STDERR.puts "-#{evr}"
       p = Patch.new( name, evr, patch.attr( "solvable:patchcategory" ), patch.attr( "solvable:buildtime" ))
       p.summary = patch.attr "solvable:summary"
       p.description = patch.attr "solvable:description"
-      
+      p.reboot = patch.attr "update:reboot"
+      p.restart = patch.attr "update:restart"
+#      STDERR.puts "=> #{p}"      
       patch.requires.each { |req|
 	sp = req.name.split ":"
 	

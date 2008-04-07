@@ -28,6 +28,8 @@ class Patch
     @category = category
     @timestamp = timestamp
     @contains = []
+    @reboot = nil
+    @restart = nil
   end
   
   def add name,evr,arch
@@ -38,8 +40,10 @@ class Patch
     s = "Name: #{@name}-#{@evr}\n" +
         "  Category: #{@category}\n" +
         "  Timestamp: #{@timestamp}\n" +
-        "  Summary: #{@summary}\n" +
-	"  Contains[#{@contains.size}]:\n"
+        "  Summary: #{@summary}\n"
+    s += "  Reboot!\n" if @reboot
+    s += "  Restart!\n" if @restart
+    s += "  Contains[#{@contains.size}]:\n"
     @contains.each { |i| s += "    #{i}\n" }
     s
   end
