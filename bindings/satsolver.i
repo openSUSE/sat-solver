@@ -183,6 +183,9 @@ xsolvable_attr_lookup_callback( void *cbdata, Solvable *s, Repodata *data, Repok
       case REPOKEY_TYPE_NUM:
         *result = INT2FIX( kv->num );
       break;
+      default:
+        return 0;
+      break;
     }
   return 1;
 }
@@ -930,17 +933,48 @@ typedef struct _Pool {} Pool;
   Dependency *freshens()
   { return dependency_new( $self, DEP_FRE ); }
   
+#if defined(SWIGRUBY)
+  %rename( "provides?" ) does_provide( const char *name );
+  %rename( "provides_any?" ) does_provide_any( Array );
+  %rename( "provides_all?" ) does_provide_all( Array );
+  %typemap(out) int does_provide
+    "$result = ($1 != 0) ? Qtrue : Qfalse;";
+#endif
+
+#if 0
+  int does_provide( const char *name )
+  { return dep_match_name( $self, DEP_PRV, name ); }
+#if defined(SWIGRUBY)
+  int does_provide( const char *regexp )
+  { return dep_match_regexp( $self, DEP_PRV, regexp ); }
+#endif
+  int does_provide( const Relation *rel )
+  { return dep_match_relation( $self, DEP_PRV, rel ); }
+#endif
+
   /*
    * Attributes (from Repodata / Repokey)
    */
 #if defined(SWIGRUBY)
-  VALUE attr( const char *keyname )
-  { 
-    Id key = str2id( $self->pool, keyname, 0);
-    Solvable *s = xsolvable_solvable($self);
-    VALUE result;
-    if (repo_lookup( s, key, xsolvable_attr_lookup_callback, &result ))
-      return result;
+  VALUE attr( VALUE attrname )
+  {
+    char *name;
+    
+    if (SYMBOL_P(attrname))
+      name = rb_id2name( SYM2ID( attrname ) );
+    else
+      name = StringValuePtr( attrname );
+    if (name) {
+      Id key;
+      key = str2id( $self->pool, name, 0);
+      if (key != ID_NULL) {    /* key existing in pool ? */
+        Solvable *s;
+	VALUE result;
+        s = xsolvable_solvable($self);
+        if (repo_lookup( s, key, xsolvable_attr_lookup_callback, &result ))
+          return result;
+      }
+    }
     return Qnil;
   }
 #endif
