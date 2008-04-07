@@ -149,7 +149,9 @@ xsolvable_attr_lookup_callback( void *cbdata, Solvable *s, Repodata *data, Repok
   VALUE *result = (VALUE *)cbdata;
   switch( key->type )
     {
-      case REPOKEY_TYPE_VOID: *result = Qtrue; break;
+      case REPOKEY_TYPE_VOID:
+        *result = Qtrue;
+      break;
       case REPOKEY_TYPE_ID:
         if (data->localpool)
 	  *result = rb_str_new2( stringpool_id2str( &data->spool, kv->id ) );
@@ -184,6 +186,7 @@ xsolvable_attr_lookup_callback( void *cbdata, Solvable *s, Repodata *data, Repok
         *result = INT2FIX( kv->num );
       break;
       default:
+        *result = Qnil;
         return 0;
       break;
     }
@@ -969,7 +972,7 @@ typedef struct _Pool {} Pool;
       key = str2id( $self->pool, name, 0);
       if (key != ID_NULL) {    /* key existing in pool ? */
         Solvable *s;
-	VALUE result;
+	VALUE result = Qnil;
         s = xsolvable_solvable($self);
         if (repo_lookup( s, key, xsolvable_attr_lookup_callback, &result ))
           return result;
