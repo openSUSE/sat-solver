@@ -18,7 +18,8 @@ end
 class Patch
   attr_reader :name, :evr
   attr_reader :timestamp, :category
-  attr_reader :summary, :description
+  attr_accessor :summary, :description
+  attr_accessor :restart, :reboot
   attr_reader :contains
   
   def initialize name, evr, category, timestamp
@@ -27,13 +28,6 @@ class Patch
     @category = category
     @timestamp = timestamp
     @contains = []
-  end
-  
-  def summary= summary
-    @summary = summary
-  end
-  def description= description
-    @description = description
   end
   
   def add name,evr,arch

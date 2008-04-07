@@ -1,6 +1,21 @@
 #
 # Convert .solv file to Code11 Patches
 #
+#
+#  solvable:name (type repokey:type:id size 0 storage 1)
+#  solvable:arch (type repokey:type:id size 0 storage 1)
+#  solvable:evr (type repokey:type:id size 0 storage 1)
+#  solvable:provides (type repokey:type:relidarray size 16 storage 1)
+#  solvable:requires (type repokey:type:relidarray size 22 storage 1)
+#  solvable:freshens (type repokey:type:relidarray size 14 storage 1)
+#  solvable:buildtime (type repokey:type:num size 0 storage 2)
+#  solvable:summary (type repokey:type:str size 0 storage 2)
+#  solvable:description (type repokey:type:str size 10363 storage 3)
+#  solvable:patchcategory (type repokey:type:str size 0 storage 2)
+#  update:restart
+#  update:reboot
+#		    
+#
 
 require 'satsolver'
 require '_patch'
@@ -18,6 +33,9 @@ def solv2patches solvname, repo
   repo.add_solv( solvname ) if solvname
   STDERR.puts "#{repo.size} patches and stuff"
 
+  
+  # split .solv to atoms and patches
+  
   atoms = Hash.new
   patches = Hash.new
 
@@ -60,9 +78,9 @@ def solv2patches solvname, repo
   patches.each { |name,store|
     store.each { |evr,patch|
 
-      p = Patch.new( name, evr, patch.category, patch.timestamp )
-      p.summary = patch.summary
-      p.description = patch.description
+      p = Patch.new( name, evr, patch.attr( "solvable:patchcategory" ), patch.attr( "solvable:buildtime" ))
+      p.summary = patch.attr "solvable:summary"
+      p.description = patch.attr "solvable:description"
       
       patch.requires.each { |req|
 	sp = req.name.split ":"
