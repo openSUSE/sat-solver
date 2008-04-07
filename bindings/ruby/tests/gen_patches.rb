@@ -8,5 +8,8 @@ require 'satsolver'
 require '_patch'
 require '_solv2patches'
 
-patches = solv2patches "patches.solv", "x86_64"
+pool = SatSolver::Pool.new( "x86_64" )
+repo = pool.create_repo( "patches" )
+
+patches = solv2patches "patches.solv", repo 
 patches.each { |p| puts p }

@@ -13,11 +13,9 @@ def store_it the_store, name, s
   the_store
 end
 
-def solv2patches name, arch
+def solv2patches solvname, repo
 
-  pool = SatSolver::Pool.new( arch )
-  repo = pool.create_repo( "patches" )
-  repo.add_solv( name )
+  repo.add_solv( solvname ) if solvname
   STDERR.puts "#{repo.size} patches and stuff"
 
   atoms = Hash.new
@@ -75,13 +73,13 @@ def solv2patches name, arch
 	end
 	unless sp[0] == "atom"
 	  STDERR.puts "** Patch #{patch} requires non-atom #{sp[0]}"
-	  exit
+#	  exit
 	end
 	name = sp[1]
 	byname = atoms[name]
 	unless byname
 	  STDERR.puts "** Patch #{patch} requires unknown atom #{name}"
-	  exit
+	  break
 	end
 	unless req.op == SatSolver::REL_EQ
 	  STDERR.puts "** Patch #{patch} requires non-equal atom #{name}"

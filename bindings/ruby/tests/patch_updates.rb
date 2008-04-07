@@ -73,7 +73,8 @@ solver.solve( pool.create_transaction )
 # Now match updates to patches
 #
 
-patches = solv2patches "patches.solv", "x86_64"
+patchrepo = pool.create_repo( "patches" )
+patches = solv2patches "patches.solv", patchrepo
 
 #
 # Build a lookup hash
