@@ -131,6 +131,21 @@ How to set attributes ?
     repodata_set_id(data, datanum, attr_name, id);
 
 
+4.5 Setting a constant attribute
+
+  A constant attribute shares a single value across all instances of
+  the attribute.
+
+  A constant can either be of numeric (unsigned int) type
+
+    repodata_set_constant(data, datanum, attr_name, 12345);
+
+  or an Id:
+  
+    Id id = str2id(pool, "constant string", 1);
+    repodata_set_constant(data, datanum, attr_name, id);
+
+
 5. Writing the .solv file
 
   Before writing out a .solv file, you need to internalize the
