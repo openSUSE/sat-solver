@@ -54,6 +54,11 @@ How to set attributes ?
 
     Repodata *data = repo_add_repodata(repo, 0);
 
+  The second parameter indicates a 'local pool' for storing strings.
+  By default, strings are stored in the Pool. Setting the second
+  parameter to non-zero will store attribute string values separate
+  from the Pool.
+
 
 3. You need space for the attributes
 
