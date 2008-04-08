@@ -1,0 +1,151 @@
+All about attributes
+====================
+
+
+Why attributes ?
+----------------
+
+The .solv files contain Solvables, as defined in src/solvable.h
+These are the basic objects for the solver, containing name,
+architecture, evr (epoch-version-release), vendor and dependencies.
+
+However, a (RPM) package has many more properties. Like summary,
+description, license, package group, etc.
+All theses properties are not needed for dependency resolution and
+hence are stored outside of Solvables.
+
+Sat-solver provides the 'Attribute Store' for these properties,
+internally called 'repodata'. See src/repodata.h
+
+
+What are attributes ?
+---------------------
+
+An attribute is a quadruple containing
+
+ - solvable (to which this attribute belongs)
+ - name (describing the content, like 'solvable:description')
+ - type (like 'number' or 'string')
+ - value (according to the type)
+ 
+
+How to set attributes ?
+-----------------------
+
+1. You need a Solvable
+
+  Attributes belong to a solvable. So you need a solvable first. And
+  solvables belong to a repo which belongs to a pool.
+
+    /* create a pool */
+    Pool *pool = pool_create();
+    
+    /* create a repo */
+    Repo *repo = repo_create(pool, "demo");
+    
+    /* create a solvable */
+    Id s = repo_add_solvable(repo);
+
+
+2. You need to create the attribute store
+
+  By default .solv files don't contain additional attributes. So you
+  have to add the attribute store to the repository:
+
+    Repodata *data = repo_add_repodata(repo, 0);
+
+
+3. You need space for the attributes
+
+  Space for the attribute store must be explicitly requested. Not for
+  every attribute but you have to signal that a solvable has
+  attributes.
+
+  First you compute the datanum:
+
+    Solvable *solvable = pool_id2solvable(pool, s);
+    Id datanum = (solvable - pool->solvables) - repo->start;
+
+  datanum is the reference from the attribute store back to the
+  solvable.
+
+  As you can see, the datanum is basically the offset of the solvable
+  within the repo. Remember that the attributes are per-repository (as
+  is the solvable. When calling 'repodata_*' function, use the datanum
+  to represent the solvable.
+
+  Extending the store is done with repodata_extend():
+
+    repodata_extend(data, solvable - pool->solvables);
+
+
+4. Set attributes
+
+  Now you can set attributes. You do this with repodata_set_*()
+  passing the store (data), the solvable reference (datanum), the name
+  of the solvable and the value.
+
+  See src/repodata.h for a complete list of all the repodata_set_*()
+  functions.
+
+  Attributes are named and in good sat-solver tradition, everything is
+  an Id.
+
+    Id attr_name = str2id(pool, "name_of_attribute", 1);
+
+  See knownid.h for predefined attribute names.
+
+
+4.1 Setting a boolean attribute
+
+  A boolean attribute derives is value from its presence. So you don't
+  pass an explicit true/false value but call repodata_set_void() if
+  the attribute is 'true'.
+
+    repodata_set_void(data, datanum, attr_name);
+
+
+4.2 Setting a numeric attribute
+
+  Storing a numeric value is done with repodata_set_num, passing an
+  unsinged integer:
+
+    unsigned int value = 123456;
+    repodata_set_num(data, datanum, attr_name, value);
+
+
+4.3 Setting a string attribute
+
+  Strings are 'const char' pointers and set like:
+  
+    const char *s = "This is a string";
+    repodata_set_str(data, datanum, attr_name, s);
+  
+  If the same string is used multiple times as an attribute value, its
+  more efficient to store it once and use its Id.
+  
+
+4.4 Setting an Id attribute
+
+    Id id = str2id(pool, "value_of_attribute", 1);
+    repodata_set_id(data, datanum, attr_name, id);
+
+
+5. Writing the .solv file
+
+  Before writing out a .solv file, you need to internalize the
+  attribute store so it gets stored together with the solvables.
+
+    repodata_internalize(data);
+
+  Thats black MM magic. Don't ask.
+
+
+A. About attribute names
+
+  You are free to choose any name for the attributes. However, when
+  dealing with (RPM) packages, there are a lot of standard attributes
+  in use. src/knownid.h defines most of them, e.g. SOLVABLE_SUMMARY (a
+  string) or SOLVABLE_BUILDTIME (a number). Use the predefined
+  attribute names whenever applicable.
+  
