@@ -147,10 +147,21 @@ static int
 xsolvable_attr_lookup_callback( void *cbdata, Solvable *s, Repodata *data, Repokey *key, KeyValue *kv )
 {
   VALUE *result = (VALUE *)cbdata;
+  
+  /*
+   * !! keep the order of case statements according to knownid.h !!
+   */
+ 
   switch( key->type )
     {
       case REPOKEY_TYPE_VOID:
         *result = Qtrue;
+      break;
+      case REPOKEY_TYPE_CONSTANT:
+        *result = INT2FIX( key->size );
+      break;
+      case REPOKEY_TYPE_CONSTANTID:
+        *result = INT2FIX( key->size );
       break;
       case REPOKEY_TYPE_ID:
         if (data->localpool)
@@ -158,32 +169,38 @@ xsolvable_attr_lookup_callback( void *cbdata, Solvable *s, Repodata *data, Repok
 	else
 	  *result = rb_str_new2( id2str( data->repo->pool, kv->id ) );
       break;
-      case REPOKEY_TYPE_IDARRAY:
+      case REPOKEY_TYPE_NUM:
+        *result = INT2FIX( kv->num );
+      break;
+      case REPOKEY_TYPE_U32:
+        *result = INT2FIX( kv->num );
+      break;
+      case REPOKEY_TYPE_DIR:
         *result = Qnil; /*FIXME*/
       break;
       case REPOKEY_TYPE_STR:
         *result = rb_str_new2( kv->str );
       break;
+      case REPOKEY_TYPE_IDARRAY:
+        *result = Qnil; /*FIXME*/
+      break;
       case REPOKEY_TYPE_REL_IDARRAY:
-        *result = Qnil; /*FIXME*/
-      break;
-      case REPOKEY_TYPE_DIR:
-        *result = Qnil; /*FIXME*/
-      break;
-      case REPOKEY_TYPE_DIRNUMNUMARRAY:
         *result = Qnil; /*FIXME*/
       break;
       case REPOKEY_TYPE_DIRSTRARRAY:
         *result = Qnil; /*FIXME*/
       break;
-      case REPOKEY_TYPE_U32:
-      /*FALLTHRU*/
-      case REPOKEY_TYPE_CONSTANT:
-      /*FALLTHRU*/
-      case REPOKEY_TYPE_CONSTANTID:
-      /*FALLTHRU*/
-      case REPOKEY_TYPE_NUM:
-        *result = INT2FIX( kv->num );
+      case REPOKEY_TYPE_DIRNUMNUMARRAY:
+        *result = Qnil; /*FIXME*/
+      break;
+      case REPOKEY_TYPE_MD5:
+        *result = Qnil; /*FIXME*/
+      break;
+      case REPOKEY_TYPE_SHA1:
+        *result = Qnil; /*FIXME*/
+      break;
+      case REPOKEY_TYPE_SHA256:
+        *result = Qnil; /*FIXME*/
       break;
       default:
         *result = Qnil;
