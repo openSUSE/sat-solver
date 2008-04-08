@@ -141,6 +141,118 @@ How to set attributes ?
   Thats black MM magic. Don't ask.
 
 
+6. Reading attributes
+
+  Reading attribute values isn't that easy because of the way they're
+  stored internally. The storage optimization prevents a direct-access
+  method, so you need to search for the value matching a specific
+  solvable and attribute name.
+
+  Hence the read functions are called 'repodata_lookup_*()' and only
+  exist for some attribute types, namely boolean (void), numeric,
+  string, Id and bin_checksum.
+
+  The preparation steps are similar to writing, you need a pool, a
+  repository and the solvable reference.
+
+    /* create a pool */
+    Pool *pool = pool_create();
+    
+    /* create a repo */
+    Repo *repo = repo_create(pool, "demo");
+    
+    Solvable *s;
+
+    /*
+     * now populate the repo
+     * either from a .solv file: repo_add_solv(Repo *, FILE *);
+     * or from the RPM database: repo_add_rpmdb(Repo *, NULL, "/");
+     *
+     * and retrieve a Solvable s
+     *
+     */
+
+
+6.1 Reading known attributes
+
+  For the standard attribute names as listed in knownid.h, the easiest
+  way to retrieve values it trough repo_lookup_*() (as opposed to
+  repodata_lookup_*())
+
+    /* get the summary attribute */
+    const char *summary = repo_lookup_str(s, SOLVABLE_SUMMARY);
+
+    /* get the buildtime attribute */
+    unsigned int buildtime = repo_lookup_num(s, SOLVABLE_BUILDTIME);
+
+  Both lookup functions return 0 if the attribute isn't set.
+
+  The downside of these simple access functions it that you have to
+  know the type of the attribute you're going to retrieve.
+
+
+6.2 Generic attribute lookup
+
+  The function repo_lookup() provides a generic way to access
+  attribute values. It is passed a solvable, an attribute name (as Id)
+  and a callback function.
+
+  repo_lookup then tries to retrieve the attribute value and returns
+  non-zero on success.
+
+    Id attr_name = str2id(pool, "name_of_attribute", 0);
+
+  You can also use predefined Ids from knownid.h
+  Pay attention to the last parameter to the str2id call. It was 1
+  when setting the attribute buts its 0 when reading.
+  
+  This is just a short-path to check for existance of an attribute
+  (name). Passing 0 to str2id means 'do not create if not existing
+  before'. So if attr_name is assigned 0 (ID_NULL) in this call, this
+  attribute is not defined within the pool.
+
+  if(repo_lookup(s, attr_name, callback_function, (void *)callback_data) {
+    /* attribute found */
+  }
+
+  If the solvable s has the attribute attr_name defined, the
+  callback_function is called passing callback_data.
+
+  This function is defined as
+
+    int callback_function( void *cbdata, Solvable *s, Repodata *data, Repokey *key, KeyValue *kv )
+
+  with
+  
+  cbdata: the callback_data from the call to repo_lookup
+  s: the solvable from the call to repo_lookup
+  data: the attribute store associated with the repo
+  key: the attribute name (key->name, an Id) and type (key->type, a REPOKEY_TYPE_*)
+  kv: the attribute value (depending on the key->type)
+  
+  within the callback_function, you usually look at the key->type and
+  access the value according to the type:
+  
+    switch(key->type)
+    {
+      case REPOKEY_TYPE_VOID: /* just existance */
+      ...
+      break;
+      case REPOKEY_TYPE_NUM:  /* value is in kv->num */
+      ...
+      break;
+      case REPOKEY_TYPE_STR:  /* value is in kv->str */
+      ...
+      break;
+      
+      /* ... */
+    }
+    return 1;
+ 
+  Returning non-zero from the callback_function will end the lookup,
+  signalling you've found what you were looking for.
+
+
 A. About attribute names
 
   You are free to choose any name for the attributes. However, when
@@ -148,4 +260,3 @@ A. About attribute names
   in use. src/knownid.h defines most of them, e.g. SOLVABLE_SUMMARY (a
   string) or SOLVABLE_BUILDTIME (a number). Use the predefined
   attribute names whenever applicable.
-  
