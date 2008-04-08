@@ -182,7 +182,12 @@ xsolvable_attr_lookup_callback( void *cbdata, Solvable *s, Repodata *data, Repok
         *result = rb_str_new2( kv->str );
       break;
       case REPOKEY_TYPE_IDARRAY:
-        *result = Qnil; /*FIXME*/
+        if (NIL_P(*result))
+	  *result = rb_ary_new();  /* create new Array on first call */
+        if (data->localpool)
+	  rb_ary_push( *result, rb_str_new2( stringpool_id2str( &data->spool, kv->id ) ) );
+	else
+	  rb_ary_push( *result, rb_str_new2( id2str( data->repo->pool, kv->id ) ) );
       break;
       case REPOKEY_TYPE_REL_IDARRAY:
         *result = Qnil; /*FIXME*/
@@ -611,6 +616,10 @@ typedef struct _Pool {} Pool;
    */
   XSolvable *find( char *name )
   { return xsolvable_find( $self->pool, name, $self ); }
+
+  /*-----
+   * Repodata / Attributes
+   */
 
   /* return number of attached Repodata(s) */
   int datasize()
