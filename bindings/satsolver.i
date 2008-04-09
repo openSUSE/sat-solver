@@ -1087,7 +1087,6 @@ typedef struct _Pool {} Pool;
 
     if (name) {
       Id key;
-      fprintf(stderr, "attr(%s)\n", name );
       key = str2id( $self->pool, name, 0);
       if (key != ID_NULL) {    /* key existing in pool ? */
 	VALUE result = Qnil;
