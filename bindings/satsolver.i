@@ -143,6 +143,82 @@ transaction_actions_iterate_callback( const Action *a )
 
 
 #if defined(SWIGRUBY)
+
+static int
+xsolvable_each_attr_callback( void *cbdata, Solvable *s, Repodata *data, Repokey *key, KeyValue *kv )
+{
+  static VALUE result = Qnil;
+
+  /*
+   * !! keep the order of case statements according to knownid.h !!
+   */
+ 
+  switch( key->type )
+    {
+      case REPOKEY_TYPE_VOID:
+        result = Qtrue;
+      break;
+      case REPOKEY_TYPE_CONSTANT:
+        result = INT2FIX( key->size );
+      break;
+      case REPOKEY_TYPE_CONSTANTID:
+        result = INT2FIX( key->size );
+      break;
+      case REPOKEY_TYPE_ID:
+        if (data->localpool)
+	  result = rb_str_new2( stringpool_id2str( &data->spool, kv->id ) );
+	else
+	  result = rb_str_new2( id2str( data->repo->pool, kv->id ) );
+      break;
+      case REPOKEY_TYPE_NUM:
+        result = INT2FIX( kv->num );
+      break;
+      case REPOKEY_TYPE_U32:
+        result = INT2FIX( kv->num );
+      break;
+      case REPOKEY_TYPE_DIR:
+        result = Qnil;
+      break;
+      case REPOKEY_TYPE_STR:
+        result = rb_str_new2( kv->str );
+      break;
+      case REPOKEY_TYPE_IDARRAY:
+        if (NIL_P(result))
+	  result = rb_ary_new();  /* create new Array on first call */
+        if (data->localpool)
+	  rb_ary_push( result, rb_str_new2( stringpool_id2str( &data->spool, kv->id ) ) );
+	else
+	  rb_ary_push( result, rb_str_new2( id2str( data->repo->pool, kv->id ) ) );
+	return kv->eof?1:0;
+      break;
+      case REPOKEY_TYPE_REL_IDARRAY:
+        result = Qnil;
+      break;
+      case REPOKEY_TYPE_DIRSTRARRAY:
+        result = Qnil;
+      break;
+      case REPOKEY_TYPE_DIRNUMNUMARRAY:
+        result = Qnil;
+      break;
+      case REPOKEY_TYPE_MD5:
+        result = Qnil;
+      break;
+      case REPOKEY_TYPE_SHA1:
+        result = Qnil;
+      break;
+      case REPOKEY_TYPE_SHA256:
+        result = Qnil;
+      break;
+      default:
+        result = Qnil;
+      break;
+    }
+
+  rb_yield( result );
+  return 0;
+}
+
+
 static int
 xsolvable_attr_lookup_callback( void *cbdata, Solvable *s, Repodata *data, Repokey *key, KeyValue *kv )
 {
@@ -188,6 +264,7 @@ xsolvable_attr_lookup_callback( void *cbdata, Solvable *s, Repodata *data, Repok
 	  rb_ary_push( *result, rb_str_new2( stringpool_id2str( &data->spool, kv->id ) ) );
 	else
 	  rb_ary_push( *result, rb_str_new2( id2str( data->repo->pool, kv->id ) ) );
+	return kv->eof?1:0;
       break;
       case REPOKEY_TYPE_REL_IDARRAY:
         *result = Qnil; /*FIXME*/
@@ -985,27 +1062,54 @@ typedef struct _Pool {} Pool;
    * Attributes (from Repodata / Repokey)
    */
 #if defined(SWIGRUBY)
+
+  /*
+   * access attribute via []
+   */
+   
+  /* %rename is rejected by swig for [] */
+  %alias attr "[]";
+
   VALUE attr( VALUE attrname )
   {
     char *name;
-    
-    if (SYMBOL_P(attrname))
+
+    if (SYMBOL_P(attrname)) {
+      char *colon;
       name = rb_id2name( SYM2ID( attrname ) );
+      colon = name;
+      while ((colon = strchr( colon, '_'))) {
+        *colon++ = ':';
+      }
+    }
     else
       name = StringValuePtr( attrname );
+
     if (name) {
       Id key;
+      fprintf(stderr, "attr(%s)\n", name );
       key = str2id( $self->pool, name, 0);
       if (key != ID_NULL) {    /* key existing in pool ? */
-        Solvable *s;
 	VALUE result = Qnil;
-        s = xsolvable_solvable($self);
+        Solvable *s = xsolvable_solvable($self);
         if (repo_lookup( s, key, xsolvable_attr_lookup_callback, &result ))
           return result;
       }
     }
     return Qnil;
   }
+  
+  /*
+   * iterate over all attributes
+   */
+
+  void each_attr()
+  {
+    Solvable *s = xsolvable_solvable($self);
+    repo_lookup( s, ID_NULL, xsolvable_each_attr_callback, NULL );
+  }
+
+
 #endif
 }
 
