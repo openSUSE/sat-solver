@@ -95,6 +95,61 @@ load_callback(Pool *pool, Repodata *data, void *cbdata)
 
 //-----------------------------------------------
 
+void
+langdemo(Pool *pool)
+{
+  Id screenid, p, *pp;
+
+  screenid = str2id(pool, "3ddiag", 1);
+  static const char *languages[] = {"es", "de"};
+  pool_set_languages(pool, languages, 2);
+  FOR_PROVIDES(p, pp, screenid)
+    {
+      unsigned int medianr;
+      Id chktype = 0;
+      char *loc = solvable_get_location(pool->solvables + p, &medianr);
+      const char *chksum;
+      chksum = solvable_lookup_checksum(pool->solvables + p, SOLVABLE_CHECKSUM, &chktype);
+      printf("%s: %s\n%s[%d] %s:%s\n", solvable2str(pool, pool->solvables + p), solvable_lookup_str_poollang(pool->solvables + p, SOLVABLE_DESCRIPTION), loc, medianr, id2str(pool, chktype), chksum);
+      printf("%s\n", solvable_lookup_str_lang(pool->solvables + p, SOLVABLE_DESCRIPTION, "de"));
+    }
+}
+
+void
+trivialdemo(Solver *solv)
+{
+  Pool *pool = solv->pool;
+  Map installedmap, conflictsmap;
+  Id p;
+  const char *n;
+  Solvable *s;
+
+  printf("trivial installable status:\n");
+  create_trivial_installable_maps(pool, &solv->decisionq, &installedmap, &conflictsmap);
+  for (p = 1, s = pool->solvables + p; p < solv->pool->nsolvables; p++, s++)
+    {
+      n = id2str(pool, s->name);
+      if (strncmp(n, "patch:", 6) != 0 && strncmp(n, "pattern:", 8) != 0)
+	continue;
+      printf("%s: %d\n", solvable2str(pool, s), solvable_trivial_installable_map(s, &installedmap, &conflictsmap));
+    }
+  map_free(&installedmap);
+  map_free(&conflictsmap);
+}
+
+static Id
+nscallback(Pool *pool, void *data, Id name, Id evr)
+{
+  if (name == NAMESPACE_LANGUAGE && !ISRELDEP(evr))
+    {
+      if (!strcmp(id2str(pool, evr), "de"))
+	return 1;
+    }
+  return 0;
+}
+
+//-----------------------------------------------
+
 int
 main(int argc, char **argv)
 {
@@ -106,12 +161,17 @@ main(int argc, char **argv)
   Repo *channel;
   Queue job;
   Id id;
+  int c;
   int erase = 0;
   int all = 0;
   int debuglevel = 1;
   int force = 0;
+  int noreco = 0;
+  int weak = 0;
+  char *keep = 0;
 
   pool = pool_create();
+  pool->nscallback = nscallback;
   pool_setloadcallback(pool, load_callback, 0);
   pool_setarch(pool, "i686");
   queue_init(&job);
@@ -125,39 +185,39 @@ main(int argc, char **argv)
       exit(0);
     }
 
-  while (argc > 1)
+  while ((c = getopt(argc, argv, "efrAvwk:")) >= 0)
     {
-      // '-e' ?
-      if (!strcmp(argv[1], "-e"))
+      switch(c)
 	{
+	case 'e':
 	  erase = 1;
-	  argc--;
-	  argv++;
-	  continue;
-	}
-      if (!strcmp(argv[1], "-f"))
-	{
+	  break;
+	case 'f':
 	  force = 1;
-	  argc--;
-	  argv++;
-	  continue;
-	}
-      if (!strcmp(argv[1], "-A"))
-	{
+	  break;
+	case 'A':
 	  all = 1;
-	  argc--;
-	  argv++;
-	  continue;
-	}
-      if (!strcmp(argv[1], "-v"))
-	{
+	  break;
+	case 'r':
+	  noreco = 1;
+	  break;
+	case 'w':
+	  weak = SOLVER_WEAK;
+	  break;
+	case 'k':
+	  keep = optarg;
+	  break;
+	case 'v':
 	  debuglevel++;
-	  argc--;
-	  argv++;
-	  continue;
+	  break;
+	default:
+	  exit(1);
 	}
-      break;
     }
+
+  argc -= optind - 1;
+  argv += optind - 1;
+
   pool_setdebuglevel(pool, debuglevel);
 
   // Load system file (installed packages)
@@ -208,19 +268,25 @@ main(int argc, char **argv)
 
   solv = solver_create(pool, system);
 
+  if (keep)
+    {
+      id = str2id(pool, keep, 1);
+      queue_push(&job, SOLVER_ERASE_SOLVABLE_NAME | SOLVER_WEAK);
+      queue_push(&job, id);
+    }
   // setup job queue
   if (!argv[1][0])
     ;
   else if (!erase)
     {
       xs = select_solvable(solv, pool, channel, argv[1]);
-      queue_push(&job, SOLVER_INSTALL_SOLVABLE);
+      queue_push(&job, SOLVER_INSTALL_SOLVABLE | weak);
       queue_push(&job, xs - pool->solvables);
     }
   else
     {
       id = str2id(pool, argv[1], 1);
-      queue_push(&job, SOLVER_ERASE_SOLVABLE_NAME);
+      queue_push(&job, SOLVER_ERASE_SOLVABLE_NAME | weak);
       queue_push(&job, id);
     }
 
@@ -229,6 +295,7 @@ main(int argc, char **argv)
   solv->allowdowngrade = 0;
   solv->allowuninstall = force ? 1 : 0;
   solv->noupdateprovide = 0;
+  solv->dontinstallrecommended = noreco;
 
   // Solve !
 
@@ -252,6 +319,10 @@ main(int argc, char **argv)
         printf("duchanges %s: %d %d\n", duc[i].path, duc[i].kbytes, duc[i].files);
       printf("install size change: %d\n", solver_calc_installsizechange(solv));
     }
+
+  langdemo(pool);
+
+  trivialdemo(solv);
 
   // clean up
 
