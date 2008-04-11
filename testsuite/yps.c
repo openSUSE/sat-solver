@@ -125,7 +125,7 @@ trivialdemo(Solver *solv)
   Solvable *s;
 
   printf("trivial installable status:\n");
-  create_trivial_installable_maps(pool, &solv->decisionq, &installedmap, &conflictsmap);
+  solver_create_state_maps(solv, &installedmap, &conflictsmap);
   for (p = 1, s = pool->solvables + p; p < solv->pool->nsolvables; p++, s++)
     {
       n = id2str(pool, s->name);
