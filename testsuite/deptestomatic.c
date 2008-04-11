@@ -328,7 +328,6 @@ nscallback(Pool *pool, void *data, Id name, Id evr)
   char dir[PATH_MAX];
   int i;
 
-      fprintf(stderr, "looking for %s\n", id2str(pool, evr));
   if (name == NAMESPACE_LANGUAGE && !ISRELDEP(evr))
     {
       for (i = 0; i < pd->nlanguages; i++)
