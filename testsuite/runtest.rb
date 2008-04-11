@@ -327,7 +327,7 @@ private
   
   def check_name name
     case name
-    when /-test/
+    when /-test\.xml$/
       "cat"
     else
       "|../tools/helix2solv"
