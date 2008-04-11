@@ -373,7 +373,7 @@ private
     cmd += " > "
     fulldest = File.join( srcdir, destname )
     cmd += fulldest
-    return if File.exists?( fulldest )
+    return if File.exists?( fulldest ) && File.mtime( fulldest ) >= File.mtime( srcname )
     print "Generating #{fulldest}\n"
     puts "*** FAILED: #{fulldest}" unless system cmd
   end

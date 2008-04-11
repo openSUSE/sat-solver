@@ -10,5 +10,6 @@
 <trial>
 <establish/>
 <showpool all="true" prefix=">!> ESTABLISHED:"/>
+<dontinstallrecommended/>
 </trial>
 </test>

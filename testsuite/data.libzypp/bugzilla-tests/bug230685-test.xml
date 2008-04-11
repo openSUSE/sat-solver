@@ -11,5 +11,6 @@
 <install channel="9" kind="patch" name="MozillaFirefox2"/>
 <install channel="9" kind="patch" name="MozillaFirefox"/>
 <reportproblems/>
+<dontinstallrecommended/>
 </trial>
 </test>

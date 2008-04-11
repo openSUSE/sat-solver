@@ -2,7 +2,7 @@ Encountered problems! Here are the solutions:
 
 Problem 1:
 ====================================
-package yast2-backup-2.13.1-2.noarch requires autoyast2-installation, but none of the providers can be installed
+package autoyast2-installation-2.13.19-2.noarch requires yast2-transfer, but none of the providers can be installed
 
 - allow deinstallation of yast2-backup-2.13.1-2.noarch
 - allow deinstallation of yast2-installation-2.13.28-2.noarch

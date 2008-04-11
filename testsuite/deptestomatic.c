@@ -138,6 +138,7 @@ enum state {
   STATE_SETLICENSEBIT,
   STATE_INSTORDER,
   STATE_AVAILABLELOCALES,
+  STATE_DONTINSTALLRECOMMENDED,
   NUMSTATES
 };
 
@@ -188,6 +189,7 @@ static struct stateswitch stateswitches[] = {
   { STATE_TRIAL,       "instorder",    STATE_INSTORDER, 0 },
   { STATE_TRIAL,       "availablelocales",STATE_AVAILABLELOCALES, 0 },
   { STATE_TRIAL,       "keep",         STATE_KEEP, 0 },
+  { STATE_TRIAL,    "dontinstallrecommended", STATE_DONTINSTALLRECOMMENDED, 0 },
 
   { NUMSTATES }
 
@@ -236,6 +238,7 @@ typedef struct _parsedata {
   int allowvirtualconflicts;     /* 0/1, if conflicts specify package names or package provides */
   int allowarchchange;           /* 0/1, if packages can change architecture */
   int dosplitprovides;           /* 0/1, if splitprovides should be looked at */
+  int dontinstallrecommended;    /* 0/1, if recommends should be ignored */
 
   struct stateswitch *swtab[NUMSTATES];
   enum state sbtab[NUMSTATES];
@@ -325,6 +328,7 @@ nscallback(Pool *pool, void *data, Id name, Id evr)
   char dir[PATH_MAX];
   int i;
 
+      fprintf(stderr, "looking for %s\n", id2str(pool, evr));
   if (name == NAMESPACE_LANGUAGE && !ISRELDEP(evr))
     {
       for (i = 0; i < pd->nlanguages; i++)
@@ -1308,6 +1312,10 @@ printf("hardware %s\n", dir);
     }
     break;
 
+    case STATE_DONTINSTALLRECOMMENDED:
+      pd->dontinstallrecommended = 1;
+      break;
+
     case STATE_KEEP: {
       const char *arch = attrval( atts, "arch" );
       const char *version = attrval( atts, "version" );
@@ -1380,6 +1388,7 @@ endElement( void *userData, const char *name )
       solv->allowuninstall = pd->allowuninstall;
       solv->allowarchchange = pd->allowarchchange;
       solv->dosplitprovides = pd->dosplitprovides;
+      solv->dontinstallrecommended = pd->dontinstallrecommended;
       solv->noupdateprovide = 1;
 
       // Solve !

@@ -2,7 +2,7 @@ Encountered problems! Here are the solutions:
 
 Problem 1:
 ====================================
-nothing provides kernel(init) = ad4fb2b5b8e17a1e needed by tpctl-kmp-smp-4.17_2.6.16_rc5_git9_2-17.i586
+nothing provides kernel(kernel) = 51185323fa0b7afe needed by tpctl-kmp-bigsmp-4.17_2.6.16_rc5_git9_2-17.i586
 
 - do not install tpctl-4.17-17.i586
 

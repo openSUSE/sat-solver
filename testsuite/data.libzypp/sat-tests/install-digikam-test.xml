@@ -118,5 +118,6 @@
 <lock channel="0" kind="package" name="poppler" arch="i586" version="0.5.4" release="100"/>
 <lock channel="0" kind="package" name="amarok-libvisual" arch="i586" version="1.4.7" release="42.1"/>
 <install channel="7" name="digikam"/>
+<dontinstallrecommended/>
 </trial>
 </test>
