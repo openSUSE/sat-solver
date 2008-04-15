@@ -28,6 +28,7 @@
 #include "repo_solv.h"
 #include "solver.h"
 #include "policy.h"
+#include "evr.h"
 
 // find solvable by name
 //   If repo != NULL, find there (installed packages)
@@ -111,7 +112,7 @@ langdemo(Pool *pool)
       const char *chksum;
       chksum = solvable_lookup_checksum(pool->solvables + p, SOLVABLE_CHECKSUM, &chktype);
       printf("%s: %s\n%s[%d] %s:%s\n", solvable2str(pool, pool->solvables + p), solvable_lookup_str_poollang(pool->solvables + p, SOLVABLE_DESCRIPTION), loc, medianr, id2str(pool, chktype), chksum);
-      printf("%s\n", solvable_lookup_str_lang(pool->solvables + p, SOLVABLE_DESCRIPTION, "de"));
+      printf("DE: %s\n", solvable_lookup_str_lang(pool->solvables + p, SOLVABLE_DESCRIPTION, "de"));
     }
 }
 
@@ -168,6 +169,8 @@ main(int argc, char **argv)
   int force = 0;
   int noreco = 0;
   int weak = 0;
+  char *weakdeps = 0;
+  int forceupdate = 0;
   char *keep = 0;
 
   pool = pool_create();
@@ -185,12 +188,15 @@ main(int argc, char **argv)
       exit(0);
     }
 
-  while ((c = getopt(argc, argv, "efrAvwk:")) >= 0)
+  while ((c = getopt(argc, argv, "uefrAvwk:W:")) >= 0)
     {
       switch(c)
 	{
 	case 'e':
 	  erase = 1;
+	  break;
+	case 'u':
+	  forceupdate = 1;
 	  break;
 	case 'f':
 	  force = 1;
@@ -203,6 +209,9 @@ main(int argc, char **argv)
 	  break;
 	case 'w':
 	  weak = SOLVER_WEAK;
+	  break;
+	case 'W':
+	  weakdeps = optarg;
 	  break;
 	case 'k':
 	  keep = optarg;
@@ -277,6 +286,45 @@ main(int argc, char **argv)
   // setup job queue
   if (!argv[1][0])
     ;
+  else if (forceupdate)
+    {
+      Id p, *pp;
+      Solvable *s = 0;
+      Queue qs;
+
+      id = str2id(pool, argv[1], 1);
+      FOR_PROVIDES(p, pp, id)
+	{
+	  s = pool->solvables + p;
+	  if (s->name == id && s->repo == system)
+	    break;
+	}
+      if (p)
+	{
+	  int i, j;
+
+	  queue_init(&qs);
+	  policy_findupdatepackages(solv, s, &qs, 0);
+	  for (i = j = 0; i < qs.count; i++)
+	    {
+	      Solvable *s2 = pool->solvables + qs.elements[i];
+	      /* filter out same evr */
+	      if (s2->name == s->name && evrcmp(pool, s->evr, s2->evr, EVRCMP_MATCH_RELEASE) >= 0)
+		continue;
+	      qs.elements[j++] = qs.elements[i];
+	    }
+	  qs.count = j;
+	  queue_push(&job, SOLVER_INSTALL_SOLVABLE_ONE_OF | weak);
+	  queue_push(&job, pool_queuetowhatprovides(pool, &qs));
+	  queue_free(&qs);
+	}
+      else
+	{
+	  /* a new one */
+	  queue_push(&job, SOLVER_INSTALL_SOLVABLE_NAME | weak);
+	  queue_push(&job, id);
+	}
+    }
   else if (!erase)
     {
       xs = select_solvable(solv, pool, channel, argv[1]);
@@ -290,6 +338,21 @@ main(int argc, char **argv)
       queue_push(&job, id);
     }
 
+  if (weakdeps)
+    {
+      Id p, *pp;
+      Solvable *s;
+
+      id = str2id(pool, weakdeps, 1);
+      FOR_PROVIDES(p, pp, id)
+	{
+	  s = pool->solvables + p;
+	  if (s->name != id)
+	    continue;
+	  queue_push(&job, SOLVER_WEAKEN_SOLVABLE_DEPS);
+	  queue_push(&job, p);
+	}
+    }
   solv->fixsystem = 0;
   solv->updatesystem = 0;
   solv->allowdowngrade = 0;
@@ -304,7 +367,9 @@ main(int argc, char **argv)
   solver_solve(solv, &job);
   if (solv->problems.count)
     printsolutions(solv, &job);
-  else
+  printf("transaction:\n");
+  printdecisions(solv);
+  if (1)
     {
       DUChanges duc[4];
       int i;
@@ -313,7 +378,6 @@ main(int argc, char **argv)
       duc[1].path = "/usr/share/man";
       duc[2].path = "/sbin";
       duc[3].path = "/etc";
-      printdecisions(solv);
       solver_calc_duchanges(solv, duc, 4);
       for (i = 0; i < 4; i++)
         printf("duchanges %s: %d %d\n", duc[i].path, duc[i].kbytes, duc[i].files);
