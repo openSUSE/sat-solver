@@ -120,22 +120,30 @@ void
 trivialdemo(Solver *solv)
 {
   Pool *pool = solv->pool;
-  Map installedmap, conflictsmap;
+  Queue in, out;
+  Map installedmap;
   Id p;
   const char *n;
   Solvable *s;
+  int i;
 
+  queue_init(&in);
+  queue_init(&out);
   printf("trivial installable status:\n");
-  solver_create_state_maps(solv, &installedmap, &conflictsmap);
+  solver_create_state_maps(solv, &installedmap, 0);
   for (p = 1, s = pool->solvables + p; p < solv->pool->nsolvables; p++, s++)
     {
       n = id2str(pool, s->name);
       if (strncmp(n, "patch:", 6) != 0 && strncmp(n, "pattern:", 8) != 0)
 	continue;
-      printf("%s: %d\n", solvable2str(pool, s), solvable_trivial_installable_map(s, &installedmap, &conflictsmap));
+      queue_push(&in, p);
     }
+  pool_trivial_installable(pool, solv->installed, &installedmap, &in, &out);
+  for (i = 0; i < in.count; i++)
+    printf("%s: %d\n", solvable2str(pool, pool->solvables + in.elements[i]), out.elements[i]);
   map_free(&installedmap);
-  map_free(&conflictsmap);
+  queue_free(&in);
+  queue_free(&out);
 }
 
 static Id
