@@ -32,7 +32,6 @@ raise "Cannot find 'deptestomatic' executable. Please fix path in runtest.rb'" u
 $topdir = Dir.getwd
 $fails = Array.new
 $ignorecount = 0
-$exitcode = 0
 
 class CompareResult
   Incomplete = 0
@@ -50,14 +49,12 @@ class Solution
       f1 = File.new( name1, "r" )
     rescue
       STDERR.puts "Cannot open #{name1}"
-      $exitcode = 1
       return false
     end
     begin
       f2 = File.new( name2, "r" )
     rescue
       STDERR.puts "Cannot open #{name2}"
-      $exitcode = 1
       return false
     end
     a1 = f1.readlines
@@ -119,7 +116,6 @@ class Solution
 	problemFound = true
       when /> install /, /> upgrade /, /> remove /
 	STDERR.puts "No 'Solution' in #{fname}" unless solution
-        $exitcode = 1 
 	solution << l
       else
 	if problemFound
@@ -147,7 +143,6 @@ class Solution
     end
     unless File.readable?( rname )
       STDERR.puts "Cannot open #{rname}"
-      $exitcode = 1
       return CompareResult::Incomplete
     end
 
@@ -272,7 +267,6 @@ class Tester < Test::Unit::TestCase
     puts "\n\t==> #{$tests.size} tests: (exp:#{epassed}/unexp:#{upassed}) passed, (exp:#{efailed}/unexp:#{ufailed}) failed, #{$ignorecount} ignored <==\n"
     assert(ufailed == 0, 'Unexpected failures')
     assert(upassed == 0, 'Unexpected passes')
-    assert($exitcode == 0, 'Misc errors')
   end
 end
 

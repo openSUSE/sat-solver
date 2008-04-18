@@ -1382,6 +1382,7 @@ endElement( void *userData, const char *name )
 
       Solver *solv = solver_create( pd->pool, pd->system );
       solv->fixsystem = pd->fixsystem;
+      solv->allowselfconflicts = 1;
       solv->updatesystem = pd->updatesystem;
       solv->allowdowngrade = pd->allowdowngrade;
       solv->allowuninstall = pd->allowuninstall;
