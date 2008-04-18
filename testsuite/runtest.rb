@@ -483,8 +483,8 @@ if File.readable?("README.FAILS")
   }
 end
 
-preproc = Recurse.new Dir.getwd
-preproc.process
+#preproc = Recurse.new Dir.getwd
+#preproc.process
 
 r = Runner.new
 

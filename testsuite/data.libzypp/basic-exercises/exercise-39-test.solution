@@ -2,7 +2,7 @@ Encountered problems! Here are the solutions:
 
 Problem 1:
 ====================================
-nothing provides libatk.so.13 needed by yelp-0.2.99.0.200203020022-snap.ximian.1.noarch
+nothing provides libpangoxft-0.26.so needed by yelp-0.2.99.0.200203020022-snap.ximian.1.noarch
 
 - allow deinstallation of yelp-0.2.99.0.200202140152-snap.ximian.1.noarch
 - allow deinstallation of gedit2-1:1.112.0.0.200202140152-snap.ximian.1.noarch

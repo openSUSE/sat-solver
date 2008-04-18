@@ -2,7 +2,7 @@ Encountered problems! Here are the solutions:
 
 Problem 1:
 ====================================
-package file-3.35-2.noarch requires libc.so.6(GLIBC_2.0), but none of the providers can be installed
+package file-3.35-2.noarch requires libc.so.6(GLIBC_2.1.3), but none of the providers can be installed
 
 - allow deinstallation of file-3.35-2.noarch
 - allow deinstallation of tcpdump-12:3.6.2-9.noarch

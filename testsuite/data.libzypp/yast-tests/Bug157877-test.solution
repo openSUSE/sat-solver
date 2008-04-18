@@ -2,7 +2,7 @@ Encountered problems! Here are the solutions:
 
 Problem 1:
 ====================================
-package xgnokii-0.6.10-6.i586 requires gnokii, but none of the providers can be installed
+package xgnokii-0.6.10-6.i586 requires libgnokii.so.2, but none of the providers can be installed
 
 - allow deinstallation of xgnokii-0.6.10-6.i586
 
