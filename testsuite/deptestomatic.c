@@ -31,6 +31,7 @@
 #include <zlib.h>
 
 #include "solver.h"
+#include "solverdebug.h"
 #include "repo_solv.h"
 #include "repo_helix.h"
 #include "poolarch.h"
@@ -1395,7 +1396,7 @@ endElement( void *userData, const char *name )
       solver_solve( solv, &pd->trials );
       // print result
       if (solv->problems.count)
-	printsolutions(solv, &pd->trials);
+	solver_printsolutions(solv, &pd->trials);
       else
 	rc_printdecisions(solv, &pd->trials);
       // clean up

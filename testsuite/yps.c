@@ -27,6 +27,7 @@
 #include "poolarch.h"
 #include "repo_solv.h"
 #include "solver.h"
+#include "solverdebug.h"
 #include "policy.h"
 #include "evr.h"
 
@@ -76,7 +77,7 @@ static int
 solution_callback(Solver *solv, void *data)
 {
   printf("*** Found another decision:\n");
-  printdecisions(solv);
+  solver_printdecisions(solv);
   return 0;
 }
 
@@ -374,9 +375,9 @@ main(int argc, char **argv)
     solv->solution_callback = solution_callback;
   solver_solve(solv, &job);
   if (solv->problems.count)
-    printsolutions(solv, &job);
+    solver_printsolutions(solv, &job);
   printf("transaction:\n");
-  printdecisions(solv);
+  solver_printdecisions(solv);
   if (1)
     {
       DUChanges duc[4];
