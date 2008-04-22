@@ -17,6 +17,7 @@
 #include <stdlib.h>
 
 #include "decision.h"
+#include "solverdebug.h"
 
 Decision *
 decision_new( Pool *pool, int op, Id solvable, Id reason )
@@ -40,7 +41,7 @@ solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d ) )
 {
   Pool *pool = solver->pool;
   Repo *installed = solver->installed;
-  Id p, *obsoletesmap = create_decisions_obsoletesmap( solver );
+  Id p, *obsoletesmap = solver_create_decisions_obsoletesmap( solver );
   Id s, r;
   int op;
   Decision *d;

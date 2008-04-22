@@ -22,6 +22,7 @@
 #include <policy.h>
 
 #include "xsolvable.h"
+#include "solverdebug.h"
 
 
 XSolvable *
@@ -214,7 +215,7 @@ solver_installs_iterate( Solver *solver, int all, int (*callback)( const XSolvab
     return;
 
   if (!all)
-    obsoletesmap = create_decisions_obsoletesmap( solver );
+    obsoletesmap = solver_create_decisions_obsoletesmap( solver );
   
   for ( i = 0; i < solver->decisionq.count; i++)
     {
@@ -258,7 +259,7 @@ solver_removals_iterate( Solver *solver, int all, int (*callback)( const XSolvab
     return;
 
   if (!all)
-    obsoletesmap = create_decisions_obsoletesmap( solver );
+    obsoletesmap = solver_create_decisions_obsoletesmap( solver );
   
   /* solvables to be removed */
   FOR_REPO_SOLVABLES(installed, p, s)
@@ -294,7 +295,7 @@ solver_updates_iterate( Solver *solver, int (*callback)( const XSolvable *xs_old
   if (!installed)
     return;
 
-  obsoletesmap = create_decisions_obsoletesmap( solver );
+  obsoletesmap = solver_create_decisions_obsoletesmap( solver );
 
   /* solvables to be removed */
   FOR_REPO_SOLVABLES(installed, p, s)
