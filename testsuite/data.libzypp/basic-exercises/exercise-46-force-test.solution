@@ -1,10 +1,15 @@
 >!> Installing liboaf0 from channel ximian
 >!> Solution #1:
 >!> remove  liboaf0-devel-0.6.6-3mdk.noarch
->!> remove  libgnome-vfs0-devel-1.0.2-2mdk.noarch
->!> !unflag liboaf0-devel-0.6.9-1.ximian.1.noarch[ximian]
->!> !unflag libgtkmm1.2-devel-1:1.2.8-2.ximian.4.noarch[ximian]
->!> !unflag gimp-perl-1:1.2.3-1.ximian.3.noarch[ximian]
+>!> install gnome-mime-data-1.0.5-1.ximian.1.noarch[ximian]
+>!> upgrade gnome-vfs-1.0.2-2mdk.noarch => gnome-vfs-1.0.4-2.ximian.4.noarch[ximian]
+>!> upgrade libgnome-vfs0-devel-1.0.2-2mdk.noarch => libgnome-vfs0-devel-1.0.4-2.ximian.4.noarch[ximian]
 >!> upgrade liboaf0-0.6.6-3mdk.noarch => liboaf0-0.6.9-1.ximian.1.noarch[ximian]
+>!> !unflag libsigc++1.0-1.0.4-2.ximian.1.noarch[ximian]
+>!> !unflag libsigc++1.0-devel-1.0.4-2.ximian.1.noarch[ximian]
+>!> !unflag mozilla-devel-35:0.9.9-1.ximian.3.noarch[ximian]
+>!> !unflag mozilla-nspr-devel-35:0.9.9-1.ximian.3.noarch[ximian]
 >!> install oaf-0.6.9-1.ximian.1.noarch[ximian]
->!> installs=1, upgrades=1, uninstalls=2
+>!> !unflag xsane-0.84-5.ximian.1.noarch[ximian]
+>!> !unflag xsane-gimp-0.84-5.ximian.1.noarch[ximian]
+>!> installs=2, upgrades=3, uninstalls=1
