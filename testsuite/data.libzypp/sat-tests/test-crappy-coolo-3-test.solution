@@ -42,6 +42,7 @@ package kaffeine-0.8.4-0.pm.3.i686 requires libxine1 >= 1.1.5, but none of the p
 - do not install cpufrequtils-002-92.i586
 - do not install novfs-kmp-default-2.0.0_2.6.22.5_26-22.i586
 - do not install microcode_ctl-1.17-31.i586
+- do not install konversation-1.0.1-109.i586
 - do not install kio_slp-0.4.1-121.i586
 - do not install kio_ipodslave-0.8.pre1-110.i586
 - do not install kio_beagle-0.3.1-115.i586
@@ -53,4 +54,5 @@ package kaffeine-0.8.4-0.pm.3.i686 requires libxine1 >= 1.1.5, but none of the p
 - do not install kdegames3-3.5.7-50.i586
 - do not install amarok-1.4.7-33.i586
 - do not install kdepim3-devel-3.5.7.enterprise.0.20070904.708012-6.i586
+- do not install amarok-xine-1.4.7-33.i586
 
