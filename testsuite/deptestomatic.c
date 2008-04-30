@@ -1204,6 +1204,11 @@ printf("hardware %s\n", dir);
 	else if (version)
 	  {
 	    Id id = select_solvable( pool, 0, package, version, arch, release);
+	    if (id == ID_NULL) 
+	      {
+		err( "Install: Package '%s' not found", package );
+		exit( 1 );
+	      }
 	    queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
 	    queue_push( &(pd->trials), id );
 	  }
@@ -1398,7 +1403,11 @@ endElement( void *userData, const char *name )
       if (solv->problems.count)
 	solver_printsolutions(solv, &pd->trials);
       else
-	rc_printdecisions(solv, &pd->trials);
+	{
+	  if (verbose >= 2)
+	    solver_printdecisions(solv);
+	  rc_printdecisions(solv, &pd->trials);
+	}
       // clean up
 
       solver_free(solv);
@@ -1478,7 +1487,10 @@ rc_printdecisions(Solver *solv, Queue *job)
       if (job->elements[i] == SOLVER_INSTALL_SOLVABLE)
 	{
 	  s = pool->solvables + job->elements[i + 1];
-	  printf(">!> Installing %s from channel %s\n", id2str(pool, s->name), repo_name(s->repo));
+	  if (s->repo)
+	    printf(">!> Installing %s from channel %s\n", id2str(pool, s->name), repo_name(s->repo));
+	  else
+	    printf(">!> Installing %s\n", id2str(pool, s->name));
 	}
     }
 

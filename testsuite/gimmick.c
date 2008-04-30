@@ -31,14 +31,22 @@ int main(int argc, char **argv)
   Repo *repo;
   Id id;
   Id p, *pp;
+  Id arch = 0;
 
   pool = pool_create();
   repo = repo_create(pool, "<stdin>");
   repo_add_solv(repo, stdin);
-  if (argc == 2)
-    id = str2id(pool, argv[1], 1);
-  else
-    id = rel2id(pool, str2id(pool, argv[1], 1), str2id(pool, argv[2], 1), atoi(argv[3]), 1);
+  if (argc > 2 && !strcmp(argv[1], "-a"))
+    {
+      arch = str2id(pool, argv[2], 1);
+      argc -= 2;
+      argv += 2;
+    }
+  id = str2id(pool, argv[1], 1);
+  if (arch)
+    id = rel2id(pool, id, arch, REL_ARCH, 1);
+  if (argc > 2)
+    id = rel2id(pool, id, str2id(pool, argv[2], 1), atoi(argv[3]), 1);
 
   pool_createwhatprovides(pool);
 
