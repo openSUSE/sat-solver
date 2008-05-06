@@ -9,7 +9,8 @@
 
 ADD_SUBDIRECTORY(tests)
 
-EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} -c 'import sys; print sys.path[2]' OUTPUT_VARIABLE PYTHON_LIB_DIR)
+FIND_PACKAGE(PythonInterp)
+EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} -c "import sys; sys.stdout.write(sys.path[2])" OUTPUT_VARIABLE PYTHON_LIB_DIR)
 
 MESSAGE(STATUS "Python executable: ${PYTHON_EXECUTABLE}")
 MESSAGE(STATUS "Python lib dir: ${PYTHON_LIB_DIR}")
@@ -19,7 +20,7 @@ SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c" )
 SET( SWIG_INPUT "${CMAKE_CURRENT_SOURCE_DIR}/satsolver.i" )
 
 ADD_CUSTOM_COMMAND (
-   OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c
+   OUTPUT  ${SWIG_OUTPUT}
    COMMAND ${CMAKE_COMMAND} -E echo_append "Creating wrapper code for Python ..."
    COMMAND ${SWIG_EXECUTABLE} -python -features autodoc -o ${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c ${CMAKE_CURRENT_SOURCE_DIR}/../satsolver.i
    COMMAND ${CMAKE_COMMAND} -E echo "Done."
@@ -34,7 +35,7 @@ ADD_CUSTOM_TARGET( glue
 SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall" )
 
 
-SET(satsolverx_SRCS "${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c" "${CMAKE_SOURCE_DIR}/tools/repo_rpmdb.c" )
+SET(satsolverx_SRCS "${SWIG_OUTPUT}" "${CMAKE_SOURCE_DIR}/tools/repo_rpmdb.c" )
 ADD_LIBRARY( _satsolverx SHARED ${satsolverx_SRCS} )
 SET_TARGET_PROPERTIES( _satsolverx PROPERTIES PREFIX "" )
 ADD_DEPENDENCIES( _satsolverx glue )
