@@ -31,28 +31,54 @@ int main(int argc, char **argv)
   Repo *repo;
   Id id;
   Id p, *pp;
-  Id arch = 0;
+  char *arch = 0;
+  int debuglevel = 0;
+  int nevr = 0;
+  int c;
 
   pool = pool_create();
+  while ((c = getopt(argc, argv, "vna:")) >= 0)
+    {
+      switch(c)
+        {
+	case 'n':
+	  nevr = 1;
+	  break;
+	case 'a':
+	  arch = optarg;
+	  break;
+	case 'v':
+          debuglevel++;
+          break;
+	default:
+	  exit(1);
+	}
+    }
+  pool_setdebuglevel(pool, debuglevel);
   repo = repo_create(pool, "<stdin>");
   repo_add_solv(repo, stdin);
-  if (argc > 2 && !strcmp(argv[1], "-a"))
-    {
-      arch = str2id(pool, argv[2], 1);
-      argc -= 2;
-      argv += 2;
-    }
+  argc -= optind - 1;
+  argv += optind - 1;
   id = str2id(pool, argv[1], 1);
   if (arch)
-    id = rel2id(pool, id, arch, REL_ARCH, 1);
+    id = rel2id(pool, id, str2id(pool, arch, 1), REL_ARCH, 1);
   if (argc > 2)
     id = rel2id(pool, id, str2id(pool, argv[2], 1), atoi(argv[3]), 1);
 
   pool_createwhatprovides(pool);
 
   printf("%s:\n", dep2str(pool, id));
-  FOR_PROVIDES(p, pp, id)
-    printf("  %s\n", solvable2str(pool, pool->solvables + p));
+  if (nevr)
+    {
+      for (p = 1; p < pool->nsolvables; p++)
+	if (pool_match_nevr(pool, pool->solvables + p, id))
+	  printf("  %s\n", solvable2str(pool, pool->solvables + p));
+    }
+  else
+    {
+      FOR_PROVIDES(p, pp, id)
+	printf("  %s\n", solvable2str(pool, pool->solvables + p));
+    }
   pool_free(pool);
   return 0;
 }
