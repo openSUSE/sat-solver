@@ -4,8 +4,8 @@ Problem 1:
 ====================================
 package autoyast2-installation-2.13.19-2.noarch requires yast2-transfer, but none of the providers can be installed
 
-- allow deinstallation of yast2-backup-2.13.1-2.noarch
 - allow deinstallation of yast2-installation-2.13.28-2.noarch
+- allow deinstallation of yast2-backup-2.13.1-2.noarch
 - allow deinstallation of autoyast2-installation-2.13.19-2.noarch
 - allow deinstallation of autoyast2-2.13.19-2.noarch
 - allow deinstallation of yast2-vm-2.13.22-2.x86_64
