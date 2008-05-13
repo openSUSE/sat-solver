@@ -181,6 +181,7 @@ main(int argc, char **argv)
   char *weakdeps = 0;
   int forceupdate = 0;
   char *keep = 0;
+  char *multiinstall = 0;
 
   pool = pool_create();
   pool->nscallback = nscallback;
@@ -197,7 +198,7 @@ main(int argc, char **argv)
       exit(0);
     }
 
-  while ((c = getopt(argc, argv, "uefrAvwk:W:")) >= 0)
+  while ((c = getopt(argc, argv, "uefrAvwk:m:W:")) >= 0)
     {
       switch(c)
 	{
@@ -224,6 +225,9 @@ main(int argc, char **argv)
 	  break;
 	case 'k':
 	  keep = optarg;
+	  break;
+	case 'm':
+	  multiinstall = optarg;
 	  break;
 	case 'v':
 	  debuglevel++;
@@ -290,6 +294,12 @@ main(int argc, char **argv)
     {
       id = str2id(pool, keep, 1);
       queue_push(&job, SOLVER_ERASE_SOLVABLE_NAME | SOLVER_WEAK);
+      queue_push(&job, id);
+    }
+  if (multiinstall)
+    {
+      id = str2id(pool, multiinstall, 1);
+      queue_push(&job, SOLVER_NOOBSOLETES_SOLVABLE_NAME);
       queue_push(&job, id);
     }
   // setup job queue
