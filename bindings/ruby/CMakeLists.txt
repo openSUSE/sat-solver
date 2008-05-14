@@ -4,9 +4,6 @@ MESSAGE(STATUS "Ruby executable: ${RUBY_EXECUTABLE}")
 MESSAGE(STATUS "Ruby vendor arch dir: ${RUBY_VENDORARCH_DIR}")
 MESSAGE(STATUS "Ruby include path: ${RUBY_INCLUDE_PATH}")
 
-SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c" )
-SET( SWIG_INPUT "${CMAKE_CURRENT_SOURCE_DIR}/satsolver.i" )
-
 ADD_CUSTOM_COMMAND (
    OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c
    COMMAND ${CMAKE_COMMAND} -E echo_append "Creating wrapper code for Ruby..."
@@ -20,7 +17,7 @@ ADD_CUSTOM_TARGET( glue
    DEPENDS ${SWIG_OUTPUT}
 )
 
-SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall" )
+SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -g" )
 
 SET(satsolverx_SRCS "${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c" "${CMAKE_SOURCE_DIR}/tools/repo_rpmdb.c" )
 ADD_LIBRARY( satsolverx SHARED ${satsolverx_SRCS} )

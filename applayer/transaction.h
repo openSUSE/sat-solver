@@ -15,7 +15,7 @@
 #ifndef SATSOLVER_TRANSACTION_H
 #define SATSOLVER_TRANSACTION_H
 
-#include "action.h"
+#include "job.h"
 
 
 typedef struct _Transaction {
@@ -34,8 +34,8 @@ void transaction_remove_name( Transaction *t, const char *name );
 void transaction_install_relation( Transaction *t, const Relation *rel );
 void transaction_remove_relation( Transaction *t, const Relation *rel );
 int transaction_size( Transaction *t );
-Action *transaction_action_get( Transaction *t, int i );
+Job *transaction_job_get( Transaction *t, int i );
 
-void transaction_actions_iterate( Transaction *t, int (*callback)( const Action *a));
+void transaction_jobs_iterate( Transaction *t, int (*callback)( const Job *j));
 
 #endif  /* SATSOLVER_TRANSACTION_H */

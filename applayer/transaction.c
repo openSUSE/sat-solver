@@ -98,8 +98,8 @@ transaction_remove_relation( Transaction *t, const Relation *rel )
 }
 
 
-Action *
-transaction_action_get( Transaction *t, int i )
+Job *
+transaction_job_get( Transaction *t, int i )
 {
   int size, cmd;
   Id id;
@@ -109,19 +109,19 @@ transaction_action_get( Transaction *t, int i )
     return NULL;
   cmd = t->queue.elements[i];
   id = t->queue.elements[i+1];
-  return action_new( t->pool, cmd, id );
+  return job_new( t->pool, cmd, id );
 }
 
 
 void
-transaction_actions_iterate( Transaction *t, int (*callback)( const Action *a))
+transaction_jobs_iterate( Transaction *t, int (*callback)( const Job *j))
 {
   int i;
   for (i = 0; i < t->queue.count-1; )
     {
       int cmd = t->queue.elements[i++];
       Id id = t->queue.elements[i++];
-      if (callback( action_new( t->pool, cmd, id ) ) )
+      if (callback( job_new( t->pool, cmd, id ) ) )
 	break;
     }
 }
