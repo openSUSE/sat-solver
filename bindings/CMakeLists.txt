@@ -21,6 +21,9 @@ IF (PERL_EXECUTABLE)
   ADD_SUBDIRECTORY(perl)
 ENDIF (PERL_EXECUTABLE)
 
-SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/libsatsolver_wrap.c" )
+#
+# Generic setting for all generated bindings
+#
+
+SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/satsolver_wrap.c" )
 SET( SWIG_INPUT "${CMAKE_CURRENT_SOURCE_DIR}/satsolver.i" )
-ADD_DEPENDENCIES( satsolverx "${CMAKE_CURRENT_SOURCE_DIR}/*.i" )
