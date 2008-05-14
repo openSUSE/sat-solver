@@ -1,0 +1,10 @@
+Problems with updateinfo.xml
+
+- no translation of summary/description
+- issued date not uniq resp. fine-granular enough
+- kinda stupid: reboot_suggested for -devel
+           <package arch="i386" name="dbus-devel" release="9.fc8" ...
+           ...
+	     <reboot_suggested>True</reboot_suggested>
+	   </package>
+- reboot_suggested is per-package !
