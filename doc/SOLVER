@@ -1,6 +1,25 @@
 How the sat-solver works
 ------------------------
 
+Theory
+------
+
+CNF - Conjunktive Normal Form
+
+Boolean expression of the form (x|y) & (-a|b|c) & ...
+ a,b,c,x,y are LITERALS
+ There a positive literals (x,y) and negative literals (-a, -b)
+ Terms in parentheses are CLAUSES
+
+Goal: Make the whole expression TRUE
+
+Useful shortcuts:
+- If a positive literal goes TRUE within a clause, the whole clause is TRUE
+- If a negative literal goes FALSE within a clause, the whole clause is TRUE
+
+
+
+
 I. Data structure
 -----------------
   Id p;                 /* first literal in rule */
@@ -85,7 +104,7 @@ addrule(p, d)
 *   Updates:    p > 0, d > 0   (A|B1|B2|...)   d: <list of updates for solvable p>
 *   Conflicts:  p < 0, d < 0   (-A|-B1),(-A|-B2),...         either p (conflict issuer) or d (conflict provider) (binary rule)
 *   Obsoletes:  p < 0, d < 0   (-A|-B1),(-A|-B2),...     A: uninstalled, Bx = provider of obsoletes
-*   ?           p > 0, d < 0   (A|-B)
+*   Learnt:     p > 0, d < 0   (A|-B)
 *   No-op:      p = 0, d = 0   (null)          (used as policy rule placeholder)
 *   install one of:  p =-SYS, d > 0
 *
@@ -108,14 +127,18 @@ disablerule
 Watches
 -------
 
+Watches are usually on literals that are not FALSE (either TRUE or UNDEF)
+Execept: If one watch is on a TRUE (set first), the other can be on a
+  FALSE (set later). This is useful on a backtrack.
+
 Watches 'link' rules involving the same literal
 Only for n-ary (n >= 2) rules, not for assertions
 
 
 Watches start at solv->watches[nsolvables]
 
-watches[nsolvables+s] == rule installing s
-watches[nsolvables-s] == rule removing s
+watches[nsolvables+s] == rule installing s (aka A, B, C,... in CNF clause)
+watches[nsolvables-s] == rule removing s (aka -A, -B, -C, ... in CNF clause)
 
 'watches trigger when literal goes false'
 
@@ -136,6 +159,13 @@ one sub-term (x or y in x|y) to become 'true'.
 
 The interesting case is a 'false' sub-term (x or y in x|y) because
 this requires the 'other' side to become true.
+
+
+Iterating over installed
+------------------------
+
+The pool marks the minimum and maximum Id of installed solvables.
+There might be other (non-installed) solvables in-between.
 
 
 
