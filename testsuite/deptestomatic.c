@@ -1405,7 +1405,10 @@ endElement( void *userData, const char *name )
       else
 	{
 	  if (verbose >= 2)
-	    solver_printdecisions(solv);
+	    {
+	      solver_printdecisions(solv);
+	      solver_printtrivial(solv);
+	    }
 	  rc_printdecisions(solv, &pd->trials);
 	}
       // clean up

@@ -117,36 +117,6 @@ langdemo(Pool *pool)
     }
 }
 
-void
-trivialdemo(Solver *solv)
-{
-  Pool *pool = solv->pool;
-  Queue in, out;
-  Map installedmap;
-  Id p;
-  const char *n;
-  Solvable *s;
-  int i;
-
-  queue_init(&in);
-  queue_init(&out);
-  printf("trivial installable status:\n");
-  solver_create_state_maps(solv, &installedmap, 0);
-  for (p = 1, s = pool->solvables + p; p < solv->pool->nsolvables; p++, s++)
-    {
-      n = id2str(pool, s->name);
-      if (strncmp(n, "patch:", 6) != 0 && strncmp(n, "pattern:", 8) != 0)
-	continue;
-      queue_push(&in, p);
-    }
-  pool_trivial_installable(pool, solv->installed, &installedmap, &in, &out);
-  for (i = 0; i < in.count; i++)
-    printf("%s: %d\n", solvable2str(pool, pool->solvables + in.elements[i]), out.elements[i]);
-  map_free(&installedmap);
-  queue_free(&in);
-  queue_free(&out);
-}
-
 static Id
 nscallback(Pool *pool, void *data, Id name, Id evr)
 {
@@ -386,7 +356,6 @@ main(int argc, char **argv)
   solver_solve(solv, &job);
   if (solv->problems.count)
     solver_printsolutions(solv, &job);
-  printf("transaction:\n");
   solver_printdecisions(solv);
   if (1)
     {
@@ -405,7 +374,7 @@ main(int argc, char **argv)
 
   langdemo(pool);
 
-  trivialdemo(solv);
+  solver_printtrivial(solv);
 
   // clean up
 
