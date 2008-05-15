@@ -2,5 +2,5 @@
 
 use lib '../../../build/bindings/perl';
 
-use satsolverx;
+use satsolver;
 

@@ -2,13 +2,13 @@
 
 use lib '../../../build/bindings/perl';
 
-use satsolverx;
+use satsolver;
 
 # Open Solvable file
 # open(F, "gzip -cd tmp/primary.gz |") || die;
 
 # Create Pool and Repository 
-my $pool = new satsolverx::Pool;
+my $pool = new satsolver::Pool;
 $pool -> set_arch( 'i686' );
 my $repo = $pool -> create_repo('repo');
 

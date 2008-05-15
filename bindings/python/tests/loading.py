@@ -1,3 +1,3 @@
 import sys
 sys.path.append('../../../build/bindings/python')
-import satsolverx
+import satsolver
