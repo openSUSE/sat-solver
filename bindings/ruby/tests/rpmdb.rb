@@ -18,7 +18,7 @@ require 'satsolver'
 
 class RpmdbTest < Test::Unit::TestCase
   def test_rpmdb
-    pool = SatSolver::Pool.new
+    pool = Satsolver::Pool.new
     assert pool
     pool.arch = "i686"
     repo = pool.add_rpmdb( "/" )
