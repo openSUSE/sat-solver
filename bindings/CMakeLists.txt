@@ -1,4 +1,15 @@
 FIND_PACKAGE(SWIG)
+
+MESSAGE(STATUS "Found SWIG version ${SWIG_VERSION}")
+
+#
+# Generic setting for all generated bindings
+#
+
+SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/satsolver_wrap.c" )
+SET( SWIG_INPUT "${CMAKE_CURRENT_SOURCE_DIR}/satsolver.i" )
+
+
 FIND_PACKAGE(Ruby)
 FIND_PACKAGE(PythonLibs)
 
@@ -21,9 +32,3 @@ IF (PERL_EXECUTABLE)
   ADD_SUBDIRECTORY(perl)
 ENDIF (PERL_EXECUTABLE)
 
-#
-# Generic setting for all generated bindings
-#
-
-SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/satsolver_wrap.c" )
-SET( SWIG_INPUT "${CMAKE_CURRENT_SOURCE_DIR}/satsolver.i" )

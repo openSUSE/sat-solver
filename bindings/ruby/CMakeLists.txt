@@ -3,7 +3,6 @@
 #
 # Can't use 'satsolver' here, already taken by src/CMakeLists.txt
 #
-
 SET( binding_NAME "rbsatsolver" )
 
 MESSAGE(STATUS "Ruby executable: ${RUBY_EXECUTABLE}")
@@ -19,14 +18,13 @@ ADD_CUSTOM_COMMAND (
    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../*.i
 )
 
-
-
 SET(bindings_SRCS ${SWIG_OUTPUT} "${CMAKE_SOURCE_DIR}/tools/repo_rpmdb.c" )
 
 ADD_LIBRARY( ${binding_NAME} SHARED ${bindings_SRCS} )
 
-# don't prefix with 'lib'
-SET_TARGET_PROPERTIES( ${binding_NAME} PROPERTIES PREFIX "" )
+# name it 'satsolver.so'
+#  and don't prefix with 'lib'
+SET_TARGET_PROPERTIES( ${binding_NAME} PROPERTIES OUTPUT_NAME "satsolver" PREFIX "" )
 
 INCLUDE_DIRECTORIES( ${RUBY_INCLUDE_PATH} ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/applayer ${CMAKE_SOURCE_DIR}/tools )
 
