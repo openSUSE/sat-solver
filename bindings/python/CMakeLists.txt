@@ -9,11 +9,8 @@
 
 ADD_SUBDIRECTORY(tests)
 
-#
-# Can't use 'satsolver' here, already taken by src/CMakeLists.txt
-#
-
-SET( binding_NAME "_satsolverx" )
+# SWIG_OUPUT is per-target
+SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/satsolver_swig.c" )
 
 
 FIND_PACKAGE(PythonInterp)
@@ -34,19 +31,18 @@ ADD_CUSTOM_COMMAND (
 
 SET(binding_SRCS "${SWIG_OUTPUT}" "${CMAKE_SOURCE_DIR}/tools/repo_rpmdb.c" )
 
-ADD_LIBRARY( ${binding_NAME} SHARED ${binding_SRCS} )
-SET_TARGET_PROPERTIES( ${binding_NAME} PROPERTIES PREFIX "" )
+ADD_LIBRARY( satsolver_python SHARED ${binding_SRCS} )
+# name it 'satsolver.so'
+#  and don't prefix with 'lib'
+SET_TARGET_PROPERTIES( satsolver_python PROPERTIES PREFIX "" OUTPUT_NAME "_satsolver")
 
 INCLUDE_DIRECTORIES( ${PYTHON_INCLUDE_PATH} ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/applayer ${CMAKE_SOURCE_DIR}/tools )
 
-TARGET_LINK_LIBRARIES( ${binding_NAME} satsolver )
-TARGET_LINK_LIBRARIES( ${binding_NAME} appsatsolver )
-TARGET_LINK_LIBRARIES( ${binding_NAME} ${PYTHON_LIBRARIES} )
-TARGET_LINK_LIBRARIES( ${binding_NAME} ${DB43_LIBRARY} )
+TARGET_LINK_LIBRARIES( satsolver_python satsolver )
+TARGET_LINK_LIBRARIES( satsolver_python appsatsolver )
+TARGET_LINK_LIBRARIES( satsolver_python ${PYTHON_LIBRARIES} )
+TARGET_LINK_LIBRARIES( satsolver_python ${DB43_LIBRARY} )
 
-INSTALL(TARGETS ${binding_NAME} LIBRARY DESTINATION ${PYTHON_LIB_DIR}/site-packages)
+INSTALL(TARGETS satsolver_python LIBRARY DESTINATION ${PYTHON_LIB_DIR}/site-packages)
 
-# Hmm, swig 1.3.35 doesn't seem to create this .py file ?!
-IF(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/satsolverx.py)
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/satsolverx.py DESTINATION ${PYTHON_LIB_DIR}/site-packages )
-ENDIF(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/satsolverx.py)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/satsolver.py DESTINATION ${PYTHON_LIB_DIR}/site-packages )

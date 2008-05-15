@@ -1,5 +1,5 @@
 %{
-/* Document-module: Satsolverx
+/* Document-module: SatSolver
  *
  * SatSolver is the module namespace for sat-solver bindings.
  *
@@ -13,7 +13,7 @@
  */
 %}
 
-%module satsolverx
+%module satsolver
 %feature("autodoc","1");
 
 %{
@@ -21,7 +21,6 @@
 /*=============================================================*/
 /* HELPER CODE                                                 */
 /*=============================================================*/
-
 
 #if defined(SWIGRUBY)
 #include <ruby.h>

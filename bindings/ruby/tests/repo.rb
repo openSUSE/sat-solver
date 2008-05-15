@@ -34,9 +34,9 @@ require 'satsolver'
 
 class RepoTest < Test::Unit::TestCase
   def test_repo_create
-    pool = SatSolver::Pool.new
+    pool = Satsolver::Pool.new
     assert pool
-    repo = SatSolver::Repo.new( pool, "test" )
+    repo = satsolver::Repo.new( pool, "test" )
     # equivalent: repo = pool.create_repo( "test" )
     assert repo
     assert repo.size == 0
@@ -44,7 +44,7 @@ class RepoTest < Test::Unit::TestCase
     assert repo.name == "test"
   end
   def test_repo_add
-    pool = SatSolver::Pool.new
+    pool = Satsolver::Pool.new
     assert pool
     pool.arch = "i686"
     repo = pool.add_solv( "../../../testsuite/data.libzypp/basic-exercises/exercise-1-packages.solv" )
@@ -53,7 +53,7 @@ class RepoTest < Test::Unit::TestCase
     assert repo.size > 0
   end
   def test_deps
-    pool = SatSolver::Pool.new
+    pool = Satsolver::Pool.new
     assert pool
     pool.arch = "i686"
     repo = pool.add_solv( "../../../testsuite/data.libzypp/basic-exercises/exercise-1-packages.solv" )

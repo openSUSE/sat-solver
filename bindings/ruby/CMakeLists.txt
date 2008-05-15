@@ -1,9 +1,8 @@
 #ADD_SUBDIRECTORY(tests)
 
-#
-# Can't use 'satsolver' here, already taken by src/CMakeLists.txt
-#
-SET( binding_NAME "rbsatsolver" )
+# SWIG_OUPUT is per-target
+
+SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/satsolver_swig.c" )
 
 MESSAGE(STATUS "Ruby executable: ${RUBY_EXECUTABLE}")
 MESSAGE(STATUS "Ruby vendor arch dir: ${RUBY_VENDORARCH_DIR}")
@@ -20,18 +19,18 @@ ADD_CUSTOM_COMMAND (
 
 SET(bindings_SRCS ${SWIG_OUTPUT} "${CMAKE_SOURCE_DIR}/tools/repo_rpmdb.c" )
 
-ADD_LIBRARY( ${binding_NAME} SHARED ${bindings_SRCS} )
+ADD_LIBRARY( satsolver_ruby SHARED ${bindings_SRCS} )
 
 # name it 'satsolver.so'
 #  and don't prefix with 'lib'
-SET_TARGET_PROPERTIES( ${binding_NAME} PROPERTIES OUTPUT_NAME "satsolver" PREFIX "" )
+SET_TARGET_PROPERTIES( satsolver_ruby PROPERTIES OUTPUT_NAME "satsolver" PREFIX "" )
 
 INCLUDE_DIRECTORIES( ${RUBY_INCLUDE_PATH} ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/applayer ${CMAKE_SOURCE_DIR}/tools )
 
-TARGET_LINK_LIBRARIES( ${binding_NAME} satsolver )
-TARGET_LINK_LIBRARIES( ${binding_NAME} appsatsolver )
-TARGET_LINK_LIBRARIES( ${binding_NAME} ${RUBY_LIBRARY} )
-TARGET_LINK_LIBRARIES( ${binding_NAME} ${DB43_LIBRARY} )
+TARGET_LINK_LIBRARIES( satsolver_ruby satsolver )
+TARGET_LINK_LIBRARIES( satsolver_ruby appsatsolver )
+TARGET_LINK_LIBRARIES( satsolver_ruby ${RUBY_LIBRARY} )
+TARGET_LINK_LIBRARIES( satsolver_ruby ${DB43_LIBRARY} )
 
-INSTALL(TARGETS ${binding_NAME} LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR})
+INSTALL(TARGETS satsolver_ruby LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR})
 

@@ -9,11 +9,8 @@
 
 ADD_SUBDIRECTORY(tests)
 
-#
-# Can't use 'satsolver' here, already taken by src/CMakeLists.txt
-#
-
-SET( binding_NAME "satsolverx" )
+# SWIG_OUPUT is per-target
+SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/satsolver_swig.c" )
 
 EXECUTE_PROCESS(COMMAND ${PERL_EXECUTABLE} -e "use Config; print \$Config{ccflags}" OUTPUT_VARIABLE PERL_CCFLAGS)
 EXECUTE_PROCESS(COMMAND ${PERL_EXECUTABLE} -e "use Config; print \$Config{archlib}.\"/CORE\"" OUTPUT_VARIABLE PERL_CORE_DIR)
@@ -44,21 +41,20 @@ ADD_CUSTOM_COMMAND (
 )
 
 
-SET(binding_SRCS ${SWIG_INPUT} "${CMAKE_SOURCE_DIR}/tools/repo_rpmdb.c" )
+SET(binding_SRCS ${SWIG_OUTPUT} "${CMAKE_SOURCE_DIR}/tools/repo_rpmdb.c" )
 
-ADD_LIBRARY( ${binding_NAME} SHARED ${binding_SRCS} )
-SET_TARGET_PROPERTIES( ${binding_NAME} PROPERTIES PREFIX "" )
+ADD_LIBRARY( satsolver_perl SHARED ${binding_SRCS} )
+# name it 'satsolver.so'
+#  and don't prefix with 'lib'
+SET_TARGET_PROPERTIES( satsolver_perl PROPERTIES PREFIX "" OUTPUT_NAME "satsolver")
 
 INCLUDE_DIRECTORIES( ${PERL_CORE_DIR} ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/applayer ${CMAKE_SOURCE_DIR}/tools )
 
-TARGET_LINK_LIBRARIES( ${binding_NAME} satsolver )
-TARGET_LINK_LIBRARIES( ${binding_NAME} appsatsolver )
-TARGET_LINK_LIBRARIES( ${binding_NAME} perl )
-TARGET_LINK_LIBRARIES( ${binding_NAME} ${DB43_LIBRARY} )
+TARGET_LINK_LIBRARIES( satsolver_perl satsolver )
+TARGET_LINK_LIBRARIES( satsolver_perl appsatsolver )
+TARGET_LINK_LIBRARIES( satsolver_perl perl )
+TARGET_LINK_LIBRARIES( satsolver_perl ${DB43_LIBRARY} )
 
-INSTALL(TARGETS ${binding_NAME} LIBRARY DESTINATION ${PERL_VENDOR_ARCH} )
+INSTALL(TARGETS satsolver_perl LIBRARY DESTINATION ${PERL_VENDOR_ARCH} )
 
-# Hmm, swig 1.3.35 doesn't seem to create this .pm file ?!
-IF(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${binding_NAME}.pm)
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${binding_NAME}.pm DESTINATION ${PERL_VENDOR_LIB} )
-ENDIF(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${binding_NAME}.pm)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/satsolver.pm DESTINATION ${PERL_VENDOR_LIB} )
