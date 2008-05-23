@@ -148,6 +148,7 @@ main(int argc, char **argv)
   int force = 0;
   int noreco = 0;
   int weak = 0;
+  int zypper = 0;
   char *weakdeps = 0;
   int forceupdate = 0;
   char *keep = 0;
@@ -168,7 +169,7 @@ main(int argc, char **argv)
       exit(0);
     }
 
-  while ((c = getopt(argc, argv, "uefrAvwk:m:W:")) >= 0)
+  while ((c = getopt(argc, argv, "uefrAvzwk:m:W:")) >= 0)
     {
       switch(c)
 	{
@@ -198,6 +199,9 @@ main(int argc, char **argv)
 	  break;
 	case 'm':
 	  multiinstall = optarg;
+	  break;
+	case 'z':
+	  zypper = 1;
 	  break;
 	case 'v':
 	  debuglevel++;
@@ -348,6 +352,7 @@ main(int argc, char **argv)
   solv->allowuninstall = force ? 1 : 0;
   solv->noupdateprovide = 0;
   solv->dontinstallrecommended = noreco;
+  solv->ignorealreadyrecommended = zypper;
 
   // Solve !
 
