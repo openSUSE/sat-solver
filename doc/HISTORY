@@ -47,7 +47,7 @@ SUSE's hack week at the end of June 2007 turned out to be a turning point
 for the solver. Googling for solver algorithms I stumbled over some note
 saying that some people are trying to use SAT algorithms to improve
 solving on debian. Looking at the SAT entry in wikipedia, it was easy
-to see that this indeed was the missing peace: sat algorithms are well
+to see that this indeed was the missing piece: sat algorithms are well
 researched and there are quite some open source implementations.
 I decided to look at the minisat code, as it is one of the fastest
 solvers while consisting of too many lines of code.
@@ -80,7 +80,7 @@ with improving the repository parsers so that patches and content files
 also generate solvables. After that, he concentrated on storing all
 of the other metadata of the repositories that are not used for solving,
 like the package summaries and descriptions. In the end of October, a first
-version of this "attribute store" was checked in. It's design goals where
+version of this "attribute store" was checked in. Its design goals were
   - space efficient storage of attributes
   - paging/on demand loading of data
   - page compression
