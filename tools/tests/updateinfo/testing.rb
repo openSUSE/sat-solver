@@ -24,33 +24,37 @@ end
 
 class ContentTest < Test::Unit::TestCase
   def setup
-
-    @srcpath = Pathname.new SRCPATH
-    assert @srcpath.directory?
-    @binpath = Pathname.new BINPATH
-    assert @binpath.directory?
-    
-    $:.unshift( @binpath + "bindings/ruby" )
-    require 'satsolver'
-    
-    @tag = TAG
-    @tool = @binpath + "tools/updateinfoxml2solv"
-    assert @tool.executable?
-    
-    @outpath = @binpath + "tools/tests/updateinfo"
-    assert @outpath.directory?
-    
-    yamlpath = @srcpath + DATA
-
     @logf = File.open("/tmp/output", "w")
     @logf.puts "Testing started at #{Time.now}\n--"
-    @logf.puts "@binpath #{@binpath}"
-    @logf.puts "@tag #{@tag}"
-    @logf.puts "@tool #{@tool}"
-    @logf.puts "@outpath #{@outpath}"
-    @logf.puts "yamlpath #{yamlpath}"
-
-    @testdata = YAML.load( File.open( yamlpath ) )
+    begin
+      @srcpath = Pathname.new SRCPATH
+      assert @srcpath.directory?
+      @binpath = Pathname.new BINPATH
+      assert @binpath.directory?
+      
+      $:.unshift( @binpath + "bindings/ruby" )
+      require 'satsolver'
+      
+      @tag = TAG
+      @tool = @binpath + "tools/updateinfoxml2solv"
+      assert @tool.executable?
+      
+      @outpath = @binpath + "tools/tests/updateinfo"
+      assert @outpath.directory?
+      
+      yamlpath = @srcpath + DATA
+      
+      @logf.puts "@binpath #{@binpath}"
+      @logf.puts "@tag #{@tag}"
+      @logf.puts "@tool #{@tool}"
+      @logf.puts "@outpath #{@outpath}"
+      @logf.puts "yamlpath #{yamlpath}"
+      
+      @testdata = YAML.load( File.open( yamlpath ) )
+    rescue Exception => e
+      @logf.puts "**ERR #{e}"
+      raise e
+    end
   end
   def teardown
     @logf.puts "--\nTesting ended at #{Time.now}" if @logf
@@ -104,7 +108,7 @@ class ContentTest < Test::Unit::TestCase
 	end
 
 	case v
-	when String, Float
+	when String, Float, TrueClass, FalseClass
 	  assert_equal v.to_s, p.to_s
 	when Hash
 	  if (p.class == Satsolver::Dependency)
@@ -150,8 +154,15 @@ class ContentTest < Test::Unit::TestCase
 	    p.each { |dep|
 	      raise "Not a dependency: #{v}" unless expected.include?( dep )
 	    }
+	  elsif (p.class == Array)
+	    expected = []
+	    v.each { |k,v| expected << v.to_s }
+	    assert_equal p.size, expected.size
+	    p.each { |prop|
+	      raise "Not expected in property array: #{v}" unless expected.include?( prop )
+	    }
 	  else
-	    raise "Don't know what to do with Hash for property/attribute #{k}"
+	    raise "Don't know what to do with Hash for property/attribute #{k} of class #{p.class}"
 	  end
 	else
 	  raise "Can't handle value class #{v.class} of YAML key #{k}"
