@@ -92,7 +92,7 @@ typedef struct _Pool {} Pool;
    * Repo management
    */
 
-  Repo *add_solv( FILE *fp )
+  Repo *add_file( FILE *fp )
   {
     Repo *repo = repo_create( $self, NULL );
     repo_add_solv( repo, fp );

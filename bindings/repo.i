@@ -38,7 +38,7 @@ typedef struct _Repo {} Repo;
   Pool *pool()
   { return $self->pool; }
 
-  void add_solv( FILE *fp )
+  void add_file( FILE *fp )
   { repo_add_solv( $self, fp ); }
 
   void add_solv( const char *fname )
