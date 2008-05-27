@@ -1,4 +1,5 @@
 os11-beta3-dvd-x86_64:
+ 0:
   name: product:openSUSE-DVD
   evr: 11.0
   arch: noarch
