@@ -70,5 +70,12 @@ typedef struct _Relation {} Relation;
 #endif
   int match( const Relation *r )
   { return evrcmp( $self->pool, relation_evrid( $self ), relation_evrid( r ), EVRCMP_MATCH_RELEASE ) == 0; }
+
+#if defined(SWIGRUBY)
+  %alias equal "==";
+#endif
+  int equal( const Relation *r )
+  { return relation_evrid( $self ) == relation_evrid( r ); }
+
 }
 
