@@ -2,15 +2,15 @@
 # cmake description for satsolver Python bindings
 #
 # !!Attn!!: This creates two files
-#  1. ${binding_NAME}.so
-#  2. satsolverx.py
+#  1. satsolver.so
+#  2. satsolver.py
 # and the .py file gets imported. See bindings/python/tests.
 #
 
 ADD_SUBDIRECTORY(tests)
 
 # SWIG_OUPUT is per-target
-SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/satsolver_swig.c" )
+SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/satsolver_python.c" )
 
 
 FIND_PACKAGE(PythonInterp)
@@ -32,7 +32,7 @@ ADD_CUSTOM_COMMAND (
 SET(binding_SRCS "${SWIG_OUTPUT}" "${CMAKE_SOURCE_DIR}/tools/repo_rpmdb.c" )
 
 ADD_LIBRARY( satsolver_python SHARED ${binding_SRCS} )
-# name it 'satsolver.so'
+# name it '_satsolver.so'
 #  and don't prefix with 'lib'
 SET_TARGET_PROPERTIES( satsolver_python PROPERTIES PREFIX "" OUTPUT_NAME "_satsolver")
 

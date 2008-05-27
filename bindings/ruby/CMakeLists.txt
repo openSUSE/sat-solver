@@ -2,7 +2,7 @@
 
 # SWIG_OUPUT is per-target
 
-SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/satsolver_swig.c" )
+SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/satsolver_ruby.c" )
 
 MESSAGE(STATUS "Ruby executable: ${RUBY_EXECUTABLE}")
 MESSAGE(STATUS "Ruby vendor arch dir: ${RUBY_VENDORARCH_DIR}")
