@@ -74,26 +74,30 @@ class ContentTest < Test::Unit::TestCase
       system cmd
       assert_equal 0, $?
       
+      testdata = @testdata[@tag]
+
       # create the Pool, load the .solv file
 
       pool = Satsolver::Pool.new
       repo = pool.add_solv outname.to_s
-      assert_equal 1, repo.size
+      assert_equal testdata.size, repo.size
       
       # get the solvable
       
-      product = repo[0]
+      testdata_index = 0
+
+      repo.each { |solvable|
       
       # loop over YAML hash entries and compare to solvable properties
       
-      @testdata[@tag].each { |k,v|
+      testdata[testdata_index].each { |k,v|
 	
 	s = k.to_sym # symbol
 	# retrieve property
-	if product.respond_to?( s )
-	  p = product.send(s)
-	elsif product.attr?( s )
-	  p = product[s]
+	if solvable.respond_to?( s )
+	  p = solvable.send(s)
+	elsif solvable.attr?( s )
+	  p = solvable[s]
 	else
 	  raise "Unknown property/attribute #{k}"
 	end
@@ -151,7 +155,9 @@ class ContentTest < Test::Unit::TestCase
 	else
 	  raise "Can't handle value class #{v.class} of YAML key #{k}"
 	end
-      }
+      } # testdata.each
+      testdata_index += 1
+    } # repo.each
     rescue Exception => e
       @logf.puts "**ERR #{e}"
       raise e
