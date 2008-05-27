@@ -1,0 +1,51 @@
+os11-beta3-dvd-x86_64:
+  name: product:openSUSE-DVD
+  evr: 11.0
+  arch: noarch
+  vendor: SUSE LINUX Products GmbH, Nuernberg, Germany
+  provides:
+    0: product:openSUSE-DVD = 11.0  # self provides
+    1: product:openSUSE = 11.0
+  requires:
+    0: pattern:basesystem
+    1: openSUSE-release = 11.0
+  obsoletes:
+    0: product:SUSE_LINUX
+    1: product:openSUSE < 11.0
+    2: openSUSE < 11.0
+  "product:distproduct": openSUSE-DVD
+  "product:distversion": 11.0-Beta3
+  "product:type": base
+  "product:relnotesurl": http://www.suse.com/relnotes/i386/openSUSE/11.0/release-notes.rpm
+# - not parsed -  arch.x86_64: x86_64 i686 i586 i486 i386 noarch
+# - not parsed -  defaultbase: x86_64
+# - not parsed -  linguas:
+#    0: cs
+#    1: da
+#    2: de
+#    3: en
+#    4: en_GB
+#    5: en_US
+#    6: es
+#    7: fi
+#    8: fr
+#    9: hu
+#    10: it
+#    11: ja
+#    12: nb
+#    13: nl
+#    14: pl
+#    15: pt
+#    16: pt_BR
+#    17: ru
+#    18: sv
+#    19: zh
+#    20: zh_CN
+#    21: zh_TW
+  "product:shortlabel": oS 11.0
+  "solvable:summary": openSUSE 11.0           # aka 'label'
+  "solvable:summary:de": openSUSE 11.0        # aka 'label.de'
+# - not product related -  descrdir: suse/setup/descr
+# - not product related -  datadir: suse
+  "product:flags": update
+# - not parsed -  language: en_US

@@ -1,0 +1,122 @@
+PRODUCT openSUSE-DVD
+VERSION 11.0
+DISTPRODUCT openSUSE-DVD
+DISTVERSION 11.0-Beta3
+TYPE base
+VENDOR SUSE LINUX Products GmbH, Nuernberg, Germany
+RELNOTESURL http://www.suse.com/relnotes/i386/openSUSE/11.0/release-notes.rpm
+ARCH.x86_64 x86_64 i686 i586 i486 i386 noarch
+DEFAULTBASE x86_64
+REQUIRES openSUSE-release = 11.0 pattern:basesystem
+PROVIDES product:openSUSE = 11.0
+OBSOLETES product:SUSE_LINUX product:openSUSE < 11.0 package:openSUSE < 11.0
+LINGUAS cs da de en en_GB en_US es fi fr hu it ja nb nl pl pt pt_BR ru sv zh zh_CN zh_TW
+SHORTLABEL oS 11.0
+LABEL openSUSE 11.0
+LABEL.de openSUSE 11.0
+DESCRDIR suse/setup/descr
+DATADIR suse
+FLAGS update
+LANGUAGE en_US
+META SHA1 d0254e8cc77eb4567f912fe4e70895b6ab5e1ad8  EXTRA_PROV
+META SHA1 b640c8dab9b0ff8fdd3a70e71db461603488ee5f  common.war
+META SHA1 ddde123534a63751832ae36dd85f02fde92c9283  dvd-11.0-99.x86_64.pat.gz
+META SHA1 0c3cd7f7b53fa76780f7b93d04f67d547cc2eecf  non_oss-11.0-99.x86_64.pat.gz
+META SHA1 c2c7062980a83cbfc20234c6bd17ecec0f8e1240  packages.DU.gz
+META SHA1 76bd2b5ff42e148786d4c25208ffbed1c8c1f39a  packages.FL.gz
+META SHA1 b8c5dca3b2fba74345c98f6153a2cc5aac269ed1  packages.cs.gz
+META SHA1 40dd3687fa67871a4201ee459704f5ec6944308e  packages.de.gz
+META SHA1 90d090e3a3adca85560f4bb8fb2d346c3ed01b34  packages.en.gz
+META SHA1 07af92b6b0a3ce2d073d1e60cdfc05b1853d7df5  packages.es.gz
+META SHA1 179a94cdcfdcf627299086b3951ee8890105566e  packages.fr.gz
+META SHA1 7baafa149831142709108efb88835f941edfa749  packages.gz
+META SHA1 be5b6493d2c0584ecdd02a4aa83530fe65fdb8f6  packages.hu.gz
+META SHA1 b8c5dca3b2fba74345c98f6153a2cc5aac269ed1  packages.sk.gz
+META SHA1 25965ec6d48ac1ec12cce157201528f688b9c927  patterns
+HASH SHA1 aba7b03bd17c2d1034ce45453da03a3a16bd1fdb  license.tar.gz
+HASH SHA1 63b65fc7b64818ca0994abb8e3ae0b66cf2de7ae  control.xml
+HASH SHA1 b640c8dab9b0ff8fdd3a70e71db461603488ee5f  media.1/info.txt
+HASH SHA1 5d75fc7c618c2baad6c99a346c6fefb672a77286  boot/x86_64/root
+HASH SHA1 521d31dfdb4b45648b03888299817c1466917a53  boot/x86_64/rescue
+HASH SHA1 abc120bc340e0347b70d80666cdeb98b2194142d  boot/x86_64/config
+HASH SHA1 ccb361a11b446462f5376c46376f710cdad0d1a5  boot/x86_64/common
+HASH SHA1 8e69ff8d0609fc8b5ca5146bc7eb61be472b36cd  boot/x86_64/loader/linux
+HASH SHA1 ad38e2060ed6d47f3d4e222a28ef1fdee7976921  boot/x86_64/loader/initrd
+HASH SHA1 e566e1305fc26cdc7dc912eb1229d4a860ef76ad  boot/x86_64/loader/08000600.spl
+HASH SHA1 6b48af039aac05591e4ce0f5595a1bab28949d71  boot/x86_64/loader/10240768.spl
+HASH SHA1 0cbd307c441342ad5c39611dfb0a16112a79a34a  boot/x86_64/loader/12801024.spl
+HASH SHA1 7cf41e929272a68a7b9967bdfa412b976b7a2e05  boot/x86_64/loader/14001050.spl
+HASH SHA1 049cab31d1363621169e21ce59f1b51b9ba665dd  boot/x86_64/loader/16001200.spl
+HASH SHA1 c79c8d6110df48b4345304d7f5277dd1bc593e50  images/base-meta-x86_64.tar.lzma
+HASH SHA1 b81b9ccc82812322c80e2a29e678ae4b32a1e0fd  images/base-x86_64.tar.lzma
+HASH SHA1 dc6ad0016352cb39f2f30b951dcaf2891db45d05  images/common-base-x86_64.tar.lzma
+HASH SHA1 4353efab1838740a8a0ab85cab37ae4db36b6a69  images/common-desktop-x86_64.tar.lzma
+HASH SHA1 aef039ce91be8817515080911e3f52b5a3937c86  images/common-xorg-x86_64.tar.lzma
+HASH SHA1 2782497cd12572b55085d4a815cd37c0c1df5270  images/details-x86_64.xml
+HASH SHA1 8332b2a72e0079baa9b4f7c933c45ec145899705  images/gnome-meta-x86_64.tar.lzma
+HASH SHA1 3437f51b1f284c45218fb6d2ed1bdc49c6aa5795  images/gnome-x86_64.tar.lzma
+HASH SHA1 d1e9a38629e353d1f0136ded670cf28213d47e6f  images/images.xml
+HASH SHA1 d926cf6db50ae36ad844094169d1e286cc140ff0  images/kde-meta-x86_64.tar.lzma
+HASH SHA1 aa4e2b2e31f25dbf4ab685e632a942e7fc3aa817  images/kde-x86_64.tar.lzma
+HASH SHA1 e966efd9224c625ce8ad79791974461417708a55  images/x11-meta-x86_64.tar.lzma
+HASH SHA1 1f452bff4d60884ce006ac2917138adc99457294  images/x11-x86_64.tar.lzma
+HASH SHA1 1486e87e7aa085336e09911c0620b8260d8b8296  boot/x86_64/FZSongTi.rpm
+HASH SHA1 61fba487c113e49cfe50ef016fb5dc5905055152  boot/x86_64/IPAGothic.rpm
+HASH SHA1 e29e9e548ed243b26895bac269738ea2ff29ebae  boot/x86_64/cracklib-dict-full.rpm
+HASH SHA1 3a559eb80c9b08d88fdbf65d6cfe0408e1f2d294  boot/x86_64/unfonts.rpm
+HASH SHA1 bfdb4c4df99f80d017c9e06eeb469e5c14c32d37  boot/x86_64/yast2-trans-af.rpm
+HASH SHA1 af985031287eef715841c3ef85a6aa44545515a6  boot/x86_64/yast2-trans-ar.rpm
+HASH SHA1 bf1ced528810c952eedafb56b47122980e058659  boot/x86_64/yast2-trans-bg.rpm
+HASH SHA1 3d9977ab1c22e0573d3f1575dcb02e3f127fd9e3  boot/x86_64/yast2-trans-bn.rpm
+HASH SHA1 4e97af10737e7546138425892db29ab4d397ae1c  boot/x86_64/yast2-trans-bs.rpm
+HASH SHA1 fcf471debf0bbc2ea1a513384f669db2da408a9a  boot/x86_64/yast2-trans-ca.rpm
+HASH SHA1 f8f87dbf60e2ca2da9da228c68496c27a2ea699c  boot/x86_64/yast2-trans-cs.rpm
+HASH SHA1 6aa47825b246c8b17c4f4aeb6b1375c3ada59bab  boot/x86_64/yast2-trans-cy.rpm
+HASH SHA1 b15954ffbf03048b0e28d1a7a5ba140e6da28a22  boot/x86_64/yast2-trans-da.rpm
+HASH SHA1 539ed3190293c37e604e6e7675fa5f22e79996ad  boot/x86_64/yast2-trans-de.rpm
+HASH SHA1 d7a413cf3b3b708b001e41c65c3097cfe1d16921  boot/x86_64/yast2-trans-el.rpm
+HASH SHA1 bce6ee8790fe24836e9efe36f4ecd36190eeab91  boot/x86_64/yast2-trans-en_GB.rpm
+HASH SHA1 b0e3814f48dd4c8ef8019ccbffe6d9e65994ef9b  boot/x86_64/yast2-trans-en_US.rpm
+HASH SHA1 6a4e2a89bca6bab960d8c9b7633484d9b335d560  boot/x86_64/yast2-trans-es.rpm
+HASH SHA1 352d5c107dcab9ce54a569f7730f129e0725366f  boot/x86_64/yast2-trans-et.rpm
+HASH SHA1 d5aa8a217fdc0b7ea96d37af75df5a73a4fb03b9  boot/x86_64/yast2-trans-fi.rpm
+HASH SHA1 29fa095a75bff6b96474796150790808cf67a61c  boot/x86_64/yast2-trans-fr.rpm
+HASH SHA1 d915e8e2ee01d85f5ca60b5df756831cd062ce93  boot/x86_64/yast2-trans-gl.rpm
+HASH SHA1 191f296d955c3447ec6b4165136261962daaf249  boot/x86_64/yast2-trans-gu.rpm
+HASH SHA1 755ab0209e4a298b48b8dec02a31bfe884f8e092  boot/x86_64/yast2-trans-hi.rpm
+HASH SHA1 d481bec7432c8477636fff7d278fa9c1ffc39ace  boot/x86_64/yast2-trans-hr.rpm
+HASH SHA1 676df7285677fdd55c4c42bb9bd9f8e1dc80a712  boot/x86_64/yast2-trans-hu.rpm
+HASH SHA1 8c6c37ea0d3f22b42bde105e8f51542c5cf52031  boot/x86_64/yast2-trans-it.rpm
+HASH SHA1 b58943ed8ea9412599b4fbb6e228fd8dc40b7e7b  boot/x86_64/yast2-trans-ja.rpm
+HASH SHA1 a1640eab3e96cacad58271f6d4319329ce087220  boot/x86_64/yast2-trans-km.rpm
+HASH SHA1 0822d1d76f8bc693ba9864d418e848d7b7aa5f62  boot/x86_64/yast2-trans-ko.rpm
+HASH SHA1 8d8894552dbce286897cd630b620272c20dd8fff  boot/x86_64/yast2-trans-lt.rpm
+HASH SHA1 2c1f7a753dcd23e422538113cf762f0d1d7e46a2  boot/x86_64/yast2-trans-mk.rpm
+HASH SHA1 922b68a3f5be0d9e94fb52f98aad963cec3d87e0  boot/x86_64/yast2-trans-mr.rpm
+HASH SHA1 621dd87833a705e206564c2b6e290f3aab763bc9  boot/x86_64/yast2-trans-nb.rpm
+HASH SHA1 821b54fd994fec3a1f7d1e16d003282990a81fac  boot/x86_64/yast2-trans-nl.rpm
+HASH SHA1 a49dfbca412c8b68e71632257d92613bc372a5c9  boot/x86_64/yast2-trans-pa.rpm
+HASH SHA1 c8cfb2fa54f6f39de5b6cf9ea207ff75cc0768e8  boot/x86_64/yast2-trans-pl.rpm
+HASH SHA1 9d8b623a71deb49848c3a70e58eaaec9d3ce788e  boot/x86_64/yast2-trans-pt.rpm
+HASH SHA1 c00c3c63667116521f7d7a51154f9580eafb8f3c  boot/x86_64/yast2-trans-pt_BR.rpm
+HASH SHA1 8ff8f8987f02c09fb63606f5872c8886134ed62e  boot/x86_64/yast2-trans-ro.rpm
+HASH SHA1 8578a429c07ec16037e485764048ce649bae3472  boot/x86_64/yast2-trans-ru.rpm
+HASH SHA1 f3b848b3bcfa93db9434ff5c4b121ba8a27a2e02  boot/x86_64/yast2-trans-sk.rpm
+HASH SHA1 67aeff2f3576d4ffded286951f18971d83244144  boot/x86_64/yast2-trans-sl.rpm
+HASH SHA1 7af4d3d692e3f938993c5a4aba66e243be84e800  boot/x86_64/yast2-trans-sr.rpm
+HASH SHA1 28061e0c22b1dc1d2983702494aa2e22eed64da0  boot/x86_64/yast2-trans-sv.rpm
+HASH SHA1 0e5dd5cf611b8bb663720c045dc1f77eac29f831  boot/x86_64/yast2-trans-ta.rpm
+HASH SHA1 60f8d4f8b341b0cb621d3f77caf7b2dc245cd6a1  boot/x86_64/yast2-trans-tr.rpm
+HASH SHA1 953183ae4298e3813cc0dce3ac03c5b3111b9f1d  boot/x86_64/yast2-trans-uk.rpm
+HASH SHA1 728b7d64df166010d28c16a613ed6c4f4042dca4  boot/x86_64/yast2-trans-vi.rpm
+HASH SHA1 1cdc66046724cd6e9e6418cca5a91dbdecbabc85  boot/x86_64/yast2-trans-wa.rpm
+HASH SHA1 fbe2188e1e29b52c2608d6970d2252b08a0096e6  boot/x86_64/yast2-trans-xh.rpm
+HASH SHA1 d589f5d039f8a0d5344b93d2b4f58b3dbac21017  boot/x86_64/yast2-trans-zh_CN.rpm
+HASH SHA1 2bc0a3aefd90f12f0850eac735809a561726f6f6  boot/x86_64/yast2-trans-zh_TW.rpm
+HASH SHA1 c0b4ce625f0005f177e23668de4b28b29ca9d853  boot/x86_64/yast2-trans-zu.rpm
+KEY SHA1  17162a96933229a9771ee10c0976bdc047a2f53d  gpg-pubkey-0dfb3188-41ed929b.asc
+KEY SHA1  442682eb40d6a6af22c432f78a9065ddf606d566  gpg-pubkey-307e3d54-44201d5d.asc
+KEY SHA1  47f6492d127ae9f6aac353a2dd23752fc0ed4f8d  gpg-pubkey-3d25d3d9-36e12d04.asc
+KEY SHA1  474e6a2c95eb0325a5b42ef268ef67917b5e4fab  gpg-pubkey-7e2e3b05-44748aba.asc
+KEY SHA1  06ff5171362496c0db84beeccd29967f580350b2  gpg-pubkey-9c800aca-481f343a.asc
+KEY SHA1  04544096c5c3b0ed7b01a83d79e048307c2af919  gpg-pubkey-a1912208-446a0899.asc
