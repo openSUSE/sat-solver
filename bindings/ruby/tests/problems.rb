@@ -56,23 +56,23 @@ def solve_and_check solver, transaction, problem
     found = true if p.reason == problem
     i += 1
     case p.reason
-      when SatSolver::SOLVER_PROBLEM_UPDATE_RULE #1
+      when Satsolver::SOLVER_PROBLEM_UPDATE_RULE #1
 	reason = "problem with installed"
-      when SatSolver::SOLVER_PROBLEM_JOB_RULE #2
+      when Satsolver::SOLVER_PROBLEM_JOB_RULE #2
 	reason = "conflicting requests"
-      when SatSolver::SOLVER_PROBLEM_JOB_NOTHING_PROVIDES_DEP #3
+      when Satsolver::SOLVER_PROBLEM_JOB_NOTHING_PROVIDES_DEP #3
 	reason = "nothing provides requested"
-      when SatSolver::SOLVER_PROBLEM_NOT_INSTALLABLE #4
+      when Satsolver::SOLVER_PROBLEM_NOT_INSTALLABLE #4
 	reason = "not installable"
-      when SatSolver::SOLVER_PROBLEM_NOTHING_PROVIDES_DEP #5
+      when Satsolver::SOLVER_PROBLEM_NOTHING_PROVIDES_DEP #5
 	reason = "nothing provides rel required by source"
-      when SatSolver::SOLVER_PROBLEM_SAME_NAME #6
+      when Satsolver::SOLVER_PROBLEM_SAME_NAME #6
 	reason = "cannot install both"
-      when SatSolver::SOLVER_PROBLEM_PACKAGE_CONFLICT #7
+      when Satsolver::SOLVER_PROBLEM_PACKAGE_CONFLICT #7
 	reason = "source conflicts with rel provided by target"
-      when SatSolver::SOLVER_PROBLEM_PACKAGE_OBSOLETES #8
+      when Satsolver::SOLVER_PROBLEM_PACKAGE_OBSOLETES #8
 	reason = "source obsoletes rel provided by target"
-      when SatSolver::SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE #9
+      when Satsolver::SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE #9
 	reason = "source requires rel but no providers are installable"
       else
 	reason = "**unknown**"
@@ -84,7 +84,7 @@ end
 
 class ProblemTest < Test::Unit::TestCase
   def setup
-    @pool = SatSolver::Pool.new
+    @pool = Satsolver::Pool.new
     assert @pool
     
     @installed = @pool.create_repo( 'system' )
@@ -107,19 +107,19 @@ class ProblemTest < Test::Unit::TestCase
     transaction = @pool.create_transaction
     solver = @pool.create_solver( @installed )
     solver.solve( transaction )
-    assert solve_and_check( solver, transaction, SatSolver::SOLVER_PROBLEM_UPDATE_RULE )
+    assert solve_and_check( solver, transaction, Satsolver::SOLVER_PROBLEM_UPDATE_RULE )
   end
   def test_job_rule
     transaction = @pool.create_transaction
     solver = @pool.create_solver( @installed )
     solver.solve( transaction )
-    assert solve_and_check( solver, transaction, SatSolver::SOLVER_PROBLEM_JOB_RULE )
+    assert solve_and_check( solver, transaction, Satsolver::SOLVER_PROBLEM_JOB_RULE )
   end
   def test_job_nothing_provides
     transaction = @pool.create_transaction
     solver = @pool.create_solver( @installed )
     solver.solve( transaction )
-    assert solve_and_check( solver, transaction, SatSolver::SOLVER_PROBLEM_JOB_NOTHING_PROVIDES_DEP )
+    assert solve_and_check( solver, transaction, Satsolver::SOLVER_PROBLEM_JOB_NOTHING_PROVIDES_DEP )
   end
   def test_not_installable
     transaction = @pool.create_transaction
@@ -128,18 +128,18 @@ class ProblemTest < Test::Unit::TestCase
     transaction.install( solv )
     solver = @pool.create_solver( @installed )
     solver.solve( transaction )
-    assert solve_and_check( solver, transaction, SatSolver::SOLVER_PROBLEM_NOT_INSTALLABLE )
+    assert solve_and_check( solver, transaction, Satsolver::SOLVER_PROBLEM_NOT_INSTALLABLE )
   end
   def test_nothing_provides
     transaction = @pool.create_transaction
     solvA = @pool.find( "A", @repo )
-    solvA.requires << @pool.create_relation( "B", SatSolver::REL_GE, "2.0-0" )
+    solvA.requires << @pool.create_relation( "B", Satsolver::REL_GE, "2.0-0" )
     solvB = @pool.find( "B", @repo )
     solvB.requires << @pool.create_relation( "ZZ" )
     transaction.install( solvA )
     solver = @pool.create_solver( @installed )
     solver.solve( transaction )
-    assert solve_and_check( solver, transaction, SatSolver::SOLVER_PROBLEM_NOTHING_PROVIDES_DEP )
+    assert solve_and_check( solver, transaction, Satsolver::SOLVER_PROBLEM_NOTHING_PROVIDES_DEP )
   end
   def test_same_name
     transaction = @pool.create_transaction
@@ -149,19 +149,19 @@ class ProblemTest < Test::Unit::TestCase
     transaction.install( solvA )
     solver = @pool.create_solver( @installed )
     solver.solve( transaction )
-    assert solve_and_check( solver, transaction, SatSolver::SOLVER_PROBLEM_SAME_NAME )
+    assert solve_and_check( solver, transaction, Satsolver::SOLVER_PROBLEM_SAME_NAME )
   end
   def test_package_conflict
     transaction = @pool.create_transaction
     solvA = @pool.find( "A", @repo )
     solvB = @pool.find( "B", @repo )
-    solvA.conflicts << @pool.create_relation( solvB.name, SatSolver::REL_EQ, solvB.evr )
-    solvB.conflicts << @pool.create_relation( solvA.name, SatSolver::REL_EQ, solvA.evr )
+    solvA.conflicts << @pool.create_relation( solvB.name, Satsolver::REL_EQ, solvB.evr )
+    solvB.conflicts << @pool.create_relation( solvA.name, Satsolver::REL_EQ, solvA.evr )
     transaction.install( solvA )
     transaction.install( solvB )
     solver = @pool.create_solver( @installed )
     solver.solve( transaction )
-    assert solve_and_check( solver, transaction, SatSolver::SOLVER_PROBLEM_PACKAGE_CONFLICT )
+    assert solve_and_check( solver, transaction, Satsolver::SOLVER_PROBLEM_PACKAGE_CONFLICT )
   end
   def test_package_obsoletes
     transaction = @pool.create_transaction
@@ -170,12 +170,12 @@ class ProblemTest < Test::Unit::TestCase
     transaction.install( solvCC )
     solver = @pool.create_solver( @installed )
     solver.solve( transaction )
-    assert solve_and_check( solver, transaction, SatSolver::SOLVER_PROBLEM_PACKAGE_OBSOLETES )
+    assert solve_and_check( solver, transaction, Satsolver::SOLVER_PROBLEM_PACKAGE_OBSOLETES )
   end
   def test_providers_not_installable
     transaction = @pool.create_transaction
     solver = @pool.create_solver( @installed )
     solver.solve( transaction )
-    assert solve_and_check( solver, transaction, SatSolver::SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE )
+    assert solve_and_check( solver, transaction, Satsolver::SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE )
   end
 end

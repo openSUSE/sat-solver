@@ -10,7 +10,7 @@ require 'satsolver'
 
 class RepodataTest < Test::Unit::TestCase
   def test_repo_create
-    pool = SatSolver::Pool.new
+    pool = Satsolver::Pool.new
     assert pool
     pool.arch = "x86_64"
     repo = pool.add_solv( "10.3-x86_64.solv" )

@@ -36,7 +36,7 @@ class RepoTest < Test::Unit::TestCase
   def test_repo_create
     pool = Satsolver::Pool.new
     assert pool
-    repo = satsolver::Repo.new( pool, "test" )
+    repo = Satsolver::Repo.new( pool, "test" )
     # equivalent: repo = pool.create_repo( "test" )
     assert repo
     assert repo.size == 0

@@ -52,7 +52,7 @@ require 'satsolver'
 require '_patch'
 require '_solv2patches'
 
-pool = SatSolver::Pool.new( "x86_64" )
+pool = Satsolver::Pool.new( "x86_64" )
 repo = pool.create_repo( "patches" )
 
 #

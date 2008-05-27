@@ -5,14 +5,14 @@ $:.unshift "../../../build/bindings/ruby"
 require 'satsolver'
 require '_solv2patches'
 
-pool = SatSolver::Pool.new
+pool = Satsolver::Pool.new
 pool.arch = "x86_64"
 
 # load _all_ packages as 'installed'
 system = pool.add_solv( "packages.solv" )
 
 # now solve, fixing the system
-solver = SatSolver::Solver.new( pool, system )
+solver = Satsolver::Solver.new( pool, system )
 solver.allow_uninstall = true
 solver.fix_system = true
 
@@ -37,7 +37,7 @@ system.each { |s|
 # now check new system
 #
 
-solver = SatSolver::Solver.new( pool, new_system )
+solver = Satsolver::Solver.new( pool, new_system )
 solver.allow_uninstall = true
 solver.fix_system = true
 
@@ -61,7 +61,7 @@ updates = pool.add_solv( "updates.solv" )
 updates.name = "updates"
   
 pool.prepare
-solver = SatSolver::Solver.new( pool, new_system )
+solver = Satsolver::Solver.new( pool, new_system )
 solver.allow_uninstall = true
 solver.update_system = true
 solver.fix_system = true

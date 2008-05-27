@@ -22,7 +22,7 @@ end
 
 class SolvableTest < Test::Unit::TestCase
   def setup
-    @pool = SatSolver::Pool.new
+    @pool = Satsolver::Pool.new
     assert @pool
     @pool.arch = "i686"
     @pool.add_solv( "../../../testsuite/data.libzypp/basic-exercises/exercise-1-packages.solv" )
@@ -53,7 +53,7 @@ class SolvableTest < Test::Unit::TestCase
     assert solv1.name == 'one'
     assert solv1.evr == "1.0-0"
     assert solv1.vendor.nil?
-    solv2 = SatSolver::Solvable.new( repo, 'two', '2.0-0', 'noarch' )
+    solv2 = Satsolver::Solvable.new( repo, 'two', '2.0-0', 'noarch' )
     assert solv2
     assert repo.size == 2
     assert solv2.name == 'two'
@@ -61,7 +61,7 @@ class SolvableTest < Test::Unit::TestCase
     solv2.vendor = "Ruby"
     assert solv2.vendor == "Ruby"
     
-    rel = SatSolver::Relation.new( @pool, "two", SatSolver::REL_GE, "2.0-0" )
+    rel = Satsolver::Relation.new( @pool, "two", Satsolver::REL_GE, "2.0-0" )
     assert rel
     solv1.requires << rel
     assert solv1.requires.size == 1

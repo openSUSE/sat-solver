@@ -21,33 +21,33 @@ def usage reason=nil
 end
 
 
-class Satsolverx::Pool
+class Satsolver::Pool
   def dump
     puts "Pool has #{count_repos} repositories, #{size} solvables"
   end
 end
 
 
-class Satsolverx::Repokey
+class Satsolver::Repokey
   def dump
     puts "    #{name} (type #{type} size #{size})"
   end
 end
 
-class Satsolverx::Repodata
+class Satsolver::Repodata
   def dump
     puts "  Repodata #{(location) ? location : '*EMBEDDED*' } has #{keysize} keys"
     each_key { |key| key.dump }
   end
 end
 
-class Satsolverx::Relation
+class Satsolver::Relation
   def dump
     puts "   #{to_s}"
   end
 end
 
-class Satsolverx::Dependency
+class Satsolver::Dependency
   def dump name
     return if empty?
     puts "  #{name}:"
@@ -55,7 +55,7 @@ class Satsolverx::Dependency
   end
 end
 
-class Satsolverx::Solvable
+class Satsolver::Solvable
   def dump
     puts " Solvable #{name} #{evr} #{arch}"
     puts " Vendor #{vendor}"
@@ -69,7 +69,7 @@ class Satsolverx::Solvable
   end
 end
 
-class Satsolverx::Repo
+class Satsolver::Repo
   def dump
     puts " Repo #{name} refers to #{datasize} subfiles"
     each_data { |data| data.dump }
@@ -99,7 +99,7 @@ usage "File #{filename} does not exist / is not readable" unless File.exists?( f
 # create pool, load solv to repo
 #
 
-pool = SatSolver::Pool.new
+pool = Satsolver::Pool.new
 repo = pool.add_solv( filename )
 
 usage "No solvables found in #{filename}" if repo.empty?

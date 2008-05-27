@@ -10,7 +10,7 @@ require 'satsolver'
 
 class EachProviderTest < Test::Unit::TestCase
   def test_repo_create
-    pool = SatSolver::Pool.new
+    pool = Satsolver::Pool.new
     assert pool
     pool.arch = "x86_64"
     repo = pool.add_solv( "10.3-x86_64.solv" )
@@ -27,7 +27,7 @@ class EachProviderTest < Test::Unit::TestCase
       puts "  #{s} [#{s.repo.name}]"
     }
     
-    rel = pool.create_relation( "ispell_english_dictionary", SatSolver::REL_GT, "3.3.02-23" )
+    rel = pool.create_relation( "ispell_english_dictionary", Satsolver::REL_GT, "3.3.02-23" )
 
     puts "Providers of #{rel}:"
     pool.each_provider(rel) { |s|

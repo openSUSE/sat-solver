@@ -23,17 +23,17 @@ require 'satsolver'
 
 class PoolTest < Test::Unit::TestCase
   def test_pool
-    pool = SatSolver::Pool.new
+    pool = Satsolver::Pool.new
     assert pool
     assert pool.count_repos == 0
   end
   def test_pool1
-    pool = SatSolver::Pool.new
+    pool = Satsolver::Pool.new
     assert pool
     pool.arch = "i686"
   end
   def test_pool2
-    pool = SatSolver::Pool.new "i686"
+    pool = Satsolver::Pool.new "i686"
     assert pool
   end
 end

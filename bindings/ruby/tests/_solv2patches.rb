@@ -104,7 +104,7 @@ def solv2patches solvname, repo
 	  STDERR.puts "** Patch #{patch} requires unknown atom #{name}"
 	  break
 	end
-	unless req.op == SatSolver::REL_EQ
+	unless req.op == Satsolver::REL_EQ
 	  STDERR.puts "** Patch #{patch} requires non-equal atom #{name}"
 	  exit
 	end
@@ -125,7 +125,7 @@ def solv2patches solvname, repo
 	    STDERR.puts "Atom #{atom} requires #{areq}"
 	    exit
 	  end
-	  unless areq.op == SatSolver::REL_GE
+	  unless areq.op == Satsolver::REL_GE
 	    STDERR.puts "Atom #{atom} requires non-greater-equal #{areq}"
 	    exit
 	  end
