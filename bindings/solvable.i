@@ -194,7 +194,6 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   { return my_id2str( $self->pool, xsolvable_solvable($self)->arch ); }
   const char *evr()
   { return my_id2str( $self->pool, xsolvable_solvable($self)->evr ); }
-
   const char *vendor()
   { return my_id2str( $self->pool, xsolvable_solvable($self)->vendor ); }
 #if defined(SWIGRUBY)
@@ -293,6 +292,7 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   /*
    * Attributes (from Repodata / Repokey)
    */
+
 #if defined(SWIGRUBY)
 
   /*
@@ -317,16 +317,20 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
     else
       name = StringValuePtr( attrname );
 
-    if (name) {
-      Id key;
-      key = str2id( $self->pool, name, 0);
-      if (key != ID_NULL) {    /* key existing in pool ? */
-	VALUE result = Qnil;
-        Solvable *s = xsolvable_solvable($self);
-        if (repo_lookup( s, key, xsolvable_attr_lookup_callback, &result ))
-          return result;
-      }
-    }
+    if (!name)
+      rb_raise( rb_eArgError, "Solvable::[] called with empty arg" );
+    
+    /* key existing in pool ? */
+    Id key;
+    key = str2id( $self->pool, name, 0);
+    if (key == ID_NULL)
+      rb_raise( rb_eArgError, "No such attribute '%s'", name );
+    
+    VALUE result = Qnil;
+    Solvable *s = xsolvable_solvable($self);
+    if (repo_lookup( s, key, xsolvable_attr_lookup_callback, &result ))
+      return result;
+
     return Qnil;
   }
   
@@ -341,6 +345,34 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   }
 
 
+  /*
+   * check existance of attribute
+   */
+  %rename( "attr?" ) attr_exists( VALUE attrname );
+  VALUE attr_exists( VALUE attrname )
+  {
+    char *name;
+
+    if (SYMBOL_P(attrname)) {
+      char *colon;
+      name = rb_id2name( SYM2ID( attrname ) );
+      colon = name;
+      while ((colon = strchr( colon, '_'))) {
+        *colon++ = ':';
+      }
+    }
+    else
+      name = StringValuePtr( attrname );
+
+    if (!name)
+      return Qfalse;
+
+    /* key existing in pool ? */
+    Id key;
+    key = str2id( $self->pool, name, 0);
+    return (key == ID_NULL) ? Qfalse : Qtrue;      
+  }
+  
 #endif /* SWIGRUBY */
 }
 
