@@ -1,0 +1,21 @@
+fedora-imlib:
+ 0:
+   name: patch:FEDORA-2007-4594
+   evr: 1.4
+   arch: noarch
+   vendor: rel-eng@fedoraproject.org
+# - not parsed -   "patch:status": stable
+   "solvable:patchcategory": security
+   "solvable:summary": imlib-1.9.15-6.fc8
+#   <release>Fedora 8</release>
+#   <issued date="2007-12-28 16:42:30"/>
+#   <references>
+#     <reference href="https://bugzilla.redhat.com/show_bug.cgi?id=426091" id="426091" title="CVE-2007-3568 imlib: infinite loop DoS using crafted BMP image" type="bugzilla"/>
+#   </references>
+#   <description>This update includes a fix for a denial-of-service issue (CVE-2007-3568) whereby an attacker who could get an imlib-using user to view a  specially-crafted BMP image could cause the user's CPU to go into an infinite loop.</description>
+#   <pkglist>
+#     <collection short="F8">
+#       <name>Fedora 8</name>
+#       <package arch="ppc64" name="imlib-debuginfo" release="6.fc8" src="http://download.fedoraproject.org/pub/fedora/linux/updates/8/ppc64/imlib-debuginfo-1.9.15-6.fc8.ppc64.rpm" version="1.9.15">
+#         <filename>imlib-debuginfo-1.9.15-6.fc8.ppc64.rpm</filename>
+#         <reboot_suggested>True</reboot_suggested>
