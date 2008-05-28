@@ -79,7 +79,7 @@ class ContentTest < Test::Unit::TestCase
       # create the Pool, load the .solv file
 
       pool = Satsolver::Pool.new
-      repo = pool.add_solv outname.to_s
+      repo = pool.add_solv outname
       assert_equal testdata.size, repo.size
       
       # get the solvable
