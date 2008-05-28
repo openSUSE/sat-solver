@@ -30,6 +30,7 @@ $:.unshift ".."
 
 # test Repo
 require 'test/unit'
+require 'pathname'
 require 'satsolver'
 
 class RepoTest < Test::Unit::TestCase
@@ -47,7 +48,7 @@ class RepoTest < Test::Unit::TestCase
     pool = Satsolver::Pool.new
     assert pool
     pool.arch = "i686"
-    repo = pool.add_solv( "../../../testsuite/data.libzypp/basic-exercises/exercise-1-packages.solv" )
+    repo = pool.add_solv( Pathname( File.dirname( __FILE__ ) ) + "os11-biarch.solv" )
     repo.name = "test"
     assert repo.name == "test"
     assert repo.size > 0
@@ -56,7 +57,7 @@ class RepoTest < Test::Unit::TestCase
     pool = Satsolver::Pool.new
     assert pool
     pool.arch = "i686"
-    repo = pool.add_solv( "../../../testsuite/data.libzypp/basic-exercises/exercise-1-packages.solv" )
+    repo = pool.add_solv( Pathname( File.dirname( __FILE__ ) ) + "os11-biarch.solv" )
     repo.each { |s|
       puts s
     }

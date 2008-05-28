@@ -13,8 +13,8 @@ class EachProviderTest < Test::Unit::TestCase
     pool = Satsolver::Pool.new
     assert pool
     pool.arch = "x86_64"
-    repo = pool.add_solv( "10.3-x86_64.solv" )
-    repo.name = "10.3-x86_64"
+    repo = pool.add_solv( "os11-biarch.solv" )
+    repo.name = "openSUSE 11.0 Beta3 BiArch"
     puts "Repo #{repo.name} loaded with #{repo.size} solvables"
     system = pool.add_rpmdb( "/" )
     system.name = "@system"
