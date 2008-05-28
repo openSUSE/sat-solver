@@ -2,7 +2,7 @@
 # Check Repodata of Repo
 #
 
-$:.unshift "../../../build/bindings/ruby"
+$:.unshift ".."
 
 # test Repodata
 require 'test/unit'

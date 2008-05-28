@@ -1,4 +1,4 @@
-$:.unshift "../../../build/bindings/ruby"
+$:.unshift ".."
 
 # test Updates
 

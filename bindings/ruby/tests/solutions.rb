@@ -5,7 +5,7 @@
 #
 #
 
-$:.unshift "../../../build/bindings/ruby"
+$:.unshift ".."
 
 # test Solutions
 require 'test/unit'

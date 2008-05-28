@@ -2,7 +2,7 @@
 # Check each_provider callback
 #
 
-$:.unshift "../../../build/bindings/ruby"
+$:.unshift ".."
 
 # test EachProvider
 require 'test/unit'

@@ -1,4 +1,4 @@
-$:.unshift "../../../build/bindings/ruby"
+$:.unshift ".."
 
 #
 # Generate 'code11 updateinfo' from (code10) patch solv

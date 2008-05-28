@@ -19,7 +19,7 @@
 # The number of decision steps is available through Solver.decision_count
 #
 
-$:.unshift "../../../build/bindings/ruby"
+$:.unshift ".."
 
 # test Decisions
 require 'test/unit'

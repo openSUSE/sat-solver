@@ -1,4 +1,4 @@
-$:.unshift "../../../build/bindings/ruby"
+$:.unshift ".."
 
 #
 # Generate 'code11 patches' from code10 patch repo

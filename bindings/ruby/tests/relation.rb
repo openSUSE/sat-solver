@@ -18,7 +18,7 @@
 #
 #
 
-$:.unshift "../../../build/bindings/ruby"
+$:.unshift ".."
 
 # test Relation
 require 'test/unit'

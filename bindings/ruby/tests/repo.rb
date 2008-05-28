@@ -26,7 +26,7 @@
 #   this will return the 'best' solvable named 'A' or nil if no such solvable exists.
 #
 
-$:.unshift "../../../build/bindings/ruby"
+$:.unshift ".."
 
 # test Repo
 require 'test/unit'

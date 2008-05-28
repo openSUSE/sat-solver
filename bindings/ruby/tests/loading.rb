@@ -2,7 +2,11 @@
 # Test loading of the bindings
 #
 
-$:.unshift "../../../build/bindings/ruby"
+File.open("/tmp/output", "w") { |f|
+  f.puts "PWD: #{Dir.pwd}"
+}
+
+$:.unshift ".."
 
 # test loading of extension
 require 'test/unit'

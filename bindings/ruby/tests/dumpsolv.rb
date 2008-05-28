@@ -4,7 +4,7 @@
 # Example code how to use Ruby bindings to implement tools/dumpsolv
 #
 
-$:.unshift "../../../build/bindings/ruby"
+$:.unshift ".."
 
 require 'satsolver'
 require 'pp'
