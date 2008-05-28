@@ -6,6 +6,7 @@ $:.unshift ".."
 
 # test Repodata
 require 'test/unit'
+require 'pathname'
 require 'satsolver'
 
 class RepodataTest < Test::Unit::TestCase
@@ -13,8 +14,8 @@ class RepodataTest < Test::Unit::TestCase
     pool = Satsolver::Pool.new
     assert pool
     pool.arch = "x86_64"
-    repo = pool.add_solv( "10.3-x86_64.solv" )
-    repo.name = "10.3-x86_64"
+    repo = pool.add_solv( Pathname( File.dirname( __FILE__ ) ) + "os11-biarch.solv" )
+    repo.name = "openSUSE 11.0 Beta3 BiArch"
     puts "Repo #{repo.name} loaded with #{repo.size} solvables"
     
     puts "Repo has #{repo.datasize} Repodatas attached"
@@ -36,7 +37,7 @@ class RepodataTest < Test::Unit::TestCase
     
     i = 0
     repo.each { |s|
-      puts "Solvable #{s}: group #{s.group}, time #{s.time}, downloadsize #{s.downloadsize}, installsize #{s.installsize}"
+      puts "Solvable #{s}: group #{s['solvable:group']}, time #{s['solvable:buildtime']}, downloadsize #{s['solvable:downloadsize']}, installsize #{s['solvable:installsize']}"
       i += 1
       break if i == 10
     }

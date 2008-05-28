@@ -3,13 +3,14 @@ $:.unshift ".."
 # test Covenants
 
 require 'test/unit'
+require 'pathname'
 require 'satsolver'
 
 class CovenantTest < Test::Unit::TestCase
   def test_convenant
     pool = Satsolver::Pool.new "i686"
     assert pool
-    repo = pool.add_solv( "../../../testsuite/data.libzypp/basic-exercises/exercise-1-packages.solv" )
+    repo = pool.add_solv( Pathname( File.dirname( __FILE__ ) ) + "os11-biarch.solv" )
     repo.name = "test"
 
     solver = pool.create_solver

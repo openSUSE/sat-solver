@@ -3,6 +3,7 @@ $:.unshift ".."
 # test Transction
 
 require 'test/unit'
+require 'pathname'
 require 'satsolver'
 
 class TransactionTest < Test::Unit::TestCase
@@ -10,7 +11,7 @@ class TransactionTest < Test::Unit::TestCase
     pool = Satsolver::Pool.new
     assert pool
     pool.arch = "i686"
-    repo = pool.add_solv( "../../../testsuite/data.libzypp/basic-exercises/exercise-1-packages.solv" )
+    repo = pool.add_solv( Pathname( File.dirname( __FILE__ ) ) + "os11-biarch.solv" )
     repo.name = "test1"
     
     transaction = Satsolver::Transaction.new( pool )

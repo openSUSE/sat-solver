@@ -3,6 +3,7 @@ $:.unshift ".."
 # test Solvable
 
 require 'test/unit'
+require 'pathname'
 require 'satsolver'
 
 def show_dep name, deps
@@ -25,7 +26,7 @@ class SolvableTest < Test::Unit::TestCase
     @pool = Satsolver::Pool.new
     assert @pool
     @pool.arch = "i686"
-    @pool.add_solv( "../../../testsuite/data.libzypp/basic-exercises/exercise-1-packages.solv" )
+    @pool.add_solv( Pathname( File.dirname( __FILE__ ) ) + "os11-biarch.solv" )
     assert @pool.size > 0
   end
   def test_solvable
