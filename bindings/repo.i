@@ -41,8 +41,17 @@ typedef struct _Repo {} Repo;
   void add_file( FILE *fp )
   { repo_add_solv( $self, fp ); }
 
+#if defined(SWIGRUBY)
+  void add_solv( VALUE name )
+  {
+    const char *fname;
+    /* try string conversion if not already a string */
+    name = rb_check_convert_type( name, T_STRING, "String", "to_s" );
+    fname = StringValuePtr( name );
+#else
   void add_solv( const char *fname )
   {
+#endif
     FILE *fp = fopen( fname, "r");
     if (fp) {
       repo_add_solv( $self, fp );

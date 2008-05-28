@@ -99,8 +99,17 @@ typedef struct _Pool {} Pool;
     return repo;
   }
 
+#if defined(SWIGRUBY)
+  Repo *add_solv( VALUE name )
+  {
+    const char *fname;
+    /* try string conversion if not already a string */
+    name = rb_check_convert_type( name, T_STRING, "String", "to_s" );
+    fname = StringValuePtr( name );
+#else
   Repo *add_solv( const char *fname )
   {
+#endif
     Repo *repo = repo_create( $self, NULL );
     FILE *fp = fopen( fname, "r");
     if (fp) {
