@@ -53,16 +53,17 @@ enum state {
   STATE_TITLE,        /* 4 */
   STATE_RELEASE,      /* 5 */
   STATE_ISSUED,       /* 6 */
-  STATE_REFERENCES,   /* 7 */
-  STATE_REFERENCE,    /* 8 */
-  STATE_DESCRIPTION,  /* 9 */
-  STATE_PKGLIST,     /* 10 */
-  STATE_COLLECTION,  /* 11 */
-  STATE_NAME,        /* 12 */
-  STATE_PACKAGE,     /* 13 */
-  STATE_FILENAME,    /* 14 */
-  STATE_REBOOT,      /* 15 */
-  STATE_RESTART,     /* 16 */
+  STATE_MESSAGE,      /* 7 */
+  STATE_REFERENCES,   /* 8 */
+  STATE_REFERENCE,    /* 9 */
+  STATE_DESCRIPTION,  /* 10 */
+  STATE_PKGLIST,     /* 11 */
+  STATE_COLLECTION,  /* 12 */
+  STATE_NAME,        /* 13 */
+  STATE_PACKAGE,     /* 14 */
+  STATE_FILENAME,    /* 15 */
+  STATE_REBOOT,      /* 16 */
+  STATE_RESTART,     /* 17 */
   NUMSTATES
 };
 
@@ -84,6 +85,7 @@ static struct stateswitch stateswitches[] = {
   { STATE_UPDATE,      "release",         STATE_RELEASE,     1 },
   { STATE_UPDATE,      "issued",          STATE_ISSUED,      1 },
   { STATE_UPDATE,      "description",     STATE_DESCRIPTION, 1 },
+  { STATE_UPDATE,      "message",         STATE_MESSAGE    , 1 },
   { STATE_UPDATE,      "references",      STATE_REFERENCES,  0 },
   { STATE_UPDATE,      "pkglist",         STATE_PKGLIST,     0 },
   { STATE_REFERENCES,  "reference",       STATE_REFERENCE,   0 },
@@ -348,6 +350,9 @@ startElement(void *userData, const char *name, const char **atts)
       /* <description>This update ...</description> */
       case STATE_DESCRIPTION:
       break;
+      /* <message type="confirm">This update ...</message> */
+      case STATE_MESSAGE:
+      break;
       case STATE_PKGLIST:
       break;
       /* <collection short="F8"> */
@@ -500,6 +505,14 @@ endElement(void *userData, const char *name)
 	repodata_set_str(pd->data, pd->datanum, SOLVABLE_DESCRIPTION, pd->content);
       }
       break;   
+      /*
+       * <message>Warning! ...</message>
+       */
+      case STATE_MESSAGE:
+      {
+	repodata_set_str(pd->data, pd->datanum, UPDATE_MESSAGE, pd->content);
+      }
+      break;
       case STATE_PKGLIST:
       break;
       case STATE_COLLECTION:
