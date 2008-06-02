@@ -838,7 +838,7 @@ enabledisablelearntrules(Solver *solv)
  * 
  */
 
-void
+static void
 enableweakrules(Solver *solv)
 {
   int i;
@@ -4250,7 +4250,7 @@ solver_solve(Solver *solv, Queue *job)
     
   /* if redoq.count == 0 we already found all recommended in the
    * solver run */
-  if (redoq.count || solv->dontinstallrecommended || !solv->dontshowinstalledrecommended)
+  if (redoq.count || solv->dontinstallrecommended || !solv->dontshowinstalledrecommended || solv->ignorealreadyrecommended)
     {
       Id rec, *recp, p, *pp;
 
