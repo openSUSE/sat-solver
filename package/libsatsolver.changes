@@ -1,16 +1,16 @@
 -------------------------------------------------------------------
+Mon Jun  2 14:09:20 CEST 2008 - dmacvicar@suse.de
+
+- add message tag to updateinfo.xml for displaying
+  messages in the user interface
+
+-------------------------------------------------------------------
 Mon Jun  2 11:47:32 CEST 2008 - coolo@suse.de
 
 - calculate recommendation list also if ignorealreadyrecommended is set,
   as some recommendations would be missing otherwise
 - make dependency output less confusing (bnc#396309)
 - 0.9.0
-
--------------------------------------------------------------------
-Mon Jun  2 14:09:20 CEST 2008 - dmacvicar@suse.de
-
-- add message tag to updateinfo.xml for displaying
-  messages in the user interface
 
 -------------------------------------------------------------------
 Tue May 27 22:34:05 CEST 2008 - coolo@suse.de
