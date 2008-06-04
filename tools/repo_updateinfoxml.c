@@ -112,7 +112,7 @@ struct parsedata {
   unsigned int datanum;
   Solvable *solvable;
   unsigned int timestamp;
-  
+
   struct stateswitch *swtab[NUMSTATES];
   enum state sbtab[NUMSTATES];
   char *tempstr;
@@ -123,7 +123,7 @@ struct parsedata {
 /*
  * if we have seen a <filename>...
  * inside of <package>...
- * 
+ *
  * If not, we must insert an empty filename to UPDATE_COLLECTION_FILENAME
  * at </package> in order to keep all UPDATE_COLLECTION_* arrays in sync
  */
@@ -243,7 +243,7 @@ startElement(void *userData, const char *name, const char **atts)
   for (sw = pd->swtab[pd->state]; sw->from == pd->state; sw++)  /* find name in statetable */
     if (!strcmp(sw->ename, name))
       break;
-  
+
   if (sw->from != pd->state)
     {
 #if 1
@@ -284,12 +284,12 @@ startElement(void *userData, const char *name, const char **atts)
 	  else if (!strcmp(*atts, "version"))
 	    version = atts[1];
 	}
-	
+
 	solvable = pd->solvable = pool_id2solvable(pool, repo_add_solvable(pd->repo));
 	pd->datanum = (pd->solvable - pool->solvables) - pd->repo->start;
-	repodata_extend(pd->data, pd->solvable - pool->solvables);      
+	repodata_extend(pd->data, pd->solvable - pool->solvables);
 	pd->datanum = repodata_get_handle(pd->data, pd->datanum);
-	
+
 	solvable->vendor = str2id(pool, from, 1);
 	solvable->evr = str2id(pool, version, 1);
 	solvable->arch = ARCH_NOARCH;
@@ -358,13 +358,13 @@ startElement(void *userData, const char *name, const char **atts)
       /* <collection short="F8"> */
       case STATE_COLLECTION:
       break;
-      /* <name>Fedora 8</name> */ 
+      /* <name>Fedora 8</name> */
       case STATE_NAME:
       break;
       /*   <package arch="ppc64" name="imlib-debuginfo" release="6.fc8"
        *            src="http://download.fedoraproject.org/pub/fedora/linux/updates/8/ppc64/imlib-debuginfo-1.9.15-6.fc8.ppc64.rpm"
        *            version="1.9.15">
-       * 
+       *
        * -> patch.conflicts: {name} < {version}.{release}
        */
       case STATE_PACKAGE:
@@ -373,11 +373,11 @@ startElement(void *userData, const char *name, const char **atts)
 	Id evr = makeevr_atts(pool, pd, atts); /* parse "epoch", "version", "release" */
 	Id n, a, na;
 	Id rel_id;
-	
+
 	/* reset package_* markers, to be evaluated at </package> */
 	package_filename_seen = 0;
 	package_flags = 0;
-	
+
 	for (; *atts; atts += 2)
 	{
 	  if (!strcmp(*atts, "arch"))
@@ -395,7 +395,7 @@ startElement(void *userData, const char *name, const char **atts)
 	  a = ARCH_NOARCH;
 	/*  now combine both to a single Id */
 	na = rel2id(pool, n, a, REL_ARCH, 1);
-	
+
 	rel_id = rel2id(pool, na, evr, REL_LT, 1);
 
 	solvable->conflicts = repo_addid_dep(pd->repo, solvable->conflicts, rel_id, 0);
@@ -419,7 +419,7 @@ startElement(void *userData, const char *name, const char **atts)
 #endif
       }
       break;
-      /* <filename>libntlm-0.4.2-1.fc8.x86_64.rpm</filename> */ 
+      /* <filename>libntlm-0.4.2-1.fc8.x86_64.rpm</filename> */
       case STATE_FILENAME:
       break;
       /* <reboot_suggested>True</reboot_suggested> */
@@ -444,6 +444,7 @@ endElement(void *userData, const char *name)
   struct parsedata *pd = userData;
   Pool *pool = pd->pool;
   Solvable *s = pd->solvable;
+  Repo *repo = pd->repo;
 
 #if 0
       fprintf(stderr, "end: %s\n", name);
@@ -466,6 +467,7 @@ endElement(void *userData, const char *name)
       case STATE_UPDATES:
       break;
       case STATE_UPDATE:
+      s->provides = repo_addid_dep(repo, s->provides, rel2id(pool, s->name, s->evr, REL_EQ, 1), 0);
       break;
       case STATE_ID:
       {
@@ -504,7 +506,7 @@ endElement(void *userData, const char *name)
       {
 	repodata_set_str(pd->data, pd->datanum, SOLVABLE_DESCRIPTION, pd->content);
       }
-      break;   
+      break;
       /*
        * <message>Warning! ...</message>
        */
@@ -533,7 +535,7 @@ endElement(void *userData, const char *name)
 #endif
       }
       break;
-      /* <filename>libntlm-0.4.2-1.fc8.x86_64.rpm</filename> */ 
+      /* <filename>libntlm-0.4.2-1.fc8.x86_64.rpm</filename> */
       case STATE_FILENAME:
       {
 #if DO_ARRAY
@@ -574,7 +576,7 @@ endElement(void *userData, const char *name)
 
   pd->state = pd->sbtab[pd->state];
   pd->docontent = 0;
-  
+
   return;
 }
 

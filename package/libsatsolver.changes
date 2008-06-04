@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Wed Jun  4 17:54:27 CEST 2008 - ma@suse.de
+
+- Fix missing self provides for patches (bnc #397132). 
+
+-------------------------------------------------------------------
 Mon Jun  2 14:09:20 CEST 2008 - dmacvicar@suse.de
 
 - add message tag to updateinfo.xml for displaying
