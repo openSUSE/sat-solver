@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu Jun  5 14:42:22 CEST 2008 - mls@suse.de
+
+- do not reorder binary rules if they are not rpm rules [bnc#397456]
+
+-------------------------------------------------------------------
 Wed Jun  4 17:54:27 CEST 2008 - ma@suse.de
 
 - Fix missing self provides for patches (bnc #397132). 
