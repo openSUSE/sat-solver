@@ -2,11 +2,12 @@
 Thu Jun  5 14:42:22 CEST 2008 - mls@suse.de
 
 - do not reorder binary rules if they are not rpm rules [bnc#397456]
+- 0.9.2
 
 -------------------------------------------------------------------
 Wed Jun  4 17:54:27 CEST 2008 - ma@suse.de
 
-- Fix missing self provides for patches (bnc #397132). 
+- Fix missing self provides for patches (bnc #397132).
 
 -------------------------------------------------------------------
 Mon Jun  2 14:09:20 CEST 2008 - dmacvicar@suse.de
@@ -52,7 +53,7 @@ Thu May 15 16:05:50 CEST 2008 - coolo@suse.de
 ------------------------------------------------------------------
 Wed May 14 16:41:26 CEST 2008 - dmacvicar@suse.de
 
-- mls fix of satisfied patterns 
+- mls fix of satisfied patterns
 - 0.0.33
 
 -------------------------------------------------------------------
@@ -63,7 +64,7 @@ Tue May 13 17:14:26 CEST 2008 - dmacvicar@suse.de
 -------------------------------------------------------------------
 Tue May 13 14:11:30 CEST 2008 - jreidinger@suse.cz
 
-- read description dir path from content file (bnc #389414) 
+- read description dir path from content file (bnc #389414)
 
 -------------------------------------------------------------------
 Tue May 13 12:20:58 CEST 2008 - dmacvicar@suse.de
@@ -84,7 +85,7 @@ Sat May 10 15:33:15 CEST 2008 - coolo@suse.de
 -------------------------------------------------------------------
 Fri May  9 21:56:43 CEST 2008 - ma@suse.de
 
-- Parse the products LABEL in content file to SUMMARY. 
+- Parse the products LABEL in content file to SUMMARY.
 
 -------------------------------------------------------------------
 Fri May  9 20:26:52 CEST 2008 - dmacvicar@suse.de
@@ -139,7 +140,7 @@ Fri Apr 25 19:23:51 CEST 2008 - coolo@suse.de
 - fix anchoring of filelist data
 - susetags move files added to provides back into filelist
 - ignore packages.FL for now
- 
+
 -------------------------------------------------------------------
 Sun Apr 20 18:25:14 CEST 2008 - coolo@suse.de
 
@@ -286,7 +287,7 @@ Sat Dec 22 19:02:57 CET 2007 - coolo@suse.de
 -------------------------------------------------------------------
 Fri Nov 30 16:01:39 CET 2007 - schubi@suse.de
 
-- update for libzypp integration 
+- update for libzypp integration
 
 -------------------------------------------------------------------
 Fri Nov 16 12:17:13 CET 2007 - coolo@suse.de
