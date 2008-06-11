@@ -15,21 +15,15 @@
 
 require 'test/unit'
 require 'pp'
+require 'getoptlong'
 
 $verbose = false
 $redcarpet = false
 
 $tests = Array.new
-if File.executable?( "./deptestomatic" )
-  execdir = Dir.getwd
-else
-  execdir = "../build/testsuite"
-end
-$deptestomatic = File.join( execdir, "deptestomatic" )
+$builddir= File.join( Dir.getwd, "..")
+$sourcedir = File.join( Dir.getwd, "..")
 
-raise "Cannot find 'deptestomatic' executable. Please fix path in runtest.rb'" unless File.executable?( $deptestomatic )
-
-$topdir = Dir.getwd
 $fails = Array.new
 $ignorecount = 0
 
@@ -39,6 +33,18 @@ class CompareResult
   UnexpectedFailure = 2
   KnownPass = 3
   UnexpectedPass = 4
+end
+
+def known_failure? name
+  $fails.each { |f|
+     if name.length < f.length
+        next
+     end
+     if name[-f.length..-1] == f
+        return true
+     end
+  }
+  return false
 end
 
 class Solution
@@ -150,7 +156,7 @@ class Solution
     results = Solution.read rname
 
     if (solutions.empty? && results.empty?)
-      if ( $fails.member?( rname ) )
+      if ( known_failure?( rname ) )
 	STDERR.puts "#{rname} passed"
 	return CompareResult::UnexpectedPass
       else
@@ -174,7 +180,7 @@ class Solution
           }
        }
        if solutionFit
-	   if ( $fails.member?( rname ) )
+	   if ( known_failure?( rname ) )
 	     STDERR.puts "#{rname} passed"
 	     return CompareResult::UnexpectedPass
 	   else
@@ -187,7 +193,7 @@ class Solution
        end
     end
 
-    if ( $fails.member?( rname ) )
+    if ( known_failure?( rname ) )
       return CompareResult::KnownFailure
     end
 
@@ -458,30 +464,46 @@ end
 
 puts "Running in #{Dir.getwd}"
 
-if ARGV.first == "--redcarpet"
-  $redcarpet = true
-  ARGV.shift
-end
+opts = GetoptLong.new(
+      [ '--help', '-h', GetoptLong::NO_ARGUMENT ],
+      [ '--redcarpet', GetoptLong::NO_ARGUMENT ],
+      [ '-r', GetoptLong::NO_ARGUMENT ],
+      [ '-v', GetoptLong::NO_ARGUMENT ],
+      [ '-s', GetoptLong::OPTIONAL_ARGUMENT ],
+      [ '-b', GetoptLong::OPTIONAL_ARGUMENT ]
+    )
 
-if ARGV.first == "-r"
-  recurse = true
-  ARGV.shift
-end
+recurse = false
 
-if ARGV.first == "-v"
-  $verbose = true
-  ARGV.shift
-end
-
-if File.readable?("README.FAILS")
-  IO.foreach( "README.FAILS") { |line|
-    line.chomp
-    if ( line !~ /^\s/ )
-      line = line[0..-6] + ".result"
-      $fails << line
+opts.each do |opt, arg|
+      case opt
+        when '--help'
+          usage
+        when '--redcarpet'
+          $redcarpet = true
+        when '-r'
+          recurse = true
+        when '-v'
+          $verbose = true
+        when '-s'
+          $sourcedir = arg 
+        when '-b'
+          $builddir = arg 
+      end
     end
-  }
-end
+
+$deptestomatic = File.join( $builddir, "testsuite", "deptestomatic" )
+raise "Cannot find '#{$deptestomatic}' executable. Please use -b to pass builddir path" unless File.executable?( $deptestomatic )
+$readmefile=File.join( $sourcedir, "testsuite", "README.FAILS")
+raise "Cannot find '#{$readmefile}' file. Please use -s to pass sourcedir path" unless File.readable?( $readmefile )
+
+IO.foreach( $readmefile ) { |line|
+  line.chomp
+  if ( line !~ /^\s/ )
+    line = line[0..-6] + ".result"
+    $fails << line
+  end
+}
 
 #preproc = Recurse.new Dir.getwd
 #preproc.process
