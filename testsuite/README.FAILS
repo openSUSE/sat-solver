@@ -1,112 +1,112 @@
 # POLICIES
-./data.libzypp/bugzilla-tests/bug310455-test.xml
+data.libzypp/bugzilla-tests/bug310455-test.xml
 	libzypp does not like to change vendors, sat does not care
 
-./data.libzypp/yast-tests/Bug159696-test.xml
+data.libzypp/yast-tests/Bug159696-test.xml
        libzypp removes packages if the pattern is deinstalled
 
-./data.libzypp/basic-exercises/Bug299819-2-test.xml
-./data.libzypp/freshen-tests/exercise-6-test.xml
-./data.libzypp/freshen-tests/exercise-6f-test.xml
-./data.libzypp/freshen-tests/exercise-7-test.xml
-./data.libzypp/freshen-tests/exercise-7f-test.xml
+data.libzypp/basic-exercises/Bug299819-2-test.xml
+data.libzypp/freshen-tests/exercise-6-test.xml
+data.libzypp/freshen-tests/exercise-6f-test.xml
+data.libzypp/freshen-tests/exercise-7-test.xml
+data.libzypp/freshen-tests/exercise-7f-test.xml
        installs recommends
 
-./data.libzypp/kernel-tests/kernel_kmp-test.xml
+data.libzypp/kernel-tests/kernel_kmp-test.xml
 	libzypp does an upgrade of a package needed, mls prefers not to
 
-./data.libzypp/yast-tests/exercise-02conflict-13-force-test.xml
-./data.libzypp/yast-tests/exercise-inconsistent6-force-test.xml
-./data.libzypp/yast-tests/exercise-02conflict-09-force-test.xml
-./data.libzypp/yast-tests/exercise-02conflict-09-test.xml
+data.libzypp/yast-tests/exercise-02conflict-13-force-test.xml
+data.libzypp/yast-tests/exercise-inconsistent6-force-test.xml
+data.libzypp/yast-tests/exercise-02conflict-09-force-test.xml
+data.libzypp/yast-tests/exercise-02conflict-09-test.xml
        libzypp removes broken pack, mls changes version
 
-./data.libzypp/basic-exercises/exercise-25-test.xml
-./data.libzypp/basic-exercises/exercise-26-test.xml
+data.libzypp/basic-exercises/exercise-25-test.xml
+data.libzypp/basic-exercises/exercise-26-test.xml
 	promoteepoch is only enabled for redcarpet
 
-./data.libzypp/lock-tests/install-single-test.xml
-./data.libzypp/lock-tests/remove-single-test.xml
+data.libzypp/lock-tests/install-single-test.xml
+data.libzypp/lock-tests/remove-single-test.xml
         eiter a resolvable is locked OR it will be transacted. So this testcase
         are useless
 
-./data.libzypp/bugzilla-tests/bug225278-test.xml
+data.libzypp/bugzilla-tests/bug225278-test.xml
 	weired test case in general
 
 # BUGS
 
 # MISSINGS
-./data.libzypp/patch-tests/jumbo-patch-test.xml
-./data.libzypp/patch-tests/kernel-single-update-test.xml
-./data.libzypp/patch-tests/kernel-update-test.xml
-./data.libzypp/patch-tests/parallel-atmos-test.xml
-./data.libzypp/patch-tests/parallel-atoms-equal-patch-test.xml
-./data.libzypp/patch-tests/script-test.xml
-./data.libzypp/freshen-tests/exercise-1-test.xml
-./data.libzypp/freshen-tests/exercise-11-test.xml
-./data.libzypp/freshen-tests/exercise-1f-test.xml
-./data.libzypp/freshen-tests/exercise-8-test.xml
-./data.libzypp/bugzilla-tests/bug238284-test.xml
+data.libzypp/patch-tests/jumbo-patch-test.xml
+data.libzypp/patch-tests/kernel-single-update-test.xml
+data.libzypp/patch-tests/kernel-update-test.xml
+data.libzypp/patch-tests/parallel-atmos-test.xml
+data.libzypp/patch-tests/parallel-atoms-equal-patch-test.xml
+data.libzypp/patch-tests/script-test.xml
+data.libzypp/freshen-tests/exercise-1-test.xml
+data.libzypp/freshen-tests/exercise-11-test.xml
+data.libzypp/freshen-tests/exercise-1f-test.xml
+data.libzypp/freshen-tests/exercise-8-test.xml
+data.libzypp/bugzilla-tests/bug238284-test.xml
 	patches pretty much unimplemented - very likely not a solver problem
-./data.libzypp/basic-exercises/Bug299486-test.xml
-./data.libzypp/basic-exercises/conflict-1-test.xml
-./data.libzypp/basic-exercises/exercise-15-test.xml
-./data.libzypp/basic-exercises/exercise-16-force-test.xml
-./data.libzypp/basic-exercises/exercise-41-test.xml
-./data.libzypp/basic-exercises/exercise-46-test.xml
-./data.libzypp/basic-exercises/require-3-test.xml
-./data.libzypp/bugzilla-tests/bug208784-test.xml
-./data.libzypp/bugzilla-tests/bug326384-test.xml
-./data.libzypp/bugzilla-tests/bug328081-test.xml
-./data.libzypp/distupgrade-tests/exercise-bug150844-test.xml
-./data.libzypp/patch-tests/parallel-atmos-fail-test.xml
-./data.libzypp/selection-tests/install-simple-test.xml
-./data.libzypp/simple-tests/vendor-test.xml
-./data.libzypp/yast-tests/Bug162887-test.xml
-./data.libzypp/yast-tests/exercise-01simple-6-test.xml
-./data.libzypp/yast-tests/exercise-inconsistent2-test.xml
-./data.libzypp/yast-tests/exercise-inconsistent4-test.xml
-./data.libzypp/yast-tests/exercise-inconsistent6-test.xml
-./data.libzypp/yast-tests/exercise-obscureobsoletes-11-test.xml
-./data.libzypp/yast-tests/kernel1-test.xml
-./data.libzypp/zen-tests/2-test.xml
+data.libzypp/basic-exercises/Bug299486-test.xml
+data.libzypp/basic-exercises/conflict-1-test.xml
+data.libzypp/basic-exercises/exercise-15-test.xml
+data.libzypp/basic-exercises/exercise-16-force-test.xml
+data.libzypp/basic-exercises/exercise-41-test.xml
+data.libzypp/basic-exercises/exercise-46-test.xml
+data.libzypp/basic-exercises/require-3-test.xml
+data.libzypp/bugzilla-tests/bug208784-test.xml
+data.libzypp/bugzilla-tests/bug326384-test.xml
+data.libzypp/bugzilla-tests/bug328081-test.xml
+data.libzypp/distupgrade-tests/exercise-bug150844-test.xml
+data.libzypp/patch-tests/parallel-atmos-fail-test.xml
+data.libzypp/selection-tests/install-simple-test.xml
+data.libzypp/simple-tests/vendor-test.xml
+data.libzypp/yast-tests/Bug162887-test.xml
+data.libzypp/yast-tests/exercise-01simple-6-test.xml
+data.libzypp/yast-tests/exercise-inconsistent2-test.xml
+data.libzypp/yast-tests/exercise-inconsistent4-test.xml
+data.libzypp/yast-tests/exercise-inconsistent6-test.xml
+data.libzypp/yast-tests/exercise-obscureobsoletes-11-test.xml
+data.libzypp/yast-tests/kernel1-test.xml
+data.libzypp/zen-tests/2-test.xml
 
 
 # TO BE IGNORED
-./data.libzypp/basic-exercises/exercise-43-test.xml
-./data.libzypp/basic-exercises/exercise-47-test.xml
-./data.libzypp/basic-exercises/exercise-48-test.xml
-./data.libzypp/basic-exercises/exercise-60-test.xml
-./data.libzypp/basic-exercises/provide-1-test.xml
-./data.libzypp/bugzilla-tests/bug191983-test.xml
-./data.libzypp/bugzilla-tests/bug217574-test.xml
-./data.libzypp/bugzilla-tests/bug224698-test.xml
-./data.libzypp/bugzilla-tests/bug297795-1-test.xml
-./data.libzypp/lock-tests/exercise-obscureobsoletes-02-test.xml
-./data.libzypp/lock-tests/exercise-obscureobsoletes-06-test.xml
-./data.libzypp/lock-tests/install-single-require-test.xml
-./data.libzypp/patch-tests/wrong-mutt-test.xml
-./data.libzypp/simple-tests/arch3-test.xml
-./data.libzypp/solution-tests/conflict-bug153328-test.xml
-./data.libzypp/solution-tests/conflict-test.xml
-./data.libzypp/solution-tests/conflict3-test.xml
-./data.libzypp/solution-tests/parallel-test.xml
-./data.libzypp/solution-tests/remove-still-needed1-test.xml
-./data.libzypp/solution-tests/remove-still-needed3-test.xml
-./data.libzypp/solution-tests/require-test.xml
-./data.libzypp/yast-tests/Bug156408-test.xml
-./data.libzypp/yast-tests/Bug156439-test.xml
-./data.libzypp/yast-tests/exercise-02conflict-12-test.xml
-./data.libzypp/yast-tests/exercise-05reallive-4-test.xml
-./data.libzypp/yast-tests/exercise-kdelibsobs-force-test.xml
-./data.libzypp/basic-exercises/exercise-35-test.xml
-./data.libzypp/basic-exercises/exercise-36-test.xml
-./data.libzypp/basic-exercises/exercise-37-test.xml
-./data.libzypp/basic-exercises/exercise-38-test.xml
-./data.libzypp/basic-exercises/exercise-40-test.xml
-./data.libzypp/basic-exercises/exercise-44-test.xml
-./data.libzypp/sat-tests/test-crappy-coolo-2-test.xml
-./data.libzypp/sat-tests/test-crappy-coolo-5-test.xml
-./data.libzypp/sat-tests/test-crappy-coolo-9-test.xml
+data.libzypp/basic-exercises/exercise-43-test.xml
+data.libzypp/basic-exercises/exercise-47-test.xml
+data.libzypp/basic-exercises/exercise-48-test.xml
+data.libzypp/basic-exercises/exercise-60-test.xml
+data.libzypp/basic-exercises/provide-1-test.xml
+data.libzypp/bugzilla-tests/bug191983-test.xml
+data.libzypp/bugzilla-tests/bug217574-test.xml
+data.libzypp/bugzilla-tests/bug224698-test.xml
+data.libzypp/bugzilla-tests/bug297795-1-test.xml
+data.libzypp/lock-tests/exercise-obscureobsoletes-02-test.xml
+data.libzypp/lock-tests/exercise-obscureobsoletes-06-test.xml
+data.libzypp/lock-tests/install-single-require-test.xml
+data.libzypp/patch-tests/wrong-mutt-test.xml
+data.libzypp/simple-tests/arch3-test.xml
+data.libzypp/solution-tests/conflict-bug153328-test.xml
+data.libzypp/solution-tests/conflict-test.xml
+data.libzypp/solution-tests/conflict3-test.xml
+data.libzypp/solution-tests/parallel-test.xml
+data.libzypp/solution-tests/remove-still-needed1-test.xml
+data.libzypp/solution-tests/remove-still-needed3-test.xml
+data.libzypp/solution-tests/require-test.xml
+data.libzypp/yast-tests/Bug156408-test.xml
+data.libzypp/yast-tests/Bug156439-test.xml
+data.libzypp/yast-tests/exercise-02conflict-12-test.xml
+data.libzypp/yast-tests/exercise-05reallive-4-test.xml
+data.libzypp/yast-tests/exercise-kdelibsobs-force-test.xml
+data.libzypp/basic-exercises/exercise-35-test.xml
+data.libzypp/basic-exercises/exercise-36-test.xml
+data.libzypp/basic-exercises/exercise-37-test.xml
+data.libzypp/basic-exercises/exercise-38-test.xml
+data.libzypp/basic-exercises/exercise-40-test.xml
+data.libzypp/basic-exercises/exercise-44-test.xml
+data.libzypp/sat-tests/test-crappy-coolo-2-test.xml
+data.libzypp/sat-tests/test-crappy-coolo-5-test.xml
+data.libzypp/sat-tests/test-crappy-coolo-9-test.xml
 	the tests are really to be ignored
 
