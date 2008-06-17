@@ -140,6 +140,7 @@ enum state {
   STATE_INSTORDER,
   STATE_AVAILABLELOCALES,
   STATE_DONTINSTALLRECOMMENDED,
+  STATE_IGNOREALREADYRECOMMENDED,
   NUMSTATES
 };
 
@@ -191,6 +192,7 @@ static struct stateswitch stateswitches[] = {
   { STATE_TRIAL,       "availablelocales",STATE_AVAILABLELOCALES, 0 },
   { STATE_TRIAL,       "keep",         STATE_KEEP, 0 },
   { STATE_TRIAL,    "dontinstallrecommended", STATE_DONTINSTALLRECOMMENDED, 0 },
+  { STATE_TRIAL,    "ignorealreadyrecommended", STATE_IGNOREALREADYRECOMMENDED, 0 },
 
   { NUMSTATES }
 
@@ -240,6 +242,7 @@ typedef struct _parsedata {
   int allowarchchange;           /* 0/1, if packages can change architecture */
   int dosplitprovides;           /* 0/1, if splitprovides should be looked at */
   int dontinstallrecommended;    /* 0/1, if recommends should be ignored */
+  int ignorealreadyrecommended;  /* 0/1, if old recommends should be ignored */
 
   struct stateswitch *swtab[NUMSTATES];
   enum state sbtab[NUMSTATES];
@@ -1320,6 +1323,9 @@ printf("hardware %s\n", dir);
     case STATE_DONTINSTALLRECOMMENDED:
       pd->dontinstallrecommended = 1;
       break;
+    case STATE_IGNOREALREADYRECOMMENDED:
+      pd->ignorealreadyrecommended = 1;
+      break;
 
     case STATE_KEEP: {
       const char *arch = attrval( atts, "arch" );
@@ -1333,8 +1339,13 @@ printf("hardware %s\n", dir);
 	exit( 1 );
       }
       Id id = select_solvable( pool, pd->system, package, version, arch, 0 );
-      queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
-      queue_push( &(pd->trials), id );
+      if (id) {
+        queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
+        queue_push( &(pd->trials), id );
+      } else {
+        queue_push( &(pd->trials), SOLVER_ERASE_SOLVABLE_NAME|SOLVER_WEAK );
+        queue_push( &(pd->trials), str2id(pool, package, 1));
+      }
     }
     break;
 
@@ -1344,6 +1355,28 @@ printf("hardware %s\n", dir);
     }
 }
 
+
+static void
+rc_printdownloadsize(struct solver *solv)
+{
+  int i;
+  Solvable *s;
+  Id p;
+  int d;
+
+  d = 0;
+  for (i = 0; i < solv->decisionq.count; i++)
+    {
+      p = solv->decisionq.elements[i];
+      if (p < 0)
+	continue;
+      s = solv->pool->solvables + p;
+      if (!s->repo || (solv->installed && s->repo == solv->installed))
+	continue;
+      d += repo_lookup_num(s, SOLVABLE_DOWNLOADSIZE);
+    }
+  printf("download size: %d\n\n", d);
+}
 
 /*
  * XML callback
@@ -1395,6 +1428,7 @@ endElement( void *userData, const char *name )
       solv->allowarchchange = pd->allowarchchange;
       solv->dosplitprovides = pd->dosplitprovides;
       solv->dontinstallrecommended = pd->dontinstallrecommended;
+      solv->ignorealreadyrecommended = pd->ignorealreadyrecommended;
       solv->noupdateprovide = 1;
 
       // Solve !
@@ -1408,6 +1442,8 @@ endElement( void *userData, const char *name )
 	    {
 	      solver_printdecisions(solv);
 	      solver_printtrivial(solv);
+	      printf("install size change: %d\n\n", solver_calc_installsizechange(solv));
+	      rc_printdownloadsize(solv);
 	    }
 	  rc_printdecisions(solv, &pd->trials);
 	}
@@ -1497,58 +1533,7 @@ rc_printdecisions(Solver *solv, Queue *job)
 	}
     }
 
-  obsoletesmap = (Id *)calloc(pool->nsolvables, sizeof(Id));
-  if (installed)
-    {
-      for (i = 0; i < solv->decisionq.count; i++)
-	{
-	  Id *pp, n;
-
-	  n = solv->decisionq.elements[i];
-	  if (n < 0)
-	    continue;
-	  if (n == SYSTEMSOLVABLE)
-	    continue;
-	  s = pool->solvables + n;
-	  if (s->repo == installed)		/* obsoletes don't count for already installed packages */
-	    continue;
-	  FOR_PROVIDES(p, pp, s->name)
-	    if (s->name == pool->solvables[p].name)
-	      {
-		if (pool->solvables[p].repo == installed && !obsoletesmap[p])
-		  {
-		    obsoletesmap[p] = n;
-		    obsoletesmap[n]++;
-		  }
-	      }
-	}
-      for (i = 0; i < solv->decisionq.count; i++)
-	{
-	  Id obs, *obsp;
-	  Id *pp, n;
-
-	  n = solv->decisionq.elements[i];
-	  if (n < 0)
-	    continue;
-	  if (n == SYSTEMSOLVABLE)
-	    continue;
-	  s = pool->solvables + n;
-	  if (s->repo == installed)		/* obsoletes don't count for already installed packages */
-	    continue;
-	  if (!s->obsoletes)
-	    continue;
-	  obsp = s->repo->idarraydata + s->obsoletes;
-	  while ((obs = *obsp++) != 0)
-	    FOR_PROVIDES(p, pp, obs)
-	      {
-		if (pool->solvables[p].repo == installed && !obsoletesmap[p])
-		  {
-		    obsoletesmap[p] = n;
-		    obsoletesmap[n]++;
-		  }
-	      }
-	}
-    }
+  obsoletesmap = solver_create_decisions_obsoletesmap(solv);
 
   printf(">!> Solution #1:\n");
 
