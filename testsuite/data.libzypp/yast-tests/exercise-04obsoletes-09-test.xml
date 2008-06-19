@@ -8,6 +8,7 @@
 <!--
 # G obsoletes multiple provides of libD. Thats only one problem
 G
+no longer true, obsoletes ignore virtual provides nowadays!
   -->
 <trial>
   <install channel="test" package="G"/>

@@ -1,31 +1,5 @@
-Load from File './data.libzypp/solution-tests/pattern_obsolete-system.xml.gz'
-Added repository '@system' with 3 resolvables
-Loaded 3 resolvables from pattern_obsolete-system.xml.gz.
-Load from File './data.libzypp/solution-tests/pattern_obsolete-packages.xml.gz'
-Added repository 'packages' with 2 resolvables
-Loaded 2 resolvables from pattern_obsolete-packages.xml.gz.
-
-------------------------------------------------
-
->!> Installing pattern:foo4 from channel 
->!> Installing pattern:foo5 from channel 
-
-Completed solutions: 1
-Pruned solutions: 0
-Deferred solutions: 0
-Invalid solutions: 0
-
-Best Solution:
 >!> Solution #1:
-Checksum = 4ca01a14
+>!> remove  pattern:foo3-1.0-1.noarch
 >!> install pattern:foo4-2.0-1.noarch[packages]
 >!> install pattern:foo5-2.0-1.noarch[packages]
->!> remove  pattern:foo2-1.0-1.noarch
->!> remove  pattern:foo3-1.0-1.noarch
->!> installs=2, upgrades=0, uninstalls=2
-download size=0.0k, install size=0.0k
-total priority=0, min priority=0, max priority=0
-other penalties=0
-- - - - - - - - - -
-Context Info:
-
+>!> installs=2, upgrades=0, uninstalls=1

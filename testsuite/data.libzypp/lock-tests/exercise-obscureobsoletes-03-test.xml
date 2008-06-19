@@ -7,6 +7,7 @@
 
 <!-- 
 # obsolete an virtual provides --> foo and foo-devel will be deleted
+no longer true, obsoletes ignore virtual provides nowadays
  -->
 <trial>
   <install channel="test" package="foo2old"/>
