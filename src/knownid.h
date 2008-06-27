@@ -10,6 +10,12 @@
  *
  */
 
+
+/*
+ * Warning: you're free to append new entries, but insert/delete breaks
+ * the ABI!
+ */
+
 #undef KNOWNID
 #ifdef KNOWNID_INITIALIZE
 # define KNOWNID(a, b) b
@@ -162,6 +168,8 @@ KNOWNID(DELTA_BASE_EVR,		        "delta:baseevr"),
 KNOWNID(DELTA_SEQ_NAME,		        "delta:seqname"),
 KNOWNID(DELTA_SEQ_EVR,		        "delta:seqevr"),
 KNOWNID(DELTA_SEQ_NUM,		        "delta:seqnum"),
+
+KNOWNID(SOLVABLE_URL,			"solvable:url"),
 
 KNOWNID(ID_NUM_INTERNAL,		0)
 
