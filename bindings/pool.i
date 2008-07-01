@@ -13,7 +13,8 @@ poolloadcallback( Pool *pool, Repodata *data, void *vdata )
   FILE *fp = 0;
   if (data->location) {
     fp = fopen( data->location, "r" );
-    fprintf( stderr, "*** reading %s as %p\n", data->location, fp );
+    if (!fp)
+      fprintf( stderr, "*** failed reading %s\n", data->location );
   }
   return fp;
 }
