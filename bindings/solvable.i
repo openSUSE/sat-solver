@@ -11,9 +11,9 @@
  */
 
 static int
-xsolvable_each_attr_callback( void *cbdata, Solvable *s, Repodata *data, Repokey *key, KeyValue *kv )
+xsolvable_each_attr_callback( Solvable *s, Repodata *data, Repokey *key, KeyValue *kv )
 {
-  static VALUE result = Qnil;
+  static VALUE value = Qnil;
 
   /*
    * !! keep the order of case statements according to knownid.h !!
@@ -22,64 +22,67 @@ xsolvable_each_attr_callback( void *cbdata, Solvable *s, Repodata *data, Repokey
   switch( key->type )
     {
       case REPOKEY_TYPE_VOID:
-        result = Qtrue;
+        value = Qtrue;
       break;
       case REPOKEY_TYPE_CONSTANT:
-        result = INT2FIX( key->size );
+      case REPOKEY_TYPE_NUM:
+      case REPOKEY_TYPE_U32:
+        value = INT2FIX( key->size );
       break;
       case REPOKEY_TYPE_CONSTANTID:
-        result = INT2FIX( key->size );
+        value = INT2FIX( key->size );
       break;
       case REPOKEY_TYPE_ID:
         if (data->localpool)
-	  result = rb_str_new2( stringpool_id2str( &data->spool, kv->id ) );
+	  value = rb_str_new2( stringpool_id2str( &data->spool, kv->id ) );
 	else
-	  result = rb_str_new2( id2str( data->repo->pool, kv->id ) );
-      break;
-      case REPOKEY_TYPE_NUM:
-        result = INT2FIX( kv->num );
-      break;
-      case REPOKEY_TYPE_U32:
-        result = INT2FIX( kv->num );
+	  value = rb_str_new2( id2str( data->repo->pool, kv->id ) );
       break;
       case REPOKEY_TYPE_DIR:
-        result = Qnil;
+        value = Qnil;
       break;
       case REPOKEY_TYPE_STR:
-        result = rb_str_new2( kv->str );
+        value = rb_str_new2( kv->str );
       break;
       case REPOKEY_TYPE_IDARRAY:
-        if (NIL_P(result))
-	  result = rb_ary_new();  /* create new Array on first call */
+        if (NIL_P(value))
+	  value = rb_ary_new();  /* create new Array on first call */
         if (data->localpool)
-	  rb_ary_push( result, rb_str_new2( stringpool_id2str( &data->spool, kv->id ) ) );
+	  rb_ary_push( value, rb_str_new2( stringpool_id2str( &data->spool, kv->id ) ) );
 	else
-	  rb_ary_push( result, rb_str_new2( id2str( data->repo->pool, kv->id ) ) );
-	return kv->eof?1:0;
+	  rb_ary_push( value, rb_str_new2( id2str( data->repo->pool, kv->id ) ) );
+	if (kv->eof)
+	  break;  /* yield ! */
+	return 0; /* continue loop */
       break;
       case REPOKEY_TYPE_REL_IDARRAY:
-        result = Qnil;
+        value = Qnil;
       break;
       case REPOKEY_TYPE_DIRSTRARRAY:
-        result = Qnil;
+        value = rb_str_new2( repodata_dir2str(data,kv->id, kv->str) );
       break;
       case REPOKEY_TYPE_DIRNUMNUMARRAY:
-        result = Qnil;
+        value = rb_ary_new();
+	rb_ary_push( value, rb_str_new2( repodata_dir2str(data, kv->id, 0) ) );
+	rb_ary_push( value, INT2FIX(kv->num) );
+	rb_ary_push( value, INT2FIX(kv->num2) );
       break;
       case REPOKEY_TYPE_MD5:
-        result = Qnil;
-      break;
       case REPOKEY_TYPE_SHA1:
-        result = Qnil;
-      break;
       case REPOKEY_TYPE_SHA256:
-        result = Qnil;
+        value = rb_str_new2( repodata_chk2str(data, key->type, (unsigned char *)kv->str));
+      break;
+      case REPOKEY_TYPE_COUNTED:
+	value = rb_str_new2( kv->eof == 0 ? "open" : kv->eof == 1 ? "next" : "close" );
       break;
       default:
-        result = Qnil;
+        value = Qnil;
       break;
     }
 
+  VALUE result = rb_ary_new();
+  rb_ary_push( result, rb_str_new2( id2str( data->repo->pool, key->name ) ) );
+  rb_ary_push( result, value );
   rb_yield( result );
   return 0;
 }
@@ -341,7 +344,10 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   void each_attr()
   {
     Solvable *s = xsolvable_solvable($self);
-    repo_lookup( s, ID_NULL, xsolvable_each_attr_callback, NULL );
+    Dataiterator di;
+    dataiterator_init(&di, s->repo, $self->id, 0, 0, SEARCH_NO_STORAGE_SOLVABLE);
+    while (dataiterator_step(&di))
+      xsolvable_each_attr_callback( s, di.data, di.key, &di.kv );
   }
 
 
