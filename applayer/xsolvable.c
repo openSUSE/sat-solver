@@ -133,7 +133,6 @@ xsolvable_add( Repo *repo, XSolvable *xs )
   copy_deps( repo, &(new_s->suggests), old_s->repo->idarraydata + old_s->suggests );
   copy_deps( repo, &(new_s->supplements), old_s->repo->idarraydata + old_s->supplements );
   copy_deps( repo, &(new_s->enhances), old_s->repo->idarraydata + old_s->enhances );
-  copy_deps( repo, &(new_s->freshens), old_s->repo->idarraydata + old_s->freshens );
 
   return xsolvable_new( repo->pool, sid );
 }

@@ -25,8 +25,7 @@ enum dependencies {
   DEP_REC,
   DEP_SUG,
   DEP_SUP,
-  DEP_ENH,
-  DEP_FRE
+  DEP_ENH
 };
 
 typedef struct _Dependency {

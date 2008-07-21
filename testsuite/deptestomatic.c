@@ -926,6 +926,7 @@ startElement( void *userData, const char *name, const char **atts )
       {
 	const char *name = attrval( atts, "name" );
 	const char *file = attrval( atts, "file" );
+	const char *prio = attrval( atts, "priority" );
 	if (file) 
 	  {
 	    char path[PATH_MAX];
@@ -949,6 +950,8 @@ startElement( void *userData, const char *name, const char **atts )
 		cmap->name = cname;
 		cmap->nid = str2id( pool, cname, 1 );
 		cmap->repo = repo;
+		if (prio)
+		  repo->priority = 99 - atoi(prio);
 	      }
 	    else 
 	      {

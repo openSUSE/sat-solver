@@ -34,7 +34,6 @@ typedef struct _Dependency {} Dependency;
   %constant int DEP_SUG = DEP_SUG;
   %constant int DEP_SUP = DEP_SUP;
   %constant int DEP_ENH = DEP_ENH;
-  %constant int DEP_FRE = DEP_FRE;
 
   Dependency( XSolvable *xsolvable, int dep )
   { return dependency_new( xsolvable, dep ); }

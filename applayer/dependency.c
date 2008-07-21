@@ -50,7 +50,6 @@ dependency_relations( const Dependency *dep )
       case DEP_SUG: return &(s->suggests); break;
       case DEP_SUP: return &(s->supplements); break;
       case DEP_ENH: return &(s->enhances); break;
-      case DEP_FRE: return &(s->freshens); break;
   }
   return NULL;
 }

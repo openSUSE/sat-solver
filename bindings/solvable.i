@@ -270,8 +270,6 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   { return dependency_new( $self, DEP_SUP ); }
   Dependency *enhances()
   { return dependency_new( $self, DEP_ENH ); }
-  Dependency *freshens()
-  { return dependency_new( $self, DEP_FRE ); }
   
 #if defined(SWIGRUBY)
   %rename( "provides?" ) does_provide( const char *name );
