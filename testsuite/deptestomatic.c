@@ -1271,12 +1271,46 @@ printf("hardware %s\n", dir);
 
     case STATE_ADDREQUIRE: {
       const char *name = attrval( atts, "name" );
+      Id id;
       if (name == NULL) {
 	err( "No name given in <addrequire>" );
 	exit( 1 );
       }
+      if (strchr(name, ' ')) {
+        char *n = strdup(name);
+        char *rel;
+        char *evr;
+	int flags = 0;
+
+        rel = strchr(n, ' ');
+	*rel++ = 0;
+        while (*rel == ' ')
+	  rel++;
+        evr = strchr(rel, ' ');
+	if (!evr)
+	  {
+	    err( "No evr in addrequire dep" );
+	    exit( 1 );
+	  }
+	*evr++ = 0;
+        while (*evr == ' ')
+	  evr++;
+	if (!strcmp(rel, "="))
+	  flags = REL_EQ;
+	else if (!strcmp(rel, ">"))
+	  flags = REL_GT;
+	else
+	  {
+	    err( "unknown rel in addrequire dep" );
+	    exit( 1 );
+	  }
+	id = str2id( pd->pool, n, 1);
+	id = rel2id( pd->pool, id, str2id(pd->pool, evr, 1), flags, 1);
+      } else {
+	id = str2id( pd->pool, name, 1 );
+      }
       queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE_PROVIDES );
-      queue_push( &(pd->trials), str2id( pd->pool, name, 1 ) );
+      queue_push( &(pd->trials), id );
     }
     break;
 
