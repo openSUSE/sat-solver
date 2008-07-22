@@ -1,4 +1,13 @@
 -------------------------------------------------------------------
+Tue Jul 22 17:34:42 CEST 2008 - mls@suse.de
+
+- resolve job rules before installing system packages [bnc#411086]
+- disallow arch/vendor changes even if the package name changes
+- add support for the package's URL [bnc#402434]
+- unset CDPATH in repo2solv.sh [bnc#402597]
+- 0.9.3
+
+-------------------------------------------------------------------
 Thu Jun  5 14:42:22 CEST 2008 - mls@suse.de
 
 - do not reorder binary rules if they are not rpm rules [bnc#397456]
