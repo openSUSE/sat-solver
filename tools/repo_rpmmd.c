@@ -238,6 +238,7 @@ struct parsedata {
   const char *tmpattr;
   Repodata *data;
   Id handle;
+  XML_Parser *parser;
 };
 
 static char *flagtabnum[] = {
@@ -780,6 +781,27 @@ endElement(void *userData, const char *name)
     case STATE_RPM_LICENSE:
       repodata_set_poolstr(pd->data, handle, SOLVABLE_LICENSE, pd->content);
       break;
+    case STATE_CHECKSUM:
+      { 
+        int l;
+        Id type;
+        if (!strcasecmp (pd->tmpattr, "sha") || !strcasecmp (pd->tmpattr, "sha1"))
+          l = SIZEOF_SHA1 * 2, type = REPOKEY_TYPE_SHA1;
+        else if (!strcasecmp (pd->tmpattr, "md5"))
+          l = SIZEOF_MD5 * 2, type = REPOKEY_TYPE_MD5;
+        else
+          {
+            fprintf(stderr, "Unknown checksum type: %d: %s\n", (unsigned int)XML_GetCurrentLineNumber(*pd->parser), pd->tmpattr);
+            exit(1);
+          }
+        if (strlen(pd->content) != l)
+          {
+            fprintf(stderr, "Invalid checksum length: %d: for %s\n", (unsigned int)XML_GetCurrentLineNumber(*pd->parser), pd->tmpattr);
+            exit(1);
+          }
+        repodata_set_checksum(pd->data, handle, SOLVABLE_CHECKSUM, type, pd->content);
+      }
+      break;
     case STATE_FILE:
 #if 0
       id = str2id(pool, pd->content, 1);
@@ -904,6 +926,7 @@ repo_add_rpmmd(Repo *repo, FILE *fp, int flags)
   pd.kind = 0;
   XML_Parser parser = XML_ParserCreate(NULL);
   XML_SetUserData(parser, &pd);
+  pd.parser = &parser;
   XML_SetElementHandler(parser, startElement, endElement);
   XML_SetCharacterDataHandler(parser, characterData);
   for (;;)
