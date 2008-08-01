@@ -238,7 +238,7 @@ How to set attributes ?
 6.1 Reading known attributes
 
   For the standard attribute names as listed in knownid.h, the easiest
-  way to retrieve values it trough repo_lookup_*() (as opposed to
+  way to retrieve values it through repo_lookup_*() (as opposed to
   repodata_lookup_*())
 
     /* get the summary attribute */
