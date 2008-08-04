@@ -339,7 +339,9 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
     Solvable *s = xsolvable_solvable($self);
     if (repo_lookup( s, key, xsolvable_attr_lookup_callback, &result ))
       return result;
+#if defined(SWIGPYTHON) /* needed for SWIG_Exception */
 fail:
+#endif
     return Swig_Null;
   }
   
