@@ -10,6 +10,8 @@ typedef struct _Repo {} Repo;
 %extend Repo {
   Repo( Pool *pool, const char *reponame )
   { return repo_create( pool, reponame ); }
+  ~Repo()
+  {}
 
   int size()
   { return $self->nsolvables; }
@@ -71,8 +73,23 @@ typedef struct _Repo {} Repo;
   XSolvable *add( XSolvable *xs )
   { return xsolvable_add( $self, xs ); }
 
+#if defined(SWIGRUBY)
   void each()
   { repo_xsolvables_iterate( $self, generic_xsolvables_iterate_callback ); }
+#endif
+
+#if defined(SWIGPYTHON)
+  PyObject *__iter__()
+  {
+    fprintf(stderr," Repo.iter()\n");
+    return NULL;
+  }
+  PyObject *next()
+  {
+    fprintf(stderr," Repo.next()\n");
+    return NULL;
+  }
+#endif
 
 #if defined(SWIGRUBY)
   /* %rename is rejected by swig for [] */

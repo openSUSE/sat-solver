@@ -22,7 +22,28 @@
 /* HELPER CODE                                                 */
 /*=============================================================*/
 
+#if defined(SWIGPYTHON)
+#define Swig_Test(x) (x == Py_None)
+#define Swig_True Py_True
+#define Swig_False Py_False
+#define Swig_Null Py_None
+#define Swig_Type PyObject*
+#define Swig_Int(x) PyInt_FromLong(x)
+#define Swig_String(x) PyString_FromString(x)
+#define Swig_Array() PyList_New(0)
+#define Swig_Append(x,y) PyList_Append(x,y)
+#endif
+
 #if defined(SWIGRUBY)
+#define Swig_Test(x) NIL_P(x)
+#define Swig_True Qtrue
+#define Swig_False Qfalse
+#define Swig_Null Qnil
+#define Swig_Type VALUE
+#define Swig_Int(x) INT2FIX(x)
+#define Swig_String(x) rb_str_new2(x)
+#define Swig_Array() rb_ary_new()
+#define Swig_Append(x,y) rb_ary_push(x,y)
 #include <ruby.h>
 #include <rubyio.h>
 #endif
