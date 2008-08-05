@@ -91,6 +91,7 @@
 #include "covenant.h"
 
 
+#if defined(SWIGRUBY)
 /*
  * iterating over (x)solvables ('yield' in Ruby)
  * (used by Pool, Repo and Solver)
@@ -99,12 +100,11 @@
 static int
 generic_xsolvables_iterate_callback( const XSolvable *xs )
 {
-#if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield( SWIG_NewPointerObj((void*)xs, SWIGTYPE_p__Solvable, 0) );
-#endif
   return 0;
 }
+#endif
 
 
 %}

@@ -28,8 +28,7 @@ class TestSequenceFunctions(unittest.TestCase):
     print repo.size(), " installed packages"
 
     name = None
-    for i in range(0, pool.size()):
-      s = pool.get(i)
+    for s in pool:
       print s
       if i == 7:
         name = s.name()

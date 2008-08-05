@@ -73,6 +73,13 @@ typedef struct _Dependency {} Dependency;
   void each()
   { dependency_relations_iterate( $self, dependency_relations_iterate_callback ); }
 #endif
+#if defined(SWIGPYTHON)
+    %pythoncode %{
+        def __iter__(self):
+          r = range(0,self.size())
+          while r:
+            yield self.get(r.pop(0))
+    %}
+#endif
 
 }
-

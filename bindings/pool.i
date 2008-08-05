@@ -179,6 +179,7 @@ typedef struct _Pool {} Pool;
    */
   void each_provider( Relation *rel )
   {
+#if defined(SWIGRUBY)
     Id p, *pp;
     Pool *pool = $self;
     if (!$self->whatprovides)
@@ -186,10 +187,12 @@ typedef struct _Pool {} Pool;
 
     FOR_PROVIDES(p, pp, rel->id) 
       generic_xsolvables_iterate_callback( xsolvable_new( $self, p ) );
+#endif
   }
 
   void each_provider( const char *name )
   {
+#if defined(SWIGRUBY)
     Id p, *pp;
     Pool *pool = $self;
     if (!$self->whatprovides)
@@ -197,6 +200,7 @@ typedef struct _Pool {} Pool;
 	  
     FOR_PROVIDES(p, pp, str2id( $self, name, 0) ) 
       generic_xsolvables_iterate_callback( xsolvable_new( $self, p ) );
+#endif
   }
 
   /*
@@ -227,8 +231,19 @@ typedef struct _Pool {} Pool;
   XSolvable *get( int i )
   { return xsolvable_get( $self, i, NULL );  }
 
+#if defined(SWIGRUBY)
   void each()
   { pool_xsolvables_iterate( $self, generic_xsolvables_iterate_callback ); }
+#endif
+
+#if defined(SWIGPYTHON)
+    %pythoncode %{
+        def __iter__(self):
+          r = range(0,self.size())
+          while r:
+            yield self.get(r.pop(0))
+    %}
+#endif
 
   XSolvable *find( char *name, Repo *repo = NULL )
   { return xsolvable_find( $self, name, repo ); }

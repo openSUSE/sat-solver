@@ -3,6 +3,7 @@
  */
 
 %{
+#if defined(SWIGRUBY)
 /*
  * iterating over updates (takes two (x)solvables) ('yield' in Ruby)
  */
@@ -10,10 +11,8 @@
 static int
 update_xsolvables_iterate_callback( const XSolvable *xs_old, const XSolvable *xs_new )
 {
-#if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield_values( 2, SWIG_NewPointerObj((void*)xs_old, SWIGTYPE_p__Solvable, 0), SWIG_NewPointerObj((void*)xs_new, SWIGTYPE_p__Solvable, 0) );
-#endif
   return 0;
 }
 
@@ -24,10 +23,8 @@ update_xsolvables_iterate_callback( const XSolvable *xs_old, const XSolvable *xs
 static int
 solver_decisions_iterate_callback( const Decision *d )
 {
-#if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield(SWIG_NewPointerObj((void*) d, SWIGTYPE_p__Decision, 0));
-#endif
   return 0;
 }
 
@@ -39,12 +36,11 @@ solver_decisions_iterate_callback( const Decision *d )
 static int
 solver_problems_iterate_callback( const Problem *p )
 {
-#if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield( SWIG_NewPointerObj((void*) p, SWIGTYPE_p__Problem, 0) );
-#endif
   return 0;
 }
+#endif /* SWIGRUBY */
 
 
 %}
@@ -273,8 +269,10 @@ typedef struct solver {} Solver;
   int decision_count()
   { return $self->decisionq.count; }
 
+#if defined(SWIGRUBY)
   void each_decision()
   { return solver_decisions_iterate( $self, solver_decisions_iterate_callback ); }
+#endif
 
 #if defined(SWIGRUBY)
   %rename("problems?") problems_found();
@@ -291,6 +289,7 @@ typedef struct solver {} Solver;
   int problems_found()
   { return $self->problems.count != 0; }
 
+#if defined(SWIGRUBY)
   void each_problem( Transaction *t )
   { return solver_problems_iterate( $self, t, solver_problems_iterate_callback ); }
 
@@ -318,6 +317,7 @@ typedef struct solver {} Solver;
 
   void each_suggested()
   { return solver_suggestions_iterate( $self, generic_xsolvables_iterate_callback); }
+#endif /* SWIGRUBY */
 
 #if defined(SWIGPERL)
     SV* getInstallList()

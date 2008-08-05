@@ -58,8 +58,8 @@ class TestSequenceFunctions(unittest.TestCase):
     assert pool
     pool.set_arch("i686")
     repo = pool.add_solv( "os11-biarch.solv" )
-    for i in range(0,repo.size()):
-      print repo.get(i)
+    for s in repo:
+      print s
 
     assert True
 

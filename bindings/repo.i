@@ -82,6 +82,14 @@ typedef struct _Repo {} Repo;
   void each()
   { repo_xsolvables_iterate( $self, generic_xsolvables_iterate_callback ); }
 #endif
+#if defined(SWIGPYTHON)
+    %pythoncode %{
+        def __iter__(self):
+          r = range(0,self.size())
+          while r:
+            yield self.get(r.pop(0))
+    %}
+#endif
 
 #if defined(SWIGRUBY)
   /* %rename is rejected by swig for [] */

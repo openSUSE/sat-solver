@@ -36,8 +36,7 @@ class TestSequenceFunctions(unittest.TestCase):
         k = repodata.key(i)
         print "  Key ", k.name(), " is ", k.type(), " with ", k.size(), " bytes"
     
-    for i in range(0, repo.size()):
-      s = repo.get(i)
+    for s in repo:
       print "Solvable %s: group %s, time %s, downloadsize %s, installsize %s" % (s, s.attr('solvable:group'), s.attr('solvable:buildtime'), s.attr('solvable:downloadsize'), s.attr('solvable:installsize'))
       if i == 10:
           break

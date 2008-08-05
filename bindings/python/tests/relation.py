@@ -55,15 +55,13 @@ class TestSequenceFunctions(unittest.TestCase):
     rel = self.pool.create_relation( "A", satsolver.REL_EQ, "1.0-0" )
     assert rel
     print "Relation: ", rel
-    for i in range(0, self.repo.size()):
-      s = self.repo.get(i)
+    for s in self.repo:
       if not s.provides().empty():
 	print "%s provides %s" % (s, s.provides().get(1))
 
-      for j in range(0,s.provides().size()):
-        p = s.provides().get(j)
+      for p in s.provides():
         if p is not None:
-            res1 = p.cmp(rel)
+            res1 = cmp(p, rel)
             print p, " cmp ", rel, " => ", res1
             res2 = p.match(rel)
             print p, " match ", rel, " => ", res1

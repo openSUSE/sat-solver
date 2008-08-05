@@ -43,8 +43,7 @@ class TestSequenceFunctions(unittest.TestCase):
 
   def test_deps(self):
     return
-    for i in range(0,self.pool.size()):
-      s = self.pool.get(i)
+    for s in pool:
       print s
       show_dep( "Provides", s.provides())
       show_dep( "Requires", s.requires())
