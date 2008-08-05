@@ -207,9 +207,12 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   { xsolvable_solvable($self)->vendor = str2id( $self->pool, vendor, 1 ); }
 
 #if defined(SWIGRUBY)
-  %rename("to_s") asString();
+  %rename("to_s") string();
 #endif
-  const char *asString()
+#if defined(SWIGPYTHON)
+  %rename("__str__") string();
+#endif
+  const char *string()
   {
     if ( $self->id == ID_NULL ) return "";
     return solvable2str( $self->pool, xsolvable_solvable( $self ) );

@@ -27,8 +27,14 @@ typedef struct _Relation {} Relation;
   ~Relation()
   { relation_free( $self ); }
 
-  %rename("to_s") asString();
-  const char *asString()
+#if defined(SWIGRUBY)
+  %rename("to_s") string();
+#endif
+#if defined(SWIGPYTHON)
+  %rename("__str__") string();
+#endif
+
+  const char *string()
   { return dep2str( $self->pool, $self->id ); }
 
   Pool *pool()
