@@ -230,8 +230,7 @@ typedef struct _Pool {} Pool;
   void each()
   { pool_xsolvables_iterate( $self, generic_xsolvables_iterate_callback ); }
 
-  XSolvable *
-  find( char *name, Repo *repo = NULL )
+  XSolvable *find( char *name, Repo *repo = NULL )
   { return xsolvable_find( $self, name, repo ); }
 
   /**************************
