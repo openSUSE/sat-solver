@@ -318,6 +318,9 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
 #if defined(SWIGPYTHON)
   PyObject *attr( const char *name )
 #endif
+#if defined(SWIGPERL)
+  SV *attr( const char *name )
+#endif
   {
 #if defined(SWIGRUBY)
     char *name;
@@ -376,6 +379,9 @@ fail:
 #endif
 #if defined(SWIGPYTHON)
   PyObject *attr_exists( const char *name )
+#endif
+#if defined(SWIGPERL)
+  SV *attr_exists( const char *name )
 #endif
   {
 #if defined(SWIGRUBY)

@@ -48,6 +48,18 @@
 #include <rubyio.h>
 #endif
 
+#if defined(SWIGPERL)
+#define Swig_Test(x) (x == NULL)
+#define Swig_True (&PL_sv_yes)
+#define Swig_False (&PL_sv_no)
+#define Swig_Null NULL
+#define Swig_Type SV *
+#define Swig_Int(x) SWIG_From_long(x)
+#define Swig_String(x) SWIG_FromCharPtr(x)
+#define Swig_Array(x) NULL
+#define Swig_Append(x,y) av_create_and_push(&x, y)
+#endif
+
 /* satsolver core includes */
 #include "policy.h"
 #include "bitmap.h"
