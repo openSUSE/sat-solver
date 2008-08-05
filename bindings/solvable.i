@@ -227,9 +227,12 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   { return xsolvable_equal( $self, xs); }
 
 #if defined(SWIGRUBY)
-  %alias cmp "<=>";
+  %alias compare "<=>";
 #endif
-  int cmp( XSolvable *xs )
+#if defined(SWIGPYTHON)
+  %alias compare "__cmp__";
+#endif
+  int compare( XSolvable *xs )
   {
     Solvable *s1 = xsolvable_solvable( $self );
     Solvable *s2 = xsolvable_solvable( xs );

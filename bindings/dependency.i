@@ -69,8 +69,10 @@ typedef struct _Dependency {} Dependency;
   Relation *get( int i )
   { return dependency_relation_get( $self, i ); }
 
+#if defined(SWIGRUBY)
   void each()
   { dependency_relations_iterate( $self, dependency_relations_iterate_callback ); }
+#endif
 
 }
 

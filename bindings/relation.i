@@ -66,9 +66,12 @@ typedef struct _Relation {} Relation;
   }
 
 #if defined(SWIGRUBY)
-  %alias cmp "<=>";
+  %alias compare "<=>";
 #endif
-  int cmp( const Relation *r )
+#if defined(SWIGPYTHON)
+  %alias compare "__cmp__";
+#endif
+  int compare( const Relation *r )
   { return evrcmp( $self->pool, relation_evrid( $self ), relation_evrid( r ), EVRCMP_COMPARE ); }
 
 #if defined(SWIGRUBY)
