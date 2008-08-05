@@ -47,7 +47,7 @@ class TestSequenceFunctions(unittest.TestCase):
   def test_repo_add(self):
     pool = satsolver.Pool()
     assert pool
-    pool.arch = "i686"
+    pool.set_arch("i686")
     repo = pool.add_solv( "os11-biarch.solv" )
     repo.set_name("test")
     assert repo.name() == "test"
@@ -61,7 +61,7 @@ class TestSequenceFunctions(unittest.TestCase):
 #    for s in repo:
 #      print s
 
-    assert true
+    assert True
 
 if __name__ == '__main__':
   unittest.main()

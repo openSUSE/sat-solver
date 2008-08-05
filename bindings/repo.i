@@ -11,7 +11,9 @@ typedef struct _Repo {} Repo;
   Repo( Pool *pool, const char *reponame )
   { return repo_create( pool, reponame ); }
   ~Repo()
-  {}
+  { }
+  void remove()
+  { repo_free( $self, 1 ); }
 
   int size()
   { return $self->nsolvables; }
@@ -29,7 +31,10 @@ typedef struct _Repo {} Repo;
   %rename( "name=" ) set_name( const char *name );
 #endif
   void set_name( const char *name )
-  { $self->name = name; }
+  { if ($self->name)
+      sat_free((char *)$self->name);
+    $self->name = strdup(name);
+  }
   int priority()
   { return $self->priority; }
 #if defined(SWIGRUBY)
