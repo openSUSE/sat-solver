@@ -230,9 +230,10 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   %alias compare "<=>";
 #endif
 #if defined(SWIGPYTHON)
-  %alias compare "__cmp__";
-#endif
+  int __cmp__( XSolvable *xs )
+#else
   int compare( XSolvable *xs )
+#endif
   {
     Solvable *s1 = xsolvable_solvable( $self );
     Solvable *s2 = xsolvable_solvable( xs );
@@ -345,7 +346,7 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
     Solvable *s = xsolvable_solvable($self);
     if (repo_lookup( s, key, xsolvable_attr_lookup_callback, &result ))
       return result;
-#if defined(SWIGPYTHON) /* needed for SWIG_Exception */
+#if defined(SWIGPYTHON) || defined(SWIGPERL)/* needed for SWIG_Exception */
 fail:
 #endif
     return Swig_Null;

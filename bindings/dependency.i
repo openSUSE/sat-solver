@@ -7,15 +7,15 @@
  * iterating over dependency relations ('yield' in Ruby)
  */
 
+#if defined(SWIGRUBY)
 static int
 dependency_relations_iterate_callback( const Relation *rel )
 {
-#if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield( SWIG_NewPointerObj((void*) rel, SWIGTYPE_p__Relation, 0) );
-#endif
   return 0;
 }
+#endif
 
 %}
 

@@ -69,9 +69,10 @@ typedef struct _Relation {} Relation;
   %alias compare "<=>";
 #endif
 #if defined(SWIGPYTHON)
-  %alias compare "__cmp__";
-#endif
+  int __cmp__( const Relation *r )
+#else
   int compare( const Relation *r )
+#endif
   { return evrcmp( $self->pool, relation_evrid( $self ), relation_evrid( r ), EVRCMP_COMPARE ); }
 
 #if defined(SWIGRUBY)
