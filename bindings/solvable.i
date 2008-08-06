@@ -97,7 +97,7 @@ static int
 xsolvable_attr_lookup_callback( void *cbdata, Solvable *s, Repodata *data, Repokey *key, KeyValue *kv )
 {
   Swig_Type *result = (Swig_Type *)cbdata;
-  
+
   /*
    * !! keep the order of case statements according to knownid.h !!
    */
@@ -132,8 +132,9 @@ xsolvable_attr_lookup_callback( void *cbdata, Solvable *s, Repodata *data, Repok
         *result = Swig_String( kv->str );
       break;
       case REPOKEY_TYPE_IDARRAY:
-        if (Swig_Test(*result))
+        if (Swig_Test(*result)) {
 	  *result = Swig_Array();  /* create new Array on first call */
+	}
         if (data->localpool)
 	  Swig_Append( *result, Swig_String( stringpool_id2str( &data->spool, kv->id ) ) );
 	else
@@ -144,7 +145,11 @@ xsolvable_attr_lookup_callback( void *cbdata, Solvable *s, Repodata *data, Repok
         *result = Swig_Null; /*FIXME*/
       break;
       case REPOKEY_TYPE_DIRSTRARRAY:
-        *result = Swig_Null; /*FIXME*/
+        if (Swig_Test(*result)) {
+	  *result = Swig_Array();  /* create new Array on first call */
+	}
+	Swig_Append( *result, Swig_String( repodata_dir2str(data, kv->id, kv->str) ) );
+	return kv->eof?1:0;
       break;
       case REPOKEY_TYPE_DIRNUMNUMARRAY:
         *result = Swig_Null; /*FIXME*/

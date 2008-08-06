@@ -12,7 +12,7 @@ import satsolver
 
 class TestSequenceFunctions(unittest.TestCase):
     
-  def test_repo_create(self):
+  def test_repodata(self):
     pool = satsolver.Pool()
     assert pool
     pool.set_arch("x86_64")
