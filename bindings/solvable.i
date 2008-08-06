@@ -327,6 +327,7 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   SV *attr( const char *name )
 #endif
   {
+    Swig_Type result = Swig_Null;
 #if defined(SWIGRUBY)
     char *name;
 
@@ -350,14 +351,16 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
     if (key == ID_NULL)
       SWIG_exception( SWIG_ValueError, "No such attribute name" );
 
-    Swig_Type result = Swig_Null;
     Solvable *s = xsolvable_solvable($self);
-    if (repo_lookup( s, key, xsolvable_attr_lookup_callback, &result ))
-      return result;
+    repo_lookup( s, key, xsolvable_attr_lookup_callback, &result );
+
 #if defined(SWIGPYTHON) || defined(SWIGPERL)/* needed for SWIG_Exception */
 fail:
 #endif
-    return Swig_Null;
+#if defined(SWIGPYTHON)
+    Py_INCREF(result);
+#endif    
+    return result;
   }
   
   /*
