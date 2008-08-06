@@ -50,16 +50,28 @@ class TestSequenceFunctions(unittest.TestCase):
     assert rel2.op() == satsolver.REL_EQ
     assert rel2.evr() == "1.0-0"
 
+  def test_providers(self):
+    rel = self.pool.create_relation( "glibc", satsolver.REL_GT, "2.7" )
+    for s in self.pool.providers(rel):
+      print s, "provides ", rel
+    assert True
   
   def test_relation(self):
     rel = self.pool.create_relation( "A", satsolver.REL_EQ, "1.0-0" )
     assert rel
     print "Relation: ", rel
+    i = 0
     for s in self.repo:
+      i = i + 1
+      if i > 10:
+          break
       if not s.provides().empty():
 	print "%s provides %s" % (s, s.provides().get(1))
-
+      j = 0
       for p in s.provides():
+        j = j + 1
+        if j > 3:
+            break
         if p is not None:
             res1 = cmp(p, rel)
             print p, " cmp ", rel, " => ", res1

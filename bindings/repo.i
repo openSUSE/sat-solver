@@ -15,7 +15,18 @@ typedef struct _Repo {} Repo;
   void remove()
   { repo_free( $self, 1 ); }
 
-  int size()
+#if defined(SWIGRUBY)
+  %rename("to_s") string();
+#endif
+#if defined(SWIGPYTHON)
+  %rename("__str__") string();
+#endif
+  const char *string()
+  {
+    return $self->name;
+  }
+
+int size()
   { return $self->nsolvables; }
 #if defined(SWIGRUBY)
   %rename("empty?") empty();

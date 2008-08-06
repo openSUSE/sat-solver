@@ -58,9 +58,33 @@ class TestSequenceFunctions(unittest.TestCase):
     assert pool
     pool.set_arch("i686")
     repo = pool.add_solv( "os11-biarch.solv" )
+    i = 0
     for s in repo:
+      i = i + 1
+      if i > 10:
+          break
       print s
+    assert True
+    
+  def test_repo_iterate(self):
+    pool = satsolver.Pool()
+    assert pool
+    repoA = pool.create_repo( "testA" )
+    repoB = pool.create_repo( "testB" )
+    repoC = pool.create_repo( "testC" )
+    repoD = pool.create_repo( "testD" )
+    assert pool.count_repos() == 4
+    for r in pool.repos():
+        print r
+    assert True
 
+  def test_providers(self):
+    pool = satsolver.Pool()
+    assert pool
+    pool.set_arch("i686")
+    repo = pool.add_solv( "os11-biarch.solv" )
+    for s in pool.providers("glibc"):
+      print s, "provides 'glibc'"
     assert True
 
 if __name__ == '__main__':

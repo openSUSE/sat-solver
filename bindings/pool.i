@@ -86,6 +86,9 @@ typedef struct _Pool {} Pool;
   void set_promoteepoch( int b )
   { $self->promoteepoch = b; }
 
+  int unprepared()
+  { return $self->whatprovides == NULL; }
+
   void prepare()
   { pool_createwhatprovides( $self ); }
 
@@ -148,6 +151,14 @@ typedef struct _Pool {} Pool;
       rb_yield(SWIG_NewPointerObj((void*) $self->repos[i], SWIGTYPE_p__Repo, 0));
   }
 #endif
+#if defined(SWIGPYTHON)
+    %pythoncode %{
+        def repos(self):
+          r = range(0,self.count_repos())
+          while r:
+            yield self.get_repo(r.pop(0))
+    %}
+#endif
 
   Repo *find_repo( const char *name )
   {
@@ -174,12 +185,12 @@ typedef struct _Pool {} Pool;
     return NULL;
   }
 
+#if defined(SWIGRUBY)
   /*
    * iterate over providers of relation
    */
   void each_provider( Relation *rel )
   {
-#if defined(SWIGRUBY)
     Id p, *pp;
     Pool *pool = $self;
     if (!$self->whatprovides)
@@ -187,8 +198,44 @@ typedef struct _Pool {} Pool;
 
     FOR_PROVIDES(p, pp, rel->id) 
       generic_xsolvables_iterate_callback( xsolvable_new( $self, p ) );
-#endif
   }
+#endif
+
+#if defined(SWIGPYTHON)
+
+  int providers_count( const char *name )
+  { int i = 0;
+    Id v, *vp;
+    for (vp = pool_whatprovides($self, str2id( $self, name, 0)) ; (v = *vp++) != 0; )
+      ++i;
+    return i;
+  }
+  int providers_count( Relation *rel )
+  { int i = 0;
+    Id v, *vp;
+    for (vp = pool_whatprovides($self, rel->id) ; (v = *vp++) != 0; )
+      ++i;
+    return i;
+  }
+  XSolvable *providers_get( const char *name, int i)
+  { Id *vp;
+    vp = pool_whatprovides($self, str2id( $self, name, 0));
+    return xsolvable_new( $self, *(vp + i));
+  }
+  XSolvable *providers_get( Relation *rel, int i)
+  { Id *vp;
+    vp = pool_whatprovides($self, rel->id);
+    return xsolvable_new( $self, *(vp + i));
+  }
+    %pythoncode %{
+        def providers(self,what):
+          if self.unprepared():
+            self.prepare()
+          r = range(0,self.providers_count(what))
+          while r:
+            yield self.providers_get(what, r.pop(0))
+    %}
+#endif
 
   void each_provider( const char *name )
   {
@@ -196,7 +243,7 @@ typedef struct _Pool {} Pool;
     Id p, *pp;
     Pool *pool = $self;
     if (!$self->whatprovides)
-      pool_createwhatprovides( $self );
+      pool_createwhatprovides($self);
 	  
     FOR_PROVIDES(p, pp, str2id( $self, name, 0) ) 
       generic_xsolvables_iterate_callback( xsolvable_new( $self, p ) );
