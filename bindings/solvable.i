@@ -172,6 +172,19 @@ xsolvable_attr_lookup_callback( void *cbdata, Solvable *s, Repodata *data, Repok
 }
 
 
+/*
+ * searching for existance of an attribute of a (x)solvable ('yield' in Ruby)
+ */
+
+static int
+xsolvable_attr_exists_callback( void *cbdata, Solvable *s, Repodata *data, Repokey *key, KeyValue *kv )
+{
+  Swig_Type *result = (Swig_Type *)cbdata;
+  *result = Swig_True;
+  /* stop looping immediately */
+  return 0;
+}
+
 %}
 
 
@@ -392,6 +405,7 @@ fail:
   SV *attr_exists( const char *name )
 #endif
   {
+    Swig_Type result = Swig_False;
 #if defined(SWIGRUBY)
     char *name;
 
@@ -407,12 +421,19 @@ fail:
       name = StringValuePtr( attrname );
 #endif
 
-    if (!name)
-      return Swig_False;
-    /* key existing in pool ? */
-    Id key;
-    key = str2id( $self->pool, name, 0);
-    return (key == ID_NULL) ? Swig_False : Swig_True;
+    if (name) {
+      /* key existing in pool ? */
+      Id key;
+      key = str2id( $self->pool, name, 0);
+      if (key != ID_NULL) {
+        Solvable *s = xsolvable_solvable($self);
+	repo_lookup( s, key, xsolvable_attr_exists_callback, &result );
+      }
+    }
+#if defined(SWIGPYTHON)
+    Py_INCREF(result);
+#endif    
+    return result;
   }
 }
 

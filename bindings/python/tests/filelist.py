@@ -21,8 +21,12 @@ class TestSequenceFunctions(unittest.TestCase):
     i = 0
     for solv in pool:
       print "Filelist for ", i, " of ", pool.size(),  solv
-      a = solv.attr('solvable:filelist')
-      print a
+      if solv.attr_exists('solvable:filelist'):
+          a = solv.attr('solvable:filelist')
+          print a
+      else:
+          print "-"
+          
       i = i + 1
 #      if a is None:
 #          break
