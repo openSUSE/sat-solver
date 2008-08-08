@@ -50,3 +50,16 @@ os11-beta3-dvd-x86_64:
 # - not product related -  datadir: suse
   "product:flags": update
 # - not parsed -  language: en_US
+
+os11_1-new_product-dvd-i586:
+ 0:
+  contentstyle: 11
+  "product:name": openSUSE
+  "product:version": 11.0.42
+  "product:references": openSUSE-release = 11.0.42
+  "product:distribution": code11
+  "product:flavor": DVD
+  "solvable:vendor": SUSE LINUX Products GmbH, Nuernberg, Germany
+  "product:relnotesurl": http://www.suse.com/relnotes/i386/openSUSE/11.1/release-notes-openSUSE.rpm
+  "solvable:summary": openSUSE 11.0.42
+  "solvable:summary:de": openSUSE 11.0.42
