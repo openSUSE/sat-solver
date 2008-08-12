@@ -12,9 +12,8 @@ ADD_SUBDIRECTORY(tests)
 # SWIG_OUPUT is per-target
 SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/satsolver_python.c" )
 
-
-FIND_PACKAGE(PythonInterp)
-EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} -c "import sys; sys.stdout.write(sys.path[2])" OUTPUT_VARIABLE PYTHON_LIB_DIR)
+FIND_PACKAGE(PythonInterp REQUIRED)
+EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} -c "from sys import stdout; from distutils import sysconfig; stdout.write(sysconfig.get_python_lib())" OUTPUT_VARIABLE PYTHON_LIB_DIR)
 
 IF (NOT PYTHON_SITEDIR)
 SET (PYTHON_SITEDIR ${PYTHON_LIB_DIR}/site-packages)
