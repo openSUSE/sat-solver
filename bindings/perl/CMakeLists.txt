@@ -2,7 +2,7 @@
 # cmake description for satsolver Perl bindings
 #
 # !!Attn!!: This creates two files
-#  1. _satsolver.so
+#  1. satsolver.so
 #  2. satsolver.pm
 # and the .pm file gets loaded. See bindings/perl/tests.
 #
