@@ -78,7 +78,7 @@ int size()
   }
 
   void add_rpmdb( const char *rootdir )
-  { repo_add_rpmdb( $self, NULL, rootdir ); }
+  { repo_add_rpmdb( $self, NULL, NULL, rootdir ); }
 
   XSolvable *create_solvable( const char *name, const char *evr, const char *arch = NULL )
   { return xsolvable_create( $self, name, evr, arch ); }

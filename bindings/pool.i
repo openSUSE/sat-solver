@@ -126,7 +126,7 @@ typedef struct _Pool {} Pool;
   Repo *add_rpmdb( const char *rootdir )
   {
     Repo *repo = repo_create( $self, NULL );
-    repo_add_rpmdb( repo, NULL, rootdir );
+    repo_add_rpmdb( repo, NULL, NULL, rootdir );
     return repo;
   }
 
