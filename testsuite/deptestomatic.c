@@ -1248,8 +1248,7 @@ printf("hardware %s\n", dir);
 	    err( "Remove: Package '%s' is not installed", package );
 	    exit(1);
 	  }
-	id = str2id( pool, package, 0 );
-	queue_push( &(pd->trials), SOLVER_ERASE_SOLVABLE_NAME );
+	queue_push( &(pd->trials), SOLVER_ERASE_SOLVABLE);
 	queue_push( &(pd->trials), id);
       }
       break;

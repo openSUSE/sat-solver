@@ -709,5 +709,5 @@ package gd-1.8.4-4.noarch requires libm.so.6(GLIBC_2.0), but none of the provide
 - allow deinstallation of control-center-devel-1:1.5.12-ximian.2.noarch
 - allow deinstallation of kernel-utils-1:2.4-5.noarch
 
-- do not deinstall glibc
+- do not deinstall glibc-2.2.4-19.3.noarch
 

@@ -6,5 +6,5 @@ package xgnokii-0.6.10-6.i586 requires libgnokii.so.2, but none of the providers
 
 - allow deinstallation of xgnokii-0.6.10-6.i586
 
-- do not deinstall gnokii
+- do not deinstall gnokii-0.6.10-6.i586
 

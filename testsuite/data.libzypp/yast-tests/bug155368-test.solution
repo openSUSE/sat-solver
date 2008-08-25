@@ -25,5 +25,5 @@ package autoyast2-installation-2.13.19-2.noarch requires yast2-transfer, but non
 - allow deinstallation of yast2-samba-server-2.13.6-2.noarch
 - allow deinstallation of yast2-nis-server-2.13.1-5.noarch
 
-- do not deinstall yast2-transfer
+- do not deinstall yast2-transfer-2.13.3-2.x86_64
 

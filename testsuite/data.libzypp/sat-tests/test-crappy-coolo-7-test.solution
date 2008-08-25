@@ -6,12 +6,10 @@ package kaffeine-0.8.4-0.pm.3.i686 requires libxine1 >= 1.1.5, but none of the p
 
 - allow architecture change of kaffeine-0.8.4-0.pm.3.i686 to kaffeine-0.8.5-31.i586
 
-- do not deinstall libxine1
-- do not deinstall lame
-- do not install ImageMagick-6.3.5.3-26.i586
+- do not deinstall libxine1-1.1.6-0.pm.0.i686
 - do not install DirectFB-1.0.0-63.i586
-- do not install libjasper-1.900.1-42.i586
 - do not install kernel-default-2.6.22.5-26.i586
+- do not install libjasper-1.900.1-42.i586
 - do not install sysfsutils-2.1.0-60.i586
 - do not install libMagick++10-6.3.5.3-26.i586
 - do not install clanlib-0.6.5-468.i586
@@ -22,6 +20,7 @@ package kaffeine-0.8.4-0.pm.3.i686 requires libxine1 >= 1.1.5, but none of the p
 - do not install cpufrequtils-002-92.i586
 - do not install novfs-kmp-default-2.0.0_2.6.22.5_26-22.i586
 - do not install microcode_ctl-1.17-31.i586
+- do not install konversation-1.0.1-109.i586
 - do not install kio_slp-0.4.1-121.i586
 - do not install kio_ipodslave-0.8.pre1-110.i586
 - do not install kio_beagle-0.3.1-115.i586
@@ -32,15 +31,16 @@ package kaffeine-0.8.4-0.pm.3.i686 requires libxine1 >= 1.1.5, but none of the p
 - do not install kdegraphics3-3.5.7-55.i586
 - do not install kdegames3-3.5.7-50.i586
 - do not install amarok-1.4.7-33.i586
+- do not install kdepim3-devel-3.5.7.enterprise.0.20070904.708012-6.i586
+- do not install amarok-xine-1.4.7-33.i586
 
 Problem 2:
 ====================================
-package lyx-1.5.1-22.i586 requires texlive-latex, but none of the providers can be installed
+package lyx-1.3.6-20.i586 requires te_latex, but none of the providers can be installed
 
 - allow deinstallation of lyx-1.3.6-20.i586
 
-- do not deinstall te_latex
-- do not deinstall tetex
+- do not deinstall te_latex-3.0-37.i586
 
 - do not forbid installation of texlive-2007-66.noarch
 
@@ -52,5 +52,5 @@ package docbook-toys-1.51.0-279.noarch requires jadetex, but none of the provide
 
 - allow deinstallation of docbook-toys-1.51.0-279.noarch
 
-- do not deinstall jadetex
+- do not deinstall jadetex-3.13-235.i586
 

@@ -6,5 +6,5 @@ package foo2-1.0-1.noarch requires foo, but none of the providers can be install
 
 - allow deinstallation of foo2-1.0-1.noarch
 
-- do not deinstall foo
+- do not deinstall foo-1.0-1.noarch
 
