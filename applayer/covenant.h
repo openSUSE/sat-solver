@@ -23,11 +23,11 @@
 
 typedef struct _Covenant {
   Pool *pool;
-  SolverCmd cmd;
+  Id cmd;
   Id id;
 } Covenant;
 
-Covenant *covenant_new( Pool *pool, SolverCmd cmd, Id id );
+Covenant *covenant_new( Pool *pool, Id cmd, Id id );
 void covenant_free( Covenant *c );
 
 XSolvable *covenant_xsolvable( const Covenant *c );

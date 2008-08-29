@@ -24,12 +24,12 @@
 
 typedef struct _Job {
   Pool *pool;
-  SolverCmd cmd;
+  Id cmd;
   Id id;
 } Job;
 
 
-Job *job_new( Pool *pool, SolverCmd cmd, Id id );
+Job *job_new( Pool *pool, Id cmd, Id id );
 void job_free( Job *j );
 
 XSolvable *job_xsolvable( Job *j );

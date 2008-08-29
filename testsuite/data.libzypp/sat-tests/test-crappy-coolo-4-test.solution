@@ -46,7 +46,7 @@ package kdegraphics3-tex-3.5.3-11.2.i586 requires tetex, but none of the provide
 
 - do not deinstall tetex-3.0-37.i586
 
-- do not forbid installation of texlive-2007-66.noarch
+- do not lock texlive-2007-66.noarch
 
-- do not forbid installation of texlive-2007-68.noarch
+- do not lock texlive-2007-68.noarch
 

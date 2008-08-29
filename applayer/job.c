@@ -18,7 +18,7 @@
 #include "applayer.h"
 
 Job *
-job_new( Pool *pool, SolverCmd cmd, Id id )
+job_new( Pool *pool, Id cmd, Id id )
 {
   Job *job = (Job *)malloc( sizeof( Job ));
   job->pool = pool;

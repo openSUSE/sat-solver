@@ -243,6 +243,8 @@ typedef struct _parsedata {
   int dosplitprovides;           /* 0/1, if splitprovides should be looked at */
   int dontinstallrecommended;    /* 0/1, if recommends should be ignored */
   int ignorealreadyrecommended;  /* 0/1, if old recommends should be ignored */
+  int distupgrade; 		 /* 0/1, if this is a dist upgrade */
+  int distupgrade_removeunsupported; /* 0/1, if this unsupported packages should be removed */
 
   struct stateswitch *swtab[NUMSTATES];
   enum state sbtab[NUMSTATES];
@@ -1098,7 +1100,7 @@ startElement( void *userData, const char *name, const char **atts )
 		if (repo) err( " in channel '%s'", channel );
 		exit( 1 );
 	      }
-	    queue_push( &(pd->trials), SOLVER_ERASE_SOLVABLE );
+	    queue_push( &(pd->trials), SOLVER_LOCK|SOLVER_SOLVABLE );
 	    queue_push( &(pd->trials), id );
 	  }
 	else 			       /* no channel given, lock installed */
@@ -1114,7 +1116,7 @@ startElement( void *userData, const char *name, const char **atts )
 		id = select_solvable( pool, 0, package, version, arch, 0 );
 		if (id)
 		  {
-		    queue_push( &(pd->trials), SOLVER_ERASE_SOLVABLE );
+		    queue_push( &(pd->trials), SOLVER_LOCK|SOLVER_SOLVABLE );
 		    queue_push( &(pd->trials), id );
 		  }
 		else
@@ -1122,7 +1124,7 @@ startElement( void *userData, const char *name, const char **atts )
 	      }
             else
 	      {
-		queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
+		queue_push( &(pd->trials), SOLVER_LOCK|SOLVER_SOLVABLE );
 		queue_push( &(pd->trials), id );
 	      }
 	  }
@@ -1343,12 +1345,19 @@ printf("hardware %s\n", dir);
     break;
 
     case STATE_DISTUPGRADE:
+      pd->distupgrade_removeunsupported = 0;
+      val = attrval( atts, "delete_unmaintained" );
+      if (val && (!strcmp(val, "yes") || !strcmp(val, "true")))
+        pd->distupgrade_removeunsupported = 1;
+      if (val && (!strcmp(val, "no") || !strcmp(val, "false")))
+        pd->distupgrade_removeunsupported = 0;
       pd->updatesystem = 1;
       pd->allowarchchange = 1;
       //pd->fixsystem = 1;
-      pd->allowuninstall = 1;
+      //pd->allowuninstall = 1;
       pd->allowdowngrade = 1;
       pd->dosplitprovides = 1;
+      pd->distupgrade = 1;
       break;
 
     case STATE_UPGRADE: {
@@ -1379,7 +1388,7 @@ printf("hardware %s\n", dir);
         queue_push( &(pd->trials), SOLVER_INSTALL_SOLVABLE );
         queue_push( &(pd->trials), id );
       } else {
-        queue_push( &(pd->trials), SOLVER_ERASE_SOLVABLE_NAME|SOLVER_WEAK );
+        queue_push( &(pd->trials), SOLVER_LOCK|SOLVABLE_NAME|SOLVER_WEAK );
         queue_push( &(pd->trials), str2id(pool, package, 1));
       }
     }
@@ -1465,7 +1474,9 @@ endElement( void *userData, const char *name )
       solv->dosplitprovides = pd->dosplitprovides;
       solv->dontinstallrecommended = pd->dontinstallrecommended;
       solv->ignorealreadyrecommended = pd->ignorealreadyrecommended;
-      solv->noupdateprovide = 1;
+      solv->distupgrade = pd->distupgrade;
+      solv->distupgrade_removeunsupported = pd->distupgrade_removeunsupported;
+      solv->noupdateprovide = 0;
 
       // Solve !
       solver_solve( solv, &pd->trials );

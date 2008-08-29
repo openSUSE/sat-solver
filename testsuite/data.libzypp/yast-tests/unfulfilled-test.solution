@@ -6,5 +6,5 @@ package yast2-installation-2.13.35-2.noarch requires suseRegister, but none of t
 
 - do not install yast2-installation-2.13.35-2.noarch
 
-- do not forbid installation of lsb-3.0-11.i586
+- do not lock lsb-3.0-11.i586
 

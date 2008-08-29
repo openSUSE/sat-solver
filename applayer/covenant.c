@@ -19,7 +19,7 @@
 #include "applayer.h"
 
 Covenant *
-covenant_new( Pool *pool, SolverCmd cmd, Id id )
+covenant_new( Pool *pool, Id cmd, Id id )
 {
   Covenant *covenant = (Covenant *)malloc( sizeof( Covenant ));
   covenant->pool = pool;
