@@ -16,8 +16,8 @@
 #ifndef SATSOLVER_JOB_H
 #define SATSOLVER_JOB_H
 
-#include <pool.h>
-#include <solver.h>
+#include "pool.h"
+#include "solver.h"
 
 #include "xsolvable.h"
 #include "relation.h"

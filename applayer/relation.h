@@ -8,7 +8,7 @@
 #ifndef SATSOLVER_RELATION_H
 #define SATSOLVER_RELATION_H
 
-#include <pool.h>
+#include "pool.h"
 
 /************************************************
  * Relation

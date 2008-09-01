@@ -17,8 +17,8 @@
  *
  */
 
-#include <pool.h>
-#include <solver.h>
+#include "pool.h"
+#include "solver.h"
 
 enum decisions {
   DECISION_INSTALL = 1,

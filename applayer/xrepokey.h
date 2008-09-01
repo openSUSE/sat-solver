@@ -8,8 +8,8 @@
 #ifndef SATSOLVER_XREPOKEY_H
 #define SATSOLVER_XREPOKEY_H
 
-#include <pool.h>
-#include <repo.h>
+#include "pool.h"
+#include "repo.h"
 
 /************************************************
  * XRepokey - eXternally visible Repokey

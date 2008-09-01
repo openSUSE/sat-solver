@@ -8,10 +8,10 @@
 #ifndef SATSOLVER_XSOLVABLE_H
 #define SATSOLVER_XSOLVABLE_H
 
-#include <pool.h>
-#include <repo.h>
-#include <solvable.h>
-#include <solver.h>
+#include "pool.h"
+#include "repo.h"
+#include "solvable.h"
+#include "solver.h"
 
 #include "kinds.h"
 

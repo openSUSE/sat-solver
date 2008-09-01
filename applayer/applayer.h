@@ -16,7 +16,7 @@
 #ifndef SATSOLVER_APPLAYER_H
 #define SATSOLVER_APPLAYER_H
 
-#include <pool.h>
+#include "pool.h"
 
 #include "xsolvable.h"
 

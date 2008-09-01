@@ -16,7 +16,7 @@
  *
  */
 
-#include <solver.h>
+#include "solver.h"
 
 #include "xsolvable.h"
 #include "relation.h"

@@ -18,7 +18,7 @@
  *
  */
 
-#include <solver.h>
+#include "solver.h"
 
 #include "transaction.h"
 #include "solution.h"
