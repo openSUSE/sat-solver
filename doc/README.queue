@@ -4,16 +4,31 @@ The queue schedules tasks for the solver
 
 The tasks are (cmd, id) pairs.
 
-The following commands are defined:
+A command consists of a job and a selection, both parts ORed together.
+The following jobs are defined:
 
-SOLVER_INSTALL_SOLVABLE           Install solvable (id is index into solvables)
-SOLVER_ERASE_SOLVABLE             Erase solvable (id is name Id)
-SOLVER_INSTALL_SOLVABLE_NAME      Install solvable by name (id is name Id)
-SOLVER_ERASE_SOLVABLE_NAME        Erase package by name (id is name Id)
-SOLVER_INSTALL_SOLVABLE_PROVIDES  Install solvable by provides (id is RelDep Id)
-SOLVER_ERASE_SOLVABLE_PROVIDES    Erase solvable by provides (id is RelDep Id)
-SOLVER_INSTALL_SOLVABLE_UPDATE    Update solvable
+SOLVER_INSTALL                    Install selection
+SOLVER_ERASE                      Erase selection
+SOLVER_UPDATE                     Update selection
+SOLVER_WEAKENDEPS                 Ignore as many dependencies of the
+                                  selected solvable as needed to obtain
+                                  a solution
+SOLVER_NOOBSOLETES                ignore obsoles of the selection
+                                  (multiversion install)
+SOLVER_LOCK                       lock selection, i.e. keep state
 
+There is also the SOLVER_WEAK flag, which tells the solver that it
+can ignore the request to create a solution.
 
-Install by name and by provides are handled identical, since every
-solvable provides its name
+The following selection exist:
+
+SOLVER_SOLVABLE                   id is a solvable id
+SOLVER_SOLVABLE_NAME              id is a solvable name (or a dependency),
+                                  packages must match with their
+                                  name/epoch/version/release
+SOLVER_SOLVABLE_PROVIDES          id is a dependency, packages must
+                                  match with one of their provides
+SOLVER_SOLVABLE_ONE_OF            id is an offset into the whatprovides
+                                  index, it points to a set of solvable ids
+                                  terminated by id 0.
+
