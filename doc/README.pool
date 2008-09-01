@@ -122,3 +122,23 @@ There are 'pool.nsolvables-1' number of solvables.
 
 There is no solvable with Id 0, this Id is reserved and serves
 as an 'end' indicator in lists of solvables.
+
+
+Strings vs. Relations
+=====================
+
+Relations (i.e. <name><flag><evr>) and Strings (<name>) are encoded as
+Ids. Relations have the 32th bit set.
+The pool contains a relation dictionary next to the string dictionary.
+
+Here's an example
+
+String dict:
+2 -> bash
+3 -> zlib
+4 -> 1.2.3
+
+Relation dict:
+1 -> 3 >= 4      (i.e. zlib >= 1.2.3)
+
+Some package provides: 2, 0x80000001 (i.e. bash, zlib >= 1.2.3)
