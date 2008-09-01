@@ -118,6 +118,7 @@ enum state {
   STATE_SETUPLOCK,
   STATE_LOCK,
   STATE_KEEP,
+  STATE_MULTIINSTALL,
   STATE_MEDIAID,
   STATE_MEDIAORDER,
   STATE_TRIAL,
@@ -191,6 +192,7 @@ static struct stateswitch stateswitches[] = {
   { STATE_TRIAL,       "instorder",    STATE_INSTORDER, 0 },
   { STATE_TRIAL,       "availablelocales",STATE_AVAILABLELOCALES, 0 },
   { STATE_TRIAL,       "keep",         STATE_KEEP, 0 },
+  { STATE_TRIAL,       "multiinstall", STATE_MULTIINSTALL, 0 },
   { STATE_TRIAL,    "dontinstallrecommended", STATE_DONTINSTALLRECOMMENDED, 0 },
   { STATE_TRIAL,    "ignorealreadyrecommended", STATE_IGNOREALREADYRECOMMENDED, 0 },
 
@@ -1128,6 +1130,17 @@ startElement( void *userData, const char *name, const char **atts )
 		queue_push( &(pd->trials), id );
 	      }
 	  }
+      }
+      break;
+
+    case STATE_MULTIINSTALL:
+      {
+	char package[MAXNAMELEN];
+	Id id;
+	getPackageName( atts, package );
+	id = str2id(pool, package, 1);
+	queue_push( &(pd->trials), SOLVER_NOOBSOLETES|SOLVER_SOLVABLE_NAME );
+	queue_push( &(pd->trials), id );
       }
       break;
 
