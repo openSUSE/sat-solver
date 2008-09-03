@@ -156,5 +156,17 @@ int size()
             yield self.data(r.pop(0))
     %}
 #endif
+
+  /*
+   * Dataiterator - find solvables by their attributes
+   */
+#if defined(SWIGPYTHON)
+    %pythoncode %{
+        def search(self, match, flags):
+          d = Dataiterator(self,match,flags)
+          while d.step():
+            yield d
+    %}
+#endif
 }
 

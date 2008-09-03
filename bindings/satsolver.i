@@ -169,3 +169,4 @@ typedef unsigned int Offset;
 %include "solution.i"
 %include "covenant.i"
 %include "solver.i"
+%include "dataiterator.i"
