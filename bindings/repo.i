@@ -148,5 +148,13 @@ int size()
     }
   }
 #endif
+#if defined(SWIGPYTHON)
+    %pythoncode %{
+        def datas(self):
+          r = range(0,self.datasize())
+          while r:
+            yield self.data(r.pop(0))
+    %}
+#endif
 }
 

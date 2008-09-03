@@ -25,19 +25,20 @@ class TestSequenceFunctions(unittest.TestCase):
     assert repo.data(-1) == None
     assert repo.data(repo.datasize()) == None
     assert repo.data(repo.datasize()-1)
-    for i in range(0, repo.datasize()):
-      assert repo.data(i)
+    for d in repo.datas():
+      assert d
     
     repodata = repo.data(0)
     assert repodata
     
     print "Repodata is at ", repodata.location(), " with ", repodata.keysize(), " keys"
-    for i in range(0, repodata.keysize()):
-        k = repodata.key(i)
+    for k in repodata.keys():
         print "  Key ", k.name(), " is ", k.type(), " with ", k.size(), " bytes"
     
+    i = 0;
     for s in repo:
       print "Solvable %s: group %s, time %s, downloadsize %s, installsize %s" % (s, s.attr('solvable:group'), s.attr('solvable:buildtime'), s.attr('solvable:downloadsize'), s.attr('solvable:installsize'))
+      i += 1;
       if i == 10:
           break
 

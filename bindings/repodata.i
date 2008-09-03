@@ -38,5 +38,13 @@ typedef struct _Repodata {} Repodata;
     }
   }
 #endif
+#if defined(SWIGPYTHON)
+    %pythoncode %{
+        def keys(self):
+          r = range(0,self.keysize())
+          while r:
+            yield self.key(r.pop(0))
+    %}
+#endif
 }
 
