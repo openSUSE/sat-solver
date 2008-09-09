@@ -2,8 +2,6 @@
 # CMakeLists.txt for sat-solver/applayer
 #
 
-set ( CMAKE_C_FLAGS     "${CMAKE_C_FLAGS} -Werror -Wall" )
-
 ADD_SUBDIRECTORY(tests)
 
 SET(libappsatsolver_SRCS job.c applayer.c covenant.c decision.c dependency.c

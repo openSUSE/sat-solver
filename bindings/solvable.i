@@ -16,7 +16,7 @@ xsolvable_each_attr_callback( Solvable *s, Repodata *data, Repokey *key, KeyValu
   /*
    * !! keep the order of case statements according to knownid.h !!
    */
- 
+
   switch( key->type )
     {
       case REPOKEY_TYPE_VOID:
@@ -101,7 +101,7 @@ xsolvable_attr_lookup_callback( void *cbdata, Solvable *s, Repodata *data, Repok
   /*
    * !! keep the order of case statements according to knownid.h !!
    */
- 
+
   switch( key->type )
     {
       case REPOKEY_TYPE_VOID:
@@ -201,12 +201,12 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   %constant int KIND_SOURCE   = KIND_SOURCE;
   %constant int KIND_PATTERN  = KIND_PATTERN;
   %constant int KIND_NOSOURCE = KIND_PATTERN;
-	    
+
   XSolvable( Repo *repo, const char *name, const char *evr, const char *arch = NULL )
   { return xsolvable_create( repo, name, evr, arch ); }
   ~XSolvable()
   { return xsolvable_free( $self ); }
-  
+
   Repo *repo()
   { return xsolvable_solvable($self)->repo; }
 
@@ -278,7 +278,7 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
       }
     return i;
   }
-  
+
   /*
    * Dependencies
    */
@@ -298,7 +298,7 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   { return dependency_new( $self, DEP_SUP ); }
   Dependency *enhances()
   { return dependency_new( $self, DEP_ENH ); }
-  
+
 #if defined(SWIGRUBY)
   %rename( "provides?" ) does_provide( const char *name );
   %rename( "provides_any?" ) does_provide_any( Array );
@@ -328,7 +328,7 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   /*
    * access attribute via []
    */
-   
+
   /* %rename is rejected by swig for [] */
   %alias attr "[]";
   VALUE attr( VALUE attrname )
@@ -346,7 +346,7 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
 
     if (SYMBOL_P(attrname)) {
       char *colon;
-      name = rb_id2name( SYM2ID( attrname ) );
+      name = (char *)rb_id2name( SYM2ID( attrname ) );
       colon = name;
       while ((colon = strchr( colon, '_'))) {
         *colon++ = ':';
@@ -372,10 +372,10 @@ fail:
 #endif
 #if defined(SWIGPYTHON)
     Py_INCREF(result);
-#endif    
+#endif
     return result;
   }
-  
+
   /*
    * iterate over all attributes
    */
@@ -393,7 +393,7 @@ fail:
   /*
    * check existance of attribute
    */
-   
+
 #if defined(SWIGRUBY)
   %rename( "attr?" ) attr_exists( VALUE attrname );
   VALUE attr_exists( VALUE attrname )
@@ -411,7 +411,7 @@ fail:
 
     if (SYMBOL_P(attrname)) {
       char *colon;
-      name = rb_id2name( SYM2ID( attrname ) );
+      name = (char *)rb_id2name( SYM2ID( attrname ) );
       colon = name;
       while ((colon = strchr( colon, '_'))) {
         *colon++ = ':';
@@ -432,7 +432,7 @@ fail:
     }
 #if defined(SWIGPYTHON)
     Py_INCREF(result);
-#endif    
+#endif
     return result;
   }
 }

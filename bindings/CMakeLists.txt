@@ -8,8 +8,6 @@ FIND_PACKAGE(SWIG REQUIRED)
 
 MESSAGE(STATUS "Found SWIG version ${SWIG_VERSION}")
 
-REMOVE_DEFINITIONS(-Werror)
-
 #
 # Generic setting for all generated bindings
 #
