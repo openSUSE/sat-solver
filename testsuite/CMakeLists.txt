@@ -1,4 +1,6 @@
 
+set ( CMAKE_C_FLAGS     "${CMAKE_C_FLAGS} -Werror -Wall" )
+
 SET(yps_SOURCES yps.c)
 ADD_EXECUTABLE(yps ${yps_SOURCES})
 TARGET_LINK_LIBRARIES(yps satsolver)
