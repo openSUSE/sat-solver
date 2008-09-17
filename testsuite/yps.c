@@ -100,7 +100,7 @@ load_callback(Pool *pool, Repodata *data, void *cbdata)
 void
 langdemo(Pool *pool)
 {
-  Id screenid, p, *pp;
+  Id screenid, p, pp;
 
   screenid = str2id(pool, "3ddiag", 1);
   static const char *languages[] = {"es", "de"};
@@ -126,6 +126,72 @@ nscallback(Pool *pool, void *data, Id name, Id evr)
 	return 1;
     }
   return 0;
+}
+
+static void
+findinstalled(Solver *solv, Queue *installedq)
+{
+  Pool *pool = solv->pool;
+  Id ip, p, pp;
+  Solvable *s, *ps;
+  Queue pq, nq, opq;
+  int i;
+  Map installedmap, namemap;
+  const char *name;
+
+  map_init(&namemap, pool->ss.nstrings);
+  map_init(&installedmap, pool->nsolvables);
+  queue_init(&pq);
+  queue_init(&opq);
+  queue_init(&nq);
+
+  if (solv->installed)
+    {
+      for (ip = solv->installed->start; ip < solv->installed->end; ip++)
+	{
+	  s = pool->solvables + ip;
+	  if (s->repo != solv->installed)
+	    continue;
+	  queue_push(installedq, ip);
+	  MAPSET(&installedmap, ip);
+	}
+    }
+  /* find installed products/patterns */
+  for (ip = 1; ip < pool->nsolvables; ip++)
+    {
+      s = pool->solvables + ip;
+      name = id2str(pool, s->name);
+      if (strncmp(name, "pattern:", 8) && strncmp(name, "product:", 8))
+	continue;
+      if (MAPTST(&namemap, s->name))
+	continue;
+      MAPSET(&namemap, s->name);
+      queue_empty(&nq);
+      FOR_PROVIDES(p, pp, s->name)
+	{
+	  ps = pool->solvables + p;
+	  if (ps->name == s->name)
+	    queue_push(&nq, p);
+	}
+      if (!nq.count)
+	continue;
+      policy_filter_unwanted(solv, &nq, 0, POLICY_MODE_RECOMMEND);
+      queue_push(&pq, nq.elements[0]);
+    }
+  pool_trivial_installable(pool, solv->installed, &installedmap, &pq, &opq);
+  for (i = 0; i < opq.count; i++)
+    {
+#if 0
+      printf("%s -> %d\n", solvable2str(pool, pool->solvables + pq.elements[i]), opq.elements[i]);
+#endif
+      if (opq.elements[i])
+	queue_push(installedq, pq.elements[i]);
+    }
+  queue_free(&nq);
+  queue_free(&opq);
+  queue_free(&pq);
+  map_free(&installedmap);
+  map_free(&namemap);
 }
 
 //-----------------------------------------------
@@ -174,7 +240,7 @@ main(int argc, char **argv)
       switch(c)
 	{
 	case 'e':
-	  erase = 1;
+	  erase++;
 	  break;
 	case 'u':
 	  forceupdate = 1;
@@ -281,7 +347,7 @@ main(int argc, char **argv)
     ;
   else if (forceupdate)
     {
-      Id p, *pp;
+      Id p, pp;
       Solvable *s = 0;
       Queue qs;
 
@@ -329,11 +395,35 @@ main(int argc, char **argv)
       id = str2id(pool, argv[1], 1);
       queue_push(&job, SOLVER_ERASE_SOLVABLE_NAME | weak);
       queue_push(&job, id);
+      if (erase > 1)
+	{
+	  Queue qs;
+	  Queue iq;
+	  Id p, pp;
+	  int i;
+
+	  FOR_PROVIDES(p, pp, id)
+	    {
+	      if (pool->solvables[p].name != id)
+		continue;
+	      queue_init(&qs);
+	      queue_init(&iq);
+	      findinstalled(solv, &iq);
+	      solver_find_involved(solv, &iq, pool->solvables + p, &qs);
+	      queue_free(&iq);
+	      for (i = 0 ; i < qs.count; i++)
+		{
+		  queue_push(&job, SOLVER_ERASE|SOLVER_SOLVABLE);
+		  queue_push(&job, qs.elements[i]);
+		}
+	      queue_free(&qs);
+	    }
+	}
     }
 
   if (weakdeps)
     {
-      Id p, *pp;
+      Id p, pp;
       Solvable *s;
 
       id = str2id(pool, weakdeps, 1);

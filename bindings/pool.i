@@ -191,7 +191,7 @@ typedef struct _Pool {} Pool;
    */
   void each_provider( Relation *rel )
   {
-    Id p, *pp;
+    Id p, pp;
     Pool *pool = $self;
     if (!$self->whatprovides)
       pool_createwhatprovides( $self );
@@ -240,7 +240,7 @@ typedef struct _Pool {} Pool;
   void each_provider( const char *name )
   {
 #if defined(SWIGRUBY)
-    Id p, *pp;
+    Id p, pp;
     Pool *pool = $self;
     if (!$self->whatprovides)
       pool_createwhatprovides($self);

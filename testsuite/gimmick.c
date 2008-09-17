@@ -30,7 +30,7 @@ int main(int argc, char **argv)
   Pool *pool;
   Repo *repo;
   Id id;
-  Id p, *pp;
+  Id p, pp;
   char *arch = 0;
   int debuglevel = 0;
   int nevr = 0;
