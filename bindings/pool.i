@@ -206,25 +206,25 @@ typedef struct _Pool {} Pool;
   int providers_count( const char *name )
   { int i = 0;
     Id v, *vp;
-    for (vp = pool_whatprovides($self, str2id( $self, name, 0)) ; (v = *vp++) != 0; )
+    for (vp = pool->whatprovidesdata + pool_whatprovides($self, str2id( $self, name, 0)) ; (v = *vp++) != 0; )
       ++i;
     return i;
   }
   int providers_count( Relation *rel )
   { int i = 0;
     Id v, *vp;
-    for (vp = pool_whatprovides($self, rel->id) ; (v = *vp++) != 0; )
+    for (vp = pool->whatprovidesdata + pool_whatprovides($self, rel->id) ; (v = *vp++) != 0; )
       ++i;
     return i;
   }
   XSolvable *providers_get( const char *name, int i)
   { Id *vp;
-    vp = pool_whatprovides($self, str2id( $self, name, 0));
+    vp = pool->whatprovidesdata + pool_whatprovides($self, str2id( $self, name, 0));
     return xsolvable_new( $self, *(vp + i));
   }
   XSolvable *providers_get( Relation *rel, int i)
   { Id *vp;
-    vp = pool_whatprovides($self, rel->id);
+    vp = pool->whatprovidesdata + pool_whatprovides($self, rel->id);
     return xsolvable_new( $self, *(vp + i));
   }
     %pythoncode %{
