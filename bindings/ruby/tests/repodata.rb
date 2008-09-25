@@ -2,7 +2,7 @@
 # Check Repodata of Repo
 #
 
-$:.unshift ".."
+$:.unshift "../../../build/bindings/ruby"
 
 # test Repodata
 require 'test/unit'
@@ -32,7 +32,7 @@ class RepodataTest < Test::Unit::TestCase
     
     puts "Repodata is at '#{repodata.location}' with #{repodata.keysize} keys"
     repodata.each_key { |k|
-      puts "  Key '#{k.name}' is #{k.type} with #{k.size} bytes"
+      puts "  Key '#{k.name}' is #{k.type}[#{k.type_id}] with #{k.size} bytes"
     }
     
     i = 0

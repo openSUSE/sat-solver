@@ -17,8 +17,12 @@ class TestSearchFunctions(unittest.TestCase):
     pool.set_arch("i686")
     repo = pool.add_solv( "os11-biarch.solv" )
     repo.set_name("test")
+    i = 0
     for d in repo.search("yast2", satsolver.SEARCH_STRING):
-      print d.solvable(), "matches 'yast2' in ", d.key(), ":  ", d.value()
+      print d.solvable(), "matches 'yast2' in ", d.keyname(), ":  ", d.value()
+      i = i + 1
+      if i > 10:
+          break;
     assert True
     
   def test_repo_search_files(self):
@@ -27,8 +31,12 @@ class TestSearchFunctions(unittest.TestCase):
     pool.set_arch("i686")
     repo = pool.add_solv( "os11-biarch.solv" )
     repo.set_name("test")
+    i = 0
     for d in repo.search("/usr/bin/python", satsolver.SEARCH_STRING|satsolver.SEARCH_FILES):
-      print d.solvable(), "matches '/usr/bin/python' in ", d.key(), ":  ", d.value()
+      print d.solvable(), "matches '/usr/bin/python' in ", d.keyname(), ":  ", d.value()
+      i = i + 1
+      if i > 10:
+          break;
     assert True
 
 if __name__ == '__main__':

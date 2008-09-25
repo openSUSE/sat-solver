@@ -22,7 +22,7 @@ typedef struct _Repodata {} Repodata;
   XRepokey *key( int i )
   {
     if (i >= 0 && i < $self->nkeys-1)
-      return xrepokey_new( $self, i+1 ); /* key 0 is reserved */
+      return xrepokey_new( $self->keys + i + 1, $self->repo, $self ); /* key 0 is reserved */
     return NULL;
   }
   
@@ -34,7 +34,7 @@ typedef struct _Repodata {} Repodata;
   {
     int i;
     for (i = 1; i < $self->nkeys; ++i ) {
-      rb_yield( SWIG_NewPointerObj((void*) xrepokey_new( $self, i ), SWIGTYPE_p__Repokey, 0) );
+      rb_yield( SWIG_NewPointerObj((void*) xrepokey_new( $self->keys + i, $self->repo, $self ), SWIGTYPE_p__Repokey, 0) );
     }
   }
 #endif

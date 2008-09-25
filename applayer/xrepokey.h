@@ -14,15 +14,24 @@
 /************************************************
  * XRepokey - eXternally visible Repokey
  *
- * we cannot use a Repokey pointer since it doesn't reference the Pool
+ * we cannot just use a Repokey pointer since it doesn't reference the Pool
+ * And key might be internal (no repodata) or external (defined in repodata)
+ * So we need
+ *  - the Repokey
+ *  - the Repo (it has the Pool backref, and probably many Repodatas)
+ *  - the Repodata (for externally defined Repokeys)
  */
 
 typedef struct _xrepokey {
+  Repokey *key;
+  Repo *repo;
   Repodata *repodata;
-  int keynum;
 } XRepokey;
 
-XRepokey *xrepokey_new( Repodata *repodata, int keynum );
+/* if repodata == 0, key is internal
+ * if repodata != 0, key is external (per repodata)
+ */
+XRepokey *xrepokey_new( Repokey *key, Repo *repo, Repodata *repodata );
 void xrepokey_free( XRepokey *xr );
 Repokey *xrepokey_repokey( const XRepokey *xr );
 

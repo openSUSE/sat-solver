@@ -26,10 +26,16 @@ typedef struct _Dataiterator {} Dataiterator;
    filename (if matched of course).  */
   %constant int SEARCH_FILES = SEARCH_FILES;
 
-  Dataiterator(Repo *repo, const char *match, int option, Id p = 0, Id keyname = 0)
+  /*
+   * Complete Dataiterator constructor, to be used via %python in Swig
+   */
+
+  Dataiterator(Repo *repo, const char *match, int option, XSolvable *xs = 0, XRepokey *key = 0)
   {
     Dataiterator *di = calloc(1, sizeof( Dataiterator ));
-    dataiterator_init(di, repo, p, keyname, match, option);
+    Solvable *s = 0;
+    if (xs) s = xsolvable_solvable(xs);
+    dataiterator_init(di, repo, s ? s - repo->pool->solvables : 0, key ? xrepokey_repokey(key)->name : 0, match, option);
     return di;
   }
   
@@ -40,16 +46,37 @@ typedef struct _Dataiterator {} Dataiterator;
     return xsolvable_new( $self->repo->pool, self->solvid );
   }
 
-  const char *key()
+  /*
+   * return corresponding Repokey, if defined
+   * internal attributes, like solvable.name, don't have an
+   * explicit Repokey
+   */
+  XRepokey *key()
+  {
+    return xrepokey_new($self->key, $self->repo, $self->data);
+  }
+
+  const char *keyname()
   {
     return id2str($self->repo->pool, $self->key->name);
   }
 
-  const char *value()
+#if defined(SWIGPYTHON)
+  PyObject *
+#endif
+#if defined(SWIGRUBY)
+  VALUE
+#endif
+#if defined(SWIGPERL)
+  SV *
+#endif
+    value()
   {
-    if ($self->key->type == REPOKEY_TYPE_ID)
-      return id2str($self->repo->pool, $self->kv.id );
-    return "<internal>";
+    Swig_Type value = dataiterator_value($self);
+#if defined(SWIGPYTHON)
+    Py_INCREF(value);
+#endif
+    return value;
   }
   
   int step()

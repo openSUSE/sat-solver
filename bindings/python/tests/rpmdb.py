@@ -27,6 +27,7 @@ class TestSequenceFunctions(unittest.TestCase):
     assert repo.size() > 0
     print repo.size(), " installed packages"
 
+    i = 0
     name = None
     for s in pool:
       print s

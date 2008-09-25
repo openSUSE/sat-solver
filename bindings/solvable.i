@@ -2,192 +2,6 @@
  * Solvable
  */
 
-%{
-
-/*
- * iterating over attributes of a (x)solvable ('yield' in Ruby)
- */
-
-static int
-xsolvable_each_attr_callback( Solvable *s, Repodata *data, Repokey *key, KeyValue *kv )
-{
-  static Swig_Type value = Swig_Null;
-
-  /*
-   * !! keep the order of case statements according to knownid.h !!
-   */
-
-  switch( key->type )
-    {
-      case REPOKEY_TYPE_VOID:
-        value = Swig_True;
-      break;
-      case REPOKEY_TYPE_CONSTANT:
-      case REPOKEY_TYPE_NUM:
-      case REPOKEY_TYPE_U32:
-        value = Swig_Int( key->size );
-      break;
-      case REPOKEY_TYPE_CONSTANTID:
-        value = Swig_Int( key->size );
-      break;
-      case REPOKEY_TYPE_ID:
-        if (data->localpool)
-	  value = Swig_String( stringpool_id2str( &data->spool, kv->id ) );
-	else
-	  value = Swig_String( id2str( data->repo->pool, kv->id ) );
-      break;
-      case REPOKEY_TYPE_DIR:
-        value = Swig_Null;
-      break;
-      case REPOKEY_TYPE_STR:
-        value = Swig_String( kv->str );
-      break;
-      case REPOKEY_TYPE_IDARRAY:
-        if (Swig_Test(value))
-	  value = Swig_Array();  /* create new Array on first call */
-        if (data->localpool)
-	  Swig_Append( value, Swig_String( stringpool_id2str( &data->spool, kv->id ) ) );
-	else
-	  Swig_Append( value, Swig_String( id2str( data->repo->pool, kv->id ) ) );
-	if (kv->eof)
-	  break;  /* yield ! */
-	return 0; /* continue loop */
-      break;
-      case REPOKEY_TYPE_REL_IDARRAY:
-        value = Swig_Null;
-      break;
-      case REPOKEY_TYPE_DIRSTRARRAY:
-        value = Swig_String( repodata_dir2str(data,kv->id, kv->str) );
-      break;
-      case REPOKEY_TYPE_DIRNUMNUMARRAY:
-        value = Swig_Array();
-	Swig_Append( value, Swig_String( repodata_dir2str(data, kv->id, 0) ) );
-	Swig_Append( value, Swig_Int(kv->num) );
-	Swig_Append( value, Swig_Int(kv->num2) );
-      break;
-      case REPOKEY_TYPE_MD5:
-      case REPOKEY_TYPE_SHA1:
-      case REPOKEY_TYPE_SHA256:
-        value = Swig_String( repodata_chk2str(data, key->type, (unsigned char *)kv->str));
-      break;
-      case REPOKEY_TYPE_COUNTED:
-	value = Swig_String( kv->eof == 0 ? "open" : kv->eof == 1 ? "next" : "close" );
-      break;
-      default:
-        value = Swig_Null;
-      break;
-    }
-
-  Swig_Type result = Swig_Array();
-  Swig_Append( result, Swig_String( id2str( data->repo->pool, key->name ) ) );
-  Swig_Append( result, value );
-#if defined(SWIGRUBY)
-  rb_yield( result );
-#endif
-
-  return 0;
-}
-
-
-/*
- * searching for an attribute of a (x)solvable ('yield' in Ruby)
- */
-
-static int
-xsolvable_attr_lookup_callback( void *cbdata, Solvable *s, Repodata *data, Repokey *key, KeyValue *kv )
-{
-  Swig_Type *result = (Swig_Type *)cbdata;
-
-  /*
-   * !! keep the order of case statements according to knownid.h !!
-   */
-
-  switch( key->type )
-    {
-      case REPOKEY_TYPE_VOID:
-        *result = Swig_True;
-      break;
-      case REPOKEY_TYPE_CONSTANT:
-        *result = Swig_Int( key->size );
-      break;
-      case REPOKEY_TYPE_CONSTANTID:
-        *result = Swig_Int( key->size );
-      break;
-      case REPOKEY_TYPE_ID:
-        if (data->localpool)
-	  *result = Swig_String( stringpool_id2str( &data->spool, kv->id ) );
-	else
-	  *result = Swig_String( id2str( data->repo->pool, kv->id ) );
-      break;
-      case REPOKEY_TYPE_NUM:
-        *result = Swig_Int( kv->num );
-      break;
-      case REPOKEY_TYPE_U32:
-        *result = Swig_Int( kv->num );
-      break;
-      case REPOKEY_TYPE_DIR:
-        *result = Swig_Null; /*FIXME*/
-      break;
-      case REPOKEY_TYPE_STR:
-        *result = Swig_String( kv->str );
-      break;
-      case REPOKEY_TYPE_IDARRAY:
-        if (Swig_Test(*result)) {
-	  *result = Swig_Array();  /* create new Array on first call */
-	}
-        if (data->localpool)
-	  Swig_Append( *result, Swig_String( stringpool_id2str( &data->spool, kv->id ) ) );
-	else
-	  Swig_Append( *result, Swig_String( id2str( data->repo->pool, kv->id ) ) );
-	return kv->eof?1:0;
-      break;
-      case REPOKEY_TYPE_REL_IDARRAY:
-        *result = Swig_Null; /*FIXME*/
-      break;
-      case REPOKEY_TYPE_DIRSTRARRAY:
-        if (Swig_Test(*result)) {
-	  *result = Swig_Array();  /* create new Array on first call */
-	}
-	Swig_Append( *result, Swig_String( repodata_dir2str(data, kv->id, kv->str) ) );
-	return kv->eof?1:0;
-      break;
-      case REPOKEY_TYPE_DIRNUMNUMARRAY:
-        *result = Swig_Null; /*FIXME*/
-      break;
-      case REPOKEY_TYPE_MD5:
-        *result = Swig_Null; /*FIXME*/
-      break;
-      case REPOKEY_TYPE_SHA1:
-        *result = Swig_Null; /*FIXME*/
-      break;
-      case REPOKEY_TYPE_SHA256:
-        *result = Swig_Null; /*FIXME*/
-      break;
-      default:
-        *result = Swig_Null;
-        return 0;
-      break;
-    }
-  return 1;
-}
-
-
-/*
- * searching for existance of an attribute of a (x)solvable ('yield' in Ruby)
- */
-
-static int
-xsolvable_attr_exists_callback( void *cbdata, Solvable *s, Repodata *data, Repokey *key, KeyValue *kv )
-{
-  Swig_Type *result = (Swig_Type *)cbdata;
-  *result = Swig_True;
-  /* stop looping immediately */
-  return 0;
-}
-
-%}
-
-
 %nodefault _Solvable;
 %rename(Solvable) _Solvable;
 typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
@@ -323,12 +137,11 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
    */
 
 
-#if defined(SWIGRUBY)
-
   /*
    * access attribute via []
    */
 
+#if defined(SWIGRUBY)
   /* %rename is rejected by swig for [] */
   %alias attr "[]";
   VALUE attr( VALUE attrname )
@@ -365,7 +178,12 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
       SWIG_exception( SWIG_ValueError, "No such attribute name" );
 
     Solvable *s = xsolvable_solvable($self);
-    repo_lookup( s, key, xsolvable_attr_lookup_callback, &result );
+    Dataiterator di;
+    dataiterator_init(&di, s->repo, $self->id, key, 0, SEARCH_NO_STORAGE_SOLVABLE);
+    if (dataiterator_step(&di))
+    {
+      result = dataiterator_value( &di );
+    }
 
 #if defined(SWIGPYTHON) || defined(SWIGPERL)/* needed for SWIG_Exception */
 fail:
@@ -380,15 +198,28 @@ fail:
    * iterate over all attributes
    */
 
+#if defined(SWIGRUBY)
   void each_attr()
   {
     Solvable *s = xsolvable_solvable($self);
     Dataiterator di;
     dataiterator_init(&di, s->repo, $self->id, 0, 0, SEARCH_NO_STORAGE_SOLVABLE);
+    VALUE value;
     while (dataiterator_step(&di))
-      xsolvable_each_attr_callback( s, di.data, di.key, &di.kv );
+    {
+      value = dataiterator_value ( &di );
+      rb_yield( value );
+    }
   }
-
+#endif
+#if defined(SWIGPYTHON)
+    %pythoncode %{
+        def attrs(self):
+          d = Dataiterator(self.repo(),"",SEARCH_NO_STORAGE_SOLVABLE,self)
+          while d.step():
+            yield d.value()
+    %}
+#endif
 
   /*
    * check existance of attribute
@@ -427,7 +258,10 @@ fail:
       key = str2id( $self->pool, name, 0);
       if (key != ID_NULL) {
         Solvable *s = xsolvable_solvable($self);
-	repo_lookup( s, key, xsolvable_attr_exists_callback, &result );
+	Dataiterator di;
+	dataiterator_init(&di, s->repo, $self->id, key, 0, SEARCH_NO_STORAGE_SOLVABLE);
+	if (dataiterator_step(&di))
+	  result = Swig_True;
       }
     }
 #if defined(SWIGPYTHON)

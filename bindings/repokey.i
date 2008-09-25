@@ -7,6 +7,24 @@
 typedef struct _Repokey {} XRepokey; /* expose XRepokey as 'Repokey' */
 
 %extend XRepokey {
+
+%constant int REPOKEY_TYPE_VOID = REPOKEY_TYPE_VOID;
+%constant int REPOKEY_TYPE_CONSTANT = REPOKEY_TYPE_CONSTANT;
+%constant int REPOKEY_TYPE_CONSTANTID = REPOKEY_TYPE_CONSTANTID;
+%constant int REPOKEY_TYPE_ID = REPOKEY_TYPE_ID;
+%constant int REPOKEY_TYPE_NUM = REPOKEY_TYPE_NUM;
+%constant int REPOKEY_TYPE_U32 = REPOKEY_TYPE_U32;
+%constant int REPOKEY_TYPE_DIR = REPOKEY_TYPE_DIR;
+%constant int REPOKEY_TYPE_STR = REPOKEY_TYPE_STR;
+%constant int REPOKEY_TYPE_IDARRAY = REPOKEY_TYPE_IDARRAY;
+%constant int REPOKEY_TYPE_REL_IDARRAY = REPOKEY_TYPE_REL_IDARRAY;
+%constant int REPOKEY_TYPE_DIRSTRARRAY = REPOKEY_TYPE_DIRSTRARRAY;
+%constant int REPOKEY_TYPE_DIRNUMNUMARRAY = REPOKEY_TYPE_DIRNUMNUMARRAY;
+%constant int REPOKEY_TYPE_MD5 = REPOKEY_TYPE_MD5;
+%constant int REPOKEY_TYPE_SHA1 = REPOKEY_TYPE_SHA1;
+%constant int REPOKEY_TYPE_SHA256 = REPOKEY_TYPE_SHA256;
+%constant int REPOKEY_TYPE_COUNTED = REPOKEY_TYPE_COUNTED;
+
   /* no explicit constructor, Repokey is embedded in Repodata */
 
   ~XRepokey()
@@ -18,41 +36,95 @@ typedef struct _Repokey {} XRepokey; /* expose XRepokey as 'Repokey' */
     Repokey *key = xrepokey_repokey( $self );
     return my_id2str( $self->repodata->repo->pool, key->name );
   }
-  /* type of key */
-#if defined(SWIGRUBY)
-  VALUE type()
-  {
-    Repokey *key = xrepokey_repokey( $self );
-    VALUE type = Qnil;
-    switch( key->type )
-    {
-      case REPOKEY_TYPE_VOID: type = rb_cTrueClass; break;
-      case REPOKEY_TYPE_CONSTANTID: type = rb_cString; break;
-      case REPOKEY_TYPE_CONSTANT: type = rb_cInteger; break;
-      case REPOKEY_TYPE_ID: type = rb_cString; break;
-      case REPOKEY_TYPE_IDARRAY: type = rb_cArray; break;
-      case REPOKEY_TYPE_STR: type = rb_cString; break;
-      case REPOKEY_TYPE_U32: type = rb_cInteger; break;
-      case REPOKEY_TYPE_REL_IDARRAY: type = rb_cArray; break;
-      case REPOKEY_TYPE_DIR: type = rb_cDir; break;
-      case REPOKEY_TYPE_DIRNUMNUMARRAY: type = rb_cArray; break;
-      case REPOKEY_TYPE_DIRSTRARRAY: type = rb_cArray; break;
-      case REPOKEY_TYPE_NUM: type = rb_cNumeric; break;
-    }
-    return type;
-  }
-#else
-  int type()
+  /* type id of key */
+  int type_id()
   {
     Repokey *key = xrepokey_repokey( $self );
     return key->type;
   }
+  
+  /* type of key */
+#if defined(SWIGPYTHON)
+PyTypeObject *
 #endif
+#if defined(SWIGRUBY)
+VALUE
+#endif
+#if defined(SWIGPERL)
+SV *
+#endif
+    type()
+  {
+    Repokey *key = xrepokey_repokey( $self );
+    Swig_Type_Type type = Swig_Type_Null;
+    switch( key->type )
+    {
+      case REPOKEY_TYPE_VOID:
+        type = Swig_Type_Bool;
+	break;
+      case REPOKEY_TYPE_CONSTANTID:
+        type = Swig_Type_String;
+	break;
+      case REPOKEY_TYPE_CONSTANT:
+        type = Swig_Type_Int;
+	break;
+      case REPOKEY_TYPE_ID:
+        type = Swig_Type_String;
+	break;
+      case REPOKEY_TYPE_IDARRAY:
+        type = Swig_Type_Array;
+	break;
+      case REPOKEY_TYPE_STR:
+        type = Swig_Type_String;
+	break;
+      case REPOKEY_TYPE_U32:
+        type = Swig_Type_Int;
+	break;
+      case REPOKEY_TYPE_REL_IDARRAY:
+        type = Swig_Type_Array;
+	break;
+      case REPOKEY_TYPE_DIR:
+        type = Swig_Type_Directory;
+	break;
+      case REPOKEY_TYPE_DIRNUMNUMARRAY:
+        type = Swig_Type_Array;
+	break;
+      case REPOKEY_TYPE_DIRSTRARRAY:
+        type = Swig_Type_Array;
+	break;
+      case REPOKEY_TYPE_NUM:
+        type = Swig_Type_Number;
+	break;
+      case REPOKEY_TYPE_MD5:
+        type = Swig_Type_String;
+	break;
+      case REPOKEY_TYPE_SHA1:
+        type = Swig_Type_String;
+	break;
+      case REPOKEY_TYPE_SHA256:
+        type = Swig_Type_String;
+	break;
+      case REPOKEY_TYPE_COUNTED:
+        type = Swig_Type_Number;
+	break;
+    }
+    return type;
+  }
   /* size of key */
   int size()
   {
     Repokey *key = xrepokey_repokey( $self );
     return key->size;
+  }
+#if defined(SWIGRUBY)
+  %rename("to_s") string();
+#endif
+#if defined(SWIGPYTHON)
+  %rename("__str__") string();
+#endif
+  const char *string()
+  {
+    return "<Repokey>";
   }
 }
 

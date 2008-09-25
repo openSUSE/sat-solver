@@ -8,7 +8,7 @@
 /************************************************
  * XRepokey - eXternally visible Repokey
  *
- * we cannot use a Repokey pointer since it doesn't reference the Pool
+ * see xrepokey.h for docs.
  */
 
 #include <stdlib.h>
@@ -17,11 +17,12 @@
 #include "xrepokey.h"
 
 XRepokey *
-xrepokey_new( Repodata *repodata, int keynum )
+xrepokey_new( Repokey *key, Repo *repo, Repodata *repodata )
 {
   XRepokey *xrepokey = (XRepokey *)malloc( sizeof( XRepokey ));
+  xrepokey->key = key;
+  xrepokey->repo = repo;
   xrepokey->repodata = repodata;
-  xrepokey->keynum = keynum;
 
   return xrepokey;
 }
@@ -37,6 +38,6 @@ xrepokey_free( XRepokey *xr )
 Repokey *
 xrepokey_repokey( const XRepokey *xr )
 {
-  return xr->repodata->keys + xr->keynum;
+  return xr->key;
 }
 

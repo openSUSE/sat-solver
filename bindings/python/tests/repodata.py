@@ -33,7 +33,7 @@ class TestSequenceFunctions(unittest.TestCase):
     
     print "Repodata is at ", repodata.location(), " with ", repodata.keysize(), " keys"
     for k in repodata.keys():
-        print "  Key ", k.name(), " is ", k.type(), " with ", k.size(), " bytes"
+        print "  Key ", k.name(), " is ", k.type().__str__(), "[", k.type_id(), "] with ", k.size(), " bytes"
     
     i = 0;
     for s in repo:
