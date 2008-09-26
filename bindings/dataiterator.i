@@ -30,12 +30,12 @@ typedef struct _Dataiterator {} Dataiterator;
    * Complete Dataiterator constructor, to be used via %python in Swig
    */
 
-  Dataiterator(Repo *repo, const char *match, int option, XSolvable *xs = 0, XRepokey *key = 0)
+  Dataiterator(Repo *repo, const char *match, int option, XSolvable *xs = 0, const char *keyname = 0)
   {
     Dataiterator *di = calloc(1, sizeof( Dataiterator ));
     Solvable *s = 0;
     if (xs) s = xsolvable_solvable(xs);
-    dataiterator_init(di, repo, s ? s - repo->pool->solvables : 0, key ? xrepokey_repokey(key)->name : 0, match, option);
+    dataiterator_init(di, repo, s ? s - repo->pool->solvables : 0, keyname ? str2id(repo->pool, keyname, 0) : 0, match, option);
     return di;
   }
   

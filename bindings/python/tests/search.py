@@ -32,7 +32,7 @@ class TestSearchFunctions(unittest.TestCase):
     repo = pool.add_solv( "os11-biarch.solv" )
     repo.set_name("test")
     i = 0
-    for d in repo.search("/usr/bin/python", satsolver.SEARCH_STRING|satsolver.SEARCH_FILES):
+    for d in repo.search("/usr/bin/python", satsolver.SEARCH_STRING|satsolver.SEARCH_FILES, None, "solvable:filelist"):
       print d.solvable(), "matches '/usr/bin/python' in ", d.keyname(), ":  ", d.value()
       i = i + 1
       if i > 10:
