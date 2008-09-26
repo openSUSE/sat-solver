@@ -16,7 +16,7 @@ FIND_PACKAGE(PythonInterp REQUIRED)
 EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} -c "from sys import stdout; from distutils import sysconfig; stdout.write(sysconfig.get_python_lib())" OUTPUT_VARIABLE PYTHON_LIB_DIR)
 
 IF (NOT PYTHON_SITEDIR)
-SET (PYTHON_SITEDIR ${PYTHON_LIB_DIR}/site-packages)
+  SET (PYTHON_SITEDIR ${PYTHON_LIB_DIR})
 ENDIF (NOT PYTHON_SITEDIR)
 
 MESSAGE(STATUS "Python executable: ${PYTHON_EXECUTABLE}")
