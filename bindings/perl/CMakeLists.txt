@@ -22,7 +22,7 @@ MESSAGE(STATUS "Perl executable: ${PERL_EXECUTABLE}")
 MESSAGE(STATUS "Perl core dir: ${PERL_CORE_DIR}")
 MESSAGE(STATUS "Perl vendor arch dir: ${PERL_VENDORDIR}")
 
-ADD_DEFINITIONS( ${PERL_CCFLAGS} -Wno-unused -Wno-error )
+ADD_DEFINITIONS( ${PERL_CCFLAGS} -Wno-unused -Wno-error -Wno-nonnull)
 LINK_DIRECTORIES( ${PERL_CORE_DIR} )
 
 if(COMMAND cmake_policy)
