@@ -43,7 +43,7 @@ typedef struct _Dataiterator {} Dataiterator;
 
   XSolvable *solvable()
   {
-    return xsolvable_new( $self->repo->pool, self->solvid );
+    return xsolvable_new( $self->repo->pool, self->entry );
   }
 
   /*

@@ -14,10 +14,6 @@ typedef struct _Repodata {} Repodata;
   int keysize()
   { return $self->nkeys-1; } /* key 0 is reserved */
 
-  /* (File) location of this Repodata, nil if embedded */
-  const char *location()
-  { return $self->location; }
-
   /* access Repokey by index */
   XRepokey *key( int i )
   {
