@@ -16,7 +16,7 @@ typedef struct _Dataiterator {} Dataiterator;
 
   %constant int SEARCH_NOCASE = SEARCH_NOCASE;
   %constant int SEARCH_NO_STORAGE_SOLVABLE = SEARCH_NO_STORAGE_SOLVABLE;
-  %constant int SEARCH_EXTRA = SEARCH_EXTRA;
+  %constant int SEARCH_SUB = SEARCH_SUB;
   %constant int SEARCH_ALL_REPOS = SEARCH_ALL_REPOS;
   %constant int SEARCH_SKIP_KIND = SEARCH_SKIP_KIND;
 
@@ -39,7 +39,7 @@ typedef struct _Dataiterator {} Dataiterator;
     return di;
   }
   
-  ~Dataiterator() { free( $self ); }
+  ~Dataiterator() { dataiterator_free($self); free( $self ); }
 
   XSolvable *solvable()
   {
@@ -84,11 +84,6 @@ typedef struct _Dataiterator {} Dataiterator;
     return dataiterator_step( $self );
   }
   
-  int match(const char *value, int flags)
-  {
-    return dataiterator_match($self, flags, value);
-  }
-
   void skip_attr()
   {
     dataiterator_skip_attribute($self);

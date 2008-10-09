@@ -23,7 +23,8 @@ typedef struct _Repokey {} XRepokey; /* expose XRepokey as 'Repokey' */
 %constant int REPOKEY_TYPE_MD5 = REPOKEY_TYPE_MD5;
 %constant int REPOKEY_TYPE_SHA1 = REPOKEY_TYPE_SHA1;
 %constant int REPOKEY_TYPE_SHA256 = REPOKEY_TYPE_SHA256;
-%constant int REPOKEY_TYPE_COUNTED = REPOKEY_TYPE_COUNTED;
+%constant int REPOKEY_TYPE_FIXARRAY = REPOKEY_TYPE_FIXARRAY;
+%constant int REPOKEY_TYPE_FLEXARRAY = REPOKEY_TYPE_FLEXARRAY;
 
   /* no explicit constructor, Repokey is embedded in Repodata */
 
@@ -104,7 +105,10 @@ SV *
       case REPOKEY_TYPE_SHA256:
         type = Swig_Type_String;
 	break;
-      case REPOKEY_TYPE_COUNTED:
+      case REPOKEY_TYPE_FIXARRAY:
+        type = Swig_Type_Number;
+	break;
+      case REPOKEY_TYPE_FLEXARRAY:
         type = Swig_Type_Number;
 	break;
     }

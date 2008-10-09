@@ -215,8 +215,9 @@ dataiterator_value( Dataiterator *di )
 	else
 	  fprintf(stderr, "REPOKEY_TYPE_{MD5,SHA1,SHA256}: without repodata\n");
       break;
-      case REPOKEY_TYPE_COUNTED:
-	value = Swig_String( di->kv.eof == 0 ? "open" : di->kv.eof == 1 ? "next" : "close" );
+      case REPOKEY_TYPE_FIXARRAY:
+      case REPOKEY_TYPE_FLEXARRAY:
+	value = Swig_String( di->kv.eof == 0 ? "element" : "sentinel" );
       break;
       default:
         fprintf(stderr, "Unhandled type %d\n", di->key->type);
