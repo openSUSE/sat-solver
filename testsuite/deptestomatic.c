@@ -242,6 +242,7 @@ typedef struct _parsedata {
   int allowuninstall;            /* 0/1, if solver should remove installed package for solution */ 
   int allowvirtualconflicts;     /* 0/1, if conflicts specify package names or package provides */
   int allowarchchange;           /* 0/1, if packages can change architecture */
+  int allowvendorchange;         /* 0/1, if packages can change vendor */
   int dosplitprovides;           /* 0/1, if splitprovides should be looked at */
   int dontinstallrecommended;    /* 0/1, if recommends should be ignored */
   int ignorealreadyrecommended;  /* 0/1, if old recommends should be ignored */
@@ -671,7 +672,7 @@ add_repo( Parsedata *pd, const char *name, const char *file )
   if (verbose) fprintf( stdout, "%s:%s -> %s", name, file, solvname );
   
   Repo *s = repo_create(pd->pool, name);
-  FILE *fp = fopen( solvname, "r" );
+  FILE *fp = fopen(solvname, "r");
   if (!fp)
     {
       if (!access(file, R_OK))
@@ -687,7 +688,7 @@ add_repo( Parsedata *pd, const char *name, const char *file )
 	  perror(file);
 	  return NULL;
 	}
-      repo_add_helix(s, fp);
+      repo_add_helix(s, fp, 0);
       fclose(fp);
     }
   else
@@ -1365,7 +1366,8 @@ printf("hardware %s\n", dir);
       if (val && (!strcmp(val, "no") || !strcmp(val, "false")))
         pd->distupgrade_removeunsupported = 0;
       pd->updatesystem = 1;
-      pd->allowarchchange = 1;
+      pd->allowarchchange = 0;
+      pd->allowvendorchange = 1;
       //pd->fixsystem = 1;
       //pd->allowuninstall = 1;
       pd->allowdowngrade = 1;
@@ -1431,7 +1433,7 @@ rc_printdownloadsize(struct solver *solv)
       s = solv->pool->solvables + p;
       if (!s->repo || (solv->installed && s->repo == solv->installed))
 	continue;
-      d += repo_lookup_num(s, SOLVABLE_DOWNLOADSIZE);
+      d += solvable_lookup_num(s, SOLVABLE_DOWNLOADSIZE, 0);
     }
   printf("download size: %d\n\n", d);
 }
@@ -1484,6 +1486,7 @@ endElement( void *userData, const char *name )
       solv->allowdowngrade = pd->allowdowngrade;
       solv->allowuninstall = pd->allowuninstall;
       solv->allowarchchange = pd->allowarchchange;
+      solv->allowvendorchange = pd->allowvendorchange;
       solv->dosplitprovides = pd->dosplitprovides;
       solv->dontinstallrecommended = pd->dontinstallrecommended;
       solv->ignorealreadyrecommended = pd->ignorealreadyrecommended;

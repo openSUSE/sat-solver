@@ -85,12 +85,13 @@ static FILE *
 load_callback(Pool *pool, Repodata *data, void *cbdata)
 {
   FILE *fp = 0;
-  if (data->location)
+  const char *location = repodata_lookup_str(data, 0, REPOSITORY_LOCATION);
+  if (location)
     {
-      printf("loading %s\n", data->location);
-      fp = fopen (data->location, "r");
+      printf("loading %s\n", location);
+      fp = fopen (location, "r");
       if (!fp)
-        perror(data->location);
+        perror(location);
     }
   return fp;
 }
