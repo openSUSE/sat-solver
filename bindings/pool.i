@@ -11,10 +11,11 @@ static FILE *
 poolloadcallback( Pool *pool, Repodata *data, void *vdata )
 {
   FILE *fp = 0;
-  if (data->location) {
-    fp = fopen( data->location, "r" );
+  const char *location = repodata_lookup_str(data, REPOENTRY_META, REPOSITORY_LOCATION);
+  if (location) {
+    fp = fopen(location, "r");
     if (!fp)
-      fprintf( stderr, "*** failed reading %s\n", data->location );
+      fprintf( stderr, "*** failed reading %s\n", location );
   }
   return fp;
 }

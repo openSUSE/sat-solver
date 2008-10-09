@@ -85,7 +85,7 @@ static FILE *
 load_callback(Pool *pool, Repodata *data, void *cbdata)
 {
   FILE *fp = 0;
-  const char *location = repodata_lookup_str(data, 0, REPOSITORY_LOCATION);
+  const char *location = repodata_lookup_str(data, REPOENTRY_META, REPOSITORY_LOCATION);
   if (location)
     {
       printf("loading %s\n", location);
