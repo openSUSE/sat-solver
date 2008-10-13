@@ -11,7 +11,7 @@ static FILE *
 poolloadcallback( Pool *pool, Repodata *data, void *vdata )
 {
   FILE *fp = 0;
-  const char *location = repodata_lookup_str(data, REPOENTRY_META, REPOSITORY_LOCATION);
+  const char *location = repodata_lookup_str(data, SOLVID_META, REPOSITORY_LOCATION);
   if (location) {
     fp = fopen(location, "r");
     if (!fp)
