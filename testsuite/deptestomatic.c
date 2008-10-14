@@ -1366,7 +1366,7 @@ printf("hardware %s\n", dir);
       if (val && (!strcmp(val, "no") || !strcmp(val, "false")))
         pd->distupgrade_removeunsupported = 0;
       pd->updatesystem = 1;
-      pd->allowarchchange = 0;
+      pd->allowarchchange = 1;
       pd->allowvendorchange = 1;
       //pd->fixsystem = 1;
       //pd->allowuninstall = 1;
