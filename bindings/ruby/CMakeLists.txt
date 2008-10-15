@@ -2,7 +2,7 @@
 # CMakeLists.txt for bindings/ruby
 #
 ENABLE_TESTING()
-ADD_SUBDIRECTORY(tests)
+#ADD_SUBDIRECTORY(tests)
 
 # SWIG_OUPUT is per-target
 
