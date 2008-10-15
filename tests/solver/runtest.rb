@@ -492,9 +492,9 @@ opts.each do |opt, arg|
       end
     end
 
-$deptestomatic = File.join( $builddir, "testsuite", "deptestomatic" )
+$deptestomatic = File.join( $builddir, "tests", "solver", "deptestomatic" )
 raise "Cannot find '#{$deptestomatic}' executable. Please use -b to pass builddir path" unless File.executable?( $deptestomatic )
-$readmefile=File.join( $sourcedir, "testsuite", "README.FAILS")
+$readmefile=File.join( $sourcedir, "tests", "solver", "README.FAILS")
 raise "Cannot find '#{$readmefile}' file. Please use -s to pass sourcedir path" unless File.readable?( $readmefile )
 
 IO.foreach( $readmefile ) { |line|
