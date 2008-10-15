@@ -1,4 +1,15 @@
 -------------------------------------------------------------------
+Wed Oct 15 18:16:59 CEST 2008 - mls@suse.de
+
+- repo2solv.sh:
+  * add support for patterns [bnc#419947]
+  * add '-o' option [bnc#420046]
+  * better quoting of filenames
+  * fix tiny bug in rpms2solv case
+- also check obsoletes when disabling update rules
+- 0.9.5
+
+-------------------------------------------------------------------
 Fri Aug  1 18:54:41 CEST 2008 - dmacvicar@suse.de
 
 - insert the checksum in rpmmd generated solv files
