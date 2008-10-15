@@ -17,5 +17,5 @@ install(TARGETS
    DESTINATION ${BIN_INSTALL_DIR} )
 
 ENABLE_TESTING()
-ADD_TEST(testsuite ruby ${CMAKE_CURRENT_SOURCE_DIR}/runtest.rb -b ${CMAKE_BINARY_DIR} -s ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/data.libzypp/basic-exercises )
+ADD_TEST(solver_testsuite ruby ${CMAKE_CURRENT_SOURCE_DIR}/runtest.rb -b ${CMAKE_BINARY_DIR} -s ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/data.libzypp/basic-exercises )
 
