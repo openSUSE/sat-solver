@@ -24,6 +24,11 @@ LANG=C
 unset CDPATH
 parser_options=${PARSER_OPTIONS:-}
 
+if test "$1" = "-o" ; then
+  exec > "$2"
+  shift
+  shift
+fi
 
 dir="$1"
 cd "$dir" || exit 1
@@ -31,6 +36,7 @@ if test -d repodata; then
   cd repodata || exit 2
 
   # This contains a primary.xml* and maybe patches
+  cmd=
   for i in primary.xml*; do
     case $i in
       *.gz) cmd="gzip -dc" ;;
@@ -44,12 +50,31 @@ if test -d repodata; then
   if test -n "$cmd"; then
     # we have some primary.xml*
     primfile=`mktemp` || exit 3
-    $cmd $i | rpmmd2solv $parser_options > $primfile || exit 4
+    $cmd "$i" | rpmmd2solv $parser_options > $primfile || exit 4
+  fi
+
+  # check for patterns
+  cmd=
+  patternfile="/nonexist"
+  for i in patterns.xml*; do
+    test -s "$i" || continue
+    case $i in
+      *.gz) cmd='gzip -dc' ;;
+      *.bz2) cmd='bzip2 -dc' ;;
+      *) cmd='cat' ;;
+    esac
+    break
+  done
+  if test -n "$cmd"; then
+    patternfile=`mktemp` || exit 3
+    $cmd "$i" | rpmmd2solv $parser_options > $patternfile || exit 4
   fi
 
   # This contains a updateinfo.xml* and maybe patches
   if test -f updateinfo.xml || test -f updateinfo.xml.gz || test -f updateinfo.xml.bz2 ; then
+      cmd=
       for i in updateinfo.xml*; do
+	  test -s "$i" || continue
           case $i in
               *.gz) cmd="gzip -dc" ;;
               *.bz2) cmd="bzip2 -dc" ;;
@@ -97,13 +122,16 @@ if test -d repodata; then
       if test -n "$cmd"; then
       # we have some deltainfo.xml*
           deltainfofile=`mktemp` || exit 3
-          $cmd $i | deltainfoxml2solv $parser_options > $deltainfofile || exit 4
+          $cmd "$i" | deltainfoxml2solv $parser_options > $deltainfofile || exit 4
       fi
   fi
 
   # Now merge primary, patches, updateinfo, and deltainfo
   if test -s $primfile; then
     m_primfile=$primfile
+  fi
+  if test -s $patternfile; then
+    m_patternfile=$patternfile
   fi
   if test -s $patchfile; then
     m_patchfile=$patchfile
@@ -114,8 +142,8 @@ if test -d repodata; then
   if test -s $deltainfofile; then
     m_deltainfofile=$deltainfofile
   fi
-  mergesolv $m_primfile $m_patchfile $m_updateinfofile $m_deltainfofile
-  rm -f $primfile $patchfile $updateinfofile $deltainfofile
+  mergesolv $m_primfile $m_patternfile $m_patchfile $m_updateinfofile $m_deltainfofile
+  rm -f $primfile $patternfile $patchfile $updateinfofile $deltainfofile
 
 elif test_susetags; then
   olddir=`pwd`
@@ -179,7 +207,7 @@ elif test_susetags; then
 	*) 
 	  suff=${name#packages.}
 	  echo "=Lan: $suff"
-	  eval "$prog '$i'" ;;
+	  $prog "$i" ;;
       esac
     done
 
@@ -188,11 +216,11 @@ elif test_susetags; then
 else
   rpms=''
   for r in *.rpm ; do
-    rpms="$rpms$r
-"
+    test -e "$r" && rpms="$rpms
+$r"
   done
   if test -n "$rpms" ; then
-      echo "$rpms" | rpms2solv -m -
+      echo "${rpms#?}" | rpms2solv -m -
   else
       exit 1
   fi
