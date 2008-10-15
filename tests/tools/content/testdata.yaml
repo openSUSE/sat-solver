@@ -17,49 +17,13 @@ os11-beta3-dvd-x86_64:
   "product:distproduct": openSUSE-DVD
   "product:distversion": 11.0-Beta3
   "product:type": base
-  "product:relnotesurl": http://www.suse.com/relnotes/i386/openSUSE/11.0/release-notes.rpm
-# - not parsed -  arch.x86_64: x86_64 i686 i586 i486 i386 noarch
-# - not parsed -  defaultbase: x86_64
-# - not parsed -  linguas:
-#    0: cs
-#    1: da
-#    2: de
-#    3: en
-#    4: en_GB
-#    5: en_US
-#    6: es
-#    7: fi
-#    8: fr
-#    9: hu
-#    10: it
-#    11: ja
-#    12: nb
-#    13: nl
-#    14: pl
-#    15: pt
-#    16: pt_BR
-#    17: ru
-#    18: sv
-#    19: zh
-#    20: zh_CN
-#    21: zh_TW
   "product:shortlabel": oS 11.0
   "solvable:summary": openSUSE 11.0           # aka 'label'
-  "solvable:summary:de": openSUSE 11.0        # aka 'label.de'
-# - not product related -  descrdir: suse/setup/descr
-# - not product related -  datadir: suse
   "product:flags": update
-# - not parsed -  language: en_US
 
 os11_1-new_product-dvd-i586:
  0:
-  contentstyle: 11
-  "product:name": openSUSE
-  "product:version": 11.0.42
-  "product:references": openSUSE-release = 11.0.42
-  "product:distribution": code11
-  "product:flavor": DVD
-  "solvable:vendor": SUSE LINUX Products GmbH, Nuernberg, Germany
-  "product:relnotesurl": http://www.suse.com/relnotes/i386/openSUSE/11.1/release-notes-openSUSE.rpm
-  "solvable:summary": openSUSE 11.0.42
-  "solvable:summary:de": openSUSE 11.0.42
+  name: product:openSUSE
+  evr: 11.1
+  "solvable:distribution": openSUSE
+  "solvable:summary": The openSUSE Distribution

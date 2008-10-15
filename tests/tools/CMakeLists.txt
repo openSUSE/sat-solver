@@ -4,4 +4,6 @@
 
 ENABLE_TESTING()
 ADD_SUBDIRECTORY(content)
-ADD_SUBDIRECTORY(updateinfo)
+
+# disable until bindings are fixed
+#ADD_SUBDIRECTORY(updateinfo)
