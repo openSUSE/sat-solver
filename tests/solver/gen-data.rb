@@ -32,7 +32,7 @@ private
     when /-test/
       "cat"
     else
-      "|../../tools/helix2solv"
+      "|../../build/tools/helix2solv"
     end
   end
   
