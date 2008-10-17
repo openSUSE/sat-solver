@@ -2,8 +2,6 @@ ENABLE_TESTING()
 # make check framework headers available
 # check.h is generated in build dir
 
-FIND_PACKAGE(Check REQUIRED)
-
 MACRO(ADD_TESTS)
   FOREACH( loop_var ${ARGV} )
     #SET_SOURCE_FILES_PROPERTIES( ${loop_var}_test.c "" )
