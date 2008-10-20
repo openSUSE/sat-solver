@@ -215,7 +215,7 @@ fail:
 #if defined(SWIGPYTHON)
     %pythoncode %{
         def attrs(self):
-          d = Dataiterator(self.repo(),"",SEARCH_NO_STORAGE_SOLVABLE,self)
+          d = Dataiterator(None, self.repo(),"",SEARCH_NO_STORAGE_SOLVABLE,self)
           while d.step():
             yield d.value()
     %}
@@ -253,7 +253,7 @@ fail:
 #endif
 
     if (name) {
-      /* key existing in pool ? */
+      /* key existing in pool/repo for this solvable ? */
       Id key;
       key = str2id( $self->pool, name, 0);
       if (key != ID_NULL) {
