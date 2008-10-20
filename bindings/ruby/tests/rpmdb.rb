@@ -27,7 +27,7 @@ class RpmdbTest < Test::Unit::TestCase
     i = 1
     name = nil
     pool.each { |s|
-      puts s
+      puts "#{s}: #{s.vendor}"
       name = s.name if i == 7
       i += 1
       break if i > 10
