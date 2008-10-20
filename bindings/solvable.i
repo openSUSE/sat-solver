@@ -76,19 +76,19 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
         || (s1->name != s2->name))
       {
         n1 = id2str( $self->pool, s1->name );
-	n2 = id2str( xs->pool, s2->name );
-	i = strcmp( n1, n2 );
+        n2 = id2str( xs->pool, s2->name );
+        i = strcmp( n1, n2 );
       }
     if (i == 0) /* names are equal */
       {
         if ($self->pool == xs->pool)
-	  i = evrcmp( $self->pool, s1->evr, s2->evr, EVRCMP_COMPARE );
-	else
-	{
+          i = evrcmp( $self->pool, s1->evr, s2->evr, EVRCMP_COMPARE );
+        else
+        {
           n1 = id2str( $self->pool, s1->evr );
-	  n2 = id2str( xs->pool, s2->evr );
-	  i = strcmp( n1, n2 );
-	}
+          n2 = id2str( xs->pool, s2->evr );
+          i = strcmp( n1, n2 );
+        }
       }
     return i;
   }
@@ -215,7 +215,7 @@ fail:
 #if defined(SWIGPYTHON)
     %pythoncode %{
         def attrs(self):
-          d = Dataiterator(None, self.repo(),"",SEARCH_NO_STORAGE_SOLVABLE,self)
+          d = Dataiterator(self.repo().pool(), self.repo(),"",SEARCH_NO_STORAGE_SOLVABLE,self)
           while d.step():
             yield d.value()
     %}
@@ -258,10 +258,10 @@ fail:
       key = str2id( $self->pool, name, 0);
       if (key != ID_NULL) {
         Solvable *s = xsolvable_solvable($self);
-	Dataiterator di;
-	dataiterator_init(&di, s->repo->pool, s->repo, $self->id, key, 0, SEARCH_NO_STORAGE_SOLVABLE);
-	if (dataiterator_step(&di))
-	  result = Swig_True;
+        Dataiterator di;
+        dataiterator_init(&di, s->repo->pool, s->repo, $self->id, key, 0, SEARCH_NO_STORAGE_SOLVABLE);
+        if (dataiterator_step(&di))
+          result = Swig_True;
       }
     }
 #if defined(SWIGPYTHON)
