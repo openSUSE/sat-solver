@@ -83,8 +83,8 @@ SWIGINTERNINLINE SV *SWIG_FromCharPtr(const char *cptr);
 #define Swig_Type SV *
 #define Swig_Int(x) SWIG_From_long(x) /* should be SWIG_From_long(x), but Swig declares it too late. FIXME */
 #define Swig_String(x) SWIG_FromCharPtr(x) /* SWIG_FromCharPtr(x), also */
-#define Swig_Array(x) NULL
-#define Swig_Append(x,y) av_create_and_push(&x, y)
+#define Swig_Array(x) (SV *)newAV()
+#define Swig_Append(x,y) av_push((AV *)x, y)
 /* FIXME: perl types */
 #define Swig_Type_Type SV *
 #define Swig_Type_Null NULL
