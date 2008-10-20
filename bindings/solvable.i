@@ -179,7 +179,7 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
 
     Solvable *s = xsolvable_solvable($self);
     Dataiterator di;
-    dataiterator_init(&di, s->repo, $self->id, key, 0, SEARCH_NO_STORAGE_SOLVABLE);
+    dataiterator_init(&di, s->repo->pool, s->repo, $self->id, key, 0, SEARCH_NO_STORAGE_SOLVABLE);
     if (dataiterator_step(&di))
     {
       result = dataiterator_value( &di );
@@ -203,7 +203,7 @@ fail:
   {
     Solvable *s = xsolvable_solvable($self);
     Dataiterator di;
-    dataiterator_init(&di, s->repo, $self->id, 0, 0, SEARCH_NO_STORAGE_SOLVABLE);
+    dataiterator_init(&di, s->repo->pool, s->repo, $self->id, 0, 0, SEARCH_NO_STORAGE_SOLVABLE);
     VALUE value;
     while (dataiterator_step(&di))
     {
@@ -259,7 +259,7 @@ fail:
       if (key != ID_NULL) {
         Solvable *s = xsolvable_solvable($self);
 	Dataiterator di;
-	dataiterator_init(&di, s->repo, $self->id, key, 0, SEARCH_NO_STORAGE_SOLVABLE);
+	dataiterator_init(&di, s->repo->pool, s->repo, $self->id, key, 0, SEARCH_NO_STORAGE_SOLVABLE);
 	if (dataiterator_step(&di))
 	  result = Swig_True;
       }

@@ -13,11 +13,12 @@ typedef struct _Dataiterator {} Dataiterator;
   %constant int SEARCH_SUBSTRING = SEARCH_SUBSTRING;
   %constant int SEARCH_GLOB = SEARCH_GLOB;
   %constant int SEARCH_REGEX = SEARCH_REGEX;
+  %constant int SEARCH_ERROR = SEARCH_ERROR;
 
   %constant int SEARCH_NOCASE = SEARCH_NOCASE;
   %constant int SEARCH_NO_STORAGE_SOLVABLE = SEARCH_NO_STORAGE_SOLVABLE;
   %constant int SEARCH_SUB = SEARCH_SUB;
-  %constant int SEARCH_ALL_REPOS = SEARCH_ALL_REPOS;
+  %constant int SEARCH_ARRAYSENTINEL = SEARCH_ARRAYSENTINEL;
   %constant int SEARCH_SKIP_KIND = SEARCH_SKIP_KIND;
 
 /* By default we don't match in attributes representing filelists
@@ -35,7 +36,7 @@ typedef struct _Dataiterator {} Dataiterator;
     Dataiterator *di = calloc(1, sizeof( Dataiterator ));
     Solvable *s = 0;
     if (xs) s = xsolvable_solvable(xs);
-    dataiterator_init(di, repo, s ? s - repo->pool->solvables : 0, keyname ? str2id(repo->pool, keyname, 0) : 0, match, option);
+    dataiterator_init(di, repo->pool, repo, s ? s - repo->pool->solvables : 0, keyname ? str2id(repo->pool, keyname, 0) : 0, match, option);
     return di;
   }
   
@@ -43,7 +44,7 @@ typedef struct _Dataiterator {} Dataiterator;
 
   XSolvable *solvable()
   {
-    return xsolvable_new( $self->repo->pool, self->solvid );
+    return xsolvable_new( $self->repo->pool, $self->solvid );
   }
 
   /*
@@ -101,7 +102,7 @@ typedef struct _Dataiterator {} Dataiterator;
   
   void jump_to_solvable(XSolvable *xs)
   {
-    dataiterator_jump_to_solvable($self, xsolvable_solvable(xs));
+    dataiterator_jump_to_solvid($self, xs->id);
   }
   
   void jump_to_repo(Repo *repo)
