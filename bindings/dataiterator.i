@@ -36,7 +36,12 @@ typedef struct _Dataiterator {} Dataiterator;
     Dataiterator *di = calloc(1, sizeof( Dataiterator ));
     Solvable *s = 0;
     /* cope with pool or repo being NULL */
-    if (!pool && repo) pool = repo->pool;
+    if (!pool) {
+      if (!repo) {
+        /* raise exception (FIXME) */
+      }
+      pool = repo->pool;
+    }
     if (xs) s = xsolvable_solvable(xs);
     dataiterator_init(di, pool, repo, s ? s - s->repo->pool->solvables : 0, keyname && pool ? str2id(pool, keyname, 0) : 0, match, option);
     return di;
