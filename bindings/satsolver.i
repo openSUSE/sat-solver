@@ -73,13 +73,16 @@
 #endif
 
 #if defined(SWIGPERL)
+SWIGINTERNINLINE SV *SWIG_From_long  SWIG_PERL_DECL_ARGS_1(long value);
+SWIGINTERNINLINE SV *SWIG_FromCharPtr(const char *cptr);
+
 #define Swig_Null_p(x) (x == NULL)
 #define Swig_True (&PL_sv_yes)
 #define Swig_False (&PL_sv_no)
 #define Swig_Null NULL
 #define Swig_Type SV *
-#define Swig_Int(x) 0 /* should be SWIG_From_long(x), but Swig declares it too late. FIXME */
-#define Swig_String(x) "" /* SWIG_FromCharPtr(x), also */
+#define Swig_Int(x) SWIG_From_long(x) /* should be SWIG_From_long(x), but Swig declares it too late. FIXME */
+#define Swig_String(x) SWIG_FromCharPtr(x) /* SWIG_FromCharPtr(x), also */
 #define Swig_Array(x) NULL
 #define Swig_Append(x,y) av_create_and_push(&x, y)
 /* FIXME: perl types */
