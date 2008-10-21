@@ -296,6 +296,18 @@ typedef struct _Pool {} Pool;
   XSolvable *find( char *name, Repo *repo = NULL )
   { return xsolvable_find( $self, name, repo ); }
 
+  /*
+   * Dataiterator - find solvables by their attributes
+   */
+#if defined(SWIGPYTHON)
+    %pythoncode %{
+        def search(self, match, flags, solvable = None, keyname = None):
+          d = Dataiterator(self, None, match, flags, solvable, keyname)
+          while d.step():
+            yield d
+    %}
+#endif
+
   /**************************
    * Transaction management
    */

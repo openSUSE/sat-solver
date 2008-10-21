@@ -163,7 +163,7 @@ int size()
 #if defined(SWIGPYTHON)
     %pythoncode %{
         def search(self, match, flags, solvable = None, keyname = None):
-          d = Dataiterator(self,match,flags, solvable, keyname)
+          d = Dataiterator(self.pool(), self, match, flags, solvable, keyname)
           while d.step():
             yield d
     %}
