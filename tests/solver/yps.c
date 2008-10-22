@@ -179,7 +179,7 @@ findinstalled(Solver *solv, Queue *installedq)
       policy_filter_unwanted(solv, &nq, 0, POLICY_MODE_RECOMMEND);
       queue_push(&pq, nq.elements[0]);
     }
-  pool_trivial_installable(pool, solv->installed, &installedmap, &pq, &opq);
+  pool_trivial_installable(pool, &installedmap, &pq, &opq);
   for (i = 0; i < opq.count; i++)
     {
 #if 0
@@ -291,6 +291,7 @@ main(int argc, char **argv)
       exit(1);
     }
   system = repo_create(pool, "system");
+  pool_set_installed(pool, system);
   if (repo_add_solv(system, fp))
     {
       fprintf(stderr, "could not add system repository\n");
@@ -322,14 +323,14 @@ main(int argc, char **argv)
     }
 
 
-  pool_addfileprovides(pool, system);
+  pool_addfileprovides(pool);
   pool_createwhatprovides(pool);
 
   pool->promoteepoch = 0;
 
   // start solving
 
-  solv = solver_create(pool, system);
+  solv = solver_create(pool);
 
   if (keep)
     {

@@ -53,8 +53,8 @@ typedef struct solver {} Solver;
 
 %extend Solver {
 
-  Solver( Pool *pool, Repo *installed = NULL )
-  { return solver_create( pool, installed ); }
+  Solver( Pool *pool )
+  { return solver_create( pool); }
   ~Solver()
   { solver_free( $self ); }
 
@@ -328,7 +328,7 @@ typedef struct solver {} Solver;
         SV *res  = 0;
         int len = self->decisionq.count;
         for (b = 0; b < len; b++) {
-	    Solvable *s;
+            Solvable *s;
             char *myel;
             Id p = self->decisionq.elements[b];
             if (p < 0) {

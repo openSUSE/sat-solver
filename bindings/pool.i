@@ -245,7 +245,7 @@ typedef struct _Pool {} Pool;
     Pool *pool = $self;
     if (!$self->whatprovides)
       pool_createwhatprovides($self);
-	  
+
     FOR_PROVIDES(p, pp, str2id( $self, name, 0) ) 
       generic_xsolvables_iterate_callback( xsolvable_new( $self, p ) );
 #endif
@@ -319,10 +319,15 @@ typedef struct _Pool {} Pool;
    * Solver management
    */
 
-  Solver* create_solver( Repo *installed = NULL )
+  void set_installed(Repo *installed = NULL)
+  {
+    pool_set_installed( $self, installed);
+  }
+
+  Solver* create_solver()
   {
     pool_createwhatprovides( $self );
-    return solver_create( $self, installed );
+    return solver_create( $self );
   }
 
 }

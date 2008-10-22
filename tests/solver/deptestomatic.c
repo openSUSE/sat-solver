@@ -1474,12 +1474,13 @@ endElement( void *userData, const char *name )
       else
 	pool_setarch( pd->pool, "i686" );
 
-      pool_addfileprovides( pd->pool, pd->system );
+      pool_set_installed( pd->pool, pd->system );
+      pool_addfileprovides( pd->pool );
       pool_createwhatprovides( pd->pool );
       if (redcarpet)
         pool->promoteepoch = 1;
 
-      Solver *solv = solver_create( pd->pool, pd->system );
+      Solver *solv = solver_create( pd->pool );
       solv->fixsystem = pd->fixsystem;
       solv->allowselfconflicts = 1;
       solv->updatesystem = pd->updatesystem;
