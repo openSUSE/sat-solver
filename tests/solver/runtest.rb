@@ -21,8 +21,8 @@ $verbose = false
 $redcarpet = false
 
 $tests = Array.new
-$builddir= File.join( Dir.getwd, "..")
-$sourcedir = File.join( Dir.getwd, "..")
+$builddir= File.join( Dir.getwd, "../..")
+$sourcedir = File.join( Dir.getwd, "../..")
 
 $fails = Array.new
 $ignorecount = 0
