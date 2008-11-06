@@ -44,7 +44,7 @@ problem_free( Problem *p )
 
 
 void
-solver_problems_iterate( Solver *solver, Transaction *t, int (*callback)( const Problem *p) )
+solver_problems_iterate( Solver *solver, Transaction *t, int (*callback)(const Problem *p, void *user_data), void *user_data )
 {
   Id problem = 0;
   if (!callback)
@@ -53,14 +53,14 @@ solver_problems_iterate( Solver *solver, Transaction *t, int (*callback)( const 
   while ((problem = solver_next_problem( solver, problem )) != 0)
     {
       Problem *p = problem_new( solver, t, problem );
-      if (callback( p ) )
+      if (callback( p, user_data ) )
 	break;
     }
 }
 
 
 void
-problem_solutions_iterate( Problem *problem, int (*callback)( const Solution *s ) )
+problem_solutions_iterate( Problem *problem, int (*callback)( const Solution *s, void *user_data ), void *user_data )
 {
   if (!callback) /* no use to iterate without callback */
     return;
@@ -179,9 +179,7 @@ problem_solutions_iterate( Problem *problem, int (*callback)( const Solution *s 
 	    }
 	}
       Solution *s = solution_new( problem->solver->pool, code, s1, n1, s2, n2 );
-      if (callback( s ))
+      if (callback( s, user_data ))
 	break;
     }
 }
-
-

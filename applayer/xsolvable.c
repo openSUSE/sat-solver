@@ -202,7 +202,7 @@ xsolvable_get( Pool *pool, int i, const Repo *repo )
  */
 
 void
-solver_installs_iterate( Solver *solver, int all, int (*callback)( const XSolvable *xs ) )
+solver_installs_iterate( Solver *solver, int all, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data )
 {
   Id p;
   Solvable *s;
@@ -231,7 +231,7 @@ solver_installs_iterate( Solver *solver, int all, int (*callback)( const XSolvab
         continue;       /* already installed resolvable */
 
       if (!obsoletesmap || !obsoletesmap[p])
-	if (callback( xsolvable_new( solver->pool, p ) ) )
+	if (callback( xsolvable_new( solver->pool, p ), user_data ) )
 	  break;
     }
   if (obsoletesmap)
@@ -244,7 +244,7 @@ solver_installs_iterate( Solver *solver, int all, int (*callback)( const XSolvab
  */
 
 void
-solver_removals_iterate( Solver *solver, int all, int (*callback)( const XSolvable *xs ) )
+solver_removals_iterate( Solver *solver, int all, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data )
 {
   Id p;
   Solvable *s;
@@ -267,7 +267,7 @@ solver_removals_iterate( Solver *solver, int all, int (*callback)( const XSolvab
         continue;       /* we keep this package */
       if (obsoletesmap && obsoletesmap[p])
 	continue;       /* its being obsoleted (updated) */
-      if (callback( xsolvable_new( solver->pool, p ) ) )
+      if (callback( xsolvable_new( solver->pool, p ), user_data ) )
 	break;
     }
   if (obsoletesmap)
@@ -280,7 +280,7 @@ solver_removals_iterate( Solver *solver, int all, int (*callback)( const XSolvab
  */
 
 void
-solver_updates_iterate( Solver *solver, int (*callback)( const XSolvable *xs_old, const XSolvable *xs_new ) )
+solver_updates_iterate( Solver *solver, int (*callback)( const XSolvable *xs_old, const XSolvable *xs_new, void *user_data ), void *user_data )
 {
   Id p;
   Solvable *s;
@@ -302,7 +302,7 @@ solver_updates_iterate( Solver *solver, int (*callback)( const XSolvable *xs_old
       if (solver->decisionmap[p] >= 0)
         continue;       /* we keep this package */
       if (obsoletesmap[p])
-	if (callback( xsolvable_new( solver->pool, p ), xsolvable_new( solver->pool, obsoletesmap[p] ) ) )
+	if (callback( xsolvable_new( solver->pool, p ), xsolvable_new( solver->pool, obsoletesmap[p] ), user_data ) )
 	  break;
     }
   sat_free( obsoletesmap );
@@ -310,7 +310,7 @@ solver_updates_iterate( Solver *solver, int (*callback)( const XSolvable *xs_old
 
 
 void
-solver_suggestions_iterate( Solver *solver, int (*callback)( const XSolvable *xs ) )
+solver_suggestions_iterate( Solver *solver, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data )
 {
   int i;
 
@@ -319,14 +319,14 @@ solver_suggestions_iterate( Solver *solver, int (*callback)( const XSolvable *xs
   
   for (i = 0; i < solver->suggestions.count; i++)
     {
-      if (callback( xsolvable_new( solver->pool, solver->suggestions.elements[i] ) ) )
+      if (callback( xsolvable_new( solver->pool, solver->suggestions.elements[i] ), user_data ) )
 	break;
     }
 }
 
 
 void
-repo_xsolvables_iterate( Repo *repo, int (*callback)( const XSolvable *xs ) )
+repo_xsolvables_iterate( Repo *repo, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data )
 {
   Solvable *s;
   Id p;
@@ -336,7 +336,7 @@ repo_xsolvables_iterate( Repo *repo, int (*callback)( const XSolvable *xs ) )
         continue;
       if (!s->name)
         continue;
-      if (callback( xsolvable_new( repo->pool, s - repo->pool->solvables ) ) )
+      if (callback( xsolvable_new( repo->pool, s - repo->pool->solvables ), user_data ) )
 	break;
     }
 }

@@ -9,7 +9,7 @@
  */
 
 static int
-update_xsolvables_iterate_callback( const XSolvable *xs_old, const XSolvable *xs_new )
+update_xsolvables_iterate_callback( const XSolvable *xs_old, const XSolvable *xs_new, void *user_data )
 {
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield_values( 2, SWIG_NewPointerObj((void*)xs_old, SWIGTYPE_p__Solvable, 0), SWIG_NewPointerObj((void*)xs_new, SWIGTYPE_p__Solvable, 0) );
@@ -21,7 +21,7 @@ update_xsolvables_iterate_callback( const XSolvable *xs_old, const XSolvable *xs
  */
 
 static int
-solver_decisions_iterate_callback( const Decision *d )
+solver_decisions_iterate_callback( const Decision *d, void *user_data )
 {
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield(SWIG_NewPointerObj((void*) d, SWIGTYPE_p__Decision, 0));
@@ -34,7 +34,7 @@ solver_decisions_iterate_callback( const Decision *d )
  */
 
 static int
-solver_problems_iterate_callback( const Problem *p )
+solver_problems_iterate_callback( const Problem *p, void *user_data )
 {
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield( SWIG_NewPointerObj((void*) p, SWIGTYPE_p__Problem, 0) );
@@ -271,7 +271,7 @@ typedef struct solver {} Solver;
 
 #if defined(SWIGRUBY)
   void each_decision()
-  { return solver_decisions_iterate( $self, solver_decisions_iterate_callback ); }
+  { return solver_decisions_iterate( $self, solver_decisions_iterate_callback, NULL ); }
 #endif
 
 #if defined(SWIGRUBY)
@@ -291,7 +291,7 @@ typedef struct solver {} Solver;
 
 #if defined(SWIGRUBY)
   void each_problem( Transaction *t )
-  { return solver_problems_iterate( $self, t, solver_problems_iterate_callback ); }
+  { return solver_problems_iterate( $self, t, solver_problems_iterate_callback, NULL ); }
 
   /*
    * iterate over all to-be-*newly*-installed solvables
@@ -301,10 +301,10 @@ typedef struct solver {} Solver;
    * solvables
    */
   void each_to_install(int bflag = 0)
-  { return solver_installs_iterate( $self, bflag, generic_xsolvables_iterate_callback ); }
+  { return solver_installs_iterate( $self, bflag, generic_xsolvables_iterate_callback, NULL ); }
 
   void each_to_update()
-  { return solver_updates_iterate( $self, update_xsolvables_iterate_callback ); }
+  { return solver_updates_iterate( $self, update_xsolvables_iterate_callback, NULL ); }
 
   /*
    * iterate over all to-be-removed-without-replacement solvables
@@ -313,10 +313,10 @@ typedef struct solver {} Solver;
    * if true (resp '1') is passed, iterate over *all* to-be-removed solvables
    */
   void each_to_remove(int bflag = 0)
-  { return solver_removals_iterate( $self, bflag, generic_xsolvables_iterate_callback ); }
+  { return solver_removals_iterate( $self, bflag, generic_xsolvables_iterate_callback, NULL ); }
 
   void each_suggested()
-  { return solver_suggestions_iterate( $self, generic_xsolvables_iterate_callback); }
+  { return solver_suggestions_iterate( $self, generic_xsolvables_iterate_callback, NULL ); }
 #endif /* SWIGRUBY */
 
 #if defined(SWIGPERL)

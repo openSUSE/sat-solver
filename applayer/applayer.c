@@ -35,7 +35,7 @@ pool_size( Pool *pool )
 }
 
 void
-pool_xsolvables_iterate( Pool *pool, int (*callback)(const XSolvable *xs))
+pool_xsolvables_iterate( Pool *pool, int (*callback)(const XSolvable *xs, void *user_data), void *user_data)
 {
   Solvable *s;
   Id p;
@@ -44,7 +44,7 @@ pool_xsolvables_iterate( Pool *pool, int (*callback)(const XSolvable *xs))
     {
       if (!s->name)
         continue;
-      if (callback( xsolvable_new( pool, p ) ) )
+      if (callback( xsolvable_new( pool, p ), user_data ) )
 	break;
     }
 }

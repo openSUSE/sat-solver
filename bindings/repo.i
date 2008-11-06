@@ -91,7 +91,7 @@ int size()
 
 #if defined(SWIGRUBY)
   void each()
-  { repo_xsolvables_iterate( $self, generic_xsolvables_iterate_callback ); }
+  { repo_xsolvables_iterate( $self, generic_xsolvables_iterate_callback, NULL ); }
 #endif
 #if defined(SWIGPYTHON)
     %pythoncode %{

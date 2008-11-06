@@ -198,7 +198,7 @@ typedef struct _Pool {} Pool;
       pool_createwhatprovides( $self );
 
     FOR_PROVIDES(p, pp, rel->id) 
-      generic_xsolvables_iterate_callback( xsolvable_new( $self, p ) );
+      generic_xsolvables_iterate_callback( xsolvable_new( $self, p ), NULL );
   }
 #endif
 
@@ -247,7 +247,7 @@ typedef struct _Pool {} Pool;
       pool_createwhatprovides($self);
 
     FOR_PROVIDES(p, pp, str2id( $self, name, 0) ) 
-      generic_xsolvables_iterate_callback( xsolvable_new( $self, p ) );
+      generic_xsolvables_iterate_callback( xsolvable_new( $self, p ), NULL );
 #endif
   }
 
@@ -281,7 +281,7 @@ typedef struct _Pool {} Pool;
 
 #if defined(SWIGRUBY)
   void each()
-  { pool_xsolvables_iterate( $self, generic_xsolvables_iterate_callback ); }
+  { pool_xsolvables_iterate( $self, generic_xsolvables_iterate_callback, NULL ); }
 #endif
 
 #if defined(SWIGPYTHON)

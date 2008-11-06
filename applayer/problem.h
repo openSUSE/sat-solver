@@ -36,7 +36,7 @@ typedef struct _Problem {
 Problem *problem_new( Solver *s, Transaction *t, Id id );
 void problem_free( Problem *p );
 
-void solver_problems_iterate( Solver *solver, Transaction *t, int (*callback)( const Problem *p) );
-void problem_solutions_iterate( Problem *p, int (*callback)( const Solution *s ) );
+void solver_problems_iterate( Solver *solver, Transaction *t, int (*callback)( const Problem *p, void *user_data ), void *user_data );
+void problem_solutions_iterate( Problem *p, int (*callback)( const Solution *s, void *user_data ), void *user_data );
 
 #endif  /* SATSOLVER_PROBLEM_H */

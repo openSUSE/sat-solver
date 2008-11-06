@@ -37,7 +37,7 @@ decision_free( Decision *d )
 }
 
 void
-solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d ) )
+solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d, void *user_data ), void *user_data )
 {
   Pool *pool = solver->pool;
   Repo *installed = solver->installed;
@@ -65,7 +65,7 @@ solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d ) )
 	    {
 	      d = decision_new( pool, DECISION_REMOVE, s, NULL );
 	    }
-	  callback( d );
+	  callback( d, user_data );
 	}
     }
 #endif
@@ -120,7 +120,7 @@ solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d ) )
 	    }
 	}
       d = decision_new( pool, op, s, r );
-      if (callback( d ))
+      if (callback( d, user_data ))
 	break;
     }
 }

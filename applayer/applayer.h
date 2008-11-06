@@ -33,6 +33,6 @@ const char *my_id2str( Pool *pool, Id id );
  */
 
 unsigned int pool_size( Pool *pool );
-void pool_xsolvables_iterate( Pool *pool, int (*callback)(const XSolvable *xs));
+void pool_xsolvables_iterate( Pool *pool, int (*callback)(const XSolvable *xs, void *user_data), void *user_data);
 
 #endif  /* SATSOLVER_APPLAYER_H */

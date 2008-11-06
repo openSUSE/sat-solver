@@ -8,7 +8,7 @@
  */
 					
 static int
-problem_solutions_iterate_callback( const Solution *s )
+problem_solutions_iterate_callback(const Solution *s, void *user_data)
 {
 #if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
@@ -61,7 +61,7 @@ typedef struct _Problem {} Problem;
   { return xsolvable_new( $self->solver->pool, $self->target ); }
 
   void each_solution()
-  { problem_solutions_iterate( $self, problem_solutions_iterate_callback );  }
+  { problem_solutions_iterate( $self, problem_solutions_iterate_callback, NULL );  }
 
 }
 

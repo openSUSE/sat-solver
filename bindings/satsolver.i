@@ -136,7 +136,7 @@ SWIGINTERNINLINE SV *SWIG_FromCharPtr(const char *cptr);
  */
 
 static int
-generic_xsolvables_iterate_callback( const XSolvable *xs )
+generic_xsolvables_iterate_callback( const XSolvable *xs, void *user_data )
 {
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield( SWIG_NewPointerObj((void*)xs, SWIGTYPE_p__Solvable, 0) );

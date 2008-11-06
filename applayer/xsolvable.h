@@ -83,27 +83,27 @@ XSolvable *xsolvable_get( Pool *pool, int i, const Repo *repo );
  * if all = 0, only report *newly* installed ones (non-updates)
  * if all = 1, report all to-be-installed ones
  */
-void solver_installs_iterate( Solver *solver, int all, int (*callback)( const XSolvable *xs ) );
+void solver_installs_iterate( Solver *solver, int all, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data );
 
 /* iterate over all to-be-removed solvables
  * if all = 0, only report *dropped* ones (non-updates)
  * if all = 1, report all to-be-removed  ones
  */
-void solver_removals_iterate( Solver *solver, int all, int (*callback)( const XSolvable *xs ) );
+void solver_removals_iterate( Solver *solver, int all, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data );
 
 /*
  * Iterate over all solvables which update installed ones
  */
-void solver_updates_iterate( Solver *solver, int (*callback)( const XSolvable *xs_old, const XSolvable *xs_new ) );
+void solver_updates_iterate( Solver *solver, int (*callback)( const XSolvable *xs_old, const XSolvable *xs_new, void *user_data ), void *user_data );
 
 /*
  * Iterate over all solvables being suggested in the last solver run
  */
-void solver_suggestions_iterate( Solver *solver, int (*callback)( const XSolvable *xs ) );
+void solver_suggestions_iterate( Solver *solver, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data );
 
 /*
  * Iterate over all solvables of the given repo
  */
-void repo_xsolvables_iterate( Repo *repo, int (*callback)( const XSolvable *xs ) );
+void repo_xsolvables_iterate( Repo *repo, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data );
 
 #endif  /* SATSOLVER_XSOLVABLE_H */
