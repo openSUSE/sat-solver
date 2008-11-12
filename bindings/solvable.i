@@ -55,6 +55,10 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   %typemap(out) int equal
     "$result = ($1 != 0) ? Qtrue : Qfalse;";
 #endif
+#if defined(SWIGPERL)
+  int __eq__( XSolvable *xs )
+  { return xsolvable_equal( $self, xs); }
+#endif
   int equal( XSolvable *xs )
   { return xsolvable_equal( $self, xs); }
 
