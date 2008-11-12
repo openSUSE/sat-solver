@@ -108,6 +108,7 @@ int size()
 #endif
   /*
    * get xsolvable by index
+   * FIXME: doesn't work this way, there might be holes !
    */
   XSolvable *get( int i )
   { return xsolvable_get( $self->pool, i, $self ); }
