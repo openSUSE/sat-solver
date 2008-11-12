@@ -10,7 +10,8 @@
 #
 #
 
-$:.unshift ".."
+$:.unshift "../../../build/bindings/ruby"
+require 'pathname'
 
 # test adding rpmdb
 require 'test/unit'

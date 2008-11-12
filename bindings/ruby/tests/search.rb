@@ -3,10 +3,10 @@
 #
 
 $:.unshift "../../../build/bindings/ruby"
+require 'pathname'
 
 # test Repodata
 require 'test/unit'
-require 'pathname'
 require 'satsolver'
 
 class RepodataTest < Test::Unit::TestCase
@@ -17,7 +17,8 @@ class RepodataTest < Test::Unit::TestCase
     pool = Satsolver::Pool.new
     assert pool
     pool.arch = "x86_64"
-    repo = pool.add_solv( Pathname( File.dirname( __FILE__ ) ) + "os11-biarch.solv" )
+    solvpath = Pathname( File.dirname( __FILE__ ) ) + Pathname( "../../testdata" ) + "os11-biarch.solv"
+    repo = pool.add_solv( solvpath )
     repo.name = "openSUSE 11.0 Beta3 BiArch"
     puts "Repo #{repo.name} loaded with #{repo.size} solvables"
     
@@ -29,7 +30,8 @@ class RepodataTest < Test::Unit::TestCase
     pool = satsolver.Pool()
     assert pool
     pool.set_arch("i686")
-    repo = pool.add_solv( "os11-biarch.solv" )
+    solvpath = Pathname( File.dirname( __FILE__ ) ) + Pathname( "../../testdata" ) + "os11-biarch.solv"
+    repo = pool.add_solv( solvpath )
     repo.set_name("test")
     for d in pool.search("/usr/bin/python", satsolver.SEARCH_STRING|satsolver.SEARCH_FILES):
       print d.solvable(), "matches '/usr/bin/python' in ", d.key(), ":  ", d.value()
@@ -42,7 +44,8 @@ class RepodataTest < Test::Unit::TestCase
     pool = Satsolver::Pool.new
     assert pool
     pool.arch = "x86_64"
-    repo = pool.add_solv( Pathname( File.dirname( __FILE__ ) ) + "os11-biarch.solv" )
+    solvpath = Pathname( File.dirname( __FILE__ ) ) + Pathname( "../../testdata" ) + "os11-biarch.solv"
+    repo = pool.add_solv( solvpath )
     repo.name = "openSUSE 11.0 Beta3 BiArch"
     puts "Repo #{repo.name} loaded with #{repo.size} solvables"
     
@@ -54,7 +57,8 @@ class RepodataTest < Test::Unit::TestCase
     pool = satsolver.Pool()
     assert pool
     pool.set_arch("i686")
-    repo = pool.add_solv( "os11-biarch.solv" )
+    solvpath = Pathname( File.dirname( __FILE__ ) ) + Pathname( "../../testdata" ) + "os11-biarch.solv"
+    repo = pool.add_solv( solvpath )
     repo.set_name("test")
     for d in repo.search("/usr/bin/python", satsolver.SEARCH_STRING|satsolver.SEARCH_FILES):
       print d.solvable(), "matches '/usr/bin/python' in ", d.key(), ":  ", d.value()

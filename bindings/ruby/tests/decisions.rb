@@ -1,3 +1,6 @@
+$:.unshift "../../../build/bindings/ruby"
+require 'pathname'
+
 #
 # After successful solving, the solver returns the result as list of Decisions.
 #
@@ -19,7 +22,6 @@
 # The number of decision steps is available through Solver.decision_count
 #
 
-$:.unshift ".."
 
 # test Decisions
 require 'test/unit'

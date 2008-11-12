@@ -26,11 +26,11 @@
 #   this will return the 'best' solvable named 'A' or nil if no such solvable exists.
 #
 
-$:.unshift ".."
+$:.unshift "../../../build/bindings/ruby"
+require 'pathname'
 
 # test Repo
 require 'test/unit'
-require 'pathname'
 require 'satsolver'
 
 class RepoTest < Test::Unit::TestCase
@@ -48,7 +48,8 @@ class RepoTest < Test::Unit::TestCase
     pool = Satsolver::Pool.new
     assert pool
     pool.arch = "i686"
-    repo = pool.add_solv( Pathname( File.dirname( __FILE__ ) ) + "os11-biarch.solv" )
+    solvpath = Pathname( File.dirname( __FILE__ ) ) + Pathname( "../../testdata" ) + "os11-biarch.solv"
+    repo = pool.add_solv( solvpath )
     repo.name = "test"
     assert repo.name == "test"
     assert repo.size > 0
@@ -57,7 +58,8 @@ class RepoTest < Test::Unit::TestCase
     pool = Satsolver::Pool.new
     assert pool
     pool.arch = "i686"
-    repo = pool.add_solv( Pathname( File.dirname( __FILE__ ) ) + "os11-biarch.solv" )
+    solvpath = Pathname( File.dirname( __FILE__ ) ) + Pathname( "../../testdata" ) + "os11-biarch.solv"
+    repo = pool.add_solv( solvpath )
     repo.each { |s|
       puts s
     }

@@ -1,16 +1,18 @@
-$:.unshift ".."
+$:.unshift "../../../build/bindings/ruby"
+require 'pathname'
 
 # test Covenants
 
 require 'test/unit'
-require 'pathname'
 require 'satsolver'
 
 class CovenantTest < Test::Unit::TestCase
   def test_convenant
     pool = Satsolver::Pool.new "i686"
     assert pool
-    repo = pool.add_solv( Pathname( File.dirname( __FILE__ ) ) + "os11-biarch.solv" )
+    solvpath = Pathname( File.dirname( __FILE__ ) ) + Pathname( "../../testdata" ) + "os11-biarch.solv"
+    repo = pool.add_solv( solvpath )
+    assert repo.size > 0
     repo.name = "test"
 
     solver = pool.create_solver

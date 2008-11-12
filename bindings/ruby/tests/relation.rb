@@ -18,11 +18,11 @@
 #
 #
 
-$:.unshift ".."
+$:.unshift "../../../build/bindings/ruby"
+require 'pathname'
 
 # test Relation
 require 'test/unit'
-require 'pathname'
 require 'satsolver'
 
 class SolvableTest < Test::Unit::TestCase
@@ -32,7 +32,8 @@ class SolvableTest < Test::Unit::TestCase
     @repo = Satsolver::Repo.new( @pool, "test" )
     assert @repo
     @pool.arch = "i686"
-    @repo = @pool.add_solv( Pathname( File.dirname( __FILE__ ) ) + "os11-biarch.solv" )
+    solvpath = Pathname( File.dirname( __FILE__ ) ) + Pathname( "../../testdata" ) + "os11-biarch.solv"
+    @repo = @pool.add_solv( solvpath )
     assert @repo.size > 0
   end
   def test_relation_accessors

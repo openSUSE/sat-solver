@@ -40,7 +40,8 @@
 #    source requires relation but no providers are installable
 #
 
-$:.unshift ".."
+$:.unshift "../../../build/bindings/ruby"
+require 'pathname'
 
 # test Problems
 require 'test/unit'

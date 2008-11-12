@@ -15,7 +15,8 @@
 # For Repos there is each_repo, count_repos, get_repo and find_repo.
 #
 
-$:.unshift ".."
+$:.unshift "../../../build/bindings/ruby"
+require 'pathname'
 
 # test Pool
 require 'test/unit'

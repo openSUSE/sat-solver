@@ -1,3 +1,5 @@
+$:.unshift "../../../build/bindings/ruby"
+require 'pathname'
 
 #
 # Code11 Patch

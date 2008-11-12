@@ -1,9 +1,9 @@
-$:.unshift ".."
+$:.unshift "../../../build/bindings/ruby"
+require 'pathname'
 
 # test Solvable
 
 require 'test/unit'
-require 'pathname'
 require 'satsolver'
 
 def show_dep name, deps
@@ -26,7 +26,8 @@ class SolvableTest < Test::Unit::TestCase
     @pool = Satsolver::Pool.new
     assert @pool
     @pool.arch = "i686"
-    @pool.add_solv( Pathname( File.dirname( __FILE__ ) ) + "os11-biarch.solv" )
+    solvpath = Pathname( File.dirname( __FILE__ ) ) + Pathname( "../../testdata" ) + "os11-biarch.solv"
+    @pool.add_solv( solvpath )
     assert @pool.size > 0
   end
   def test_solvable

@@ -1,6 +1,7 @@
-$:.unshift ".."
-
 # test Patch and Update
+
+$:.unshift "../../../build/bindings/ruby"
+require 'pathname'
 
 require 'satsolver'
 require '_solv2patches'

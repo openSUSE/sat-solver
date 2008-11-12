@@ -1,9 +1,9 @@
-$:.unshift ".."
+$:.unshift "../../../build/bindings/ruby"
+require 'pathname'
 
 # test Transction
 
 require 'test/unit'
-require 'pathname'
 require 'satsolver'
 
 class TransactionTest < Test::Unit::TestCase
@@ -11,7 +11,8 @@ class TransactionTest < Test::Unit::TestCase
     pool = Satsolver::Pool.new
     assert pool
     pool.arch = "i686"
-    repo = pool.add_solv( Pathname( File.dirname( __FILE__ ) ) + "os11-biarch.solv" )
+    solvpath = Pathname( File.dirname( __FILE__ ) ) + Pathname( "../../testdata" ) + "os11-biarch.solv"
+    repo = pool.add_solv( solvpath )
     repo.name = "test1"
     
     transaction = Satsolver::Transaction.new( pool )
