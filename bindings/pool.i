@@ -225,6 +225,21 @@ typedef struct _Pool {} Pool;
 
 #endif
 
+#if defined(SWIGPERL)
+  %perlcode %{
+    sub providers {
+      my ($self, $rel) = @_;
+      my @prov = ();
+      my $count = $self->providers_count($rel);
+      for (my $i = 0; $i < $count; ++$i) {
+        my $solvable = $self->providers_get($rel, $i);
+        push @prov, $solvable;
+      }
+
+      return wantarray ? @prov : $prov[0];
+    }
+  %}
+#endif
 
   int providers_count( const char *name )
   { int i = 0;
@@ -233,6 +248,7 @@ typedef struct _Pool {} Pool;
       ++i;
     return i;
   }
+
   int providers_count( Relation *rel )
   { int i = 0;
     Id v, *vp;
@@ -240,11 +256,13 @@ typedef struct _Pool {} Pool;
       ++i;
     return i;
   }
+
   XSolvable *providers_get( const char *name, int i)
   { Id *vp;
     vp = $self->whatprovidesdata + pool_whatprovides($self, str2id( $self, name, 0));
     return xsolvable_new( $self, *(vp + i));
   }
+ 
   XSolvable *providers_get( Relation *rel, int i)
   { Id *vp;
     vp = $self->whatprovidesdata + pool_whatprovides($self, rel->id);

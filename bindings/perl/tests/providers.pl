@@ -39,36 +39,28 @@ my $rel = $pool->create_relation($mysolvable->name());
 # Find Providers of Relation $rel
 $solvname = $mysolvable->string();
 print "\nFinding providers for relation $rel ...\n";
-$provcount = $pool->providers_count($rel);
-print "\nFound $provcount providers for relation $rel ...\n";
-$solvable = $pool->providers_get($rel, 0);
-$name = $solvable->name();
-print "\nFound $name as provider for relation $rel ...\n";
-#foreach my $solvable ($pool->providers($rel)) {
-#  print "--\n";
-#  next if not defined $solvable;
-#
-#  my $name = $solvable->name();
-#  next if not defined $name;
-#  print "  solvable name: $name\n";
-#
-#  if ($solvable == $mysolvable) {
-#    print "  found in repo $reponame\n";
-#    last;
-#  }
-#}
+foreach my $solvable ($pool->providers($rel)) {
+  print "--\n";
+  next if not defined $solvable;
+
+  my $name = $solvable->name();
+  next if not defined $name;
+  print "  solvable name: $name\n";
+
+  if ($solvable == $mysolvable) {
+    print "  found in repo $reponame\n";
+    last;
+  }
+}
 
 # Find Providers of Solvables identified by a name only
 $solvname = "perl";
 print "\nFinding providers for name $solvname\n";
-$provcount = $pool->providers_count($rel);
-print "\nFound $provcount providers for name $solvname\n";
-#foreach my $solvable ($pool->providers($solvname)) {
-#  print "--\n";
-#  next if not defined $solvable;
-#
-#  my $name = $solvable->name();
-#  next if not defined $name;
-#  print "  solvable name: $name\n";
-#
-#}
+foreach my $solvable ($pool->providers($solvname)) {
+  print "--\n";
+  next if not defined $solvable;
+
+  my $name = $solvable->name();
+  next if not defined $name;
+  print "  solvable name: $name\n";
+}
