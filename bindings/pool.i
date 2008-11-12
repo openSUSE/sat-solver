@@ -186,7 +186,16 @@ typedef struct _Pool {} Pool;
     return NULL;
   }
 
+  /*
+   * Ruby has real iterators and callbacks, which make iterating over
+   * providers (of name or relation) straightforward.
+   * 
+   * Other languages have to revert to providers_count and
+   * providers_get and implement iterators themselves
+   */
+
 #if defined(SWIGRUBY)
+   
   /*
    * iterate over providers of relation
    */
@@ -197,12 +206,25 @@ typedef struct _Pool {} Pool;
     if (!$self->whatprovides)
       pool_createwhatprovides( $self );
 
-    FOR_PROVIDES(p, pp, rel->id) 
+    FOR_PROVIDES(p, pp, rel->id) {
       generic_xsolvables_iterate_callback( xsolvable_new( $self, p ), NULL );
+    }
   }
+
+  void each_provider( const char *name )
+  {
+    Id p, pp;
+    Pool *pool = $self;
+    if (!$self->whatprovides)
+      pool_createwhatprovides($self);
+
+    FOR_PROVIDES(p, pp, str2id( $self, name, 0) ) {
+      generic_xsolvables_iterate_callback( xsolvable_new( $self, p ), NULL );
+    }
+  }
+
 #endif
 
-#if defined(SWIGPYTHON)
 
   int providers_count( const char *name )
   { int i = 0;
@@ -228,6 +250,12 @@ typedef struct _Pool {} Pool;
     vp = $self->whatprovidesdata + pool_whatprovides($self, rel->id);
     return xsolvable_new( $self, *(vp + i));
   }
+  
+  /*
+   * providers iterator for Python
+   * using providers_count and providers_get
+   */
+#if defined(SWIGPYTHON)
     %pythoncode %{
         def providers(self,what):
           if self.unprepared():
@@ -237,19 +265,6 @@ typedef struct _Pool {} Pool;
             yield self.providers_get(what, r.pop(0))
     %}
 #endif
-
-  void each_provider( const char *name )
-  {
-#if defined(SWIGRUBY)
-    Id p, pp;
-    Pool *pool = $self;
-    if (!$self->whatprovides)
-      pool_createwhatprovides($self);
-
-    FOR_PROVIDES(p, pp, str2id( $self, name, 0) ) 
-      generic_xsolvables_iterate_callback( xsolvable_new( $self, p ), NULL );
-#endif
-  }
 
   /*
    * Solvable management
