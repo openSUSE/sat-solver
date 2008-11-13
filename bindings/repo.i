@@ -25,8 +25,8 @@ typedef struct _Repo {} Repo;
   {
     return $self->name;
   }
-
-int size()
+  /* see also count() below ! */
+  int size()
   { return $self->nsolvables; }
 #if defined(SWIGRUBY)
   %rename("empty?") empty();
@@ -93,25 +93,40 @@ int size()
   void each()
   { repo_xsolvables_iterate( $self, generic_xsolvables_iterate_callback, NULL ); }
 #endif
+  int count()
+  { return repo_xsolvables_count( $self ); }
+
+/* Nah, thats not for Ruby. Use Repo#each in Ruby */
+#if !defined(SWIGRUBY)
+  XSolvable **solvables() {
+    int count = repo_xsolvables_count( $self );
+    Id p;
+    Solvable *s;
+    int i = 0;
+    XSolvable **xs = (XSolvable **) malloc((count + 1) * sizeof(XSolvable **));
+
+    FOR_REPO_SOLVABLES($self, p, s)
+      {
+        if (!s)
+          continue;
+        if (!s->name)
+          continue;
+        xs[i] = xsolvable_new($self->pool, s - $self->pool->solvables);
+        ++i;
+      }
+    xs[i] = NULL;
+
+    return xs;
+  }
+#endif
 #if defined(SWIGPYTHON)
     %pythoncode %{
         def __iter__(self):
-          r = range(0,self.size())
-          while r:
-            yield self.get(r.pop(0))
+          s = self.solvables()
+          while s:
+            yield s.pop(0)
     %}
 #endif
-
-#if defined(SWIGRUBY)
-  /* %rename is rejected by swig for [] */
-  %alias get "[]";
-#endif
-  /*
-   * get xsolvable by index
-   * FIXME: doesn't work this way, there might be holes !
-   */
-  XSolvable *get( int i )
-  { return xsolvable_get( $self->pool, i, $self ); }
 
   /*
    * find (best) solvable by name

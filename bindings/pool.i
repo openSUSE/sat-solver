@@ -291,7 +291,9 @@ typedef struct _Pool {} Pool;
   /* number of solvables in pool
    */
   int size()
-  { return pool_size( $self ); }
+  { /* skip Ids 0(reserved) and 1(system) */
+    return $self->nsolvables - 1 - 1;
+  }
 
 #if defined(SWIGRUBY)
   %rename( "installable?" ) installable( XSolvable *s );
@@ -301,28 +303,44 @@ typedef struct _Pool {} Pool;
   int installable( XSolvable *s )
   { return pool_installable( $self, pool_id2solvable( s->pool, s->id ) ); }
 
-#if defined(SWIGRUBY)
-  /* %rename is rejected by swig for [] */
-  %alias get "[]";
-#endif
-  /*
-   * get solvable by index (0..size-1)
-   * index is _not_ the internal id, but used as an array index
-   */
-  XSolvable *get( int i )
-  { return xsolvable_get( $self, i, NULL );  }
+  /* return number of iterations when iterating over solvables */
+  int count()
+  { return pool_xsolvables_count( $self ); }
 
 #if defined(SWIGRUBY)
   void each()
   { pool_xsolvables_iterate( $self, generic_xsolvables_iterate_callback, NULL ); }
 #endif
 
+/* Nah, thats not for Ruby. Use Repo#each in Ruby */
+#if !defined(SWIGRUBY)
+  XSolvable **solvables() {
+    int count = pool_xsolvables_count( $self );
+    Solvable *s;
+    Id p;
+    int i = 0;
+    XSolvable **xs = (XSolvable **) malloc((count + 1) * sizeof(XSolvable **));
+
+    for (p = 2, s = $self->solvables + p; p < $self->nsolvables; p++, s++)
+      {
+        if (!s)
+          continue;
+        if (!s->name)
+          continue;
+        xs[i] = xsolvable_new($self, s - $self->solvables);
+        ++i;
+      }
+    xs[i] = NULL;
+
+    return xs;
+  }
+#endif
 #if defined(SWIGPYTHON)
     %pythoncode %{
         def __iter__(self):
-          r = range(0,self.size())
-          while r:
-            yield self.get(r.pop(0))
+          s = self.solvables()
+          while s:
+            yield s.pop(0)
     %}
 #endif
 

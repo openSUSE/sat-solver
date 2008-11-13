@@ -280,6 +280,25 @@ dataiterator_value( Dataiterator *di )
 %typemap(in) FILE* {
     $1 = PerlIO_findFILE(IoIFP(sv_2io($input)));
 }
+
+/*
+ * XSolvable array to Perl
+ */
+%typemap(out) XSolvable ** {
+    int n, i;
+
+    for (n = 0; $1[n];)
+        n++;
+
+    if (n > items)
+        EXTEND(sp, n - items);
+
+    for (i = 0; i < n; i++) {
+        ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr($1[i]), SWIGTYPE_p__Solvable, SWIG_OWNER | SWIG_SHADOW);
+        argvi++;
+    }
+    free($1);
+}
 #endif
 
 typedef int Id;
