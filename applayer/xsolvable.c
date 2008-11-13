@@ -327,6 +327,33 @@ solver_suggestions_iterate( Solver *solver, int (*callback)( const XSolvable *xs
 }
 
 
+/*
+ * count solvables in Repo
+ * This is the number of iterations in repo_xsolvables_iterate
+ */
+
+int
+repo_xsolvables_count( Repo *repo )
+{
+  Solvable *s;
+  Id p;
+  int count = 0;
+  FOR_REPO_SOLVABLES(repo, p, s)
+    {
+      if (!s)
+        continue;
+      if (!s->name)
+        continue;
+      count++;
+    }
+  return count;
+}
+
+
+/*
+ * iterate over all solvables in Repo
+ */
+
 void
 repo_xsolvables_iterate( Repo *repo, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data )
 {

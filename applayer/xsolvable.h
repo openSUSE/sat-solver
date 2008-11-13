@@ -71,14 +71,6 @@ XSolvable *xsolvable_add( Repo *repo, XSolvable *xs );
  */
 XSolvable *xsolvable_find( Pool *pool, char *name, const Repo *repo );
 
-/*
- * Get XSolvable by index in pool (and repo)
- * If repo == NULL, count index from beginning of pool
- * If repo != NULL, count index from the given repo
- */
-XSolvable *xsolvable_get( Pool *pool, int i, const Repo *repo );
-
-
 /* iterate over all (newly-)to-be-installed solvables
  * if all = 0, only report *newly* installed ones (non-updates)
  * if all = 1, report all to-be-installed ones
@@ -100,6 +92,12 @@ void solver_updates_iterate( Solver *solver, int (*callback)( const XSolvable *x
  * Iterate over all solvables being suggested in the last solver run
  */
 void solver_suggestions_iterate( Solver *solver, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data );
+
+/*
+ * Count solvables in a Repo
+ * This is the number of iterations when calling repo_xsolvables_iterate for this Repo
+ */
+int repo_xsolvables_count( Repo *repo );
 
 /*
  * Iterate over all solvables of the given repo
