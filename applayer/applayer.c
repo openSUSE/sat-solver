@@ -25,13 +25,25 @@ my_id2str( Pool *pool, Id id )
 }
 
 unsigned int
-pool_size( Pool *pool )
+pool_count( Pool *pool )
 {
-  /* decrease by one since Id 0 is reserved
-   * decrease by one since Id 1 is the system solvable and not
+  Solvable *s;
+  Id p;
+  int count = 0;
+  /* skip Id 0 since it is reserved
+   * skip Id 1 since it is the system solvable and not
    *   accessible to the outside
    */
-  return pool->nsolvables - 1 - 1;
+  for (p = 2, s = pool->solvables + p; p < pool->nsolvables; p++, s++)
+    {
+      if (!s)
+	continue;
+      if (!s->name)
+        continue;
+      ++count;
+    }
+  
+  return count;
 }
 
 void
@@ -39,9 +51,11 @@ pool_xsolvables_iterate( Pool *pool, int (*callback)(const XSolvable *xs, void *
 {
   Solvable *s;
   Id p;
-  /* skip Id 0 and Id 1, see pool_size() above */
+  /* skip Id 0 and Id 1, see pool_count() above */
   for (p = 2, s = pool->solvables + p; p < pool->nsolvables; p++, s++)
     {
+      if (!s)
+	continue;
       if (!s->name)
         continue;
       if (callback( xsolvable_new( pool, p ), user_data ) )
