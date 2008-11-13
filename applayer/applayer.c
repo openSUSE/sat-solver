@@ -25,7 +25,7 @@ my_id2str( Pool *pool, Id id )
 }
 
 unsigned int
-pool_count( Pool *pool )
+pool_xsolvables_count( Pool *pool )
 {
   Solvable *s;
   Id p;
