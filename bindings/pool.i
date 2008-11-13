@@ -230,6 +230,11 @@ typedef struct _Pool {} Pool;
     sub providers {
       my ($self, $rel) = @_;
       my @prov = ();
+      
+      if ($self->unprepared()) {
+        $self->prepare();
+      }
+      
       my $count = $self->providers_count($rel);
       for (my $i = 0; $i < $count; ++$i) {
         my $solvable = $self->providers_get($rel, $i);
