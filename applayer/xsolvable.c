@@ -149,7 +149,7 @@ xsolvable_find( Pool *pool, char *name, const Repo *repo )
   Queue plist;
   int i, end;
   Solvable *s;
-  Solver *solver = solver_create(pool);	/* XXX: who set's those flags? */
+  Solver *solver = solver_create(pool);	/* XXX: who sets those flags? */
 
   id = str2id( pool, name, 1 );
   queue_init( &plist);
