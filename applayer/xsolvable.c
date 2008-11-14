@@ -149,7 +149,7 @@ xsolvable_find( Pool *pool, char *name, const Repo *repo )
   Queue plist;
   int i, end;
   Solvable *s;
-  Solver *solver = solver_create(pool);
+  Solver *solver = solver_create(pool);	/* XXX: who set's those flags? */
 
   id = str2id( pool, name, 1 );
   queue_init( &plist);
@@ -167,6 +167,7 @@ xsolvable_find( Pool *pool, char *name, const Repo *repo )
 
   prune_to_best_arch(pool, &plist);
   prune_to_best_version(solver, &plist);
+  solver_free(solver);
   if (plist.count == 0) {
     return NULL;
   }
