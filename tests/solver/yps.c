@@ -176,7 +176,7 @@ findinstalled(Solver *solv, Queue *installedq)
 	}
       if (!nq.count)
 	continue;
-      policy_filter_unwanted(solv, &nq, 0, POLICY_MODE_RECOMMEND);
+      policy_filter_unwanted(solv, &nq, POLICY_MODE_RECOMMEND);
       queue_push(&pq, nq.elements[0]);
     }
   pool_trivial_installable(pool, &installedmap, &pq, &opq);
