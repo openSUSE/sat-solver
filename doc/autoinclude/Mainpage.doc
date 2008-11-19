@@ -1,6 +1,59 @@
-/** \namespace zypp libzypp
-*/
-** \mainpage Welcome to libzypp
+/** \mainpage satsolver SAT Solver for package management
 
+\author Michael Schroeder <mls@suse.de>
+
+\section welcome Welcome
+
+Welcome to the sat solver documentation page.
+
+\section whatis What is the SAT solver?
+
+The SAT solver is a package dependency solver library which offers the following:
+
+- A dependency solver based on SAT algorithms: http://en.wikipedia.org/wiki/Boolean_satisfiability_problem
+- an efficient file and memory representation for the usually complex repository and dependency data, with attributes support. See more at \ref formatpage
+
+See \ref historypage for the SAT solver history.
+
+\section basicidea Basic idea
+
+Express packaga dependencies as boolean expressions.
+(in conjunctive normal form - CNF)
+
+(! == boolean not)
+
+- A requires B  -> !A or B
+- A conflicts B -> !A or !B (! (A and B)
+* A obsoletes B -> A conflicts B
+- A provides B -> B == A (replace all occurences of B in CNFs with A)
+
+\subsection datastruct Concepts & Datastructures
+
+- Solvable:
+  - Representation of package with name, version, architecture, dependencies
+- Repo:
+  - Collection of solvables, like a repository or the rpm database
+- Pool:
+  - Collection of repositories. See more at \ref poolpage
+
+\section usage Usage
+
+- The installed packages are represented as a single repo
+- The installed and available packages are represented as a Pool
+
+The solver gets initialized by passing it the complete pool (all Solvables)
+and a single Source (called 'system', representing the installed Solvables).
+
+It then creates rules to flag the Solvables of 'system' as installed.
+
+\section Contributing
+
+See \ref codeconvpage for code conventions.
+
+\section seealso See also
+
+http://del.icio.us/kkaempf/sat for a general overview on references
+about satisfiability, sat-solving and its relation to package
+dependencies.
 
 */
