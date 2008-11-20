@@ -97,6 +97,28 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
     return i;
   }
 
+#if defined(SWIGRUBY)
+  /*
+   * Ruby
+   * solvable.identical?(other_solvable) => bool
+   */
+  %rename("identical?") identical;
+  %typemap(out) int identical
+    "$result = ($1 != 0) ? Qtrue : Qfalse;";
+#endif
+  /*
+   * solvable_identical represents satsolver semantics for 'equality'
+   * This might be different from your application needs, beware !
+   */
+  int identical( XSolvable *xs )
+  {
+    Solvable *s1 = xsolvable_solvable( $self );
+    Solvable *s2 = xsolvable_solvable( xs );
+    if ($self->pool == xs->pool)
+      return solvable_identical($self->pool, s1, s2);
+    return 0;
+  }
+
   /*
    * Dependencies
    */
