@@ -115,7 +115,7 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
     Solvable *s1 = xsolvable_solvable( $self );
     Solvable *s2 = xsolvable_solvable( xs );
     if ($self->pool == xs->pool)
-      return solvable_identical($self->pool, s1, s2);
+      return solvable_identical(s1, s2);
     return 0;
   }
 
