@@ -57,8 +57,8 @@ ADD_CUSTOM_TARGET( doc_forced
 ### ##################################################
 
 INSTALL( FILES
-   ${CMAKE_CURRENT_BINARY_DIR}/libzypp.doxytag
-   DESTINATION ${DOC_INSTALL_DIR}/libzypp/libzypp.doxytag
+   ${CMAKE_CURRENT_BINARY_DIR}/satsolver.doxytag
+   DESTINATION ${DOC_INSTALL_DIR}/satsolver/satsolver.doxytag
 )
 
 # We could use the thing below but it wont work with cmake older than 2.4.4
