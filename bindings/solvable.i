@@ -237,14 +237,45 @@ fail:
       rb_yield( value );
     }
   }
+  void attr_values(const char *name)
+  {
+    Solvable *s = xsolvable_solvable($self);
+    Dataiterator di;
+    dataiterator_init(&di, s->repo->pool, s->repo, $self->id, str2id(pool,name,0), 0, SEARCH_NO_STORAGE_SOLVABLE);
+    VALUE value;
+    while (dataiterator_step(&di))
+    {
+      value = dataiterator_value ( &di );
+      rb_yield( value );
+    }
+  }
 #endif
 #if defined(SWIGPYTHON)
     %pythoncode %{
         def attrs(self):
-          d = Dataiterator(self.repo().pool(), self.repo(),"",SEARCH_NO_STORAGE_SOLVABLE,self)
+          d = Dataiterator(self.repo().pool(),self.repo(),None,SEARCH_NO_STORAGE_SOLVABLE,self)
+          while d.step():
+            yield d.value()
+        def attr_values(self,name):
+          d = Dataiterator(self.repo().pool(),self.repo(),None,SEARCH_NO_STORAGE_SOLVABLE,self,name)
           while d.step():
             yield d.value()
     %}
+#endif
+#if defined(SWIGPERL)
+  %perlcode %{
+    sub attr_values {
+      my ($self, $name) = @_;
+      my @values = ();
+      
+      my $di = new satsolver::Dataiterator($self->repo()->pool(),$self->repo(),undef,0,$self,$name);
+      while ($di->step() != 0) {
+        push @values, $di->value();
+      }
+
+      return wantarray ? @values : $values[0];
+    }
+  %}
 #endif
 
   /*
