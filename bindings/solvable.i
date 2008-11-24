@@ -205,7 +205,7 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
 
     Solvable *s = xsolvable_solvable($self);
     Dataiterator di;
-    dataiterator_init(&di, s->repo->pool, s->repo, $self->id, key, 0, SEARCH_NO_STORAGE_SOLVABLE);
+    dataiterator_init(&di, s->repo->pool, s->repo, $self->id, key, 0, 0);
     if (dataiterator_step(&di))
     {
       result = dataiterator_value( &di );
@@ -241,7 +241,7 @@ fail:
   {
     Solvable *s = xsolvable_solvable($self);
     Dataiterator di;
-    dataiterator_init(&di, s->repo->pool, s->repo, $self->id, str2id(pool,name,0), 0, SEARCH_NO_STORAGE_SOLVABLE);
+    dataiterator_init(&di, s->repo->pool, s->repo, $self->id, str2id(pool,name,0), 0, 0);
     VALUE value;
     while (dataiterator_step(&di))
     {
@@ -257,7 +257,7 @@ fail:
           while d.step():
             yield d.value()
         def attr_values(self,name):
-          d = Dataiterator(self.repo().pool(),self.repo(),None,SEARCH_NO_STORAGE_SOLVABLE,self,name)
+          d = Dataiterator(self.repo().pool(),self.repo(),None,0,self,name)
           while d.step():
             yield d.value()
     %}
@@ -266,7 +266,7 @@ fail:
   %perlcode %{
     sub attr_values {
       my ($self, $name) = @_;
-      my @values = ();
+      my @values;
       
       my $di = new satsolver::Dataiterator($self->repo()->pool(),$self->repo(),undef,0,$self,$name);
       while ($di->step() != 0) {
@@ -316,7 +316,7 @@ fail:
       if (key != ID_NULL) {
         Solvable *s = xsolvable_solvable($self);
         Dataiterator di;
-        dataiterator_init(&di, s->repo->pool, s->repo, $self->id, key, 0, SEARCH_NO_STORAGE_SOLVABLE);
+        dataiterator_init(&di, s->repo->pool, s->repo, $self->id, key, 0, 0);
         if (dataiterator_step(&di))
           result = Swig_True;
       }
