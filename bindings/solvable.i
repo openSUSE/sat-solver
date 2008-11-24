@@ -241,7 +241,7 @@ fail:
   {
     Solvable *s = xsolvable_solvable($self);
     Dataiterator di;
-    dataiterator_init(&di, s->repo->pool, s->repo, $self->id, str2id(pool,name,0), 0, 0);
+    dataiterator_init(&di, s->repo->pool, s->repo, $self->id, str2id(s->repo->pool,name,0), 0, 0);
     VALUE value;
     while (dataiterator_step(&di))
     {
