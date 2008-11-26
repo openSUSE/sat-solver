@@ -1293,6 +1293,9 @@ addrpmrulesforsolvable(Solver *solv, Solvable *s, Map *m)
 
       if (s->conflicts)
 	{
+	  int ispatch = 0;
+	  if (!strncmp("patch:", id2str(pool, s->name), 6))
+	    ispatch = 1;
 	  conp = s->repo->idarraydata + s->conflicts;
 	  /* foreach conflicts of 's' */
 	  while ((con = *conp++) != 0)
@@ -1300,6 +1303,8 @@ addrpmrulesforsolvable(Solver *solv, Solvable *s, Map *m)
 	      /* foreach providers of a conflict of 's' */
 	      FOR_PROVIDES(p, pp, con)
 		{
+		  if (ispatch && !pool_match_nevr(pool, pool->solvables + p, con))
+		    continue;
 		  /* dontfix: dont care about conflicts with already installed packs */
 		  if (dontfix && pool->solvables[p].repo == installed)
 		    continue;
