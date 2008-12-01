@@ -66,6 +66,12 @@ adddep(Pool *pool, struct parsedata *pd, unsigned int olddeps, char *line, Id ma
   Id id, evrid;
   char *sp[4];
 
+  if (line[6] == '/')
+    {
+      /* A file dependency. Do not try to parse it */
+      id = str2id(pool, line + 6, 1);
+      return repo_addid_dep(pd->repo, olddeps, id, marker);
+    }
   i = split(line + 5, sp, 4); /* name, <op>, evr, ? */
   if (i != 1 && i != 3) /* expect either 'name' or 'name' <op> 'evr' */
     {
@@ -800,6 +806,9 @@ repo_add_susetags(Repo *repo, FILE *fp, Id vendor, const char *language, int fla
 	    last_found_pack = 0;
 	    handle = 0;
 	    indesc++;
+	    continue;
+	  case CTAG('=', 'V', 'n', 'd'):
+	    s->vendor = str2id(pool, line + 6, 1);
 	    continue;
 
         /* From here it's the attribute tags.  */
