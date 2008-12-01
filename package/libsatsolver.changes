@@ -1,8 +1,14 @@
 -------------------------------------------------------------------
+Mon Dec  1 11:16:30 CET 2008 - mls@suse.de
+
+- backport file dependency parsing fix [bnc#450286]
+- backport =Vnd support
+- 0.9.6
+
+-------------------------------------------------------------------
 Wed Nov 26 15:05:18 CET 2008 - mls@suse.de
 
 - backport patch conflict handling change [bnc#447986]
-- 0.9.6
 
 -------------------------------------------------------------------
 Wed Oct 15 18:16:59 CEST 2008 - mls@suse.de
