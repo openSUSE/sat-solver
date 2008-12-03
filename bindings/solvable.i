@@ -180,6 +180,9 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
 #endif
   {
     Swig_Type result = Swig_Null;
+    Id key;
+    Solvable *s;
+    Dataiterator di;
 #if defined(SWIGRUBY)
     char *name;
 
@@ -198,13 +201,11 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
       SWIG_exception( SWIG_ValueError, "Attribute name missing" );
 
     /* key existing in pool ? */
-    Id key;
     key = str2id( $self->pool, name, 0);
     if (key == ID_NULL)
       SWIG_exception( SWIG_ValueError, "No such attribute name" );
 
-    Solvable *s = xsolvable_solvable($self);
-    Dataiterator di;
+    s = xsolvable_solvable($self);
     dataiterator_init(&di, s->repo->pool, s->repo, $self->id, key, 0, 0);
     if (dataiterator_step(&di))
     {
@@ -229,8 +230,8 @@ fail:
   {
     Solvable *s = xsolvable_solvable($self);
     Dataiterator di;
-    dataiterator_init(&di, s->repo->pool, s->repo, $self->id, 0, 0, SEARCH_NO_STORAGE_SOLVABLE);
     VALUE value;
+    dataiterator_init(&di, s->repo->pool, s->repo, $self->id, 0, 0, SEARCH_NO_STORAGE_SOLVABLE);
     while (dataiterator_step(&di))
     {
       value = dataiterator_value ( &di );
@@ -241,8 +242,8 @@ fail:
   {
     Solvable *s = xsolvable_solvable($self);
     Dataiterator di;
-    dataiterator_init(&di, s->repo->pool, s->repo, $self->id, str2id(s->repo->pool,name,0), 0, 0);
     VALUE value;
+    dataiterator_init(&di, s->repo->pool, s->repo, $self->id, str2id(s->repo->pool,name,0), 0, 0);
     while (dataiterator_step(&di))
     {
       value = dataiterator_value ( &di );
