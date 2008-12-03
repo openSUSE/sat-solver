@@ -301,6 +301,26 @@ dataiterator_value( Dataiterator *di )
 }
 #endif
 
+#if defined(SWIGPYTHON)
+/*
+ * XSolvable array to Python
+ */
+%typemap(out) XSolvable ** {
+    int n, i;
+    
+    for (n = 0; $1[n];)
+        n++;
+
+    $result = PyList_New(n);
+
+    for (i = 0; i < n; i++) {
+        PyObject *item = SWIG_NewPointerObj(SWIG_as_voidptr($1[i]), SWIGTYPE_p__Solvable, 0);
+        PyList_SetItem($result, i, item);
+    }
+    free($1);
+}
+#endif
+
 typedef int Id;
 typedef unsigned int Offset;
 
