@@ -35,6 +35,10 @@ poolloadcallback( Pool *pool, Repodata *data, void *vdata )
 typedef struct _Pool {} Pool;
 %rename(Pool) _Pool;
 
+#if defined(SWIGRUBY)
+%mixin Pool "Enumerable";
+#endif
+
 %extend Pool {
 
   /*
@@ -362,6 +366,18 @@ typedef struct _Pool {} Pool;
           while d.step():
             yield d
     %}
+#endif
+
+#if defined(SWIGRUBY)
+  void search(const char *match, int flags, XSolvable *xs = NULL, const char *keyname = NULL) 
+  {
+    Dataiterator *di;
+    di = swig_dataiterator_new($self, NULL, match, flags, xs, keyname);
+    while( dataiterator_step(di) ) {
+      rb_yield(SWIG_NewPointerObj((void*) di, SWIGTYPE_p__Dataiterator, 0));
+    }
+    swig_dataiterator_free(di);
+  }
 #endif
 
   /**************************
