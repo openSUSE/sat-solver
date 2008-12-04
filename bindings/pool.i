@@ -375,6 +375,9 @@ typedef struct _Pool {} Pool;
    * Solver management
    */
 
+#if defined(SWIGRUBY)
+  %rename( "installed=" ) set_installed( Repo *repo );
+#endif
   void set_installed(Repo *installed = NULL)
   {
     pool_set_installed( $self, installed);
