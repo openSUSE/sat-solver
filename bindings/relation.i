@@ -65,6 +65,20 @@ typedef struct _Relation {} Relation;
     return 0;
   }
 
+  const char *op_s()
+  {
+    static const char *ops[] = {
+      "", ">", "=", ">=",
+      "<", "<>", "<=", "<=>"
+    };
+    int op = 0;
+    if (ISRELDEP( $self->id )) {
+      Reldep *rd = GETRELDEP( $self->pool, $self->id );
+      op = rd->flags;
+    }
+    return ops[op % 8];
+  }
+
 #if defined(SWIGRUBY)
   %alias compare "<=>";
 #endif
