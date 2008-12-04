@@ -6,6 +6,9 @@
 %rename(Repo) _Repo;
 typedef struct _Repo {} Repo;
 
+#if defined(SWIGRUBY)
+%mixin Repo "Enumerable";
+#endif
 
 %extend Repo {
   Repo( Pool *pool, const char *reponame )
