@@ -35,7 +35,7 @@ typedef struct _Repokey {} XRepokey; /* expose XRepokey as 'Repokey' */
   const char *name()
   {
     Repokey *key = xrepokey_repokey( $self );
-    return my_id2str( $self->repodata->repo->pool, key->name );
+    return my_id2str( $self->repo->pool, key->name );
   }
   /* type id of key */
   int type_id()
@@ -128,7 +128,8 @@ SV *
 #endif
   const char *string()
   {
-    return "<Repokey>";
+    Repokey *key = xrepokey_repokey( $self );
+    return my_id2str( $self->repo->pool, key->name );
   }
 }
 
