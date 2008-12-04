@@ -58,17 +58,16 @@ dependency_relations( const Dependency *dep )
 int
 dependency_size( const Dependency *dep )
 {
-  int i = 0;
-  Solvable *s;
-  Id *ids;
   Offset *relations = dependency_relations( dep );
   if (relations) {
-    s = xsolvable_solvable( dep->xsolvable );
-    ids = s->repo->idarraydata + *relations;
+    Solvable *s = xsolvable_solvable( dep->xsolvable );
+    Id *ids = s->repo->idarraydata + *relations;
+    int i = 0;
     while (*ids++)
       ++i;
+    return i;
   }
-  return i;
+  return 0;
 }
 
 
@@ -87,15 +86,17 @@ dependency_relation_get( Dependency *dep, int i )
 {
   Solvable *s = xsolvable_solvable( dep->xsolvable );
   Offset *relations = dependency_relations( dep );
-  /* loop over it to detect end */
-  Id *ids = s->repo->idarraydata + *relations;
-  while ( i-- >= 0 ) {
-    if ( !*ids )
-      break;
-    if ( i == 0 ) {
-      return relation_new( s->repo->pool, *ids );
+  if (relations) {
+    /* loop over it to detect end */
+    Id *ids = s->repo->idarraydata + *relations;
+    while ( i >= 0 ) {
+      if ( !*ids )
+	break;
+      if ( i-- == 0 ) {
+	return relation_new( s->repo->pool, *ids );
+      }
+      ++ids;
     }
-    ++ids;
   }
   return NULL;
 }
