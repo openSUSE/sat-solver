@@ -71,12 +71,22 @@ typedef struct _Relation {} Relation;
       "", ">", "=", ">=",
       "<", "<>", "<=", "<=>"
     };
-    int op = 0;
+    unsigned int op = 0;
     if (ISRELDEP( $self->id )) {
       Reldep *rd = GETRELDEP( $self->pool, $self->id );
       op = rd->flags;
     }
-    return ops[op % 8];
+    if (op < 8)
+      return ops[op];
+    switch (op) {
+      case REL_AND: return "and";
+      case REL_OR: return "or";
+      case REL_WITH: return "with";
+      case REL_NAMESPACE: return "namespace";
+      case REL_ARCH: return "arch";
+      default: break;
+    }
+    return "<op>";
   }
 
 #if defined(SWIGRUBY)
