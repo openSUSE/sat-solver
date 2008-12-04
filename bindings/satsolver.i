@@ -16,6 +16,10 @@
 %module satsolver
 %feature("autodoc","1");
 
+#if defined(SWIGRUBY)
+%include <ruby.swg>
+#endif
+
 %{
 
 /*=============================================================*/
@@ -144,6 +148,38 @@ generic_xsolvables_iterate_callback( const XSolvable *xs, void *user_data )
 }
 #endif
 
+/*
+ * create Dataiterator
+ * (used by dataiterator.i and pool.search)
+ */
+
+static Dataiterator *
+swig_dataiterator_new(Pool *pool, Repo *repo, const char *match, int option, XSolvable *xs, const char *keyname)
+{
+    Dataiterator *di = calloc(1, sizeof( Dataiterator ));
+    Solvable *s = 0;
+    /* cope with pool or repo being NULL */
+    if (!pool) {
+      if (!repo) {
+        /* raise exception (FIXME) */
+      }
+      pool = repo->pool;
+    }
+    if (xs) s = xsolvable_solvable(xs);
+    dataiterator_init(di, pool, repo, s ? s - s->repo->pool->solvables : 0, keyname && pool ? str2id(pool, keyname, 0) : 0, match, option);
+    return di;
+}
+
+/*
+ * destroy Dataiterator
+ */
+void
+swig_dataiterator_free(Dataiterator *di)
+{
+    dataiterator_free(di);
+    free( di );
+}
+
 /* convert Dataiterator to target value
  * if *more != 0 on return, value is incomplete
  */
@@ -253,6 +289,7 @@ dataiterator_value( Dataiterator *di )
 /* types and typemaps */
 
 #if defined(SWIGRUBY)
+
 /*
  * FILE * to Ruby
  * (copied from /usr/share/swig/ruby/file.i)

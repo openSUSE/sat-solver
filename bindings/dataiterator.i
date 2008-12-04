@@ -6,7 +6,6 @@
 %rename(Dataiterator) _Dataiterator;
 typedef struct _Dataiterator {} Dataiterator;
 
-
 %extend Dataiterator {
   %constant int SEARCH_STRINGMASK = SEARCH_STRINGMASK;
   %constant int SEARCH_STRING = SEARCH_STRING;
@@ -33,21 +32,10 @@ typedef struct _Dataiterator {} Dataiterator;
 
   Dataiterator(Pool *pool, Repo *repo, const char *match, int option, XSolvable *xs = 0, const char *keyname = 0)
   {
-    Dataiterator *di = calloc(1, sizeof( Dataiterator ));
-    Solvable *s = 0;
-    /* cope with pool or repo being NULL */
-    if (!pool) {
-      if (!repo) {
-        /* raise exception (FIXME) */
-      }
-      pool = repo->pool;
-    }
-    if (xs) s = xsolvable_solvable(xs);
-    dataiterator_init(di, pool, repo, s ? s - s->repo->pool->solvables : 0, keyname && pool ? str2id(pool, keyname, 0) : 0, match, option);
-    return di;
+    return swig_dataiterator_new(pool, repo, match, option, xs, keyname);
   }
   
-  ~Dataiterator() { dataiterator_free($self); free( $self ); }
+  ~Dataiterator() { swig_dataiterator_free($self); }
 
   XSolvable *solvable()
   {
