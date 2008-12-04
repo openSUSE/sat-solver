@@ -25,6 +25,10 @@ dependency_relations_iterate_callback( const Relation *rel )
 typedef struct _Dependency {} Dependency;
 
 
+#if defined(SWIGRUBY)
+%mixin Dependency "Enumerable";
+#endif
+
 %extend Dependency {
   %constant int DEP_PRV = DEP_PRV;
   %constant int DEP_REQ = DEP_REQ;

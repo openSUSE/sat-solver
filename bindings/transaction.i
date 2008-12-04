@@ -25,6 +25,9 @@ transaction_jobs_iterate_callback( const Job *j )
 %rename(Transaction) _Transaction;
 typedef struct _Transaction {} Transaction;
 
+#if defined(SWIGRUBY)
+%mixin Transaction "Enumerable";
+#endif
 
 %extend Transaction {
   Transaction( Pool *pool )
