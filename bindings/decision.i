@@ -22,6 +22,16 @@ typedef struct _Decision {} Decision;
   { return $self->pool; }
   int op()
   { return $self->op; }
+  const char *op_s()
+  { switch ($self->op) {
+      case DECISION_INSTALL: return "install";
+      case DECISION_REMOVE: return "remove";
+      case DECISION_UPDATE: return "update";
+      case DECISION_OBSOLETE: return "obsolete";
+      default: break;
+    }
+    return "unknown";
+  }
   XSolvable *solvable()
   { return xsolvable_new( $self->pool, $self->solvable ); }
   XSolvable *reason()
