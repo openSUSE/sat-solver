@@ -20,7 +20,7 @@ class TestSearchFunctions(unittest.TestCase):
     repo = pool.add_solv( "os11-biarch.solv" )
     repo.set_name("test")
     i = 0
-    for d in pool.search("yast2", satsolver.SEARCH_STRING):
+    for d in pool.search("yast2", satsolver.SEARCH_STRING,None,"solvable:filelist"):
       print d.solvable(), "matches 'yast2' in ", d.keyname(), ":  ", d.value()
       i = i + 1
       if i > 10:
