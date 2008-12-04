@@ -45,7 +45,8 @@ class SolutionTest < Test::Unit::TestCase
     transaction.install( solv1 )
     transaction.remove( "Z" )
     
-    solver = pool.create_solver( installed )
+    pool.installed = installed
+    solver = pool.create_solver( )
 #    solver.allow_uninstall = true;
 #    @pool.debug = 255
     solver.solve( transaction )

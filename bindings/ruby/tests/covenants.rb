@@ -15,16 +15,23 @@ class CovenantTest < Test::Unit::TestCase
     assert repo.size > 0
     repo.name = "test"
 
+    first = second = nil
+    repo.each do |s|
+      if first
+	second = s
+	break
+      else
+	first = s
+      end
+    end	
+    
     solver = pool.create_solver
 
     solver.include( "foo" )
-      puts "Hi"
-      puts "#{repo[0]}"
-      puts "Ho"
-    solver.include( repo[0] )
+    solver.include( first )
     solver.include( Satsolver::Relation.new( pool, "foo", Satsolver::REL_EQ, "42-7" ) )
     solver.exclude( "bar" )
-    solver.exclude( repo[1] )
+    solver.exclude( second )
     solver.exclude( Satsolver::Relation.new( pool, "bar", Satsolver::REL_EQ, "42-7" ) )
     assert solver.covenants_count == 6
     solver.each_covenant do |c|

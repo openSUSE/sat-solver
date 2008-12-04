@@ -31,7 +31,7 @@ class RepodataTest < Test::Unit::TestCase
     repodata = repo.data(0)
     assert repodata
     
-    puts "Repodata is at '#{repodata.location}' with #{repodata.keysize} keys"
+    puts "Repodata has #{repodata.keysize} keys"
     repodata.each_key { |k|
       puts "  Key '#{k.name}' is #{k.type}[#{k.type_id}] with #{k.size} bytes"
     }

@@ -59,7 +59,8 @@ class DecisionTest < Test::Unit::TestCase
     transaction.install( solv3 )
     transaction.remove( "D" )
     
-    solver = pool.create_solver( installed )
+    pool.installed = installed
+    solver = pool.create_solver( )
     solver.allow_uninstall = true;
 #    @pool.debug = 255
     solver.solve( transaction )

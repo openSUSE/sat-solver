@@ -17,7 +17,7 @@ def show_dep name, deps
   end
 
   deps.each { |d|
-    puts "\t#{d.name} #{d.op} #{d.evr}"
+    puts "\t#{d.name} #{d.op_s} #{d.evr}"
   }
 end
 
@@ -30,20 +30,17 @@ class SolvableTest < Test::Unit::TestCase
     @pool.add_solv( solvpath )
     assert @pool.size > 0
   end
-  def test_solvable
-    solv = @pool[2]
-    assert solv
-    puts solv
-    puts "#{solv.name}-#{solv.evr}.#{solv.arch}[#{solv.vendor}]"
-  end
   def test_deps
-    return
+    i = 0
+    puts "test_deps"
     @pool.each { |s|
-      puts s
+      puts "Solvable >#{s}<"
       show_dep "Provides", s.provides
       show_dep "Requires", s.requires
       show_dep "Obsoletes", s.obsoletes
       show_dep "Conflicts", s.conflicts
+      i += 1
+      break if i > 5
     }
   end
   def test_creation
@@ -71,7 +68,7 @@ class SolvableTest < Test::Unit::TestCase
     transaction = @pool.create_transaction
     transaction.install( solv1 )
     
-    solver = @pool.create_solver( @pool.create_repo( "system" ) )
+    solver = @pool.create_solver( )
 #    @pool.debug = 255
     solver.solve( transaction )
     solver.each_to_install { |s|
