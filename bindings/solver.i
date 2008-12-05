@@ -143,6 +143,17 @@ typedef struct solver {} Solver;
   void set_no_update_provide( int bflag )
   { $self->noupdateprovide = bflag; }
 
+  int rule_count() { return $self->nrules; }
+  int rpmrules_start() { return 0; }
+  int rpmrules_end() { return $self->rpmrules_end; }
+  int featurerules_start() { return $self->featurerules; }
+  int featurerules_end() { return $self->featurerules_end; }
+  int updaterules_start() { return $self->updaterules; }
+  int updaterules_end() { return $self->updaterules_end; }
+  int jobrules_start() { return $self->jobrules; }
+  int jobrules_end() { return $self->jobrules_end; }
+  int learntrules_start() { return $self->learntrules; }
+  int learntrules_end() { return $self->nrules; }
 
   /**************************
    * Covenants
@@ -273,6 +284,39 @@ typedef struct solver {} Solver;
   void each_decision()
   { return solver_decisions_iterate( $self, solver_decisions_iterate_callback, NULL ); }
 #endif
+
+  /*
+   * explain a decision
+   *
+   * returns 4-element list [<SOLVER_PROBLEM_xxx>, Relation, Solvable, Solvable]
+   *
+   */
+#if defined(SWIGRUBY)
+  VALUE
+#endif
+#if defined(SWIGPYTHON)
+  PyObject *
+#endif
+#if defined(SWIGPERL)
+  SV *
+#endif
+  explain(Transaction *t, Decision *decision)
+  {
+    Id depp = 0, sourcep = 0, targetp = 0;
+    SolverProbleminfo pi;
+    Swig_Type result = Swig_Array();
+    if (decision->rule > 0) {
+      pi = solver_problemruleinfo($self, &(t->queue), decision->rule - $self->rules, &depp, &sourcep, &targetp);
+      Swig_Append(result, Swig_Int(pi));
+    }
+    else {
+      Swig_Append(result, Swig_Int(-1));
+    }
+    Swig_Append(result, SWIG_NewPointerObj((void*)relation_new($self->pool, depp), SWIGTYPE_p__Relation, 0));
+    Swig_Append(result, SWIG_NewPointerObj((void*)xsolvable_new($self->pool, sourcep), SWIGTYPE_p__Solvable, 0));
+    Swig_Append(result, SWIG_NewPointerObj((void*)xsolvable_new($self->pool, targetp), SWIGTYPE_p__Solvable, 0));
+    return result;
+  }
 
 #if defined(SWIGRUBY)
   %rename("problems?") problems_found();
