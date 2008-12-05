@@ -28,11 +28,14 @@
 XSolvable *
 xsolvable_new( Pool *pool, Id id )
 {
-  XSolvable *xsolvable = (XSolvable *)malloc( sizeof( XSolvable ));
-  xsolvable->pool = pool;
-  xsolvable->id = id;
+  if (id) {
+    XSolvable *xsolvable = (XSolvable *)malloc( sizeof( XSolvable ));
+    xsolvable->pool = pool;
+    xsolvable->id = id;
 
-  return xsolvable;
+    return xsolvable;
+  }
+  return NULL;
 }
 
 
