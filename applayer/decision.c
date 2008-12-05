@@ -95,14 +95,14 @@ solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d, vo
         {
 	  continue;
 	}
-      else
+      else /* p > 0 */
         {
 	  s = p;
 	  if (installed)
 	    {
 	      Solvable *solv = pool_id2solvable( pool, p );
 	      if (solv->repo == installed)
-		continue;
+		continue;  /* thats a 'keep installed' decision, don't report */
 	    }
 	  if (!obsoletesmap[p])
 	    {
