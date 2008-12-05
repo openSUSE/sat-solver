@@ -223,6 +223,7 @@ class ReasonsTest < Test::Unit::TestCase
 
     @pool.prepare
     solver = @pool.create_solver( )
+    solver.dont_install_recommended = true
     solver.solve( transaction )
     solver.each_to_install { |s|
       puts "Install #{s}"
