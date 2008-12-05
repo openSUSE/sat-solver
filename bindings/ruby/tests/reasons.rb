@@ -60,7 +60,11 @@ module Satsolver
 	  end
 	else # d < 0
 	  if p < 0
-	    "cnf! #{to_solvable(pool, -p)} conflicts #{to_solvable(pool, -d)}"
+	    if d == -1
+	      "del! #{to_solvable(pool, -p)}"
+	    else
+	      "cnf! #{to_solvable(pool, -p)} conflicts #{to_solvable(pool, -d)}"
+	    end
 	  else
 	    "error p #{p}, d #{d}, w1 #{w1}, w2 {w2}"
 	  end
@@ -312,6 +316,46 @@ class ReasonsTest < Test::Unit::TestCase
 
     solver.each_decision do |d|
       puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool) if d.rule} | #{d.reason})"
+      e = solver.explain( transaction, d)
+      pis = pi_s e.shift
+      rel = e.shift
+      src = e.shift
+      tgt = e.shift
+      puts "\t [#{src} #{pis} #{rel}: #{tgt}]"
+    end
+  end
+  def test_indirect_removal
+    solv1 = @repo.create_solvable( 'A', '1.0-0' )
+    assert solv1
+    solv2 = @repo.create_solvable( 'B', '1.0-0' )
+    assert solv2
+    
+    rel = @pool.create_relation( "a", Satsolver::REL_EQ, "42" )
+    assert rel
+    solv1.provides << rel
+    
+    puts "\n---\nB-1.0-0 requires a = 42, provided by A-1.0-0. Removal of A should remove B"
+    solv2.requires << rel
+    assert solv2.requires.size == 1
+    
+    @pool.installed = @repo
+    
+    transaction = @pool.create_transaction
+    transaction.remove( solv1 )
+    
+    @pool.prepare
+    solver = @pool.create_solver( )
+    solver.allow_uninstall = true
+    solver.solve( transaction )
+    solver.each_to_install { |s|
+      puts "Install #{s}"
+    }
+    solver.each_to_remove { |s|
+      puts "Remove #{s}"
+    }
+
+    solver.each_decision do |d|
+      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool)} | #{d.reason})"
       e = solver.explain( transaction, d)
       pis = pi_s e.shift
       rel = e.shift
