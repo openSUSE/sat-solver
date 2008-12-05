@@ -57,6 +57,11 @@ typedef struct _Pool {} Pool;
   ~Pool()
   { pool_free($self); }
 
+  XSolvable *solvable(int id)
+  {
+    return xsolvable_new( $self, (Id)id);
+  }
+
 #if defined(SWIGRUBY)
 %{
 /*
