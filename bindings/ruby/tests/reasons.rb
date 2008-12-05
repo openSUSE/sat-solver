@@ -41,7 +41,11 @@ module Satsolver
 	    if p > 0
 	      "or! #{to_solvable(pool, p)}, #{to_solvable(pool, w2)}"
 	    else
-	      "bin! #{to_solvable(pool, -p)} requires #{to_solvable(pool, w2)}"
+	      if w2 > 0
+		"bin! #{to_solvable(pool, -p)} requires #{to_solvable(pool, w2)}"
+	      else
+		"bin! #{to_solvable(pool, -p)} obsoletes #{to_solvable(pool, -w2)}"
+	      end
 	    end
 	  else # p != w1
 	    "error d = 0, w2 = #{w2}, p #{p} != w1 #{w1}"
@@ -185,9 +189,6 @@ class ReasonsTest < Test::Unit::TestCase
     transaction.install( solv2 )
     
     @pool.prepare
-    @pool.each_provider(rel) do |p|
-      puts "#{p} provides #{rel}"
-    end
     solver = @pool.create_solver( )
     solver.solve( transaction )
     solver.each_to_install { |s|
@@ -242,6 +243,81 @@ class ReasonsTest < Test::Unit::TestCase
       puts "\t [#{src} #{pis} #{rel}: #{tgt}]"
     end
   end
-  def test_indirect_requires2
+  def test_conflicts
+    installed = @pool.create_repo( 'installed' )
+    solv1 = installed.create_solvable( 'A', '1.0-0' )
+    assert solv1
+    solv2 = @repo.create_solvable( 'B', '1.0-0' )
+    assert solv2
+    
+    @pool.installed = installed
+
+    rel = @pool.create_relation( "a", Satsolver::REL_EQ, "42" )
+    assert rel
+    solv1.provides << rel
+    solv2.conflicts << rel
+    
+    puts "\n---\nB-1.0-0 conflicts a = 42, provided by installed A-1.0-0"
+    
+    transaction = @pool.create_transaction
+    transaction.install( solv2 )
+    
+    @pool.prepare
+    solver = @pool.create_solver( )
+    solver.solve( transaction )
+    solver.each_to_install { |s|
+      puts "Install #{s}"
+    }
+    solver.each_to_remove { |s|
+      puts "Remove #{s}"
+    }
+
+    solver.each_decision do |d|
+      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool) if d.rule} | #{d.reason})"
+      e = solver.explain( transaction, d)
+      pis = pi_s e.shift
+      rel = e.shift
+      src = e.shift
+      tgt = e.shift
+      puts "\t [#{src} #{pis} #{rel}: #{tgt}]"
+    end
+  end
+  def test_obsoletes
+    installed = @pool.create_repo( 'installed' )
+    solv1 = installed.create_solvable( 'A', '1.0-0' )
+    assert solv1
+    solv2 = @repo.create_solvable( 'B', '1.0-0' )
+    assert solv2
+    
+    @pool.installed = installed
+
+    rel = @pool.create_relation( "A" )
+    assert rel
+    solv2.obsoletes << rel
+    
+    puts "\n---\nB-1.0-0 obsoletes a = 42, provided by installed A-1.0-0"
+    
+    transaction = @pool.create_transaction
+    transaction.install( solv2 )
+    
+    @pool.prepare
+    solver = @pool.create_solver( )
+    solver.solve( transaction )
+    solver.each_to_install { |s|
+      puts "Install #{s}"
+    }
+    solver.each_to_remove { |s|
+      puts "Remove #{s}"
+    }
+
+    solver.each_decision do |d|
+      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool) if d.rule} | #{d.reason})"
+      e = solver.explain( transaction, d)
+      pis = pi_s e.shift
+      rel = e.shift
+      src = e.shift
+      tgt = e.shift
+      puts "\t [#{src} #{pis} #{rel}: #{tgt}]"
+    end
   end
 end
