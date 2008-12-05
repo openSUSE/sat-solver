@@ -187,5 +187,17 @@ typedef struct _Repo {} Repo;
             yield d
     %}
 #endif
+
+#if defined(SWIGRUBY)
+  void search(const char *match, int flags, XSolvable *xs = NULL, const char *keyname = NULL) 
+  {
+    Dataiterator *di;
+    di = swig_dataiterator_new($self->pool, $self, match, flags, xs, keyname);
+    while( dataiterator_step(di) ) {
+      rb_yield(SWIG_NewPointerObj((void*) di, SWIGTYPE_p__Dataiterator, 0));
+    }
+    swig_dataiterator_free(di);
+  }
+#endif
 }
 
