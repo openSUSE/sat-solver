@@ -20,13 +20,14 @@
 #include "solverdebug.h"
 
 Decision *
-decision_new( Pool *pool, int op, Id solvable, Id reason )
+decision_new( Pool *pool, int op, Id solvable, Id reason, Rule *rule )
 {
   Decision *d = (Decision *)malloc( sizeof( Decision ));
   d->pool = pool;
   d->op = op;
   d->solvable = solvable;
   d->reason = reason;
+  d->rule = rule;
   return d;
 }
 
@@ -43,6 +44,7 @@ solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d, vo
   Repo *installed = solver->installed;
   Id p, *obsoletesmap = solver_create_decisions_obsoletesmap( solver );
   Id s, r;
+  int why;
   int op;
   Decision *d;
   int i;
@@ -72,6 +74,7 @@ solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d, vo
   for ( i = 0; i < solver->decisionq.count; i++)
     {
       p = solver->decisionq.elements[i];
+      why = solver->decisionq_why.elements[i];
       r = 0;
 
       if (p < 0)     /* remove */
@@ -119,7 +122,7 @@ solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d, vo
 		}
 	    }
 	}
-      d = decision_new( pool, op, s, r );
+      d = decision_new( pool, op, s, r, why ? solver->rules + why : NULL );
       if (callback( d, user_data ))
 	break;
     }
