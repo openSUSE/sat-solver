@@ -35,6 +35,8 @@ typedef struct _Problem {} Problem;
   %constant int SOLVER_PROBLEM_PACKAGE_CONFLICT = SOLVER_PROBLEM_PACKAGE_CONFLICT;
   %constant int SOLVER_PROBLEM_PACKAGE_OBSOLETES = SOLVER_PROBLEM_PACKAGE_OBSOLETES;
   %constant int SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE = SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE;
+  %constant int SOLVER_PROBLEM_SELF_CONFLICT = SOLVER_PROBLEM_SELF_CONFLICT;
+  %constant int SOLVER_PROBLEM_RPM_RULE = SOLVER_PROBLEM_RPM_RULE;
 
   /* no constructor defined, Problems are created by accessing
      the Solver result. See 'Solver.each_problem'. */
