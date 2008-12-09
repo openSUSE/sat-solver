@@ -17,7 +17,6 @@
  *
  */
 
-#include "pool.h"
 #include "solver.h"
 
 enum decisions {
@@ -29,12 +28,12 @@ enum decisions {
 
 typedef struct _Decision {
   enum decisions op;
-  Pool *pool;
+  Solver *solver;
   Id solvable;
   Rule *rule;
 } Decision;
 
-Decision *decision_new( Pool *pool, int op, Id solvable, Rule *rule );
+Decision *decision_new( Solver *solver, int op, Id solvable, Rule *rule );
 void decision_free( Decision *d );
 
 void solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d, void *user_data ), void *user_data);

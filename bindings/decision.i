@@ -18,8 +18,8 @@ typedef struct _Decision {} Decision;
 
   ~Decision()
   { decision_free( $self ); }
-  Pool *pool()
-  { return $self->pool; }
+  Solver *solver()
+  { return $self->solver; }
   int op()
   { return $self->op; }
   const char *op_s()
@@ -33,8 +33,11 @@ typedef struct _Decision {} Decision;
     return "unknown";
   }
   XSolvable *solvable()
-  { return xsolvable_new( $self->pool, $self->solvable ); }
+  { return xsolvable_new( $self->solver->pool, $self->solvable ); }
   Rule *rule()
-  { return $self->rule; }
+  { if ($self->rule > $self->solver->rules)
+      return $self->rule;
+    return NULL;
+  }
 }
 

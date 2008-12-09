@@ -74,6 +74,36 @@ module Satsolver
   end # class Rule
 end
 
+def explain solver, transaction
+  solver.each_to_install { |s|
+    puts "Install #{s}"
+  }
+  solver.each_to_remove { |s|
+    puts "Remove #{s}"
+  }
+  solver.each_decision do |d|
+    puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool) if d.rule})"
+    e = solver.explain( transaction, d)
+    if e.nil?
+      puts "\t unexplainable"
+    else
+      pis = pi_s e.shift
+      rel = e.shift
+      src = e.shift
+      if src.nil?
+	puts "\t #{pis}"
+      else
+	tgt = e.shift
+	if tgt
+	  puts "\t [#{src}: #{pis} #{rel} provided by #{tgt}]"
+	else
+	  puts "\t [#{src}: #{pis} #{rel}]"
+	end
+      end
+    end
+  end
+end
+
 # SolverProbleminfo to string
 def pi_s pi
   case pi
@@ -118,23 +148,10 @@ class ReasonsTest < Test::Unit::TestCase
     @pool.prepare
     solver = @pool.create_solver( )
     solver.solve( transaction )
-    solver.each_to_install { |s|
-      puts "Install #{s}"
-    }
-    solver.each_to_remove { |s|
-      puts "Remove #{s}"
-    }
 
-    solver.each_decision do |d|
-      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool)})"
-      e = solver.explain( transaction, d)
-      pis = pi_s e.shift
-      rel = e.shift
-      src = e.shift
-      tgt = e.shift
-      puts "\t [#{src} #{pis} #{rel}: #{tgt}]"
-    end
+    explain solver, transaction
   end
+  
   def test_indirect_requires
     solv1 = @repo.create_solvable( 'A', '1.0-0' )
     assert solv1
@@ -155,23 +172,10 @@ class ReasonsTest < Test::Unit::TestCase
     @pool.prepare
     solver = @pool.create_solver( )
     solver.solve( transaction )
-    solver.each_to_install { |s|
-      puts "Install #{s}"
-    }
-    solver.each_to_remove { |s|
-      puts "Remove #{s}"
-    }
-
-    solver.each_decision do |d|
-      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool)})"
-      e = solver.explain( transaction, d)
-      pis = pi_s e.shift
-      rel = e.shift
-      src = e.shift
-      tgt = e.shift
-      puts "\t [#{src} #{pis} #{rel}: #{tgt}]"
-    end
+    explain solver, transaction
   end
+  
+  
   def test_indirect_requires_choose
     solv1 = @repo.create_solvable( 'A', '1.0-0' )
     assert solv1
@@ -195,23 +199,10 @@ class ReasonsTest < Test::Unit::TestCase
     @pool.prepare
     solver = @pool.create_solver( )
     solver.solve( transaction )
-    solver.each_to_install { |s|
-      puts "Install #{s}"
-    }
-    solver.each_to_remove { |s|
-      puts "Remove #{s}"
-    }
-
-    solver.each_decision do |d|
-      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool) if d.rule})"
-      e = solver.explain( transaction, d)
-      pis = pi_s e.shift
-      rel = e.shift
-      src = e.shift
-      tgt = e.shift
-      puts "\t [#{src} #{pis} #{rel}: #{tgt}]"
-    end
+    explain solver, transaction
   end
+  
+  
   def test_install_bash
     solvpath = Pathname( File.dirname( __FILE__ ) ) + Pathname( "../../testdata" ) + "os11-beta5-i386.solv"
     repo = @pool.add_solv( solvpath )
@@ -225,29 +216,10 @@ class ReasonsTest < Test::Unit::TestCase
     solver = @pool.create_solver( )
 #    solver.dont_install_recommended = true
     solver.solve( transaction )
-    solver.each_to_install { |s|
-      puts "Install #{s}"
-    }
-    solver.each_to_remove { |s|
-      puts "Remove #{s}"
-    }
-
-    puts "#{solver.rule_count} rules"
-    puts "rpm(#{solver.rpmrules_start}..#{solver.rpmrules_end})"
-    puts "feature(#{solver.featurerules_start}..#{solver.featurerules_end})"
-    puts "update(#{solver.updaterules_start}..#{solver.updaterules_end})"
-    puts "job(#{solver.jobrules_start}..#{solver.jobrules_end})"
-    puts "learnt(#{solver.learntrules_start}..#{solver.learntrules_end})"
-    solver.each_decision do |d|
-      puts "  #{d.solvable}\n\t#{d.op_s} (#{d.rule}:#{d.rule.to_dep(@pool) if d.rule})"
-      e = solver.explain( transaction, d)
-      pis = pi_s e.shift
-      rel = e.shift
-      src = e.shift
-      tgt = e.shift
-      puts "\t [#{src} #{pis} #{rel}: #{tgt}]"
-    end
+    explain solver, transaction
   end
+  
+  
   def test_conflicts
     installed = @pool.create_repo( 'installed' )
     solv1 = installed.create_solvable( 'A', '1.0-0' )
@@ -270,23 +242,10 @@ class ReasonsTest < Test::Unit::TestCase
     @pool.prepare
     solver = @pool.create_solver( )
     solver.solve( transaction )
-    solver.each_to_install { |s|
-      puts "Install #{s}"
-    }
-    solver.each_to_remove { |s|
-      puts "Remove #{s}"
-    }
-
-    solver.each_decision do |d|
-      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool) if d.rule})"
-      e = solver.explain( transaction, d)
-      pis = pi_s e.shift
-      rel = e.shift
-      src = e.shift
-      tgt = e.shift
-      puts "\t [#{src} #{pis} #{rel}: #{tgt}]"
-    end
+    explain solver, transaction
   end
+
+  
   def test_obsoletes
     installed = @pool.create_repo( 'installed' )
     solv1 = installed.create_solvable( 'A', '1.0-0' )
@@ -308,23 +267,10 @@ class ReasonsTest < Test::Unit::TestCase
     @pool.prepare
     solver = @pool.create_solver( )
     solver.solve( transaction )
-    solver.each_to_install { |s|
-      puts "Install #{s}"
-    }
-    solver.each_to_remove { |s|
-      puts "Remove #{s}"
-    }
-
-    solver.each_decision do |d|
-      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool) if d.rule})"
-      e = solver.explain( transaction, d)
-      pis = pi_s e.shift
-      rel = e.shift
-      src = e.shift
-      tgt = e.shift
-      puts "\t [#{src} #{pis} #{rel}: #{tgt}]"
-    end
+    explain solver, transaction
   end
+  
+  
   def test_indirect_removal
     solv1 = @repo.create_solvable( 'A', '1.0-0' )
     assert solv1
@@ -348,21 +294,7 @@ class ReasonsTest < Test::Unit::TestCase
     solver = @pool.create_solver( )
     solver.allow_uninstall = true
     solver.solve( transaction )
-    solver.each_to_install { |s|
-      puts "Install #{s}"
-    }
-    solver.each_to_remove { |s|
-      puts "Remove #{s}"
-    }
 
-    solver.each_decision do |d|
-      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool)})"
-      e = solver.explain( transaction, d)
-      pis = pi_s e.shift
-      rel = e.shift
-      src = e.shift
-      tgt = e.shift
-      puts "\t [#{src} #{pis} #{rel}: #{tgt}]"
-    end
+    explain solver, transaction
   end
 end
