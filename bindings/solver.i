@@ -302,20 +302,18 @@ typedef struct solver {} Solver;
 #endif
   explain(Transaction *t, Decision *decision)
   {
-    Id depp = 0, sourcep = 0, targetp = 0;
-    SolverProbleminfo pi;
-    Swig_Type result = Swig_Array();
+    Swig_Type result = Swig_Null;
     Id rule = decision->rule - $self->rules;
     if (rule > 0) {
-      pi = solver_problemruleinfo($self, &(t->queue), rule, &depp, &sourcep, &targetp);
+      Id depp = 0, sourcep = 0, targetp = 0;
+      SolverProbleminfo pi = solver_problemruleinfo($self, &(t->queue), rule, &depp, &sourcep, &targetp);
+      result = Swig_Array();
+/*      fprintf(stderr, "Rule %d: [pi %d, rel %d, source %d, target %d]\n", rule, pi, depp, sourcep, targetp); */
       Swig_Append(result, Swig_Int(pi));
+      Swig_Append(result, SWIG_NewPointerObj((void*)relation_new($self->pool, depp), SWIGTYPE_p__Relation, 0));
+      Swig_Append(result, SWIG_NewPointerObj((void*)xsolvable_new($self->pool, sourcep), SWIGTYPE_p__Solvable, 0));
+      Swig_Append(result, SWIG_NewPointerObj((void*)xsolvable_new($self->pool, targetp), SWIGTYPE_p__Solvable, 0));
     }
-    else {
-      Swig_Append(result, Swig_Int(-1));
-    }
-    Swig_Append(result, SWIG_NewPointerObj((void*)relation_new($self->pool, depp), SWIGTYPE_p__Relation, 0));
-    Swig_Append(result, SWIG_NewPointerObj((void*)xsolvable_new($self->pool, sourcep), SWIGTYPE_p__Solvable, 0));
-    Swig_Append(result, SWIG_NewPointerObj((void*)xsolvable_new($self->pool, targetp), SWIGTYPE_p__Solvable, 0));
     return result;
   }
 
