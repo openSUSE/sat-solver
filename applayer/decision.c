@@ -20,13 +20,12 @@
 #include "solverdebug.h"
 
 Decision *
-decision_new( Pool *pool, int op, Id solvable, Id reason, Rule *rule )
+decision_new( Pool *pool, int op, Id solvable, Rule *rule )
 {
   Decision *d = (Decision *)malloc( sizeof( Decision ));
   d->pool = pool;
   d->op = op;
   d->solvable = solvable;
-  d->reason = reason;
   d->rule = rule;
   return d;
 }
@@ -43,7 +42,7 @@ solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d, vo
   Pool *pool = solver->pool;
   Repo *installed = solver->installed;
   Id p, *obsoletesmap = solver_create_decisions_obsoletesmap( solver );
-  Id s, r;
+  Id s;
   int why;
   int op;
   Decision *d;
@@ -52,30 +51,10 @@ solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d, vo
   if (!callback)
     return; /* no use to iterate without callback */
   
-#if 0
-  if (installed)
-    {
-      FOR_REPO_SOLVABLES(installed, p, s)
-        {
-	  if (solver->decisionmap[p] >= 0)
-	    continue;
-	  if (obsoletesmap[p])
-	    {
-	      d = decision_new( pool, DECISION_OBSOLETE, s, pool_id2solvable( pool, obsoletesmap[p] ) );
-	    }
-	  else
-	    {
-	      d = decision_new( pool, DECISION_REMOVE, s, NULL );
-	    }
-	  callback( d, user_data );
-	}
-    }
-#endif
   for ( i = 0; i < solver->decisionq.count; i++)
     {
       p = solver->decisionq.elements[i];
       why = solver->decisionq_why.elements[i];
-      r = 0;
 
       if (p < 0)     /* remove */
         {
@@ -84,7 +63,6 @@ solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d, vo
 	  if (obsoletesmap[p])
 	    {
 	      op = DECISION_OBSOLETE;
-	      r = obsoletesmap[p];
 	    }
 	  else
 	    {
@@ -93,7 +71,7 @@ solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d, vo
 	}
       else if (p == SYSTEMSOLVABLE)
         {
-	  continue;
+	  continue;  /* don't report 'keep system solvable installed' decision */
 	}
       else /* p > 0 */
         {
@@ -102,27 +80,18 @@ solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d, vo
 	    {
 	      Solvable *solv = pool_id2solvable( pool, p );
 	      if (solv->repo == installed)
-		continue;  /* thats a 'keep installed' decision, don't report */
+		continue;  /* don't report 'keep installed' decision */
 	    }
-	  if (!obsoletesmap[p])
+	  if (obsoletesmap[p])
 	    {
-	      op = DECISION_INSTALL;
+	      op = DECISION_UPDATE;
 	    }
 	  else
 	    {
-	      int j;
-	      op = DECISION_UPDATE;
-	      for (j = installed->start; j < installed->end; j++)
-	        {
-		  if (obsoletesmap[j] == p)
-		    {
-		      r = j;
-		      break;
-		    }
-		}
+	      op = DECISION_INSTALL;
 	    }
 	}
-      d = decision_new( pool, op, s, r, why ? solver->rules + why : NULL );
+      d = decision_new( pool, op, s, why ? solver->rules + why : NULL );
       if (callback( d, user_data ))
 	break;
     }

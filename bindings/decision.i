@@ -34,8 +34,6 @@ typedef struct _Decision {} Decision;
   }
   XSolvable *solvable()
   { return xsolvable_new( $self->pool, $self->solvable ); }
-  XSolvable *reason()
-  { return xsolvable_new( $self->pool, $self->reason ); }
   Rule *rule()
   { return $self->rule; }
 }

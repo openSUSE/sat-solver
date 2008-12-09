@@ -89,7 +89,7 @@ def pi_s pi
   when Satsolver::SOLVER_PROBLEM_SELF_CONFLICT: "self conflict"
   when Satsolver::SOLVER_PROBLEM_RPM_RULE: "rpm rule"
   else
-    "unknown"
+    "unknown (#{pi})"
   end
 end
 
@@ -126,7 +126,7 @@ class ReasonsTest < Test::Unit::TestCase
     }
 
     solver.each_decision do |d|
-      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool)} | #{d.reason})"
+      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool)})"
       e = solver.explain( transaction, d)
       pis = pi_s e.shift
       rel = e.shift
@@ -163,7 +163,7 @@ class ReasonsTest < Test::Unit::TestCase
     }
 
     solver.each_decision do |d|
-      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool)} | #{d.reason})"
+      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool)})"
       e = solver.explain( transaction, d)
       pis = pi_s e.shift
       rel = e.shift
@@ -203,7 +203,7 @@ class ReasonsTest < Test::Unit::TestCase
     }
 
     solver.each_decision do |d|
-      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool) if d.rule} | #{d.reason})"
+      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool) if d.rule})"
       e = solver.explain( transaction, d)
       pis = pi_s e.shift
       rel = e.shift
@@ -223,7 +223,7 @@ class ReasonsTest < Test::Unit::TestCase
 
     @pool.prepare
     solver = @pool.create_solver( )
-    solver.dont_install_recommended = true
+#    solver.dont_install_recommended = true
     solver.solve( transaction )
     solver.each_to_install { |s|
       puts "Install #{s}"
@@ -239,7 +239,7 @@ class ReasonsTest < Test::Unit::TestCase
     puts "job(#{solver.jobrules_start}..#{solver.jobrules_end})"
     puts "learnt(#{solver.learntrules_start}..#{solver.learntrules_end})"
     solver.each_decision do |d|
-      puts "  #{d.solvable}\n\t#{d.op_s} (#{d.rule}:#{d.rule.to_dep(@pool) if d.rule} | #{d.reason})"
+      puts "  #{d.solvable}\n\t#{d.op_s} (#{d.rule}:#{d.rule.to_dep(@pool) if d.rule})"
       e = solver.explain( transaction, d)
       pis = pi_s e.shift
       rel = e.shift
@@ -278,7 +278,7 @@ class ReasonsTest < Test::Unit::TestCase
     }
 
     solver.each_decision do |d|
-      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool) if d.rule} | #{d.reason})"
+      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool) if d.rule})"
       e = solver.explain( transaction, d)
       pis = pi_s e.shift
       rel = e.shift
@@ -316,7 +316,7 @@ class ReasonsTest < Test::Unit::TestCase
     }
 
     solver.each_decision do |d|
-      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool) if d.rule} | #{d.reason})"
+      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool) if d.rule})"
       e = solver.explain( transaction, d)
       pis = pi_s e.shift
       rel = e.shift
@@ -356,7 +356,7 @@ class ReasonsTest < Test::Unit::TestCase
     }
 
     solver.each_decision do |d|
-      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool)} | #{d.reason})"
+      puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool)})"
       e = solver.explain( transaction, d)
       pis = pi_s e.shift
       rel = e.shift

@@ -31,11 +31,10 @@ typedef struct _Decision {
   enum decisions op;
   Pool *pool;
   Id solvable;
-  Id reason;
   Rule *rule;
 } Decision;
 
-Decision *decision_new( Pool *pool, int op, Id solvable, Id reason, Rule *rule );
+Decision *decision_new( Pool *pool, int op, Id solvable, Rule *rule );
 void decision_free( Decision *d );
 
 void solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d, void *user_data ), void *user_data);
