@@ -305,8 +305,9 @@ typedef struct solver {} Solver;
     Id depp = 0, sourcep = 0, targetp = 0;
     SolverProbleminfo pi;
     Swig_Type result = Swig_Array();
-    if (decision->rule > 0) {
-      pi = solver_problemruleinfo($self, &(t->queue), decision->rule - $self->rules, &depp, &sourcep, &targetp);
+    Id rule = decision->rule - $self->rules;
+    if (rule > 0) {
+      pi = solver_problemruleinfo($self, &(t->queue), rule, &depp, &sourcep, &targetp);
       Swig_Append(result, Swig_Int(pi));
     }
     else {
