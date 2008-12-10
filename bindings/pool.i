@@ -237,9 +237,6 @@ typedef struct _Pool {} Pool;
   void each_provider( int id )
   {
     if (id > 0 && id < $self->whatprovidesdataoff) {
-      if (!$self->whatprovides)
-        pool_createwhatprovides($self);
-
       while ($self->whatprovidesdata[id]) {
         generic_xsolvables_iterate_callback( xsolvable_new( $self, $self->whatprovidesdata[id++] ), NULL );
       }
