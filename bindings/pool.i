@@ -61,6 +61,8 @@ typedef struct _Pool {} Pool;
   {
     return xsolvable_new( $self, (Id)id);
   }
+  Relation *relation( int rel )
+  { return relation_new( $self, (Id)rel ); }
 
 #if defined(SWIGRUBY)
 %{
@@ -229,6 +231,18 @@ typedef struct _Pool {} Pool;
 
     FOR_PROVIDES(p, pp, str2id( $self, name, 0) ) {
       generic_xsolvables_iterate_callback( xsolvable_new( $self, p ), NULL );
+    }
+  }
+
+  void each_provider( int id )
+  {
+    if (id > 0 && id < $self->whatprovidesdataoff) {
+      if (!$self->whatprovides)
+        pool_createwhatprovides($self);
+
+      while ($self->whatprovidesdata[id]) {
+        generic_xsolvables_iterate_callback( xsolvable_new( $self, $self->whatprovidesdata[id++] ), NULL );
+      }
     }
   }
 
