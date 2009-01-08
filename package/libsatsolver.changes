@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Jan  8 10:37:53 CET 2009 - dmacvicar@suse.de
+
+- handle patch conflicts different also in trivial_installable
+  to complete the bugfix (bnc #447986)
+
+-------------------------------------------------------------------
 Mon Dec  1 11:16:30 CET 2008 - mls@suse.de
 
 - backport file dependency parsing fix [bnc#450286]
