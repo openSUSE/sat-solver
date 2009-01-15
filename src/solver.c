@@ -3520,6 +3520,15 @@ problems_to_solutions(Solver *solv, Queue *job)
 	      /* update rule, find replacement package */
 	      Id p, *dp, rp = 0;
 	      Rule *rr;
+
+	      /* check if this is a false positive, i.e. the update rule is fulfilled */
+	      rr = solv->rules + why;
+	      FOR_RULELITERALS(p, dp, rr)
+		if (p > 0 && solv->decisionmap[p] > 0)
+		  break;
+	      if (p)
+		continue;	/* false alarm */
+
 	      p = solv->installed->start + (why - solv->updaterules);
 	      rr = solv->rules + solv->featurerules + (why - solv->updaterules);
 	      if (!rr->p)
