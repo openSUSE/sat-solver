@@ -1176,6 +1176,17 @@ addrpmrulesforsolvable(Solver *solv, Solvable *s, Map *m)
 	  addrule(solv, -n, 0);		   /* uninstallable */
 	}
 
+      /* yet another SUSE hack, sigh */
+      if (pool->nscallback && !strncmp("product:", id2str(pool, s->name), 8))
+	{
+	  Id buddy = pool->nscallback(pool, pool->nscallbackdata, NAMESPACE_PRODUCTBUDDY, n);
+	  if (buddy > 0 && buddy != SYSTEMSOLVABLE && buddy != n && buddy < pool->nsolvables)
+	    {
+	      addrule(solv, n, -buddy);
+	      addrule(solv, buddy, -n);
+	    }
+	}
+
       /*-----------------------------------------
        * check requires of s
        */
