@@ -344,6 +344,25 @@ nscallback(Pool *pool, void *data, Id name, Id evr)
 	  return 1;
       return 0;
     }
+  if (name == NAMESPACE_PRODUCTBUDDY)
+    {
+      Solvable *s = pool->solvables + evr;
+      Id p, pp, cap;
+      snprintf(dir, sizeof(dir), "product(%s)", id2str(pool, s->name) + 8);
+      cap = str2id(pool, dir, 0);
+      if (!cap)
+	return 0;
+      cap = rel2id(pool, cap, s->evr, REL_EQ, 0);
+      if (!cap)
+	return 0;
+      FOR_PROVIDES(p, pp, cap)
+	{
+	  Solvable *ps = pool->solvables + p;
+	  if (ps->repo == s->repo && ps->arch == s->arch)
+	    break;
+	}
+      return p;
+    }
   if (name != NAMESPACE_MODALIAS || ISRELDEP(evr))
     return 0;
   if (pd->nmodaliases == -1)
@@ -1127,7 +1146,11 @@ startElement( void *userData, const char *name, const char **atts )
 	      }
             else
 	      {
+#if 1
 		queue_push( &(pd->trials), SOLVER_LOCK|SOLVER_SOLVABLE );
+#else
+		queue_push( &(pd->trials), SOLVER_INSTALL|SOLVER_SOLVABLE );
+#endif
 		queue_push( &(pd->trials), id );
 	      }
 	  }

@@ -236,7 +236,7 @@ main(int argc, char **argv)
       exit(0);
     }
 
-  while ((c = getopt(argc, argv, "uefrAvzwk:m:W:")) >= 0)
+  while ((c = getopt(argc, argv, "uefrAvzwk:m:W:D:")) >= 0)
     {
       switch(c)
 	{
@@ -272,6 +272,10 @@ main(int argc, char **argv)
 	  break;
 	case 'v':
 	  debuglevel++;
+	  break;
+	case 'D':
+	  queue_push(&job, SOLVER_DISTUPGRADE);
+	  queue_push(&job, atoi(optarg));
 	  break;
 	default:
 	  exit(1);
