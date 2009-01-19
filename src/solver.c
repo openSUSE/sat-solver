@@ -3104,17 +3104,15 @@ run_solver(Solver *solv, int disablerules, int doweak)
 
      if (solv->distupgrade && solv->installed)
 	{
+	  int installedone = 0;
 	  /* let's see if we can install some unsupported package */
 	  POOL_DEBUG(SAT_DEBUG_STATS, "deciding unsupported packages\n");
 	  for (i = 0; i < solv->orphaned.count; i++)
 	    {
 	      p = solv->orphaned.elements[i];
-	      if (!solv->decisionmap[p])
-		break;
-	    }
-	  if (i < solv->orphaned.count)
-	    {
-	      p = solv->orphaned.elements[i];
+	      if (solv->decisionmap[p])
+		continue;	/* already decided */
+	      olevel = level;
 	      if (solv->distupgrade_removeunsupported)
 		{
 		  POOL_DEBUG(SAT_DEBUG_STATS, "removing unsupported %s\n", solvable2str(pool, pool->solvables + p));
@@ -3124,9 +3122,13 @@ run_solver(Solver *solv, int disablerules, int doweak)
 		{
 		  POOL_DEBUG(SAT_DEBUG_STATS, "keeping unsupported %s\n", solvable2str(pool, pool->solvables + p));
 		  level = setpropagatelearn(solv, level, p, 0, 0);
+		  installedone = 1;
 		}
-	      continue;
+	      if (level < olevel)
+		break;
 	    }
+	  if (installedone || i < solv->orphaned.count)
+	    continue;
 	}
 
      if (solv->solution_callback)
