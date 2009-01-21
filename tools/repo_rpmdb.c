@@ -329,7 +329,7 @@ setutf8string(Repodata *repodata, Id handle, Id tag, const char *str)
 	{
           /* new sequence */
           if (c >= 0xfe)
-            c = 0xfffd;
+            break;
           else if (c >= 0xfc)
             c = (c & 0x01) | 0xbffffffc;    /* 5 bytes to follow */
           else if (c >= 0xf8)
@@ -340,10 +340,8 @@ setutf8string(Repodata *repodata, Id handle, Id tag, const char *str)
             c = (c & 0x0f) | 0xbff00000;    /* 2 */
           else if (c >= 0xc2)
             c = (c & 0x1f) | 0xfc000000;    /* 1 */
-          else if (c >= 0xc0)
-            c = 0xfdffffff;         /* overlong */
           else if (c >= 0x80)
-            c = 0xfffd;
+            break;
         }
       state = (c & 0x80000000) ? c : 0;
     }

@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Wed Jan 21 11:43:52 CET 2009 - mls@suse.de
+
+- repo_rpmdb: Fix conversion to UTF8
+
+-------------------------------------------------------------------
 Thu Jan  8 10:37:53 CET 2009 - dmacvicar@suse.de
 
 - handle patch conflicts different also in trivial_installable
