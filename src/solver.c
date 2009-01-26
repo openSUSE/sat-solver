@@ -1202,7 +1202,7 @@ addrpmrulesforsolvable(Solver *solv, Solvable *s, Map *m)
 		continue;
 
 	      /* find list of solvables providing 'req' */
-	      dp = pool->whatprovidesdata + pool_whatprovides(pool, req);
+	      dp = pool_whatprovides_ptr(pool, req);
 
 	      if (*dp == SYSTEMSOLVABLE)	  /* always installed */
 		continue;
@@ -3751,7 +3751,7 @@ solver_problemruleinfo(Solver *solv, Queue *job, Id rid, Id *depp, Id *sourcep, 
 	    {
 	      if (req == SOLVABLE_PREREQMARKER)
 		continue;
-	      dp = pool->whatprovidesdata + pool_whatprovides(pool, req);
+	      dp = pool_whatprovides_ptr(pool, req);
 	      if (*dp == 0)
 		break;
 	    }
@@ -3924,7 +3924,7 @@ solver_problemruleinfo(Solver *solv, Queue *job, Id rid, Id *depp, Id *sourcep, 
 	{
 	  if (req == SOLVABLE_PREREQMARKER)
 	    continue;
-	  dp = pool->whatprovidesdata + pool_whatprovides(pool, req);
+	  dp = pool_whatprovides_ptr(pool, req);
 	  if (d == 0)
 	    {
 	      if (*dp == r->w2 && dp[1] == 0)
