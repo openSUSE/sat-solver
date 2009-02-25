@@ -8,10 +8,12 @@ typedef struct _Decision {} Decision;
 
 
 %extend Decision {
-  %constant int DEC_INSTALL = DECISION_INSTALL;
-  %constant int DEC_REMOVE = DECISION_REMOVE;
-  %constant int DEC_UPDATE = DECISION_UPDATE;
-  %constant int DEC_OBSOLETE = DECISION_OBSOLETE;
+  %constant int DECISION_INSTALL = DECISION_INSTALL;
+  %constant int DECISION_REMOVE = DECISION_REMOVE;
+  %constant int DECISION_UPDATE = DECISION_UPDATE;
+  %constant int DECISION_OBSOLETE = DECISION_OBSOLETE;
+  %constant int DECISION_WEAK = DECISION_WEAK;
+  %constant int DECISION_FREE = DECISION_FREE;
 
   /* no constructor defined, Decisions are created by accessing
      the Solver result. See 'Solver.each_decision'. */
@@ -28,6 +30,7 @@ typedef struct _Decision {} Decision;
       case DECISION_REMOVE: return "remove";
       case DECISION_UPDATE: return "update";
       case DECISION_OBSOLETE: return "obsolete";
+      case DECISION_INSTALL|DECISION_FREE: return "free install";
       default: break;
     }
     return "unknown";

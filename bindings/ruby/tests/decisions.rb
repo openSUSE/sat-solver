@@ -70,14 +70,14 @@ class DecisionTest < Test::Unit::TestCase
     solver.each_decision { |d|
       i += 1
       case d.op
-      when Satsolver::DEC_INSTALL
-	puts "#{i}: Install #{d.solvable} #{d.reason}"
-      when Satsolver::DEC_REMOVE
-	puts "#{i}: Remove #{d.solvable} #{d.reason}"
-      when Satsolver::DEC_OBSOLETE
-	puts "#{i}: Obsolete #{d.solvable} #{d.reason}"
-      when Satsolver::DEC_UPDATE
-	puts "#{i}: Update #{d.solvable} #{d.reason}"
+      when Satsolver::DECISION_INSTALL
+	puts "#{i}: Install #{d.solvable} #{d.rule}"
+      when Satsolver::DECISION_REMOVE
+	puts "#{i}: Remove #{d.solvable} #{d.rule}"
+      when Satsolver::DECISION_OBSOLETE
+	puts "#{i}: Obsolete #{d.solvable} #{d.rule}"
+      when Satsolver::DECISION_UPDATE
+	puts "#{i}: Update #{d.solvable} #{d.rule}"
       else
 	puts "#{i}: Decision op #{d.op}"
       end

@@ -90,6 +90,11 @@ solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d, vo
 	      op = DECISION_INSTALL;
 	    }
 	}
+      if (why < 0)
+	{
+	  op |= DECISION_FREE;
+	  why = -why;
+	}
       d = decision_new( solver, op, s, solver->rules + why );
       if (callback( d, user_data ))
 	break;

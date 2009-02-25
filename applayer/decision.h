@@ -19,15 +19,15 @@
 
 #include "solver.h"
 
-enum decisions {
-  DECISION_INSTALL = 1,
-  DECISION_REMOVE,
-  DECISION_UPDATE,
-  DECISION_OBSOLETE
-};
+#define DECISION_INSTALL  0x01
+#define DECISION_REMOVE   0x02
+#define DECISION_UPDATE   0x03
+#define DECISION_OBSOLETE 0x04
+#define DECISION_WEAK     0x10
+#define DECISION_FREE     0x20
 
 typedef struct _Decision {
-  enum decisions op;
+  int op;
   Solver *solver;
   Id solvable;
   Rule *rule;
