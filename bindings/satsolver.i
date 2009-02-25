@@ -201,10 +201,10 @@ dataiterator_value( Dataiterator *di )
       case REPOKEY_TYPE_CONSTANT:
       case REPOKEY_TYPE_NUM:
       case REPOKEY_TYPE_U32:
-        value = Swig_Int( di->key->size );
+        value = Swig_Int( di->kv.num );
       break;
       case REPOKEY_TYPE_CONSTANTID:
-        value = Swig_Int( di->key->size );
+        value = Swig_String( dep2str( di->repo->pool, di->kv.id ) );
       break;
       case REPOKEY_TYPE_ID:
         if (di->data && di->data->localpool)
