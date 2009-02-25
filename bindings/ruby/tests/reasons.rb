@@ -18,6 +18,20 @@ module Satsolver
 	"#{pool.solvable(id)}"
       end
     end
+    def to_relation pool, id
+      if (id < 0)
+	"!#{pool.relation(-id)}"
+      else
+	"#{pool.relation(id)}"
+      end
+    end
+    def to_providers pool, id
+      r = "<"
+      pool.each_provider(id) do |s|
+	r += "#{s}, "
+      end
+      r + ">"
+    end
     def to_s
       "p #{p}, d #{d}, w1 #{w1}, w2 #{w2}"
     end
@@ -54,16 +68,16 @@ module Satsolver
       else # d != 0
 	if d > 0
 	  if p < 0
-	    "req! #{to_solvable(pool, -p)} requires #{to_solvable(pool, d)}, provided by #{to_solvable(pool, w2)}..."
+	    "req! #{to_solvable(pool, -p)} requires one of #{to_providers(pool, d)}..."
 	  else
-	    "upd! #{to_solvable(pool, d)} updates #{to_solvable(pool, p)}, provided by #{to_solvable(pool, w2)}..."
+	    "upd! #{to_providers(pool, d)} updates #{to_solvable(pool, p)}, provided by #{to_solvable(pool, w2)}..."
 	  end
 	else # d < 0
 	  if p < 0
 	    if d == -1
 	      "del! #{to_solvable(pool, -p)}"
 	    else
-	      "cnf! #{to_solvable(pool, -p)} conflicts #{to_solvable(pool, -d)}"
+	      "cnf! #{to_solvable(pool, -p)} conflicts #{to_providers(pool, -d)}"
 	    end
 	  else
 	    "error p #{p}, d #{d}, w1 #{w1}, w2 {w2}"
@@ -82,6 +96,7 @@ def explain solver, transaction
     puts "Remove #{s}"
   }
   solver.each_decision do |d|
+    puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_s if d.rule})"
     puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool) if d.rule})"
     e = solver.explain( transaction, d)
     if e.nil?
@@ -129,18 +144,16 @@ class ReasonsTest < Test::Unit::TestCase
     @pool.arch = "i686"
     @repo = @pool.create_repo( 'test' )
   end
+  
+  
   def test_direct_requires
     solv1 = @repo.create_solvable( 'A', '1.0-0' )
-    assert solv1
     solv2 = @repo.create_solvable( 'B', '1.0-0' )
-    assert solv2
     
     rel = @pool.create_relation( "A", Satsolver::REL_EQ, "1.0-0" )
-    assert rel
+    solv2.requires << rel
     
     puts "\n---\nB-1.0-0 requires A = 1.0-0"
-    solv2.requires << rel
-    assert solv2.requires.size == 1
     
     transaction = @pool.create_transaction
     transaction.install( solv2 )
@@ -148,23 +161,19 @@ class ReasonsTest < Test::Unit::TestCase
     @pool.prepare
     solver = @pool.create_solver( )
     solver.solve( transaction )
-
     explain solver, transaction
   end
   
+  
   def test_indirect_requires
     solv1 = @repo.create_solvable( 'A', '1.0-0' )
-    assert solv1
     solv2 = @repo.create_solvable( 'B', '1.0-0' )
-    assert solv2
     
     rel = @pool.create_relation( "a", Satsolver::REL_EQ, "42" )
-    assert rel
     solv1.provides << rel
+    solv2.requires << rel
     
     puts "\n---\nB-1.0-0 requires a = 42, provided by A-1.0-0"
-    solv2.requires << rel
-    assert solv2.requires.size == 1
     
     transaction = @pool.create_transaction
     transaction.install( solv2 )
@@ -178,20 +187,15 @@ class ReasonsTest < Test::Unit::TestCase
   
   def test_indirect_requires_choose
     solv1 = @repo.create_solvable( 'A', '1.0-0' )
-    assert solv1
     solv2 = @repo.create_solvable( 'B', '1.0-0' )
-    assert solv2
     solv3 = @repo.create_solvable( 'C', '1.0-0' )
-    assert solv3
     
     rel = @pool.create_relation( "a", Satsolver::REL_EQ, "42" )
-    assert rel
     solv1.provides << rel
+    solv2.requires << rel
     solv3.provides << rel
     
     puts "\n---\nB-1.0-0 requires a = 42, provided by A-1.0-0 and C-1.0-0"
-    solv2.requires << rel
-    assert solv2.requires.size == 1
     
     transaction = @pool.create_transaction
     transaction.install( solv2 )
@@ -223,9 +227,7 @@ class ReasonsTest < Test::Unit::TestCase
   def test_conflicts
     installed = @pool.create_repo( 'installed' )
     solv1 = installed.create_solvable( 'A', '1.0-0' )
-    assert solv1
     solv2 = @repo.create_solvable( 'B', '1.0-0' )
-    assert solv2
     
     @pool.installed = installed
 
@@ -249,17 +251,14 @@ class ReasonsTest < Test::Unit::TestCase
   def test_obsoletes
     installed = @pool.create_repo( 'installed' )
     solv1 = installed.create_solvable( 'A', '1.0-0' )
-    assert solv1
     solv2 = @repo.create_solvable( 'B', '1.0-0' )
-    assert solv2
     
     @pool.installed = installed
 
     rel = @pool.create_relation( "A" )
-    assert rel
     solv2.obsoletes << rel
     
-    puts "\n---\nB-1.0-0 obsoletes a = 42, provided by installed A-1.0-0"
+    puts "\n---\n#{solv2} obsoletes #{rel}, provided by installed #{solv1}"
     
     transaction = @pool.create_transaction
     transaction.install( solv2 )
@@ -273,16 +272,13 @@ class ReasonsTest < Test::Unit::TestCase
   
   def test_indirect_removal
     solv1 = @repo.create_solvable( 'A', '1.0-0' )
-    assert solv1
     solv2 = @repo.create_solvable( 'B', '1.0-0' )
-    assert solv2
     
     rel = @pool.create_relation( "a", Satsolver::REL_EQ, "42" )
-    assert rel
     solv1.provides << rel
+    solv2.requires << rel
     
     puts "\n---\nB-1.0-0 requires a = 42, provided by A-1.0-0. Removal of A should remove B"
-    solv2.requires << rel
     assert solv2.requires.size == 1
     
     @pool.installed = @repo
