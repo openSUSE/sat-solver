@@ -18,10 +18,10 @@ class TransactionTest < Test::Unit::TestCase
     transaction = Satsolver::Transaction.new( pool )
     assert transaction
     transaction.install( "foo" )
-    transaction.install( repo[0] )
+    transaction.install( repo.find "ruby" )
     transaction.install( Satsolver::Relation.new( pool, "foo", Satsolver::REL_EQ, "42-7" ) )
     transaction.remove( "bar" )
-    transaction.remove( repo[1] )
+    transaction.remove( repo.find "glibc" )
     transaction.remove( Satsolver::Relation.new( pool, "bar", Satsolver::REL_EQ, "42-7" ) )
     assert transaction.size == 6
     transaction.each { |a|
