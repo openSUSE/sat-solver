@@ -85,18 +85,10 @@ typedef struct solver {} Solver;
   void set_fix_system( int bflag )
   { $self->fixsystem = bflag; }
 
-#if defined(SWIGRUBY)
-  %typemap(out) int update_system
-    "$result = $1 ? Qtrue : Qfalse;";
-#endif
-  int update_system()
-  { return $self->updatesystem; }
-#if defined(SWIGRUBY)
-  %rename( "update_system=" ) set_update_system( int bflag );
-#endif
-  void set_update_system( int bflag )
-  { $self->updatesystem = bflag; }
-
+  /*
+   * Allow downgrade
+   *
+   */
 #if defined(SWIGRUBY)
   %typemap(out) int allow_downgrade
     "$result = $1 ? Qtrue : Qfalse;";
@@ -108,6 +100,38 @@ typedef struct solver {} Solver;
 #endif
   void set_allow_downgrade( int bflag )
   { $self->allowdowngrade = bflag; }
+
+  /*
+   * Allow arch change
+   *
+   */
+#if defined(SWIGRUBY)
+  %typemap(out) int allow_arch_change
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  int allow_arch_change()
+  { return $self->allowarchchange; }
+#if defined(SWIGRUBY)
+  %rename( "allow_arch_change=" ) set_allow_arch_change( int bflag );
+#endif
+  void set_allow_arch_change( int bflag )
+  { $self->allowarchchange = bflag; }
+
+  /*
+   * Allow vendor change
+   *
+   */
+#if defined(SWIGRUBY)
+  %typemap(out) int allow_vendor_change
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  int allow_vendor_change()
+  { return $self->allowvendorchange; }
+#if defined(SWIGRUBY)
+  %rename( "allow_vendor_change=" ) set_allow_vendor_change( int bflag );
+#endif
+  void set_allow_vendor_change( int bflag )
+  { $self->allowvendorchange = bflag; }
 
   /*
    * On package removal, also remove dependant packages.
@@ -131,6 +155,90 @@ typedef struct solver {} Solver;
   void set_allow_uninstall( int bflag )
   { $self->allowuninstall = bflag; }
 
+  /*
+   * Update system
+   *
+   */
+#if defined(SWIGRUBY)
+  %typemap(out) int update_system
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  int update_system()
+  { return $self->updatesystem; }
+#if defined(SWIGRUBY)
+  %rename( "update_system=" ) set_update_system( int bflag );
+#endif
+  void set_update_system( int bflag )
+  { $self->updatesystem = bflag; }
+
+  /*
+   * Allow virtual conflicts
+   *
+   */
+#if defined(SWIGRUBY)
+  %typemap(out) int allow_virtual_conflicts
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  int allow_virtual_conflicts()
+  { return $self->allowvirtualconflicts; }
+#if defined(SWIGRUBY)
+  %rename( "allow_virtual_conflicts=" ) set_allow_virtual_conflicts( int bflag );
+#endif
+  void set_allow_virtual_conflicts( int bflag )
+  { $self->allowvirtualconflicts = bflag; }
+
+  /*
+   * Allow self conflicts
+   *
+   */
+#if defined(SWIGRUBY)
+  %typemap(out) int allow_self_conflicts
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  int allow_self_conflicts()
+  { return $self->allowselfconflicts; }
+#if defined(SWIGRUBY)
+  %rename( "allow_self_conflicts=" ) set_allow_self_conflicts( int bflag );
+#endif
+  void set_allow_self_conflicts( int bflag )
+  { $self->allowselfconflicts = bflag; }
+
+  /*
+   * Obsolete uses provides
+   *
+   */
+#if defined(SWIGRUBY)
+  %typemap(out) int obsolete_uses_provides
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  int obsolete_uses_provides()
+  { return $self->obsoleteusesprovides; }
+#if defined(SWIGRUBY)
+  %rename( "obsolete_uses_provides=" ) set_obsolete_uses_provides( int bflag );
+#endif
+  void set_obsolete_uses_provides( int bflag )
+  { $self->obsoleteusesprovides= bflag; }
+
+  /*
+   * Implicit obsolete uses provides
+   *
+   */
+#if defined(SWIGRUBY)
+  %typemap(out) int implicit_obsolete_uses_provides
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  int implicit_obsolete_uses_provides()
+  { return $self->implicitobsoleteusesprovides; }
+#if defined(SWIGRUBY)
+  %rename( "implicit_obsolete_uses_provides=" ) set_implicit_obsolete_uses_provides( int bflag );
+#endif
+  void set_implicit_obsolete_uses_provides( int bflag )
+  { $self->implicitobsoleteusesprovides= bflag; }
+
+  /*
+   * No update provide
+   *
+   */
 #if defined(SWIGRUBY)
   %typemap(out) int no_update_provide
     "$result = $1 ? Qtrue : Qfalse;";
@@ -142,6 +250,106 @@ typedef struct solver {} Solver;
 #endif
   void set_no_update_provide( int bflag )
   { $self->noupdateprovide = bflag; }
+
+  /*
+   * Do split provide
+   *
+   */
+#if defined(SWIGRUBY)
+  %typemap(out) int do_split_provides
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  int do_split_provides()
+  { return $self->dosplitprovides; }
+#if defined(SWIGRUBY)
+  %rename( "do_split_provides=" ) set_do_split_provides( int bflag );
+#endif
+  void set_do_split_provides( int bflag )
+  { $self->dosplitprovides = bflag; }
+
+  /*
+   * Dont install recommended
+   *
+   */
+#if defined(SWIGRUBY)
+  %typemap(out) int dont_install_recommended
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  int dont_install_recommended()
+  { return $self->dontinstallrecommended; }
+#if defined(SWIGRUBY)
+  %rename( "dont_install_recommended=" ) set_dont_install_recommended( int bflag );
+#endif
+  void set_dont_install_recommended( int bflag )
+  { $self->dontinstallrecommended= bflag; }
+
+  /*
+   * Ignore already recommended
+   *
+   */
+#if defined(SWIGRUBY)
+  %typemap(out) int ignore_already_recommended
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  int ignore_already_recommended()
+  { return $self->ignorealreadyrecommended; }
+#if defined(SWIGRUBY)
+  %rename( "ignore_already_recommended=" ) set_ignore_already_recommended( int bflag );
+#endif
+  void set_ignore_already_recommended( int bflag )
+  { $self->ignorealreadyrecommended= bflag; }
+
+  /*
+   * Dont show installed recommended
+   *
+   */
+#if defined(SWIGRUBY)
+  %typemap(out) int dont_show_installed_recommended
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  int dont_show_installed_recommended()
+  { return $self->dontshowinstalledrecommended; }
+#if defined(SWIGRUBY)
+  %rename( "dont_show_installed_recommended=" ) set_dont_show_installed_recommended( int bflag );
+#endif
+  void set_dont_show_installed_recommended( int bflag )
+  { $self->dontshowinstalledrecommended= bflag; }
+
+  /*
+   * Distupgrade
+   *
+   */
+#if defined(SWIGRUBY)
+  %typemap(out) int distupgrade
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  int distupgrade()
+  { return $self->distupgrade; }
+#if defined(SWIGRUBY)
+  %rename( "distupgrade=" ) set_distupgrade( int bflag );
+#endif
+  void set_distupgrade( int bflag )
+  { $self->distupgrade= bflag; }
+
+  /*
+   * Distupgrade, remove unsupported
+   *
+   */
+#if defined(SWIGRUBY)
+  %typemap(out) int distupgrade_remove_unsupported
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  int distupgrade_remove_unsupported()
+  { return $self->distupgrade_removeunsupported; }
+#if defined(SWIGRUBY)
+  %rename( "distupgrade_remove_unsupported=" ) set_distupgrade_remove_unsupported( int bflag );
+#endif
+  void set_distupgrade_remove_unsupported( int bflag )
+  { $self->distupgrade_removeunsupported= bflag; }
+
+  /**************************
+   * counts and ranges
+   */
 
   int rule_count() { return $self->nrules; }
   int rpmrules_start() { return 0; }
