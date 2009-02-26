@@ -67,7 +67,7 @@ typedef struct _Repo {} Repo;
   {
     const char *fname;
     /* try string conversion if not already a string */
-    name = rb_check_convert_type( name, T_STRING, "String", "to_s" );
+    name = StringValue( name );
     fname = StringValuePtr( name );
 #else
   void add_solv( const char *fname )
