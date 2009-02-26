@@ -22,6 +22,37 @@ poolloadcallback( Pool *pool, Repodata *data, void *vdata )
 
 
 /*
+ * namespace callback
+ *
+ * called by solver to compute language or hardware supplements
+ *
+ * name:    the namespace identifier, e.g. NAMESPACE_MODALIAS, NAMESPACE_LANGUAGE, NAMESPACE_FILESYSTEM, NAMESPACE_PRODUCTBUDDY
+ * value    the value, e.g. pci:v0000104Cd0000840[01]sv*sd*bc*sc*i*
+ * return: 0 if not supportded
+ *         1 if supported by the system
+ *         -1  AFAIK it's also possible to return a list of solvables that support it, but don't know how.
+ */
+ 
+static Id
+poolnscallback(Pool *pool, void *data, Id name, Id value)
+{
+  Id id = 0;
+  switch(name) {
+    case NAMESPACE_MODALIAS:
+    break;
+    case NAMESPACE_LANGUAGE:
+      id = (str2id(pool, "en", 1) == value);
+    break;
+    case NAMESPACE_FILESYSTEM:
+    break;
+    case NAMESPACE_PRODUCTBUDDY:
+    break;
+  }
+  return id;
+}
+
+
+/*
  * Document-class: Satsolverx::Pool
  *
  * The <code>Pool</code> is main data structure. Everything is reachable via the pool.
@@ -50,7 +81,9 @@ typedef struct _Pool {} Pool;
   
     if (arch) pool_setarch( pool, arch );
     pool_setloadcallback( pool, poolloadcallback, 0 );
-
+    pool->nscallback = poolnscallback;
+    pool->nscallbackdata = NULL;
+    
     return pool;
   }
 
@@ -104,6 +137,14 @@ typedef struct _Pool {} Pool;
   void prepare()
   { pool_createwhatprovides( $self ); }
 
+  /*
+   * System solvable
+   */
+  XSolvable* system()
+  {
+    return xsolvable_new($self, SYSTEMSOLVABLE);
+  }
+
   /**************************
    * Repo management
    */
@@ -120,7 +161,7 @@ typedef struct _Pool {} Pool;
   {
     const char *fname;
     /* try string conversion if not already a string */
-    name = rb_check_convert_type( name, T_STRING, "String", "to_s" );
+    name = StringValue( name );
     fname = StringValuePtr( name );
 #else
   Repo *add_solv( const char *fname )
