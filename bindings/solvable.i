@@ -24,6 +24,9 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   Repo *repo()
   { return xsolvable_solvable($self)->repo; }
 
+  Pool *pool()
+  { return xsolvable_solvable($self)->repo->pool; }
+
   const char *name()
   { return my_id2str( $self->pool, xsolvable_solvable($self)->name ); }
   const char *arch()
