@@ -285,6 +285,11 @@ dataiterator_value( Dataiterator *di )
 
 %include exception.i
 
+%newobject string;
+%typemap(newfree) char * {
+  free($1);
+}
+
 /*-------------------------------------------------------------*/
 /* types and typemaps */
 

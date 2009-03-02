@@ -35,7 +35,7 @@ typedef struct _Relation {} Relation;
 #endif
 
   const char *string()
-  { return dep2str( $self->pool, $self->id ); }
+  { return strdup(dep2str( $self->pool, $self->id )); }
 
   Pool *pool()
   { return $self->pool; }

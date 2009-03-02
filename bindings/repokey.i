@@ -129,7 +129,7 @@ SV *
   const char *string()
   {
     Repokey *key = xrepokey_repokey( $self );
-    return my_id2str( $self->repo->pool, key->name );
+    return strdup(my_id2str( $self->repo->pool, key->name ));
   }
 }
 

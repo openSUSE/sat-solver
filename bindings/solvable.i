@@ -49,8 +49,12 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
 #endif
   const char *string()
   {
-    if ( $self->id == ID_NULL ) return "";
-    return solvable2str( $self->pool, xsolvable_solvable( $self ) );
+    const char *s;
+    if ( $self->id == ID_NULL )
+      s = "";
+    else
+      s = solvable2str( $self->pool, xsolvable_solvable( $self ) );
+    return strdup(s);
   }
 
 #if defined(SWIGRUBY)
