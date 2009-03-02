@@ -26,7 +26,7 @@ typedef struct _Repo {} Repo;
 #endif
   const char *string()
   {
-    return strdup($self->name);
+    return $self->name;
   }
   /* see also count() below ! */
   int size()

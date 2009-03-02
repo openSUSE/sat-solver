@@ -34,6 +34,7 @@ typedef struct _Relation {} Relation;
   %rename("__str__") string();
 #endif
 
+%newobject Relation::string;
   const char *string()
   { return strdup(dep2str( $self->pool, $self->id )); }
 
