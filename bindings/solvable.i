@@ -41,6 +41,7 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   void set_vendor(const char *vendor)
   { xsolvable_solvable($self)->vendor = str2id( $self->pool, vendor, 1 ); }
 
+%newobject XSolvable::string;
 #if defined(SWIGRUBY)
   %rename("to_s") string();
 #endif

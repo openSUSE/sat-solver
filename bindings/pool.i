@@ -87,7 +87,19 @@ typedef struct _Pool {} Pool;
     return pool;
   }
 
-  ~Pool()
+  /*
+   * discard
+   *
+   * There is no destructor defined for Pool since the pool pointer
+   * is mostly used implicitly (e.g. in Solvable or Solver) which
+   * cannot be reliably tracked in the bindings.
+   *
+   * Deleting the Pool is seldomly needed anyways. Just call
+   * Pool::discard to explicitly free the pool. Just remember that
+   * Solvables originating from this Pool are invalidated.
+   */
+   
+  void discard()
   { pool_free($self); }
 
   XSolvable *solvable(int id)
@@ -100,7 +112,7 @@ typedef struct _Pool {} Pool;
 #if defined(SWIGRUBY)
 %{
 /*
-  Document-method: Satsolverx::Pool.set_arch
+  Document-method: Satsolver::Pool.set_arch
 
   Defines the architecture of the pool. Only Solvables with a compatible
   architecture will be considered.

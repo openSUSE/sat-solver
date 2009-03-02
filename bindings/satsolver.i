@@ -285,13 +285,12 @@ dataiterator_value( Dataiterator *di )
 
 %include exception.i
 
-%newobject string;
+/*-------------------------------------------------------------*/
+/* types and typemaps */
+
 %typemap(newfree) char * {
   free($1);
 }
-
-/*-------------------------------------------------------------*/
-/* types and typemaps */
 
 #if defined(SWIGRUBY)
 
