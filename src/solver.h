@@ -335,8 +335,10 @@ solver_is_enhancing(Solver *solv, Solvable *s)
 
 void solver_calc_duchanges(Solver *solv, DUChanges *mps, int nmps);
 int solver_calc_installsizechange(Solver *solv);
+void solver_trivial_installable(Solver *solv, Queue *pkgs, Queue *res);
 
 void solver_find_involved(Solver *solv, Queue *installedq, Solvable *s, Queue *q);
+
 
 static inline void
 solver_create_state_maps(Solver *solv, Map *installedmap, Map *conflictsmap)
