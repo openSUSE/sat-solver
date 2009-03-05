@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Mar  5 14:31:14 CET 2009 - mls@suse.de
+
+- fix repodata_merge_attrs() function
+- 0.13.6
+
+-------------------------------------------------------------------
 Mon Mar  2 18:20:22 CET 2009 - mls@suse.de
 
 - add solver_trivial_installable() to fix multiversion patches [bnc#480303]
