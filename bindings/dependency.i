@@ -1,5 +1,18 @@
 /*
  * Dependency
+=begin rdoc
+Document-class: Dependency
+A dependency is a set of Relations. There are eight types of
+dependencies:
+* provides
+* requires
+* conflicts
+* obsoletes
+* recommends
+* suggests
+* supplements
+* enhances
+=end
  */
 
 %{
@@ -39,17 +52,43 @@ typedef struct _Dependency {} Dependency;
   %constant int DEP_SUP = DEP_SUP;
   %constant int DEP_ENH = DEP_ENH;
 
+  /*
+   * Document-method: new
+   * call-seq:
+   *  dependency.new(solvable, Satsolver::DEP_REQ) -> Dependency
+   *
+   */
   Dependency( XSolvable *xsolvable, int dep )
   { return dependency_new( xsolvable, dep ); }
   ~Dependency()
   { dependency_free( $self ); }
 
+  /*
+   * Document-method: solvable
+   * call-seq:
+   *  dependency.solvable -> Solvable
+   *
+   */
   XSolvable *solvable()
   { return $self->xsolvable; }
 
+  /*
+   * Document-method: size
+   * Number of relations in this dependency
+   * call-seq:
+   *  dependency.size -> int
+   *
+   */
   int size()
   { return dependency_size( $self ); }
 #if defined(SWIGRUBY)
+  /*
+   * Document-method: empty?
+   * If the dependency is empty
+   * call-seq:
+   *  dependency.empty? -> bool
+   *
+   */
   %rename("empty?") empty();
   %typemap(out) int empty
     "$result = ($1 != 0) ? Qtrue : Qfalse;";
@@ -58,6 +97,14 @@ typedef struct _Dependency {} Dependency;
   { return dependency_size( $self ) == 0; }
 
 #if defined(SWIGRUBY)
+  /*
+   * Document-method: <<
+   * Add a relation to a dependency
+   * call-seq:
+   *  dependency << relation -> Dependency
+   *  dependency.add(relation,true) -> Dependency
+   *
+   */
   %alias add "<<";
 #endif
   Dependency *add( Relation *rel, int pre = 0 )
@@ -68,12 +115,24 @@ typedef struct _Dependency {} Dependency;
 
 #if defined(SWIGRUBY)
   /* %rename is rejected by swig for [] */
+  /*
+   * Document-method: []
+   * call-seq:
+   *  dependency[1] -> Relation
+   *
+   */
   %alias get "[]";
 #endif
   Relation *get( int i )
   { return dependency_relation_get( $self, i ); }
 
 #if defined(SWIGRUBY)
+  /*
+   * Document-method: each
+   * call-seq:
+   *  dependency.each { |relation| ... }
+   *
+   */
   void each()
   { dependency_relations_iterate( $self, dependency_relations_iterate_callback ); }
 #endif

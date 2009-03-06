@@ -2,6 +2,7 @@
 /* Pool
 
 =begin rdoc
+Document-class: Pool
 The pool contains information about solvables
 stored optimized for memory consumption and fast retrieval.
 

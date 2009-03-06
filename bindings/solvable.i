@@ -1,5 +1,8 @@
 /*
  * Solvable
+=begin rdoc
+Document-class: Solvable
+=end
  */
 
 %nodefault _Solvable;
@@ -16,26 +19,74 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   %constant int KIND_PATTERN  = KIND_PATTERN;
   %constant int KIND_NOSOURCE = KIND_PATTERN;
 
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   XSolvable( Repo *repo, const char *name, const char *evr, const char *arch = NULL )
   { return xsolvable_create( repo, name, evr, arch ); }
   ~XSolvable()
   { return xsolvable_free( $self ); }
 
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   Repo *repo()
   { return xsolvable_solvable($self)->repo; }
 
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   Pool *pool()
   { return xsolvable_solvable($self)->repo->pool; }
 
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   const char *name()
   { return my_id2str( $self->pool, xsolvable_solvable($self)->name ); }
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   const char *arch()
   { return my_id2str( $self->pool, xsolvable_solvable($self)->arch ); }
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   const char *evr()
   { return my_id2str( $self->pool, xsolvable_solvable($self)->evr ); }
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   const char *vendor()
   { return my_id2str( $self->pool, xsolvable_solvable($self)->vendor ); }
 #if defined(SWIGRUBY)
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   %rename( "vendor=" ) set_vendor( const char *vendor );
 #endif
   void set_vendor(const char *vendor)
@@ -43,6 +94,12 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
 
 %newobject XSolvable::string;
 #if defined(SWIGRUBY)
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   %rename("to_s") string();
 #endif
 #if defined(SWIGPYTHON)
@@ -59,6 +116,12 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   }
 
 #if defined(SWIGRUBY)
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   %alias equal "==";
   %typemap(out) int equal
     "$result = ($1 != 0) ? Qtrue : Qfalse;";
@@ -71,6 +134,12 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   { return xsolvable_equal( $self, xs); }
 
 #if defined(SWIGRUBY)
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   %alias compare "<=>";
 #endif
 #if defined(SWIGPYTHON)
@@ -107,13 +176,21 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
 
 #if defined(SWIGRUBY)
   /*
-   * Ruby
-   * solvable.identical?(other_solvable) => bool
+   * Document-method: 
+   * call-seq:
+   *  solvable.identical?(other_solvable) -> bool
+   *
    */
   %rename("identical?") identical;
   %typemap(out) int identical
     "$result = ($1 != 0) ? Qtrue : Qfalse;";
 #endif
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   /*
    * solvable_identical represents satsolver semantics for 'equality'
    * This might be different from your application needs, beware !
@@ -130,26 +207,92 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   /*
    * Dependencies
    */
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   Dependency *provides()
   { return dependency_new( $self, DEP_PRV ); }
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   Dependency *requires()
   { return dependency_new( $self, DEP_REQ ); }
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   Dependency *conflicts()
   { return dependency_new( $self, DEP_CON ); }
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   Dependency *obsoletes()
   { return dependency_new( $self, DEP_OBS ); }
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   Dependency *recommends()
   { return dependency_new( $self, DEP_REC ); }
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   Dependency *suggests()
   { return dependency_new( $self, DEP_SUG ); }
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   Dependency *supplements()
   { return dependency_new( $self, DEP_SUP ); }
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   Dependency *enhances()
   { return dependency_new( $self, DEP_ENH ); }
 
 #if defined(SWIGRUBY)
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   %rename( "provides?" ) does_provide( const char *name );
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   %rename( "provides_any?" ) does_provide_any( Array );
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   %rename( "provides_all?" ) does_provide_all( Array );
   %typemap(out) int does_provide
     "$result = ($1 != 0) ? Qtrue : Qfalse;";
@@ -177,6 +320,12 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
 
 #if defined(SWIGRUBY)
   /* %rename is rejected by swig for [] */
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   %alias attr "[]";
   VALUE attr( VALUE attrname )
 #endif
@@ -234,6 +383,12 @@ fail:
    */
 
 #if defined(SWIGRUBY)
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   void each_attr()
   {
     Solvable *s = xsolvable_solvable($self);
@@ -246,6 +401,12 @@ fail:
       rb_yield( value );
     }
   }
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   void attr_values(const char *name)
   {
     Solvable *s = xsolvable_solvable($self);
@@ -292,6 +453,12 @@ fail:
    */
 
 #if defined(SWIGRUBY)
+  /*
+   * Document-method: 
+   * call-seq:
+   *  solvable.
+   *
+   */
   %rename( "attr?" ) attr_exists( VALUE attrname );
   VALUE attr_exists( VALUE attrname )
 #endif
