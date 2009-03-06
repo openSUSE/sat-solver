@@ -39,3 +39,15 @@ TARGET_LINK_LIBRARIES( satsolver_ruby ${RPMDB_LIBRARY} )
 
 INSTALL(TARGETS satsolver_ruby LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR})
 
+# rdoc
+ADD_CUSTOM_COMMAND (
+   OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/doc"
+   COMMAND ${CMAKE_COMMAND} -E echo_append "Creating rdoc documentation ..."
+   COMMAND /usr/bin/rdoc -o ${CMAKE_CURRENT_BINARY_DIR}/doc satsolver.i *.i
+   COMMAND ${CMAKE_COMMAND} -E echo "Done."
+   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bindings
+   DEPENDS ${CMAKE_SOURCE_DIR}/bindings/*.i
+)
+INSTALL(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/doc" DESTINATION /usr/share/doc/packages/satsolver-ruby)
+ADD_CUSTOM_TARGET(ruby_rdoc ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/doc")
+ADD_DEPENDENCIES(ruby_rdoc satsolver_ruby)
