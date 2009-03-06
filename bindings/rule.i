@@ -1,12 +1,15 @@
 /*
  * Rule
+=begin rdoc
+This documents rule
+=end
  */
 
 %nodefault rule;
 %rename(Rule) rule;
 typedef struct rule {} Rule;
 
-
+ 
 %extend Rule {
   /* no constructor, Rule is embedded in Solver */
 

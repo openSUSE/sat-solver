@@ -84,7 +84,11 @@ typedef struct _Transaction {} Transaction;
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
   /*
+   * Document-method: empty?
    * Check if the transaction has any jobs attached.
+   * call-seq:
+   *   transaction.empty? -> bool
+   *
    */
   int empty()
   { return ( $self->queue.count == 0 ); }
@@ -99,7 +103,11 @@ typedef struct _Transaction {} Transaction;
   %rename("clear!") clear();
 #endif
   /*
+   * Document-method: clear!
    * Remove all jobs of this transaction
+   * call-seq:
+   *   transaction.clear! -> void
+   *
    */
   void clear()
   { queue_empty( &($self->queue) ); }

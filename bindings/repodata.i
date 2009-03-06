@@ -7,14 +7,23 @@
 typedef struct _Repodata {} Repodata;
 
 
+/* no constructor, Repodata is embedded in Repo */
 %extend Repodata {
-  /* no constructor, Repodata is embedded in Repo */
   
-  /* number of keys in this Repodata */
-  int keysize()
+  /*
+   * Document-method: size
+   * number of keys in this Repodata
+   */
+  int size()
   { return $self->nkeys-1; } /* key 0 is reserved */
 
-  /* access Repokey by index */
+  /*
+   * Document-method: key
+   * access Repokey by index
+   */
+#if defined(SWIGRUBY)
+  %alias key "[]";
+#endif
   XRepokey *key( int i )
   {
     if (i >= 0 && i < $self->nkeys-1)
@@ -24,6 +33,7 @@ typedef struct _Repodata {} Repodata;
   
 #if defined(SWIGRUBY)
   /*
+   * Document-method: each_key
    * Iterate over each key
    */
   void each_key()
