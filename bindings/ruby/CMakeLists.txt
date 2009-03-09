@@ -43,7 +43,7 @@ INSTALL(TARGETS satsolver_ruby LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR})
 ADD_CUSTOM_COMMAND (
    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/doc"
    COMMAND ${CMAKE_COMMAND} -E echo_append "Creating rdoc documentation ..."
-   COMMAND /usr/bin/rdoc -o ${CMAKE_CURRENT_BINARY_DIR}/doc satsolver.i *.i
+   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/rdoc -o ${CMAKE_CURRENT_BINARY_DIR}/doc satsolver.i *.i
    COMMAND ${CMAKE_COMMAND} -E echo "Done."
    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bindings
    DEPENDS ${CMAKE_SOURCE_DIR}/bindings/*.i
