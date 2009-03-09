@@ -8,20 +8,40 @@ typedef struct _Relation {} Relation;
 
 
 %extend Relation {
-/* operation */
+  /* operation constants */
+  
+  /* the no-op relation */
   %constant int REL_NONE = 0;
+  /* greater-than */
   %constant int REL_GT = REL_GT;
+  /* equality */
   %constant int REL_EQ = REL_EQ;
+  /* greater-equal */
   %constant int REL_GE = (REL_GT|REL_EQ);
+  /* less-than */
   %constant int REL_LT = REL_LT;
+  /* not-equal */
   %constant int REL_NE = (REL_LT|REL_GT);
+  /* less-equal */
   %constant int REL_LE = (REL_LT|REL_EQ);
+  /* and, relation between relations */
   %constant int REL_AND = REL_AND;
+  /* or, relation between relations */
   %constant int REL_OR = REL_OR;
+  /* with, relation between relations, affecting the same solvable */
   %constant int REL_WITH = REL_WITH;
+  /* namespace */
   %constant int REL_NAMESPACE = REL_NAMESPACE;
 
-  %feature("autodoc", "1");
+  /*
+   * Document-method: new
+   * create a new relation
+   * see also: create_relation
+   *  call-seq
+   *    Relation.new pool, "kernel" -> Relation
+   *    Relation.new pool, "kernel", REL_GT, "2.6.26" -> Relation
+   *
+   */
   Relation( Pool *pool, const char *name, int op = 0, const char *evr = NULL )
   { return relation_create( pool, name, op, evr ); }
   ~Relation()

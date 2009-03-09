@@ -1,20 +1,16 @@
 %{
 /*
 
-=begin rdoc
+Document-module: Satsolver
 
- SatSolver is the module namespace for sat-solver bindings.
+ Satsolver is the module namespace for sat-solver bindings.
 
  sat-solver is a dependency solver for rpm-style dependencies
  based on a Satisfyability engine.
 
-
- It might make a lot of sense to make Pool* a singular within
- the module and use this pointer globally instead of carrying
- it around in every data structure.
-=end
-
+ See http://en.opensuse.org/Package_Management/Sat_Solver for more
 */
+
 %}
 
 %module satsolver

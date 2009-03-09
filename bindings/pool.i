@@ -1,7 +1,6 @@
 /*-------------------------------------------------------------*/
 /* Pool
 
-=begin rdoc
 Document-class: Pool
 The pool contains information about solvables
 stored optimized for memory consumption and fast retrieval.
@@ -10,7 +9,6 @@ Solvables represent (RPM) packages and are grouped in repositories.
 
 Solving of dependencies works on the pool, usually with a
 distinguished repository of installed solvables.
-=end
 
 */
 
