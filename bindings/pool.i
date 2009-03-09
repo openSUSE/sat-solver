@@ -100,6 +100,16 @@ typedef struct _Pool {} Pool;
   }
 
   /*
+   * Pool destructor
+   *
+   * Implemented as no-op, see 'discard' for details.
+   *
+   */
+
+  ~Pool()
+  { }
+
+  /*
    * Document-method: discard
    *
    * There is no destructor defined for Pool since the pool pointer
