@@ -40,13 +40,18 @@ TARGET_LINK_LIBRARIES( satsolver_ruby ${RPMDB_LIBRARY} )
 INSTALL(TARGETS satsolver_ruby LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR})
 
 # rdoc
+SET(rdoc_dir "${CMAKE_CURRENT_BINARY_DIR}/html")
 ADD_CUSTOM_COMMAND (
-   OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/doc"
+   OUTPUT ${rdoc_dir}
    COMMAND ${CMAKE_COMMAND} -E echo_append "Creating rdoc documentation ..."
-   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/rdoc -o ${CMAKE_CURRENT_BINARY_DIR}/doc satsolver.i *.i
+   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/rdoc -o ${rdoc_dir} satsolver.i *.i
    COMMAND ${CMAKE_COMMAND} -E echo "Done."
    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bindings
    DEPENDS ${CMAKE_SOURCE_DIR}/bindings/*.i
 )
-ADD_CUSTOM_TARGET(ruby_rdoc ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/doc")
+ADD_CUSTOM_TARGET(ruby_rdoc ALL DEPENDS "${rdoc_dir}")
 ADD_DEPENDENCIES(ruby_rdoc satsolver_ruby)
+
+#
+# Leave this to %doc in the .spec file
+#INSTALL(DIRECTORY "${rdoc_dir}" DESTINATION ${DOC_INSTALL_DIR})
