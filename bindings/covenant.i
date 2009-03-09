@@ -42,7 +42,7 @@ typedef struct _Covenant {} Covenant;
    * i.e. Satsolver::INCLUDE_SOLVABLE_PROVIDES
    *
    */
-  int op()
+  int cmd()
   { return $self->cmd; }
 
   /* solvable this covenant affects
