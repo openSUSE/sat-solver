@@ -1,23 +1,22 @@
 /*
  * Solver
-=begin rdoc
-Document-class: Solver
-The solver class is at the heart of the satsolver, providing
-ultra-fast dependency resolution.
-
-The solver is always attached to a pool, containing all solvables the
-solver can operate on. The pool also has designated repository for
-'installed' solvables.
-
-Solving is done by creating Transactions and feeding them to the
-solver as input. On success (solver.solve() returning 'true'), one can
-retrieve the Decisions made by the solver (i.e. install this, remove
-that, update those). On failure, the solver creates a list of
-Problems, explaining what went wrong and how to resolve the problem.
-
-Solving can be controlled globally by setting solver flags.
-Additionally, specific constraints can be set by using Covenants.
-=end
+ * 
+ * The solver class is at the heart of the satsolver, providing
+ * ultra-fast dependency resolution.
+ * 
+ * The solver is always attached to a pool, containing all solvables the
+ * solver can operate on. The pool also has designated repository for
+ * 'installed' solvables.
+ * 
+ * Solving is done by creating Transactions and feeding them to the
+ * solver as input. On success (solver.solve() returning 'true'), one can
+ * retrieve the Decisions made by the solver (i.e. install this, remove
+ * that, update those). On failure, the solver creates a list of
+ * Problems, explaining what went wrong and how to resolve the problem.
+ * 
+ * Solving can be controlled globally by setting solver flags.
+ * Additionally, specific constraints can be set by using Covenants.
+ * 
  */
 
 %{

@@ -1,8 +1,6 @@
 /*
- * Solvable
-=begin rdoc
-Document-class: Solvable
-=end
+ * Solvable is the representation of a (RPM) package within Satsolver.
+ *
  */
 
 %nodefault _Solvable;

@@ -1,18 +1,14 @@
 /*
- * Dependency
-=begin rdoc
-Document-class: Dependency
-A dependency is a set of Relations. There are eight types of
-dependencies:
-* provides
-* requires
-* conflicts
-* obsoletes
-* recommends
-* suggests
-* supplements
-* enhances
-=end
+ * A dependency is a set of Relations. There are eight types of dependencies:
+ * * provides
+ * * requires
+ * * conflicts
+ * * obsoletes
+ * * recommends
+ * * suggests
+ * * supplements
+ * * enhances
+ *
  */
 
 %{

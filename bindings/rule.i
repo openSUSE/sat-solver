@@ -1,8 +1,12 @@
 /*
  * Rule
-=begin rdoc
-This documents rule
-=end
+ *
+ * A rule is the internal representation of the _working queue_ of the
+ * solver. Each transaction item and each dependency is converted to a
+ * rule the solver operates on.
+ *
+ * Rules are useful to traceback a decision or a problem.
+ *
  */
 
 %nodefault rule;
