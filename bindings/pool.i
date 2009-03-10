@@ -1,7 +1,6 @@
 /*-------------------------------------------------------------*/
 /* Pool
 
-Document-class: Pool
 The pool contains information about solvables
 stored optimized for memory consumption and fast retrieval.
 
@@ -76,10 +75,11 @@ typedef struct _Pool {} Pool;
 %extend Pool {
 
   /*
-   * Document-method: new
    * Pool creation, optionally with an architecture
+   *
    * If you don't pass the architecture to the Pool constructor, you
    * can also use pool.arch= later.
+   *
    * call-seq:
    *  Pool.new -> Pool
    *  Pool.new("x86_64") -> Pool
@@ -117,14 +117,15 @@ typedef struct _Pool {} Pool;
    * Deleting the Pool is seldomly needed anyways. Just call
    * Pool::discard to explicitly free the pool. Just remember that
    * Solvables originating from this Pool are invalidated.
+   *
    */
    
   void discard()
   { pool_free($self); }
 
   /*
-   * Document-method: solvable
    * Access Solvable storage within the pool
+   *
    * Get solvable based on id from pool
    *
    * call-seq:
@@ -137,8 +138,8 @@ typedef struct _Pool {} Pool;
   }
   
   /*
-   * Document-method: relation
    * Access Solvable storage within the pool
+   *
    * Get relation based on id from Pool
    *
    * call-seq:
@@ -151,10 +152,10 @@ typedef struct _Pool {} Pool;
 #if defined(SWIGRUBY)
 %{
   /*
-   * Document-method: arch=
+   * Defines the architecture of the pool.
+   
+   * Only Solvables with a compatible architecture will be considered.
    *
-   * Defines the architecture of the pool. Only Solvables with a compatible
-   * architecture will be considered.
    * Setting the architecture to "i686" is a good choice for most 32bit
    * systems, 64bit systems most probably need "x86_64"
    * Attn: There is no getter function for the architecture since
@@ -175,8 +176,6 @@ typedef struct _Pool {} Pool;
 
 #if defined(SWIGRUBY)
   /*
-   * Document-method: debug=
-   *
    * Increase verbosity on stderr
    *
    * call-seq:
@@ -190,8 +189,6 @@ typedef struct _Pool {} Pool;
   { pool_setdebuglevel( $self, level ); }
 
   /*
-   * Document-method: promoteepoch
-   *
    * If epoch should be promoted
    *
    */
@@ -199,8 +196,6 @@ typedef struct _Pool {} Pool;
   { return $self->promoteepoch; }
 #if defined(SWIGRUBY)
   /*
-   * Document-method: promoteepoch=
-   *
    * If epoch should be promoted
    *
    */
@@ -211,16 +206,19 @@ typedef struct _Pool {} Pool;
 
   /*
    * Set the pool to an _unprepared_ status.
+   * 
    * You must run Pool.prepare before using a solver on this Pool.
    * 
-   * See also Pool.prepare
+   * See also +Pool+.+prepare+
    *
    */
   int unprepared()
   { return $self->whatprovides == NULL; }
 
   /*
-   * Prepare the pool for solving. After calling prepare, one must not
+   * Prepare the pool for solving.
+   *
+   * After calling prepare, one must not
    * add or remove Repositories or add/remove Solvables within a Repository.
    *
    */
@@ -321,6 +319,7 @@ typedef struct _Pool {} Pool;
    *  pool.create_repo("test") -> Repository
    *
    */
+  %newobject create_repo;
   Repo *create_repo( const char *name = NULL )
   { return repo_create( $self, name ); }
 
@@ -406,6 +405,7 @@ typedef struct _Pool {} Pool;
    *  pool.create_relation( "kernel", REL_GE, "2.6.26" ) -> Relation
    *
    */
+  %newobject create_relation;
   Relation *create_relation( const char *name, int op = 0, const char *evr = NULL )
   {
     if (op && !evr)
@@ -718,6 +718,7 @@ typedef struct _Pool {} Pool;
    * See also +Transaction+.+new+
    *
    */
+  %newobject create_transaction;
   Transaction *create_transaction()
   { return transaction_new( $self ); }
 
@@ -762,6 +763,7 @@ typedef struct _Pool {} Pool;
    *  pool.create_solver -> Solver
    *
    */
+  %newobject create_solver;
   Solver* create_solver()
   {
     pool_createwhatprovides( $self );
