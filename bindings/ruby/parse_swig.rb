@@ -385,10 +385,13 @@ module RDoc
     def handle_method(type, class_name, meth_name, 
                       meth_body, param_count)
       progress(".")
-      @stats.num_methods += 1
+      
 
       class_obj  = find_class(class_name)
       if class_obj
+	seen_before = class_obj.method_list.find { |meth| meth.name == meth_name }
+	return if seen_before
+	@stats.num_methods += 1
         if meth_name == "initialize"
           meth_name = "new"
           type = "singleton_method"
