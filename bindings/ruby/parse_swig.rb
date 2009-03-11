@@ -8,6 +8,10 @@ require "rdoc/rdoc"
 
 module RDoc
 
+  class Context
+    attr_accessor :body
+  end
+  
   class Swig_Parser
 
     attr_accessor :progress
@@ -16,9 +20,9 @@ module RDoc
     parse_files_matching(/\.i$/)
 
     @@known_bodies = {}
-    @@module_name = nil
     @@files_seen = Array.new
-
+    @@module_name = nil
+    
     # prepare to parse a SWIG file
     def initialize(top_level, file_name, body, options, stats)
       @known_classes = KNOWN_CLASSES.dup
@@ -30,7 +34,6 @@ module RDoc
       @file_dir = File.dirname(file_name)
       @progress = $stderr unless options.quiet
       @file_name = file_name
-      @contents = Hash.new
     end
 
     # Extract the classes/modules and methods from a C file
@@ -39,14 +42,17 @@ module RDoc
       unless @@files_seen.include? @file_name
 	@@files_seen << @file_name
 	remove_commented_out_lines
-	module_name, class_name = do_classes @@module_name
-	@@module_name = @@module_name || module_name 
-	if class_name # maybe its just a %module file
-	  do_constants @@module_name, class_name 
-	  do_methods @@module_name, class_name
-	  do_includes
-	  do_aliases @@module_name, class_name
-	end
+	if module_name = do_module
+	  @@module_name = module_name
+	else
+	  do_classes
+	  @classes.keys.each do |c|
+	    do_constants c
+	    do_methods c
+	    do_includes
+	    do_aliases c
+	    end
+	  end
       else
 	puts "Seen #{@file_name} before" unless @options.quiet
       end
@@ -82,30 +88,20 @@ module RDoc
     def remove_commented_out_lines
       @body.gsub!(%r{//.*rb_define_}, '//')
     end
-    
+
+    ##
+    # handle class or module
+    #
+    # return enclosure
+    #   
     def handle_class_module(class_mod, class_name, options = {})
-#      puts "handle_class_module(#{class_mod}, #{class_name}, in_module #{options[:module]})"
-      again = options[:again]
-      progress(class_mod[0, 1]) unless again
+#      puts "handle_class_module(#{class_mod}, #{class_name})"
+      progress(class_mod[0, 1])
       parent = options[:parent]
-      in_module = options[:module]
-      content = options[:content]
       parent_name = @known_classes[parent] || parent
 
-      if in_module
-        enclosure = @classes[in_module]
-      unless enclosure
-          if enclosure = @known_classes[in_module]
-            handle_class_module(in_module, (/^rb_m/ =~ in_module ? "module" : "class"),
-                                enclosure, nil, nil)
-            enclosure = @classes[in_module]
-          end
-        end
-        unless enclosure
-          warn("Enclosing class/module '#{in_module}' for " +
-                "#{class_mod} #{class_name} not known")
-          return
-        end
+      if @@module_name
+        enclosure = @top_level.find_module_named(@@module_name)
       else
         enclosure = @top_level
       end
@@ -115,14 +111,14 @@ module RDoc
         @stats.num_classes += 1
       else
         cm = enclosure.add_module(NormalModule, class_name)
-        @stats.num_modules += 1 unless again
+        @stats.num_modules += 1
       end
       cm.record_location(enclosure.toplevel)
+      cm.body = options[:content]
 
       find_class_comment(class_name, cm)
       @classes[class_name] = cm
       @known_classes[class_name] = cm.full_name
-      @contents[class_name] = content
     end
 
     ##
@@ -166,24 +162,30 @@ module RDoc
     ############################################################
 
     #
-    # Find and handle classes within +module_name+
+    # Find module
+    # return module_name (or nil)
     #
-    def do_classes module_name
-      swig_module = nil
+    def do_module
+      module_name = nil
       @body.scan(/^%module\s*(\w+)/mx) do 
         |name|
-	swig_module = name[0].capitalize
-        handle_class_module("module", swig_module)
+	module_name = name[0].capitalize
+	handle_class_module("module", module_name)
       end
-      unless swig_module
-        handle_class_module("module", module_name, :again => true )
-	swig_module = module_name
-      end
-      
+      module_name
+    end
+
+    #
+    # Find and handle classes within +module_name+
+    #
+    # return Array of classes
+    #
+    def do_classes
+
       # look for class renames like
       #   %rename(Solvable) _Solvable;
       #   typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
-      swig_class = nil
+
       extends = Hash.new
       @body.scan(/^%rename\s*\(([^\"\)]+)\)\s+(\w+);/) do |class_name, struct_name|
 #	puts "rename #{class_name} -> #{struct_name}"
@@ -191,18 +193,16 @@ module RDoc
 #	  puts "extend #{extend_name}"
 	  @body.scan(/^%extend\s+#{extend_name}\s*\{(.*)\}/mx) do |content|
 	    extends[extend_name.to_s] = true
-	    swig_class = class_name.to_s.capitalize
-	    handle_class_module("class", swig_class, :parent => "rb_cObject", :module => module_name, :content => content.to_s)
+	    swig_class = handle_class_module("class", class_name.to_s.capitalize, :parent => "rb_cObject", :content => content.to_s)
 	  end
 	end
       end
       @body.scan(/^%extend\s*(\w+)\s*\{(.*)\}/mx) do |class_name,content|
 	unless extends[class_name]
-	  swig_class = class_name.capitalize
-	  handle_class_module("class", swig_class, :parent => "rb_cObject", :module => module_name, :content => content)
+	  handle_class_module("class", class_name.capitalize, :parent => "rb_cObject", :content => content)
+	  extends[class_name] = true
 	end
       end
-      [swig_module, swig_class]
     end
 
     ###########################################################
@@ -211,11 +211,12 @@ module RDoc
     # Find
     #  %constant +type+ +name+ = +value+
     #
-    def do_constants module_name, class_name
-      @contents[class_name].scan(%r{%constant\s+(\w+)\s+(\w+)\s*=\s*(\w+)\s*;}xm) do
+    def do_constants class_name
+      c = find_class class_name
+      c.body.scan(%r{%constant\s+(\w+)\s+(\w+)\s*=\s*(\w+)\s*;}xm) do
         |type, const_name, definition|
         # swig puts all constants under module
-	handle_constants(type, module_name, const_name, definition)
+	handle_constants(type, @@module_name, const_name, definition)
       end
     end
     
@@ -229,9 +230,10 @@ module RDoc
     # and honor
     #  %rename "+new_name+" +old_name+ ;
     #
-    def do_methods module_name, class_name
+    def do_methods class_name
       renames = Hash.new
-      @contents[class_name].scan(%r{%rename\s*\(\s*"([^"]+)"\s*\)\s*(\w+)}m) do #"
+      c = find_class class_name
+      c.body.scan(%r{%rename\s*\(\s*"([^"]+)"\s*\)\s*(\w+)}m) do #"
         |meth_name,orig_name|
 	meth_name = meth_name[0] if meth_name.is_a? Array
 	orig_name = orig_name[0] if orig_name.is_a? Array
@@ -241,14 +243,15 @@ module RDoc
       #   <type> [*]? <name> ( <args> ) {
       #
 #      puts "#{module_name}::#{class_name} methods ?"
-      @contents[class_name].scan(%r{^\s+((const\s+)?\w+)(\W+)(\w+)\s*\(([^\)]*)\)\s*\{}m) do
+      c = find_class class_name
+      c.body.scan(%r{^\s+((const\s+)?\w+)(\W+)(\w+)\s*\(([^\)]*)\)\s*\{}m) do
         |type,const,pointer,meth_name,args|
 	next unless meth_name
 	type = "string" if type =~ /char/ && pointer =~ /\*/
 #	puts "-> #{const}:#{type}:#{pointer}:#{meth_name} ( #{args} )\n#{$&}\n\n"
 	meth_name = meth_name[0] if meth_name.is_a? Array
 	meth_name = renames[meth_name] || meth_name
-        handle_method(type, class_name, meth_name, nil, (args.split(",")||[]).size, nil)
+        handle_method(type, class_name, meth_name, nil, (args.split(",")||[]).size)
       end
 
    end
@@ -260,12 +263,13 @@ module RDoc
     #
     #  %alias +old_name+ "+new_name+" ;
     #
-    def do_aliases module_name, class_name
-      @contents[class_name].scan(%r{%alias\s+(\w+)\s+"([^"]+)"\s*;}m) do #"
+    def do_aliases class_name
+      c = find_class class_name
+      c.body.scan(%r{%alias\s+(\w+)\s+"([^"]+)"\s*;}m) do #"
         |old_name, new_name|
         @stats.num_methods += 1
         raise "Unknown class '#{class_name}'" unless @known_classes[class_name]
-        class_obj  = find_class(class_name, class_name)
+        class_obj  = find_class(class_name)
 
         class_obj.add_alias(Alias.new("", old_name, new_name, ""))
       end
@@ -282,16 +286,10 @@ module RDoc
     # Will override +INT2FIX(300)+ with the value +300+ in the output RDoc.
     # Values may include quotes and escaped colons (\:).
 
-    def handle_constants(type, var_name, const_name, definition)
-      #@stats.num_constants += 1
-      class_name = @known_classes[var_name]
-      
-      return unless class_name
-
-      class_obj  = find_class(class_name, class_name)
-
+    def handle_constants(type, class_name, const_name, definition)
+      class_obj = find_class(class_name)
       unless class_obj
-        warn("Enclosing class/module '#{const_name}' for not known")
+        warn("Enclosing class/module for '#{const_name}' not known")
         return
       end
       
@@ -356,7 +354,7 @@ module RDoc
 
       return unless class_name
       
-      class_obj  = find_class(var_name, class_name)
+      class_obj  = find_class(class_name)
 
       if class_obj
         comment = find_attr_comment(attr_name)
@@ -385,11 +383,11 @@ module RDoc
     ###########################################################
 
     def handle_method(type, class_name, meth_name, 
-                      meth_body, param_count, source_file = nil)
+                      meth_body, param_count)
       progress(".")
       @stats.num_methods += 1
 
-      class_obj  = find_class(class_name, class_name)
+      class_obj  = find_class(class_name)
       if class_obj
         if meth_name == "initialize"
           meth_name = "new"
@@ -411,12 +409,8 @@ module RDoc
                                                 ")"
         end
 
-        if source_file
-          file_name = File.join(@file_dir, source_file)
-          body = (@@known_bodies[source_file] ||= File.read(file_name))
-        else
-          body = @contents[class_name]
-        end
+	body = find_class(class_name).body
+
         if find_body(meth_name, meth_obj, body) and meth_obj.document_self
           class_obj.add_method(meth_obj)
         end
@@ -542,15 +536,8 @@ module RDoc
       comment
     end
 
-    def find_class(raw_name, name)
-      unless @classes[raw_name]
-        if raw_name =~ /^rb_m/ 
-          @classes[raw_name] = @top_level.add_module(NormalModule, name)
-        else
-          @classes[raw_name] = @top_level.add_class(NormalClass, name, nil)
-        end
-      end
-      @classes[raw_name]
+    def find_class(name)
+      @classes[name] || @top_level.find_module_named(name) || raise("No such class #{name}")
     end
 
     def handle_tab_width(body)
