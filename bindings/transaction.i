@@ -37,43 +37,68 @@ typedef struct _Transaction {} Transaction;
   { transaction_free( $self ); }
 
   /*
-   * Install (specific) solvable
+   * Install request
+   *
+   * Ensure installation of a solvable by either
+   * * specifying it directly
+   * * specify it by name
+   * * specify a required relation
+   *
+   * Except when specified directly, the solver is free to choose any
+   * solvable matching the request (by name, by relation)
+   *
+   * call-seq:
+   *  transaction.install(solvable) -> void
+   *  transaction.install("kernel") -> void
+   *  transaction.install(relation) -> void
+   *
    */
   void install( XSolvable *xs )
-  { return transaction_install_xsolvable( $self, xs ); }
+  { transaction_install_xsolvable( $self, xs ); }
 
   /*
-   * Remove (specific) solvable
+   * Remove request
+   *
+   * Ensure removal of a solvable by either
+   * * specifying it directly
+   * * specify it by name
+   * * specify a required relation
+   *
+   * Except when specified directly, the solver is free to choose any
+   * solvable matching the request (by name, by relation)
+   *
+   * call-seq:
+   *  transaction.remove(solvable) -> void
+   *  transaction.remove("kernel") -> void
+   *  transaction.remove(relation) -> void
+   *
    */
   void remove( XSolvable *xs )
-  { return transaction_remove_xsolvable( $self, xs ); }
+  { transaction_remove_xsolvable( $self, xs ); }
 
   /*
    * Install solvable by name
-   * The solver is free to choose any solvable with the given name.
    */
   void install( const char *name )
-  { return transaction_install_name( $self, name ); }
+  { transaction_install_name( $self, name ); }
 
   /*
    * Remove solvable by name
-   * The solver is free to choose any solvable with the given name.
+   *
    */
   void remove( const char *name )
-  { return transaction_remove_name( $self, name ); }
+  { transaction_remove_name( $self, name ); }
 
   /*
    * Install solvable by relation
-   * The solver is free to choose any solvable providing the given
-   * relation.
+   *
    */
   void install( const Relation *rel )
-  { return transaction_install_relation( $self, rel ); }
+  { transaction_install_relation( $self, rel ); }
 
   /*
    * Remove solvable by relation
-   * The solver is free to choose any solvable providing the given
-   * relation.
+   *
    */
   void remove( const Relation *rel )
   { return transaction_remove_relation( $self, rel ); }
@@ -84,8 +109,8 @@ typedef struct _Transaction {} Transaction;
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
   /*
-   * Document-method: empty?
    * Check if the transaction has any jobs attached.
+   *
    * call-seq:
    *   transaction.empty? -> bool
    *
@@ -95,6 +120,7 @@ typedef struct _Transaction {} Transaction;
 
   /*
    * Return number of jobs of this transaction
+   *
    */
   int size()
   { return transaction_size( $self ); }
@@ -103,8 +129,8 @@ typedef struct _Transaction {} Transaction;
   %rename("clear!") clear();
 #endif
   /*
-   * Document-method: clear!
    * Remove all jobs of this transaction
+   *
    * call-seq:
    *   transaction.clear! -> void
    *
@@ -117,16 +143,25 @@ typedef struct _Transaction {} Transaction;
 #endif
   /*
    * Get job by index
+   *
    * The index is just a convenience access method and
    * does NOT imply any preference/ordering of the Jobs.
    *
    * A Transaction is always considered a set of Jobs.
+   *
+   * call-seq:
+   *  transaction.get(42) -> Job
+   *
    */
   Job *get( unsigned int i )
   { return transaction_job_get( $self, i ); }
 
   /*
    * Iterate over each Job of the Transaction.
+   *
+   * call-seq:
+   *  transaction.each { |job| ... }
+   *
    */
   void each()
   { transaction_jobs_iterate( $self, transaction_jobs_iterate_callback ); }
