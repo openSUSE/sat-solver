@@ -1,5 +1,48 @@
-# Classes and modules built in to the interpreter. We need
-# these to define superclasses of user objects
+#
+# parse_swig.rb
+#
+# A rdoc parser for SWIG .i files
+#
+# Based on parse_c.rb from the Ruby-1.8.7 distribution.
+#
+# Most of (my) SWIG binding descriptions have a toplevel .i file
+# describing the module (%module) and generic definitions. The various
+# classes are spread into separate .i files, all '%include'd by the main
+# file.
+#
+# parse_swig.rb depends on this (a single module, with classes below it)
+# layout and needs the main file (the one with %module) as first input
+# file. A second parse of this file is ignored.
+#
+# == Usage
+# rdoc module.i *.i
+#
+# !! ensure that the file containing the %module directive
+# !! is parsed first
+#
+#
+# == Installation:
+#
+# Getting this file into rdoc without changing rdoc itself is a bit tricky
+# but doable, thanks to the dynamic nature of Ruby.
+#
+# One just needs to load parse_swig.rb before the original rdoc. The tricky
+# part is that 'require' in Ruby either loads an .rb or .so file, but
+# /usr/bin/rdoc does not have an extension.
+# This is solved by a creating a temporary symlink ./rdoc.rb -> /usr/bin/rdoc
+# and wrapping this into a new 'rdoc' to be called on the command line:
+#
+#   home = File.dirname __FILE__
+#   $:.unshift(home)
+#   new_rdoc = home+"/rdoc.rb"
+#   File.symlink("/usr/bin/rdoc", new_rdoc) unless File.symlink?(new_rdoc)
+#   begin
+#     require 'parse_swig.rb'
+#     require 'rdoc'
+#   ensure
+#     File.delete new_rdoc # Discard the symlink
+#   end
+#     
 
 require "rdoc/code_objects"
 require "rdoc/parsers/parserfactory"
@@ -540,7 +583,7 @@ module RDoc
     end
 
     def find_class(name)
-      @classes[name] || @top_level.find_module_named(name) || raise("No such class #{name}")
+      @classes[name] || @top_level.find_module_named(name) || raise("No such class '#{name}'")
     end
 
     def handle_tab_width(body)
