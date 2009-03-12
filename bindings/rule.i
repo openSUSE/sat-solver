@@ -1,7 +1,7 @@
 /*
- * Rule
+ * Document-class: Rule
  *
- * A rule is the internal representation of the _working queue_ of the
+ * A rule is the internal representation of the _working_ _queue_ of the
  * solver. Each transaction item and each dependency is converted to a
  * rule the solver operates on.
  *

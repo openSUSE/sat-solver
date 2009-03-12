@@ -1,5 +1,7 @@
 /*
- * Solution
+ * Document-class: Solution
+ * Solutions are attached to Problems and give hints on how to solve problems.
+ *
  */
 
 %nodefault _Solution;

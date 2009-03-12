@@ -1,29 +1,38 @@
 /*
- * Repodata
+ * Document-class: Repodata
+ * Repodata holds additional Solvable attributes which are not
+ * required for dependency solving.
+ *
+ * Repodata is a Repo extension and thus belongs to a Repo.
+ *
+ * There is
+ * no way to create a Repodata on its own, it can only be accessed
+ * through Pool.data
  */
 
 %nodefault _Repodata;
 %rename(Repodata) _Repodata;
 typedef struct _Repodata {} Repodata;
 
-
-/* no constructor, Repodata is embedded in Repo */
 %extend Repodata {
   
   /*
-   * Document-method: size
    * number of keys in this Repodata
    */
   int size()
   { return $self->nkeys-1; } /* key 0 is reserved */
 
-  /*
-   * Document-method: key
-   * access Repokey by index
-   */
 #if defined(SWIGRUBY)
   %alias key "[]";
 #endif
+  /*
+   * access Repokey by index
+   *
+   * call-seq:
+   *   repodata[42] -> Repokey
+   *   repodata.get(42) -> Repokey
+   *
+   */
   XRepokey *key( int i )
   {
     if (i >= 0 && i < $self->nkeys-1)
@@ -33,8 +42,8 @@ typedef struct _Repodata {} Repodata;
   
 #if defined(SWIGRUBY)
   /*
-   * Document-method: each_key
    * Iterate over each key
+   *
    */
   void each_key()
   {

@@ -1,5 +1,13 @@
 /*
- * Decision
+ * Document-class: Decision
+ * Decisions are the result of an successful solve. Decisions describe the actions to be taken (i.e. install this solvable, remove that solvable, ...)
+ * to make the solver result effective.
+ *
+ * Decisions contain an operation (install, update, remove) and the affected Solvable.
+ *
+ * Additionally they have a _back_ _pointer_ to the Rule which lead to the Decision.
+ * This allows to find out about the reasoning for the decision.
+ *
  */
 
 %nodefault _Decision;
@@ -8,11 +16,17 @@ typedef struct _Decision {} Decision;
 
 
 %extend Decision {
+  /* install a solvable */
   %constant int DECISION_INSTALL = DECISION_INSTALL;
+  /* remove a solvable */
   %constant int DECISION_REMOVE = DECISION_REMOVE;
+  /* update a solvable */
   %constant int DECISION_UPDATE = DECISION_UPDATE;
+  /* obsolete a solvable (remove due to install) */
   %constant int DECISION_OBSOLETE = DECISION_OBSOLETE;
+  /* weak decision modifier */
   %constant int DECISION_WEAK = DECISION_WEAK;
+  /* free decision modifier */
   %constant int DECISION_FREE = DECISION_FREE;
 
   /* no constructor defined, Decisions are created by accessing
@@ -22,8 +36,14 @@ typedef struct _Decision {} Decision;
   { decision_free( $self ); }
   Solver *solver()
   { return $self->solver; }
+  /*
+   * the decision operation, one of +Satsolver::DECISION_*+
+   */
   int op()
   { return $self->op; }
+  /*
+   * a string representation of the operation
+   */
   const char *op_s()
   { switch ($self->op) {
       case DECISION_INSTALL: return "install";
@@ -35,8 +55,15 @@ typedef struct _Decision {} Decision;
     }
     return "unknown";
   }
+  /*
+   * The solvable affected by the decision
+   */
   XSolvable *solvable()
   { return xsolvable_new( $self->solver->pool, $self->solvable ); }
+  /*
+   * The rule which lead to the decision
+   * might be +nil+
+   */
   Rule *rule()
   { if ($self->rule > $self->solver->rules)
       return $self->rule;

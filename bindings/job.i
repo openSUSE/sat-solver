@@ -1,5 +1,5 @@
 /*
- * Job
+ * Document-class: Job
  * A job is a single 'work item' of a transaction
  */
 

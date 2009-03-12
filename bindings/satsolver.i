@@ -1,6 +1,6 @@
 %{
 /*
-
+ Document-module: Satsolver
  =About Satsolver
 
  Satsolver is the module namespace for sat-solver bindings.
@@ -14,24 +14,26 @@
  ==Working with sat-solver bindings
  
  The sat-solver bindings provide two main functionalities
- * An efficient cache of repository data
- * An ultra-fast dependency solver working on the cached data
+ - An efficient cache of repository data
+ - An ultra-fast dependency solver working on the cached data
  
  The core of the repository cache is represented by the _Pool_. It
  represents the context the solver works in. The Pool holds
- _Solvables_, representing (RPM-based) packages. Solvables have a
+ _Solvables_, representing (RPM-based) packages.
+ 
+ Solvables have a
  name, a version and an architecture. Solvables usually have
  _Dependencies_, organized as sets of _Relation_s Solvables can also
  hold additional attribute data, typically everything from the RPM
- header, i.e. _vendor_, _download size_, _install size_, etc.
+ header, i.e. _vendor_, _download_ _size_, _install_ _size_, etc.
 
  Solvables within the Pool are grouped in Repositories. Filling the
  Pool by loading a .+solv+ file, representing a _Repository_, is the
  preferred way.
  
  In a nutshell:
- Pool _has lots of_ Repositories _have lots of_ Solvables _have lots
- of_ Attributes.
+ Pool _has_ _lots_ _of_ Repositories _have_ _lots_ _of_ Solvables
+ _have_ _lots_ _of_ Attributes.
  
 */
 

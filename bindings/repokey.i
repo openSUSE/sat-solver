@@ -1,5 +1,7 @@
 /*
- * XRepokey
+ * Document-class: Repokey
+ * Repokey is the Key part of the key/value pair describing an attribute
+ *
  */
 
 %nodefault _Repokey;
@@ -31,20 +33,34 @@ typedef struct _Repokey {} XRepokey; /* expose XRepokey as 'Repokey' */
   ~XRepokey()
   { xrepokey_free( $self ); }
   
-  /* name of key */
+  /*
+   * name of key
+   */
   const char *name()
   {
     Repokey *key = xrepokey_repokey( $self );
     return my_id2str( $self->repo->pool, key->name );
   }
-  /* type id of key */
+
+  /*
+   * type id of key
+   * 
+   * One of +Satsolver::REPOKEY_TYPE_*+
+   */
   int type_id()
   {
     Repokey *key = xrepokey_repokey( $self );
     return key->type;
   }
   
-  /* type of key */
+  /*
+   * Class of key
+   *
+   * Returns a _best_ _matching_ Class representation of the type
+   *
+   * i.e. +Satsolver::REPOKEY_TYPE_VOID+ is represented as a +Boolean+ since presence of the key means +true+ for this attribute.
+   *
+   */
 #if defined(SWIGPYTHON)
 PyTypeObject *
 #endif
@@ -114,7 +130,12 @@ SV *
     }
     return type;
   }
-  /* size of key */
+  /*
+   * size of key
+   *
+   * Internal memory consumption
+   *
+   */
   int size()
   {
     Repokey *key = xrepokey_repokey( $self );
@@ -126,6 +147,9 @@ SV *
 #if defined(SWIGPYTHON)
   %rename("__str__") string();
 #endif
+  /*
+   * String representation of the key
+   */
   const char *string()
   {
     Repokey *key = xrepokey_repokey( $self );

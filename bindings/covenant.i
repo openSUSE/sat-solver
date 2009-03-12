@@ -1,14 +1,7 @@
 /*
- * Covenant
- */
-
-%nodefault _Covenant;
-%rename(Covenant) _Covenant;
-typedef struct _Covenant {} Covenant;
-
-/*
+ * Document-class: Covenant
  * Covenants ensure specific dependencies in the (installed) system.
- * They are usually used to implement locks.
+ * They are usually used to implement _locks_.
  *
  * There is no constructor for Covenants defined, Covenants are created through the Solver,
  * see 'Solver.include' and 'Solver.exclude'
@@ -21,6 +14,11 @@ typedef struct _Covenant {} Covenant;
  * See also: Solver.include, Solver.exclude
  *
  */
+
+%nodefault _Covenant;
+%rename(Covenant) _Covenant;
+typedef struct _Covenant {} Covenant;
+
 %extend Covenant {
   /* ensure this solvable is installed */
   %constant int INCLUDE_SOLVABLE = SOLVER_INSTALL_SOLVABLE;
@@ -38,28 +36,36 @@ typedef struct _Covenant {} Covenant;
   ~Covenant()
   { covenant_free( $self ); }
   
-  /* operation of this covenant
+  /*
+   * operation of this covenant
+   *
    * i.e. Satsolver::INCLUDE_SOLVABLE_PROVIDES
    *
    */
   int cmd()
   { return $self->cmd; }
 
-  /* solvable this covenant affects
+  /*
+   * solvable this covenant affects
+   *
    * non-nil only for operations INCLUDE_SOLVABLE and EXCLUDE_SOLVABLE
    *
    */
   XSolvable *solvable()
   { return covenant_xsolvable( $self ); }
 
-  /* name this covenant affects
+  /*
+   * name this covenant affects
+   *
    * non-nil only for operations INCLUDE_SOLVABLE_NAME and EXCLUDE_SOLVABLE_NAME
    *
    */
   const char *name()
   { return covenant_name( $self ); }
 
-  /* relation this covenant affects
+  /*
+   * relation this covenant affects
+   *
    * non-nil only for operations INCLUDE_SOLVABLE_PROVIDES and EXCLUDE_SOLVABLE_PROVIDES
    *
    */

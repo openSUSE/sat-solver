@@ -1,5 +1,7 @@
 /*
- * Transaction
+ * Document-class: Transaction
+ * Transaction represents a Set of Jobs as input for the Solver.
+ *
  */
 
 %{

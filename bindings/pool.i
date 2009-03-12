@@ -1,15 +1,22 @@
-/*-------------------------------------------------------------*/
-/* Pool
 
-The pool contains information about solvables
-stored optimized for memory consumption and fast retrieval.
-
-Solvables represent (RPM) packages and are grouped in repositories.
-
-Solving of dependencies works on the pool, usually with a
-distinguished repository of installed solvables.
-
-*/
+/* 
+ * Document-class: Pool
+ * The Pool contains information about solvables
+ * stored optimized for memory consumption and fast retrieval.
+ * 
+ * Solvables represent (RPM) packages and are grouped in repositories.
+ * 
+ * Solving of dependencies works on the Pool, usually with a
+ * distinguished repository of installed solvables.
+ * 
+ * === About memory management
+ * Pool should be a Singleton, there is no actual need to have multiple pools.
+ *
+ * Since a lot of objects _back_ _reference_ the Pool they belong to, the Pool
+ * desctructor is left as a no-op. In the rare case that one has to free memory
+ * allocated to a Pool, call +discard+ and do not reference any objects (Repo, Solvable, Solver, ...) originating from this Pool.
+ *
+ */
 
 %{
 /*
@@ -250,7 +257,7 @@ typedef struct _Pool {} Pool;
    * Returns newly created Repository
    *
    * call-seq:
-   *   pool.add_file( File.open( "foo.solv" ) ) -> Repository
+   *   pool.add_file( File.open( "foo.solv" ) ) -> Repo
    *
    */
   Repo *add_file( FILE *fp )
@@ -267,7 +274,7 @@ typedef struct _Pool {} Pool;
    * Returns newly created Repository
    *
    * call-seq:
-   *   pool.add_solv( "foo.solv" ) -> Repository
+   *   pool.add_solv( "foo.solv" ) -> Repo
    *
    */
   Repo *add_solv( VALUE name )
@@ -298,8 +305,8 @@ typedef struct _Pool {} Pool;
    * Returns a newly created Repository
    *
    * call-seq:
-   *   pool.add_rpmdb -> Repository
-   *   pool.add_rpmdb("/space/chroot") -> Repository
+   *   pool.add_rpmdb -> Repo
+   *   pool.add_rpmdb("/space/chroot") -> Repo
    *
    */
   Repo *add_rpmdb( const char *rootdir )
@@ -315,8 +322,8 @@ typedef struct _Pool {} Pool;
    * This repository should then be populated with Solvables.
    *
    * call-seq:
-   *  pool.create_repo -> Repository
-   *  pool.create_repo("test") -> Repository
+   *  pool.create_repo -> Repo
+   *  pool.create_repo("test") -> Repo
    *
    */
   %newobject create_repo;
@@ -338,7 +345,7 @@ typedef struct _Pool {} Pool;
    * Returns +nil+ if no such Repository exists.
    *
    * call-seq:
-   *   pool.get_repo(2) -> Repository
+   *   pool.get_repo(2) -> Repo
    *   pool.get_repo(-42) -> nil
    *
    */
@@ -354,7 +361,7 @@ typedef struct _Pool {} Pool;
    * Interate through all Repositories of this Pool
    *
    * call-seq:
-   *  pool.each_repo { |repository| ... }
+   *  pool.each_repo { |repo| ... }
    *
    */
   void each_repo()
@@ -378,7 +385,7 @@ typedef struct _Pool {} Pool;
    * given name exists.
    *
    * call-seq:
-   *  pool.find_repo("test") -> Repository
+   *  pool.find_repo("test") -> Repo
    *
    */
   Repo *find_repo( const char *name )
@@ -692,10 +699,12 @@ typedef struct _Pool {} Pool;
   /*
    * Search for Solvable attributes
    *
+   * See +Dataiterator+ for example code
+   *
    * call-seq:
-   *  pool.search("match", flags) { |iterator| ... }
-   *  pool.search("match", flags, solvable) { |iterator| ... }
-   *  pool.search("match", flags, solvable, key) { |iterator| ... }
+   *  pool.search("match", flags) { |dataiterator| ... }
+   *  pool.search("match", flags, solvable) { |dataiterator| ... }
+   *  pool.search("match", flags, solvable, key) { |dataiterator| ... }
    *
    */
   void search(const char *match, int flags, XSolvable *xs = NULL, const char *keyname = NULL) 

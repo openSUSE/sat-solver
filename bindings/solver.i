@@ -1,5 +1,5 @@
 /*
- * Solver
+ * Document-class: Solver
  * 
  * The solver class is at the heart of the satsolver, providing
  * ultra-fast dependency resolution.
@@ -17,6 +17,33 @@
  * Solving can be controlled globally by setting solver flags.
  * Additionally, specific constraints can be set by using Covenants.
  * 
+ * Example code:
+ *    pool = Satsolver::Pool.new
+ *    pool.arch = "i686"
+ *    system = pool.add_rpmdb( "/" )
+ *    pool.installed = system
+ *    repo = pool.add_solv( "myrepo.solv" )
+ *    
+ *    transaction = pool.create_transaction
+ *    transaction.install( "packageA" )
+ *    transaction.install( "packageB" )
+ *    transaction.remove( "old_package" )
+ *
+ *    solver = pool.create_solver
+ *    solver.allow_uninstall = true
+ *    pool.prepare
+ *    result = solver.solve( transaction )
+ *    if !result
+ *      raise "Couldn't solve transaction"
+ *    end
+ *
+ *    solver.each_to_install do |s|
+ *      puts "Install #{s}"
+ *    end
+ *    solver.each_to_remove do |s|
+ *      puts "Remove #{s}"
+ *    end
+ *
  */
 
 %{
@@ -94,8 +121,6 @@ typedef struct solver {} Solver;
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
   /*
-   * Document-method: fix_system
-   *
    * Check and fix inconsistencies of the installed system
    *
    * Normally, broken dependencies in the RPM database are silently
@@ -109,16 +134,16 @@ typedef struct solver {} Solver;
    */
   int fix_system()
   { return $self->fixsystem; }
+
 #if defined(SWIGRUBY)
+  %rename( "fix_system=" ) set_fix_system( int bflag );
+#endif
   /*
-   * Document-method: fix_system=
    * Set the fix_system flag
    * call-seq:
    *   solver.fix_system = true
    *
    */
-  %rename( "fix_system=" ) set_fix_system( int bflag );
-#endif
   void set_fix_system( int bflag )
   { $self->fixsystem = bflag; }
 
@@ -127,7 +152,6 @@ typedef struct solver {} Solver;
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
   /*
-   * Document-method: allow_downgrade
    * Allow downgrade
    * The normal solver operation tries to install (to update to) the 'best' package,
    * usually the one with the highest version.
@@ -139,16 +163,17 @@ typedef struct solver {} Solver;
    */
   int allow_downgrade()
   { return $self->allowdowngrade; }
+
 #if defined(SWIGRUBY)
+  %rename( "allow_downgrade=" ) set_allow_downgrade( int bflag );
+#endif
   /*
-   * Document-method: allow_downgrade=
    * Allow or disallow package downgrades
+   *
    * call-seq:
    *  solver.allow_downgrade = true
    *
    */
-  %rename( "allow_downgrade=" ) set_allow_downgrade( int bflag );
-#endif
   void set_allow_downgrade( int bflag )
   { $self->allowdowngrade = bflag; }
 
@@ -157,60 +182,63 @@ typedef struct solver {} Solver;
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
   /*
-   * Document-method: allow_arch_change
    * Allow arch change
+   *
    * After installation, the architecture of a package is fixed an the
    * solver will not change it during upgrades.
    * This prevents updates to a higher version but inferior
    * architecture.
    * If this flag is set, packages can change their architecture. The
    * solver will usually try to select the 'best' architecture.
+   *
    * call-seq:
    *  solver.allow_arch_change -> bool
    *
    */
   int allow_arch_change()
   { return $self->allowarchchange; }
+
 #if defined(SWIGRUBY)
+  %rename( "allow_arch_change=" ) set_allow_arch_change( int bflag );
+#endif
   /*
-   * Document-method: allow_arch_change=
    * Allow or disallow architecture changes
    * call-seq:
    *  solver.allow_arch_change = true
    *
    */
-  %rename( "allow_arch_change=" ) set_allow_arch_change( int bflag );
-#endif
   void set_allow_arch_change( int bflag )
   { $self->allowarchchange = bflag; }
 
-  /*
-   * Document-method: allow_vendor_change
-   * Allow vendor change
-   * The package vendor is usually an indicator of the package origin.
-   * Updates should only come from the same origin.
-   * If this flag is true, the solver will allow vendor changes during
-   * package upgrades.
-   * call-seq:
-   *  solver.allow_vendor_change -> bool
-   *
-   */
 #if defined(SWIGRUBY)
   %typemap(out) int allow_vendor_change
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
+  /*
+   * Allow vendor change
+   *
+   * The package vendor is usually an indicator of the package origin.
+   * Updates should only come from the same origin.
+   * If this flag is true, the solver will allow vendor changes during
+   * package upgrades.
+   *
+   * call-seq:
+   *  solver.allow_vendor_change -> bool
+   *
+   */
   int allow_vendor_change()
   { return $self->allowvendorchange; }
+
 #if defined(SWIGRUBY)
+  %rename( "allow_vendor_change=" ) set_allow_vendor_change( int bflag );
+#endif
   /*
-   * Document-method: allow_vendor_change=
    * Allow vendor change
+   *
    * call-seq:
    *  solver.allow_vendor_change = true
    *
    */
-  %rename( "allow_vendor_change=" ) set_allow_vendor_change( int bflag );
-#endif
   void set_allow_vendor_change( int bflag )
   { $self->allowvendorchange = bflag; }
 
@@ -219,7 +247,6 @@ typedef struct solver {} Solver;
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
   /*
-   * Document-method: allow_uninstall
    * On package removal, also remove dependant packages.
    *
    * If removal of a package breaks dependencies, the transaction is
@@ -233,323 +260,326 @@ typedef struct solver {} Solver;
    */
   int allow_uninstall()
   { return $self->allowuninstall; }
+
 #if defined(SWIGRUBY)
+  %rename( "allow_uninstall=" ) set_allow_uninstall( int bflag );
+#endif
   /*
-   * Document-method: allow_uninstall=
    * On package removal, also remove dependant packages.
    *
    * Setting allow_uninstall to 'true' will revert the precedence
    * and remove all dependant packages.
+   *
    * call-seq:
    *  solver.allow_uninstall = true
    *
    */
-  %rename( "allow_uninstall=" ) set_allow_uninstall( int bflag );
-#endif
   void set_allow_uninstall( int bflag )
   { $self->allowuninstall = bflag; }
 
-  /*
-   * Document-method: update_system
-   * Update system
-   * call-seq:
-   *  solver.update_system -> bool
-   *
-   */
 #if defined(SWIGRUBY)
   %typemap(out) int update_system
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
+  /*
+   * Update system
+   *
+   * call-seq:
+   *  solver.update_system -> bool
+   *
+   */
   int update_system()
   { return $self->updatesystem; }
+
 #if defined(SWIGRUBY)
+  %rename( "update_system=" ) set_update_system( int bflag );
+#endif
   /*
-   * Document-method: update_system=
    * call-seq:
    *  solver.update_system = true
    *
    */
-  %rename( "update_system=" ) set_update_system( int bflag );
-#endif
   void set_update_system( int bflag )
   { $self->updatesystem = bflag; }
 
-  /*
-   * Document-method: allow_virtual_conflicts
-   * Allow virtual conflicts
-   * call-seq:
-   *  solver.allow_virtual_conflicts -> bool
-   *
-   */
 #if defined(SWIGRUBY)
   %typemap(out) int allow_virtual_conflicts
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
+  /*
+   * Allow virtual conflicts
+   *
+   * call-seq:
+   *  solver.allow_virtual_conflicts -> bool
+   *
+   */
   int allow_virtual_conflicts()
   { return $self->allowvirtualconflicts; }
+
 #if defined(SWIGRUBY)
+  %rename( "allow_virtual_conflicts=" ) set_allow_virtual_conflicts( int bflag );
+#endif
   /*
-   * Document-method: allow_virtual_conflicts=
    * call-seq:
    *  solver.allow_virtual_conflicts = true
    *
    */
-  %rename( "allow_virtual_conflicts=" ) set_allow_virtual_conflicts( int bflag );
-#endif
   void set_allow_virtual_conflicts( int bflag )
   { $self->allowvirtualconflicts = bflag; }
 
-  /*
-   * Document-method: allow_self_conflicts
-   * Allow self conflicts
-   * If a package can conflict with itself
-   * call-seq:
-   *  solver.allow_self_conflicts -> bool
-   *
-   */
 #if defined(SWIGRUBY)
   %typemap(out) int allow_self_conflicts
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
+  /*
+   * Allow self conflicts
+   *
+   * If a package can conflict with itself
+   *
+   * call-seq:
+   *  solver.allow_self_conflicts -> bool
+   *
+   */
   int allow_self_conflicts()
   { return $self->allowselfconflicts; }
+
 #if defined(SWIGRUBY)
+  %rename( "allow_self_conflicts=" ) set_allow_self_conflicts( int bflag );
+#endif
   /*
-   * Document-method: allow_self_conflicts=
    * call-seq:
    *  solver.allow_self_conflicts = true
    *
    */
-  %rename( "allow_self_conflicts=" ) set_allow_self_conflicts( int bflag );
-#endif
   void set_allow_self_conflicts( int bflag )
   { $self->allowselfconflicts = bflag; }
 
-  /*
-   * Document-method: obsolete_uses_provides
-   * Obsolete uses provides
-   * Obsolete dependencies usually match on package names only.
-   * Setting this flag will make obsoletes also match a provides.
-   * call-seq:
-   *  solver.obsolete_uses_provides -> bool
-   *
-   */
 #if defined(SWIGRUBY)
   %typemap(out) int obsolete_uses_provides
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
+  /*
+   * Obsolete uses provides
+   *
+   * Obsolete dependencies usually match on package names only.
+   * Setting this flag will make obsoletes also match a provides.
+   *
+   * call-seq:
+   *  solver.obsolete_uses_provides -> bool
+   *
+   */
   int obsolete_uses_provides()
   { return $self->obsoleteusesprovides; }
+
 #if defined(SWIGRUBY)
+  %rename( "obsolete_uses_provides=" ) set_obsolete_uses_provides( int bflag );
+#endif
   /*
-   * Document-method: obsolete_uses_provides=
    * Obsolete uses provides
+   *
    * call-seq:
    *  solver.obsolete_uses_provides = true
    *
    */
-  %rename( "obsolete_uses_provides=" ) set_obsolete_uses_provides( int bflag );
-#endif
   void set_obsolete_uses_provides( int bflag )
   { $self->obsoleteusesprovides= bflag; }
 
-  /*
-   * Document-method: implicit_obsolete_uses_provides
-   * Implicit obsolete uses provides
-   * call-seq:
-   *  solver.implicit_obsolete_uses_provides -> bool
-   *
-   */
 #if defined(SWIGRUBY)
   %typemap(out) int implicit_obsolete_uses_provides
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
+  /*
+   * Implicit obsolete uses provides
+   *
+   * call-seq:
+   *  solver.implicit_obsolete_uses_provides -> bool
+   *
+   */
   int implicit_obsolete_uses_provides()
   { return $self->implicitobsoleteusesprovides; }
+
 #if defined(SWIGRUBY)
+  %rename( "implicit_obsolete_uses_provides=" ) set_implicit_obsolete_uses_provides( int bflag );
+#endif
   /*
-   * Document-method: implicit_obsolete_uses_provides=
    * call-seq:
    *  solver.implicit_obsolete_uses_provides = true
    *
    */
-  %rename( "implicit_obsolete_uses_provides=" ) set_implicit_obsolete_uses_provides( int bflag );
-#endif
   void set_implicit_obsolete_uses_provides( int bflag )
   { $self->implicitobsoleteusesprovides= bflag; }
 
-  /*
-   * Document-method: no_update_provide
-   * No update provide
-   * call-seq:
-   *  solver.no_update_provide -> bool
-   *
-   */
 #if defined(SWIGRUBY)
   %typemap(out) int no_update_provide
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
+  /*
+   * No update provide
+   *
+   * call-seq:
+   *  solver.no_update_provide -> bool
+   *
+   */
   int no_update_provide()
   { return $self->noupdateprovide; }
+
 #if defined(SWIGRUBY)
+  %rename( "no_update_provide=" ) set_no_update_provide( int bflag );
+#endif
   /*
-   * Document-method: no_update_provide=
    * call-seq:
    *  solver.no_update_provide = true
    *
    */
-  %rename( "no_update_provide=" ) set_no_update_provide( int bflag );
-#endif
   void set_no_update_provide( int bflag )
   { $self->noupdateprovide = bflag; }
 
-  /*
-   * Document-method: do_split_provides
-   * Do split provide
-   * call-seq:
-   *  solver.do_split_provides -> bool
-   *
-   */
 #if defined(SWIGRUBY)
   %typemap(out) int do_split_provides
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
+  /*
+   * Do split provide
+   *
+   * call-seq:
+   *  solver.do_split_provides -> bool
+   *
+   */
   int do_split_provides()
   { return $self->dosplitprovides; }
+
 #if defined(SWIGRUBY)
+  %rename( "do_split_provides=" ) set_do_split_provides( int bflag );
+#endif
   /*
-   * Document-method: do_split_provides=
    * call-seq:
    *  solver.do_split_provides = true
    *
    */
-  %rename( "do_split_provides=" ) set_do_split_provides( int bflag );
-#endif
   void set_do_split_provides( int bflag )
   { $self->dosplitprovides = bflag; }
 
-  /*
-   * Document-method: dont_install_recommended
-   * Dont install recommended
-   * call-seq:
-   *  solver.dont_install_recommended -> bool
-   *
-   */
 #if defined(SWIGRUBY)
   %typemap(out) int dont_install_recommended
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
+  /*
+   * Dont install recommended
+   *
+   * call-seq:
+   *  solver.dont_install_recommended -> bool
+   *
+   */
   int dont_install_recommended()
   { return $self->dontinstallrecommended; }
 #if defined(SWIGRUBY)
+  %rename( "dont_install_recommended=" ) set_dont_install_recommended( int bflag );
+#endif
   /*
-   * Document-method: dont_install_recommended=
    * call-seq:
    *  solver.dont_install_recommended = true
    *
    */
-  %rename( "dont_install_recommended=" ) set_dont_install_recommended( int bflag );
-#endif
   void set_dont_install_recommended( int bflag )
   { $self->dontinstallrecommended= bflag; }
 
+#if defined(SWIGRUBY)
   /*
-   * Document-method: ignore_already_recommended
    * Ignore already recommended
+   *
    * call-seq:
    *  solver.ignore_already_recommended -> bool
    *
    */
-#if defined(SWIGRUBY)
   %typemap(out) int ignore_already_recommended
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
   int ignore_already_recommended()
   { return $self->ignorealreadyrecommended; }
+
 #if defined(SWIGRUBY)
+  %rename( "ignore_already_recommended=" ) set_ignore_already_recommended( int bflag );
+#endif
   /*
-   * Document-method: ignore_already_recommended=
    * call-seq:
    *  solver.ignore_already_recommended = true
    *
    */
-  %rename( "ignore_already_recommended=" ) set_ignore_already_recommended( int bflag );
-#endif
   void set_ignore_already_recommended( int bflag )
   { $self->ignorealreadyrecommended= bflag; }
 
-  /*
-   * Document-method: dont_show_installed_recommended
-   * Dont show installed recommended
-   * call-seq:
-   *  solver.dont_show_installed_recommended -> bool
-   *
-   */
 #if defined(SWIGRUBY)
   %typemap(out) int dont_show_installed_recommended
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
+  /*
+   * Dont show installed recommended
+   *
+   * call-seq:
+   *  solver.dont_show_installed_recommended -> bool
+   *
+   */
   int dont_show_installed_recommended()
   { return $self->dontshowinstalledrecommended; }
+
 #if defined(SWIGRUBY)
+  %rename( "dont_show_installed_recommended=" ) set_dont_show_installed_recommended( int bflag );
+#endif
   /*
-   * Document-method: dont_show_installed_recommended=
    * call-seq:
    *  solver.dont_show_installed_recommended = true
    *
    */
-  %rename( "dont_show_installed_recommended=" ) set_dont_show_installed_recommended( int bflag );
-#endif
   void set_dont_show_installed_recommended( int bflag )
   { $self->dontshowinstalledrecommended= bflag; }
 
-  /*
-   * Document-method: distupgrade
-   * Distupgrade
-   * call-seq:
-   *  solver.distupgrade -> bool
-   *
-   */
 #if defined(SWIGRUBY)
   %typemap(out) int distupgrade
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
+  /*
+   * Distupgrade
+   *
+   * call-seq:
+   *  solver.distupgrade -> bool
+   *
+   */
   int distupgrade()
   { return $self->distupgrade; }
+
 #if defined(SWIGRUBY)
+  %rename( "distupgrade=" ) set_distupgrade( int bflag );
+#endif
   /*
-   * Document-method: distupgrade=
    * call-seq:
    *  solver.distupgrade = true
    *
    */
-  %rename( "distupgrade=" ) set_distupgrade( int bflag );
-#endif
   void set_distupgrade( int bflag )
   { $self->distupgrade= bflag; }
 
-  /*
-   * Document-method: distupgrade_remove_unsupported
-   * Distupgrade, remove unsupported
-   * call-seq:
-   *  solver.distupgrade_remove_unsupported -> bool
-   *
-   */
 #if defined(SWIGRUBY)
   %typemap(out) int distupgrade_remove_unsupported
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
+  /*
+   * Distupgrade, remove unsupported
+   *
+   * call-seq:
+   *  solver.distupgrade_remove_unsupported -> bool
+   *
+   */
   int distupgrade_remove_unsupported()
   { return $self->distupgrade_removeunsupported; }
+
 #if defined(SWIGRUBY)
+  %rename( "distupgrade_remove_unsupported=" ) set_distupgrade_remove_unsupported( int bflag );
+#endif
   /*
-   * Document-method: distupgrade_remove_unsupported=
    * call-seq:
    *  solver.distupgrade_remove_unsupported = true
    *
    */
-  %rename( "distupgrade_remove_unsupported=" ) set_distupgrade_remove_unsupported( int bflag );
-#endif
   void set_distupgrade_remove_unsupported( int bflag )
   { $self->distupgrade_removeunsupported= bflag; }
 
@@ -558,90 +588,67 @@ typedef struct solver {} Solver;
    */
 
   /*
-   * Document-method: rule_count
    * INTERNAL!
-   * call-seq:
-   *  solver.rule_count
    *
    */
   int rule_count() { return $self->nrules; }
+
   /*
-   * Document-method: rpmrules_start
    * INTERNAL!
-   * call-seq:
-   *  solver.rpmrules_start
    *
    */
   int rpmrules_start() { return 0; }
+
   /*
-   * Document-method: rpmrules_end
    * INTERNAL!
-   * call-seq:
-   *  solver.rpmrules_end
    *
    */
   int rpmrules_end() { return $self->rpmrules_end; }
+
   /*
-   * Document-method: featurerules_start
    * INTERNAL!
-   * call-seq:
-   *  solver.featurerules_start
    *
    */
   int featurerules_start() { return $self->featurerules; }
+
   /*
-   * Document-method: featurerules_end
    * INTERNAL!
-   * call-seq:
-   *  solver.featurerules_end
    *
    */
   int featurerules_end() { return $self->featurerules_end; }
+
   /*
-   * Document-method: updaterules_start
    * INTERNAL!
-   * call-seq:
-   *  solver.updaterules_start
    *
    */
   int updaterules_start() { return $self->updaterules; }
+
   /*
-   * Document-method: updaterules_end
    * INTERNAL!
-   * call-seq:
-   *  solver.updaterules_end
    *
    */
   int updaterules_end() { return $self->updaterules_end; }
+
   /*
-   * Document-method: jobrules_start
    * INTERNAL!
-   * call-seq:
-   *  solver.jobrules_start
    *
    */
   int jobrules_start() { return $self->jobrules; }
+
   /*
-   * Document-method: jobrules_end
    * INTERNAL!
-   * call-seq:
-   *  solver.jobrules_end
    *
    */
   int jobrules_end() { return $self->jobrules_end; }
+
   /*
-   * Document-method: learntrules_start
    * INTERNAL!
-   * call-seq:
-   *  solver.learntrules_start
    *
    */
   int learntrules_start() { return $self->learntrules; }
+
   /*
-   * Document-method: learntrules_end
    * INTERNAL!
-   * call-seq:
-   *  solver.learntrules_end
    *
    */
   int learntrules_end() { return $self->nrules; }
@@ -651,7 +658,8 @@ typedef struct solver {} Solver;
    */
 
   /*
-   * Document-method: covenants_count
+   * Number of Covenants
+   *
    * call-seq:
    *  solver.covenants_count -> int
    *
@@ -660,128 +668,102 @@ typedef struct solver {} Solver;
   { return $self->covenantq.count >> 1; }
 
 #if defined(SWIGRUBY)
-  /*
-   * Document-method: covenants_empty?
-   * call-seq:
-   *  solver.covenants_empty? -> bool
-   *
-   */
   %rename("covenants_empty?") covenants_empty();
   %typemap(out) int covenants_empty
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
+  /*
+   * Shortcut for +covenants_count == 0+
+   *
+   * call-seq:
+   *  solver.covenants_empty? -> bool
+   *
+   */
   int covenants_empty()
   { return $self->covenantq.count == 0; }
 
 #if defined(SWIGRUBY)
+  %rename("covenants_clear!") covenants_clear();
+#endif
   /*
-   * Document-method: covenants_clear!
    * Remove all covenants from this solver
+   *
    * call-seq:
    *  solver.covenants_clear! -> void
    *
    */
-  %rename("covenants_clear!") covenants_clear();
-#endif
   void covenants_clear()
   { queue_empty( &($self->covenantq) ); }
 
   /*
-   * Document-method: include
    * Include (specific) solvable
-   * Including a solvable means that it _must_ be installed.
+   *
+   * Including a Solvable explicitly means that this Solvable _must_ be installed.
+   *
+   * Including a Solvable by name means that one Solvable
+   * with the given name must be installed. The solver is free to
+   * choose one.
+   *
+   * Including a Solvable by relation means that any Solvable
+   * providing the given relation must be installed.
+   * 
    * call-seq:
    *  solver.include(solvable)
+   *  solver.include("kernel")
+   *  solver.include(relation)
    *
    */
   void include( XSolvable *xs )
   { return covenant_include_xsolvable( $self, xs ); }
-
-  /*
-   * Document-method: exclude
-   * Exclude (specific) solvable
-   * Excluding a (specific) solvable means that it _must not_
-   * be installed.
-   * call-seq:
-   *  solver.exclude(solvable)
-   *
-   */
-  void exclude( XSolvable *xs )
-  { return covenant_exclude_xsolvable( $self, xs ); }
-
-  /*
-   * Document-method: include
-   * Include solvable by name
-   * Including a solvable by name means that one solvable
-   * with the given name must be installed. The solver is free to
-   * choose one.
-   * call-seq:
-   *  solver.include("kernel")
-   *
-   */
-  /*
-   */
   void include( const char *name )
   { return covenant_include_name( $self, name ); }
-
-  /*
-   * Document-method: exclude
-   * Exclude solvable by name
-   * Excluding a solvable by name means that any solvable
-   * with the given name must not be installed.
-   * call-seq:
-   *  solver.exclude("mono")
-   *
-   */
-  /*
-   */
-  void exclude( const char *name )
-  { return covenant_exclude_name( $self, name ); }
-
-  /*
-   * Document-method: include
-   * Include solvable by relation
-   * Including a solvable by relation means that any solvable
-   * providing the given relation must be installed.
-   * call-seq:
-   *  solver.include(relation)
-   *
-   */
   void include( const Relation *rel )
   { return covenant_include_relation( $self, rel ); }
 
   /*
-   * Document-method: exclude
-   * Exclude solvable by relation
-   * Excluding a solvable by relation means that any solvable
-   * providing the given relation must be installed.
+   * Exclude (specific) solvable
+   *
+   * Excluding a (specific) Solvable means that this Solvable _must_ _not_
+   * be installed.
+   *
+   * Excluding a Solvable by name means that any Solvable
+   * with the given name must not be installed.
+   *
+   * Excluding a Solvable by relation means that any Solvable
+   * providing the given relation must not be installed.
+   *
    * call-seq:
+   *  solver.exclude(solvable)
+   *  solver.exclude("mono-core")
    *  solver.exclude(relation)
    *
    */
+  void exclude( XSolvable *xs )
+  { return covenant_exclude_xsolvable( $self, xs ); }
+  void exclude( const char *name )
+  { return covenant_exclude_name( $self, name ); }
   void exclude( const Relation *rel )
   { return covenant_exclude_relation( $self, rel ); }
 
   /*
-   * Document-method: get_covenant
    * Get Covenant by index
+   *
    * The index is just a convenience access method and
    * does NOT imply any preference/ordering of the Covenants.
    *
    * The solver always considers Covenants as a set.
+   *
    * call-seq:
    *  solver.get_covenant(1) -> Covenant
    *
-   */
-  /*
    */
   Covenant *get_covenant( unsigned int i )
   { return covenant_get( $self, i ); }
 
 #if defined(SWIGRUBY)
   /*
-   * Document-method: each_covenant
    * Iterate over each Covenant of the Solver.
+   *
    * call-seq:
    *  solver.each_covenant { |covenant| ... }
    *
@@ -797,22 +779,20 @@ typedef struct solver {} Solver;
   }
 #endif
 
-  /**************************
-   */
 
-
-  /*
-   * Document-method: solve
-   * Solve the given Transaction
-   * Returns true if a solution was found, else false.
-   * call-seq:
-   *  solver.solve(transaction) -> bool
-   *
-   */
 #if defined(SWIGRUBY)
   %typemap(out) int solve
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
+  /*
+   * Solve the given Transaction
+   *
+   * Returns +true+ if a solution was found, else +false+.
+   *
+   * call-seq:
+   *  solver.solve(transaction) -> bool
+   *
+   */
   int solve( Transaction *t )
   {
     if ($self->covenantq.count) {
@@ -823,13 +803,14 @@ typedef struct solver {} Solver;
   }
 
   /*
-   * Document-method: decision_count
    * Return the number of decisions after solving.
+   *
    * If its >0, a solution of the Transaction was found.
-   * If its ==0, and 'Solver.problems_found' (resp. 'Solver.problems?' for Ruby)
-   *   returns true, the Transaction couldn't be solved.
-   * If its ==0, and 'Solver.problems_found' (resp. 'Solver.problems?' for Ruby)
-   *   returns false, the Transaction is trivially solved.
+   *
+   * If its ==0, and 'Solver.problems?' returns +true+, the Transaction couldn't be solved.
+   *
+   * If its ==0, and 'Solver.problems?' returns +false+, the Transaction is trivially solved.
+   *
    * call-seq:
    *  solver.decision_count -> int
    *
@@ -839,8 +820,8 @@ typedef struct solver {} Solver;
 
 #if defined(SWIGRUBY)
   /*
-   * Document-method: each_decision
    * Iterate over decisions
+   *
    * call-seq:
    *  solver.each_decision { |decision| ... }
    *
@@ -850,10 +831,12 @@ typedef struct solver {} Solver;
 #endif
 
   /*
-   * Document-method: explain
-   * explain a decision
+   * Document-method; explain
    *
-   * returns 4-element list [<SOLVER_PROBLEM_xxx>, Relation, Solvable, Solvable]
+   * Explain a decision
+   *
+   * returns 4-element Array [<SOLVER_PROBLEM_xxx>, Relation, Solvable, Solvable]
+   *
    * call-seq:
    *  solver.explain(transaction, decision) -> [<SOLVER_PROBLEM_xxx>, Relation, Solvable, Solvable]
    *
@@ -885,27 +868,30 @@ typedef struct solver {} Solver;
   }
 
 #if defined(SWIGRUBY)
-  /*
-   * Document-method: problems?
-   * Returns true if any problems occured during solve, returns false
-   * on successful solve.
-   * There is no 'number of problems' available, but it can be computed
-   * by iterating over the problems.
-   * call-seq:
-   *  solver.problems? -> bool
-   *
-   */
   %rename("problems?") problems_found();
   %typemap(out) int problems_found
     "$result = ($1 != 0) ? Qtrue : Qfalse;";
 #endif
-
+  /*
+   * Check if the last solver run had problems.
+   *
+   * Returns true if any problems occured during solve, returns false
+   * on successful solve.
+   *
+   * There is no 'number of problems' available, but it can be computed
+   * by iterating over the problems.
+   *
+   * call-seq:
+   *  solver.problems? -> bool
+   *
+   */
   int problems_found()
   { return $self->problems.count != 0; }
 
 #if defined(SWIGRUBY)
   /*
-   * Document-method: each_problem
+   * Iterate over problems.
+   *
    * call-seq:
    *  solver.each_problem(transaction) { |problem| ... }
    *
@@ -914,11 +900,11 @@ typedef struct solver {} Solver;
   { return solver_problems_iterate( $self, t, solver_problems_iterate_callback, NULL ); }
 
   /*
-   * Document-method: each_to_install
-   * iterate over all to-be-*newly*-installed solvables
-   *   those brought in for update reasons are normally *not* reported.
+   * Iterate over all to-be-*newly*-installed solvables
+   * those brought in for update reasons are normally *not* reported.
    *
    * if true is passed, iterate over *all* to-be-installed solvables
+   *
    * call-seq:
    *  solver.each_to_install { |solvable| ... }
    *  solver.each_to_install(true) { |solvable| ... }
@@ -938,11 +924,11 @@ typedef struct solver {} Solver;
   { return solver_updates_iterate( $self, update_xsolvables_iterate_callback, NULL ); }
 
   /*
-   * Document-method: each_to_remove
-   * iterate over all to-be-removed-without-replacement solvables
-   *   those replaced by an updated are normally *not* reported.
+   * Iterate over all to-be-removed-without-replacement solvables
+   * those replaced by an updated are normally *not* reported.
    *
-   * if true (resp '1') is passed, iterate over *all* to-be-removed solvables
+   * if +true+ is passed, iterate over *all* to-be-removed solvables
+   *
    * call-seq:
    *  solver.each_to_remove { |solvable| ... }
    *  solver.each_to_remove(true) { |solvable| ... }
@@ -952,8 +938,8 @@ typedef struct solver {} Solver;
   { return solver_removals_iterate( $self, bflag, generic_xsolvables_iterate_callback, NULL ); }
 
   /*
-   * Document-method: each_suggested
    * Iterate of all suggested (weak install) solvables.
+   *
    * call-seq:
    *  solver.each_suggested { |solvable| ... }
    *
