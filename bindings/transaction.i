@@ -32,6 +32,11 @@ typedef struct _Transaction {} Transaction;
 #endif
 
 %extend Transaction {
+  /*
+   * Create transaction based on Pool
+   *
+   * See also: Pool.create_transaction
+   */
   Transaction( Pool *pool )
   { return transaction_new( pool ); }
 

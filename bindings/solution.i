@@ -2,6 +2,10 @@
  * Document-class: Solution
  * Solutions are attached to Problems and give hints on how to solve problems.
  *
+ * === Constructor
+ * There is no constructor defined for Solution. Solution are part of Problem and can be
+ * accessed through Problem.each_solution
+ *
  */
 
 %nodefault _Solution;

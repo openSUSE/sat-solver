@@ -6,6 +6,10 @@
  *
  * The Problem class represents such a reason and provides solutions.
  *
+ * === Constructor
+ * There is no constructor defined for Problem. Problems are created by accessing
+ * the Solver result. See 'Solver.each_problem'.
+ *
  */
 
 %{
@@ -54,9 +58,6 @@ typedef struct _Problem {} Problem;
   %constant int SOLVER_PROBLEM_SELF_CONFLICT = SOLVER_PROBLEM_SELF_CONFLICT;
   /* A dependency of an already installed Solvable could not be fulfilled (broken system) */
   %constant int SOLVER_PROBLEM_RPM_RULE = SOLVER_PROBLEM_RPM_RULE;
-
-  /* no constructor defined, Problems are created by accessing
-     the Solver result. See 'Solver.each_problem'. */
 
   ~Problem()
   { problem_free ($self); }

@@ -1,6 +1,11 @@
 /*
  * Document-class: Job
  * A job is a single 'work item' of a transaction
+ *
+ * === Constructor
+ * There is no constructor defined for Job. Jobs are created by accessing
+ * a Transaction
+ *
  */
 
 %nodefault _Job;
@@ -16,8 +21,6 @@ typedef struct _Job {} Job;
   %constant int INSTALL_SOLVABLE_PROVIDES = SOLVER_INSTALL_SOLVABLE_PROVIDES;
   %constant int REMOVE_SOLVABLE_PROVIDES = SOLVER_ERASE_SOLVABLE_PROVIDES;
 
-  /* no constructor defined, Jobs are created by accessing
-     a Transaction */
   ~Job()
   { job_free( $self ); }
 

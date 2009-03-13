@@ -5,9 +5,10 @@
  *
  * Repodata is a Repo extension and thus belongs to a Repo.
  *
- * There is
- * no way to create a Repodata on its own, it can only be accessed
+ * === Constructor
+ * There is no way to create a Repodata on its own, it can only be accessed
  * through Pool.data
+ *
  */
 
 %nodefault _Repodata;

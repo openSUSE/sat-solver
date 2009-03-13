@@ -8,6 +8,10 @@
  * Additionally they have a _back_ _pointer_ to the Rule which lead to the Decision.
  * This allows to find out about the reasoning for the decision.
  *
+ * === Constructor
+ * There is no constructor defined for Decision. Decisions are created by accessing
+ * the Solver result. See Solver.each_decision
+ *
  */
 
 %nodefault _Decision;
@@ -29,8 +33,6 @@ typedef struct _Decision {} Decision;
   /* free decision modifier */
   %constant int DECISION_FREE = DECISION_FREE;
 
-  /* no constructor defined, Decisions are created by accessing
-     the Solver result. See 'Solver.each_decision'. */
 
   ~Decision()
   { decision_free( $self ); }

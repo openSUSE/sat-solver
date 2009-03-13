@@ -38,13 +38,13 @@ typedef struct _Relation {} Relation;
 
   /*
    * Document-method: new
-   * create a new relation
+   * Create a new relation inside Pool. Gets a name, plus optionally operand and edition-version-release (evr)
    *
-   * see also: create_relation
+   * see also: Pool.create_relation
    *
-   *  call-seq
-   *    Relation.new pool, "kernel" -> Relation
-   *    Relation.new pool, "kernel", REL_GT, "2.6.26" -> Relation
+   * call-seq:
+   *    Relation.new( pool, "kernel" ) -> Relation
+   *    Relation.new( pool, "kernel", REL_GT, "2.6.26" ) -> Relation
    *
    */
   Relation( Pool *pool, const char *name, int op = 0, const char *evr = NULL )

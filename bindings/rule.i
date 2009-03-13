@@ -7,6 +7,9 @@
  *
  * Rules are useful to traceback a decision or a problem.
  *
+ * === Constructor
+ * There is no constructor for Rule. Rules are embedded in the Solver
+ *
  */
 
 %nodefault rule;
@@ -15,7 +18,6 @@ typedef struct rule {} Rule;
 
  
 %extend Rule {
-  /* no constructor, Rule is embedded in Solver */
 
   int p()
   { return $self->p; }

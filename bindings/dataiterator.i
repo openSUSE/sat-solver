@@ -2,11 +2,13 @@
  * Document-class: Dataiterator
  * This class represents an _Iterator_ for Solvable attributes.
  *
+ * === Usage
+ *
  * The Dataiterator is the block argument for calls to +search+
  * which is defined for Pool (search whole Pool) and Repository (limit
  * search to Repository)
  *
- * Example code
+ * === Example code
  *
  * - Search for exact string match in Pool
  *

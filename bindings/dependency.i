@@ -61,7 +61,8 @@ typedef struct _Dependency {} Dependency;
   %constant int DEP_ENH = DEP_ENH;
 
   /*
-   * Dependency constructor
+   * Dependency constructor, pass Solvable and kind of dependency.
+   *
    * call-seq:
    *  dependency.new(solvable, Satsolver::DEP_REQ) -> Dependency
    *

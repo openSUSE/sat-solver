@@ -17,7 +17,7 @@
  * Solving can be controlled globally by setting solver flags.
  * Additionally, specific constraints can be set by using Covenants.
  * 
- * Example code:
+ * === Example code
  *    pool = Satsolver::Pool.new
  *    pool.arch = "i686"
  *    system = pool.add_rpmdb( "/" )
@@ -97,9 +97,10 @@ typedef struct solver {} Solver;
 
 %extend Solver {
   /*
-   * Document-method: new
    * Create a solver operating on a pool
+   *
    * Equivalent: Pool.create_solver
+   *
    * call-seq:
    *  Solver.new(pool) -> Solver
    *

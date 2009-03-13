@@ -3,15 +3,18 @@
  * Covenants ensure specific dependencies in the (installed) system.
  * They are usually used to implement _locks_.
  *
+ * === Constructor
  * There is no constructor for Covenants defined, Covenants are created through the Solver,
- * see 'Solver.include' and 'Solver.exclude'
+ * see Solver.include and Solver.exclude
  *
+ * === Usage
  * Convenants can affect specific Solvables, Solvables per-name or
  * Solvables per-provides. In the latter case, when including
  * Solvables per-name or per-provides, the solver is free to
  * choose a matching solvable.
  *
- * See also: Solver.include, Solver.exclude
+ * === See also
+ * Solver.include, Solver.exclude
  *
  */
 

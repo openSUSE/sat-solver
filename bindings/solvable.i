@@ -21,6 +21,10 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   /*
    * Document-method: new
    *
+   * Create a Solvable in a Repo, give it name, edition-version-release and optionally an architecture.
+   *
+   * Architecture defaults to _noarch_
+   *
    * See also: Repo.create_solvable
    *
    * call-seq:
