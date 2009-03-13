@@ -1,4 +1,3 @@
-
 /* 
  * Document-class: Pool
  * The Pool contains information about solvables
@@ -316,17 +315,19 @@ typedef struct _Pool {} Pool;
     return repo;
   }
 
+  %newobject create_repo;
   /*
    * Create an empty repository, optionally with a name.
    *
    * This repository should then be populated with Solvables.
+   *
+   * Equivalent to: Repo.new
    *
    * call-seq:
    *  pool.create_repo -> Repo
    *  pool.create_repo("test") -> Repo
    *
    */
-  %newobject create_repo;
   Repo *create_repo( const char *name = NULL )
   { return repo_create( $self, name ); }
 
@@ -402,17 +403,17 @@ typedef struct _Pool {} Pool;
    * Relation management
    */
 
+  %newobject create_relation;
   /*
    * Create a relation.
    *
-   * See also: Relation.new()
+   * Equivalent to: Relation.new
    *
    * call-seq:
    *  pool.create_relation( "kernel" ) -> Relation
    *  pool.create_relation( "kernel", REL_GE, "2.6.26" ) -> Relation
    *
    */
-  %newobject create_relation;
   Relation *create_relation( const char *name, int op = 0, const char *evr = NULL )
   {
     if (op && !evr)
@@ -673,7 +674,7 @@ typedef struct _Pool {} Pool;
    *
    * This function is useful to detect if a Solvable exists at all. If
    * multiple Solvables would match, this call returns any one of them. Use
-   * +pool+.+each_provider+ to interate over all matches.
+   * Pool.each_provider to interate over all matches.
    *
    * call-seq:
    *  pool.find("kernel") -> Solvable
@@ -699,7 +700,7 @@ typedef struct _Pool {} Pool;
   /*
    * Search for Solvable attributes
    *
-   * See +Dataiterator+ for example code
+   * See Dataiterator for example code
    *
    * call-seq:
    *  pool.search("match", flags) { |dataiterator| ... }
@@ -722,12 +723,13 @@ typedef struct _Pool {} Pool;
    * Transaction management
    */
 
+  %newobject create_transaction;
   /*
    * Create an empty Transaction.
-   * See also +Transaction+.+new+
+   *
+   * Equivalent to: Transaction.new
    *
    */
-  %newobject create_transaction;
   Transaction *create_transaction()
   { return transaction_new( $self ); }
 
@@ -763,16 +765,16 @@ typedef struct _Pool {} Pool;
     return $self->installed;
   }
 
+  %newobject create_solver;
   /*
    * Create a solver for this pool
    *
-   * See also +Solver+.+new+
+   * Equivalent to: Solver.new
    *
    * call-seq:
    *  pool.create_solver -> Solver
    *
    */
-  %newobject create_solver;
   Solver* create_solver()
   {
     pool_createwhatprovides( $self );
