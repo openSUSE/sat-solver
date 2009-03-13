@@ -1,5 +1,21 @@
-/*-------------------------------------------------------------*/
-/* Pool */
+/* 
+ * Document-class: Pool
+ * The Pool contains information about solvables
+ * stored optimized for memory consumption and fast retrieval.
+ * 
+ * Solvables represent (RPM) packages and are grouped in repositories.
+ * 
+ * Solving of dependencies works on the Pool, usually with a
+ * distinguished repository of installed solvables.
+ * 
+ * === About memory management
+ * Pool should be a Singleton, there is no actual need to have multiple pools.
+ *
+ * Since a lot of objects _back_ _reference_ the Pool they belong to, the Pool
+ * desctructor is left as a no-op. In the rare case that one has to free memory
+ * allocated to a Pool, call +discard+ and do not reference any objects (Repo, Solvable, Solver, ...) originating from this Pool.
+ *
+ */
 
 %{
 /*
@@ -52,14 +68,6 @@ poolnscallback(Pool *pool, void *data, Id name, Id value)
 }
 
 
-/*
- * Document-class: Satsolverx::Pool
- *
- * The <code>Pool</code> is main data structure. Everything is reachable via the pool.
- * To solve dependencies of <code>Solvable</code>s, you organize them in <code>Repo</code>s
- * (repositories). The pool knows about all repositories and can
- * create a <code>Solver</code> for solving <code>Transaction</code>s
- */
 %}
 
 %nodefault _Pool;
@@ -73,7 +81,15 @@ typedef struct _Pool {} Pool;
 %extend Pool {
 
   /*
-   * Pool creation
+   * Pool creation, optionally with an architecture
+   *
+   * If you don't pass the architecture to the Pool constructor, you
+   * can also use pool.arch= later.
+   *
+   * call-seq:
+   *  Pool.new -> Pool
+   *  Pool.new("x86_64") -> Pool
+   *
    */
   Pool( const char *arch = NULL )
   {
@@ -88,7 +104,17 @@ typedef struct _Pool {} Pool;
   }
 
   /*
-   * discard
+   * Pool destructor
+   *
+   * Implemented as no-op, see 'discard' for details.
+   *
+   */
+
+  ~Pool()
+  { }
+
+  /*
+   * Document-method: discard
    *
    * There is no destructor defined for Pool since the pool pointer
    * is mostly used implicitly (e.g. in Solvable or Solver) which
@@ -97,31 +123,57 @@ typedef struct _Pool {} Pool;
    * Deleting the Pool is seldomly needed anyways. Just call
    * Pool::discard to explicitly free the pool. Just remember that
    * Solvables originating from this Pool are invalidated.
+   *
    */
    
   void discard()
   { pool_free($self); }
 
+  /*
+   * Access Solvable storage within the pool
+   *
+   * Get solvable based on id from pool
+   *
+   * call-seq:
+   *   pool.solvable(id) -> Solvable
+   *
+   */
   XSolvable *solvable(int id)
   {
     return xsolvable_new( $self, (Id)id);
   }
+  
+  /*
+   * Access Solvable storage within the pool
+   *
+   * Get relation based on id from Pool
+   *
+   * call-seq:
+   *   pool.relation(id) -> Relation
+   *
+   */
   Relation *relation( int rel )
   { return relation_new( $self, (Id)rel ); }
 
 #if defined(SWIGRUBY)
 %{
-/*
-  Document-method: Satsolver::Pool.set_arch
-
-  Defines the architecture of the pool. Only Solvables with a compatible
-  architecture will be considered.
-  Setting the architecture to "i686" is a good choice for most 32bit
-  systems, 64bit systems most probably need "x86_64"
-
-  call-seq:
-    pool.arch = "i686"
-*/
+  /*
+   * Defines the architecture of the pool.
+   
+   * Only Solvables with a compatible architecture will be considered.
+   *
+   * Setting the architecture to "i686" is a good choice for most 32bit
+   * systems, 64bit systems most probably need "x86_64"
+   * Attn: There is no getter function for the architecture since
+   * setting an architecture is converted to a list of 'compatible'
+   * architectures internally. E.g. i686 is actually
+   * i686,i586,i486,i386,noach. The solver will always choose the
+   * 'best' architecture from this list.
+   *
+   * call-seq:
+   *  pool.arch = "i686"
+   *
+   */
 %}
   %rename( "arch=" ) set_arch( const char *arch );
 #endif
@@ -129,28 +181,65 @@ typedef struct _Pool {} Pool;
   { pool_setarch( $self, arch ); }
 
 #if defined(SWIGRUBY)
+  /*
+   * Increase verbosity on stderr
+   *
+   * call-seq:
+   *  pool.debug = 1
+   *
+   */
   %rename( "debug=" ) set_debug( int level );
 #endif
   %feature("autodoc", "Makes the stuff noisy on stderr.") set_debug;
   void set_debug( int level )
   { pool_setdebuglevel( $self, level ); }
 
+  /*
+   * If epoch should be promoted
+   *
+   */
   int promoteepoch()
   { return $self->promoteepoch; }
 #if defined(SWIGRUBY)
-  %rename( "promoteepoch=" ) set_promoteepoch( int level );
+  /*
+   * If epoch should be promoted
+   *
+   */
+  %rename( "promoteepoch=" ) set_promoteepoch( int b );
 #endif
   void set_promoteepoch( int b )
   { $self->promoteepoch = b; }
 
+  /*
+   * Set the pool to an _unprepared_ status.
+   * 
+   * You must run Pool.prepare before using a solver on this Pool.
+   * 
+   * See also +Pool+.+prepare+
+   *
+   */
   int unprepared()
   { return $self->whatprovides == NULL; }
 
+  /*
+   * Prepare the pool for solving.
+   *
+   * After calling prepare, one must not
+   * add or remove Repositories or add/remove Solvables within a Repository.
+   *
+   */
   void prepare()
   { pool_createwhatprovides( $self ); }
 
   /*
-   * System solvable
+   * Get system solvable
+   *
+   * This is an internal solvable representing requirements of the
+   * system where satsolver is running.
+   *
+   * call-seq:
+   *  pool.system -> Solvable
+   *
    */
   XSolvable* system()
   {
@@ -161,6 +250,15 @@ typedef struct _Pool {} Pool;
    * Repo management
    */
 
+  /*
+   * Add opened .+solv+ file to pool.
+   *
+   * Returns newly created Repository
+   *
+   * call-seq:
+   *   pool.add_file( File.open( "foo.solv" ) ) -> Repo
+   *
+   */
   Repo *add_file( FILE *fp )
   {
     Repo *repo = repo_create( $self, NULL );
@@ -169,6 +267,15 @@ typedef struct _Pool {} Pool;
   }
 
 #if defined(SWIGRUBY)
+  /*
+   * Add .+solv+ file to Pool
+   *
+   * Returns newly created Repository
+   *
+   * call-seq:
+   *   pool.add_solv( "foo.solv" ) -> Repo
+   *
+   */
   Repo *add_solv( VALUE name )
   {
     const char *fname;
@@ -188,6 +295,19 @@ typedef struct _Pool {} Pool;
     return repo;
   }
 
+  /*
+   * Add RPM database to Pool.
+   *
+   * For chrooted RPM databases, pass the toplevel directory as
+   * parameter.
+   *
+   * Returns a newly created Repository
+   *
+   * call-seq:
+   *   pool.add_rpmdb -> Repo
+   *   pool.add_rpmdb("/space/chroot") -> Repo
+   *
+   */
   Repo *add_rpmdb( const char *rootdir )
   {
     Repo *repo = repo_create( $self, NULL );
@@ -195,12 +315,41 @@ typedef struct _Pool {} Pool;
     return repo;
   }
 
-  Repo *create_repo( const char *name )
+  %newobject create_repo;
+  /*
+   * Create an empty repository, optionally with a name.
+   *
+   * This repository should then be populated with Solvables.
+   *
+   * Equivalent to: Repo.new
+   *
+   * call-seq:
+   *  pool.create_repo -> Repo
+   *  pool.create_repo("test") -> Repo
+   *
+   */
+  Repo *create_repo( const char *name = NULL )
   { return repo_create( $self, name ); }
 
+  /*
+   * Return the number of repositories in this pool
+   *
+   * call-seq:
+   *  pool.count_repos -> int
+   *
+   */
   int count_repos()
   { return $self->nrepos; }
 
+  /*
+   * Get a repository by index from the pool.
+   * Returns +nil+ if no such Repository exists.
+   *
+   * call-seq:
+   *   pool.get_repo(2) -> Repo
+   *   pool.get_repo(-42) -> nil
+   *
+   */
   Repo *get_repo( int i )
   {
     if ( i < 0 ) return NULL;
@@ -209,6 +358,13 @@ typedef struct _Pool {} Pool;
   }
 
 #if defined(SWIGRUBY)
+  /*
+   * Interate through all Repositories of this Pool
+   *
+   * call-seq:
+   *  pool.each_repo { |repo| ... }
+   *
+   */
   void each_repo()
   {
     int i;
@@ -225,6 +381,14 @@ typedef struct _Pool {} Pool;
     %}
 #endif
 
+  /*
+   * Find Repository by name. Returns +nil+ if no Repository with the
+   * given name exists.
+   *
+   * call-seq:
+   *  pool.find_repo("test") -> Repo
+   *
+   */
   Repo *find_repo( const char *name )
   {
     int i;
@@ -239,6 +403,17 @@ typedef struct _Pool {} Pool;
    * Relation management
    */
 
+  %newobject create_relation;
+  /*
+   * Create a relation.
+   *
+   * Equivalent to: Relation.new
+   *
+   * call-seq:
+   *  pool.create_relation( "kernel" ) -> Relation
+   *  pool.create_relation( "kernel", REL_GE, "2.6.26" ) -> Relation
+   *
+   */
   Relation *create_relation( const char *name, int op = 0, const char *evr = NULL )
   {
     if (op && !evr)
@@ -261,7 +436,11 @@ typedef struct _Pool {} Pool;
 #if defined(SWIGRUBY)
    
   /*
-   * iterate over providers of relation
+   * Iterate over all providers of a relation
+   *
+   * call-seq:
+   *  pool.each_provider(relation) { |solvable| ... }
+   *
    */
   void each_provider( Relation *rel )
   {
@@ -275,6 +454,14 @@ typedef struct _Pool {} Pool;
     }
   }
 
+  /*
+   * Iterate over all providers of a string
+   *
+   * call-seq:
+   *  pool.each_provider("glibc") { |solvable| ... }
+   *  pool.each_provider("/usr/bin/bash") { |solvable| ... }
+   *
+   */
   void each_provider( const char *name )
   {
     Id p, pp;
@@ -287,6 +474,12 @@ typedef struct _Pool {} Pool;
     }
   }
 
+  /*
+   * Iterater over all providers of a specific id
+   *
+   * INTERNAL
+   *
+   */
   void each_provider( int id )
   {
     if (id > 0 && id < $self->whatprovidesdataoff) {
@@ -319,6 +512,13 @@ typedef struct _Pool {} Pool;
   %}
 #endif
 
+  /*
+   * Count number of solvables providing _name_
+   *
+   * call-seq:
+   *  pool.providers_count("kernel") { |solvable| ... }
+   *
+   */
   int providers_count( const char *name )
   { int i = 0;
     Id v, *vp;
@@ -327,6 +527,13 @@ typedef struct _Pool {} Pool;
     return i;
   }
 
+  /*
+   * Count number of solvables providing _relation_
+   *
+   * call-seq:
+   *  pool.providers_count(relation) { |solvable| ... }
+   *
+   */
   int providers_count( Relation *rel )
   { int i = 0;
     Id v, *vp;
@@ -335,23 +542,35 @@ typedef struct _Pool {} Pool;
     return i;
   }
 
+  /*
+   * Return n'th provider providing _name_
+   *
+   * INTERNAL
+   *
+   */
   XSolvable *providers_get( const char *name, int i)
   { Id *vp;
     vp = pool_whatprovides_ptr($self, str2id( $self, name, 0));
     return xsolvable_new( $self, *(vp + i));
   }
  
+  /*
+   * Return n'th provider providing _relation_
+   *
+   * INTERNAL
+   *
+   */
   XSolvable *providers_get( Relation *rel, int i)
   { Id *vp;
     vp = pool_whatprovides_ptr($self, rel->id);
     return xsolvable_new( $self, *(vp + i));
   }
   
+#if defined(SWIGPYTHON)
   /*
    * providers iterator for Python
    * using providers_count and providers_get
    */
-#if defined(SWIGPYTHON)
     %pythoncode %{
         def providers(self,what):
           if self.unprepared():
@@ -366,7 +585,12 @@ typedef struct _Pool {} Pool;
    * Solvable management
    */
 
-  /* number of solvables in pool
+  /*
+   * Return number of Solvables in pool
+   *
+   * call-seq:
+   *  pool.size -> int
+   *
    */
   int size()
   { /* skip Ids 0(reserved) and 1(system) */
@@ -374,6 +598,14 @@ typedef struct _Pool {} Pool;
   }
 
 #if defined(SWIGRUBY)
+  /*
+   * Find out if a solvable is installable (all its dependencies can
+   * be satisfied)
+   *
+   * call-seq:
+   *  pool.installable?(Solvable) -> true
+   *
+   */
   %rename( "installable?" ) installable( XSolvable *s );
   %typemap(out) int installable
     "$result = ($1 != 0) ? Qtrue : Qfalse;";
@@ -381,11 +613,24 @@ typedef struct _Pool {} Pool;
   int installable( XSolvable *s )
   { return pool_installable( $self, pool_id2solvable( s->pool, s->id ) ); }
 
-  /* return number of iterations when iterating over solvables */
+  /*
+   * Return number of solvables in the pool
+   *
+   * call-seq:
+   *  pool.count -> int
+   *
+   */
   int count()
   { return pool_xsolvables_count( $self ); }
 
 #if defined(SWIGRUBY)
+  /*
+   * Iterate over all solvables in the pool
+   *
+   * call-seq:
+   *   pool.each { |solvable| ... }
+   *
+   */
   void each()
   { pool_xsolvables_iterate( $self, generic_xsolvables_iterate_callback, NULL ); }
 #endif
@@ -422,6 +667,20 @@ typedef struct _Pool {} Pool;
     %}
 #endif
 
+  /*
+   * Find solvable by name.
+   *
+   * Optionally restrict search to a Repository.
+   *
+   * This function is useful to detect if a Solvable exists at all. If
+   * multiple Solvables would match, this call returns any one of them. Use
+   * Pool.each_provider to interate over all matches.
+   *
+   * call-seq:
+   *  pool.find("kernel") -> Solvable
+   *  pool.find("kernel", this_repo) -> Solvable
+   *
+   */
   XSolvable *find( char *name, Repo *repo = NULL )
   { return xsolvable_find( $self, name, repo ); }
 
@@ -438,6 +697,17 @@ typedef struct _Pool {} Pool;
 #endif
 
 #if defined(SWIGRUBY)
+  /*
+   * Search for Solvable attributes
+   *
+   * See Dataiterator for example code
+   *
+   * call-seq:
+   *  pool.search("match", flags) { |dataiterator| ... }
+   *  pool.search("match", flags, solvable) { |dataiterator| ... }
+   *  pool.search("match", flags, solvable, key) { |dataiterator| ... }
+   *
+   */
   void search(const char *match, int flags, XSolvable *xs = NULL, const char *keyname = NULL) 
   {
     Dataiterator *di;
@@ -453,6 +723,13 @@ typedef struct _Pool {} Pool;
    * Transaction management
    */
 
+  %newobject create_transaction;
+  /*
+   * Create an empty Transaction.
+   *
+   * Equivalent to: Transaction.new
+   *
+   */
   Transaction *create_transaction()
   { return transaction_new( $self ); }
 
@@ -461,13 +738,43 @@ typedef struct _Pool {} Pool;
    */
 
 #if defined(SWIGRUBY)
+  /*
+   * Set the repository representing the installed solvables
+   *
+   * call-seq:
+   *  pool.installed = repository
+   *
+   */
   %rename( "installed=" ) set_installed( Repo *repo );
 #endif
   void set_installed(Repo *installed = NULL)
   {
     pool_set_installed( $self, installed);
   }
+  
+  /*
+   * Return the repository representing the installed solvables.
+   * Returns nil if installed= was not called before.
+   *
+   * call-seq:
+   *  pool.installed -> repository
+   *
+   */
+  Repo *installed()
+  {
+    return $self->installed;
+  }
 
+  %newobject create_solver;
+  /*
+   * Create a solver for this pool
+   *
+   * Equivalent to: Solver.new
+   *
+   * call-seq:
+   *  pool.create_solver -> Solver
+   *
+   */
   Solver* create_solver()
   {
     pool_createwhatprovides( $self );

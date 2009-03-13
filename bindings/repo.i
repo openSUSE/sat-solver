@@ -1,5 +1,18 @@
 /*
- * Repo
+ * Document-class: Repo
+ * The Repo represents a Set of Solvables from the same origin. This
+ * is usually a .+solv+ file (e.g. create from a package Repository) or the RPM database.
+ *
+ * Repositories can be given a name, making it easier to identify and
+ * reference them.
+ *
+ * === About memory management
+ *
+ * Since Solvables  _back_ _reference_ the Repo they belong to, the Repo
+ * desctructor is left as a no-op. In the rare case that one has to free memory
+ * allocated to a Repo, call +discard+ and do not reference any
+ * Solvables originating from this Repo.
+ *
  */
 
 %nodefault _Repo;
@@ -11,11 +24,25 @@ typedef struct _Repo {} Repo;
 #endif
 
 %extend Repo {
+  /*
+   * Document-method: new
+   * Create a new Repository in Pool with a given name
+   *
+   * See also: Pool.create_repo()
+   *
+   * call-seq:
+   *   Repo.new(pool, "test")
+   *
+   */
   Repo( Pool *pool, const char *reponame )
   { return repo_create( pool, reponame ); }
   ~Repo()
   { }
-  void remove()
+
+  /*
+   * Discard Repo
+   */
+  void discard()
   { repo_free( $self, 1 ); }
 
 #if defined(SWIGRUBY)
@@ -24,11 +51,17 @@ typedef struct _Repo {} Repo;
 #if defined(SWIGPYTHON)
   %rename("__str__") string();
 #endif
+  /*
+   * A string representation
+   */
   const char *string()
   {
     return $self->name;
   }
-  /* see also count() below ! */
+
+  /*
+   * see also count() below !
+   */
   int size()
   { return $self->nsolvables; }
 #if defined(SWIGRUBY)
@@ -36,19 +69,32 @@ typedef struct _Repo {} Repo;
   %typemap(out) int empty
     "$result = ($1 != 0) ? Qtrue : Qfalse;";
 #endif
+  /*
+   * Returns +true+ if there are no Solvables in this Repo
+   */
   int empty()
   { return $self->nsolvables == 0; }
 
+  /*
+   * The name of the Repo
+   */
   const char *name()
   { return $self->name; }
 #if defined(SWIGRUBY)
   %rename( "name=" ) set_name( const char *name );
 #endif
+  /*
+   * Assign a name to the Repo
+   */
   void set_name( const char *name )
   { if ($self->name)
       sat_free((char *)$self->name);
     $self->name = strdup(name);
   }
+
+  /*
+   * The priority of this Repo
+   */
   int priority()
   { return $self->priority; }
 #if defined(SWIGRUBY)
@@ -56,13 +102,23 @@ typedef struct _Repo {} Repo;
 #endif
   void set_priority( int i )
   { $self->priority = i; }
+
+  /*
+   * The Pool this Repo belongs to
+   */
   Pool *pool()
   { return $self->pool; }
 
+  /*
+   * Add opened .+solv+ file to Repo
+   */
   void add_file( FILE *fp )
   { repo_add_solv( $self, fp ); }
 
 #if defined(SWIGRUBY)
+  /*
+   * :nodoc:
+   */
   void add_solv( VALUE name )
   {
     const char *fname;
@@ -70,6 +126,9 @@ typedef struct _Repo {} Repo;
     name = StringValue( name );
     fname = StringValuePtr( name );
 #else
+  /*
+   * Add .+solv+ file by name
+   */
   void add_solv( const char *fname )
   {
 #endif
@@ -80,27 +139,56 @@ typedef struct _Repo {} Repo;
     }
   }
 
+  /*
+   * Add RPM database, optionally passing a _root_ directory
+   */
   void add_rpmdb( const char *rootdir )
   { repo_add_rpmdb( $self, NULL, rootdir, 0); }
 
+  /*
+   * Create solvable with +name+ and +evr+ in the Repo
+   * Can optionally be passed an architecture, defaulting to +noarch+
+   *
+   * call-seq:
+   *   repo.create_solvable("test", "42.0-1")
+   *   repo.create_solvable("foo", "1.2-3", "x86_64")
+   *
+   */
   XSolvable *create_solvable( const char *name, const char *evr, const char *arch = NULL )
   { return xsolvable_create( $self, name, evr, arch ); }
 
 #if defined(SWIGRUBY)
   %alias add "<<";
 #endif
+  /*
+   * Add Solvable to Repo
+   */
   XSolvable *add( XSolvable *xs )
   { return xsolvable_add( $self, xs ); }
 
 #if defined(SWIGRUBY)
+  /*
+   * Iterator for all Solvables
+   *
+   * call-seq:
+   *   repo.each { |solvable| ... }
+   *
+   */
   void each()
   { repo_xsolvables_iterate( $self, generic_xsolvables_iterate_callback, NULL ); }
 #endif
+  /*
+   * Number of Solvables in Repo
+   *
+   */
   int count()
   { return repo_xsolvables_count( $self ); }
 
 /* Nah, thats not for Ruby. Use Repo#each in Ruby */
 #if !defined(SWIGRUBY)
+  /*
+   * :nodoc:
+   */
   XSolvable **solvables() {
     int count = repo_xsolvables_count( $self );
     Id p;
@@ -141,7 +229,9 @@ typedef struct _Repo {} Repo;
    * Repodata / Attributes
    */
 
-  /* return number of attached Repodata(s) */
+  /*
+   * return number of attached Repodata(s)
+   */
   int datasize()
   { return $self->nrepodata; }
 
@@ -176,10 +266,10 @@ typedef struct _Repo {} Repo;
     %}
 #endif
 
+#if defined(SWIGPYTHON)
   /*
    * Dataiterator - find solvables by their attributes
    */
-#if defined(SWIGPYTHON)
     %pythoncode %{
         def search(self, match, flags, solvable = None, keyname = None):
           d = Dataiterator(self.pool(), self, match, flags, solvable, keyname)
@@ -189,6 +279,17 @@ typedef struct _Repo {} Repo;
 #endif
 
 #if defined(SWIGRUBY)
+  /*
+   * Search for Solvable attributes in Repository
+   *
+   * See +Dataiterator+ for example code
+   *
+   * call-seq:
+   *  repo.search("match", flags) { |dataiterator| ... }
+   *  repo.search("match", flags, solvable) { |dataiterator| ... }
+   *  repo.search("match", flags, solvable, key) { |dataiterator| ... }
+   *
+   */
   void search(const char *match, int flags, XSolvable *xs = NULL, const char *keyname = NULL) 
   {
     Dataiterator *di;
@@ -200,4 +301,3 @@ typedef struct _Repo {} Repo;
   }
 #endif
 }
-

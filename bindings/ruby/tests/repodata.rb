@@ -31,14 +31,16 @@ class RepodataTest < Test::Unit::TestCase
     repodata = repo.data(0)
     assert repodata
     
-    puts "Repodata has #{repodata.keysize} keys"
+    puts "Repodata has #{repodata.size} keys"
     repodata.each_key { |k|
       puts "  Key '#{k.name}' is #{k.type}[#{k.type_id}] with #{k.size} bytes"
     }
     
     i = 0
     repo.each { |s|
-      puts "Solvable #{s}: group #{s['solvable:group']}, time #{s['solvable:buildtime']}, downloadsize #{s['solvable:downloadsize']}, installsize #{s['solvable:installsize']}"
+      bt = s['solvable:buildtime']
+      bt = Time.at(bt) if bt.is_a? Fixnum
+      puts "Solvable #{s}: group #{s['solvable:group']}, time #{bt}, downloadsize #{s['solvable:downloadsize']}, installsize #{s['solvable:installsize']}"
       i += 1
       break if i == 10
     }
