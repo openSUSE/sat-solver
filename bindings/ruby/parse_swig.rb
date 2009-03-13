@@ -182,22 +182,10 @@ module RDoc
 #      puts "find_class_comment(#{class_name}, #{class_meth})"
       comment = nil
       if @body =~ %r{((?>/\*.*?\*/\s+))
-                     %extend\s+#{class_name}\s*\{}xmi
+                     %extend\s+#{class_name}\s*\{}xm
         comment = $1
       elsif @body =~ %r{Document-(class|module):\s#{class_name}\s*?\n((?>.*?\*/))}m
         comment = $2
-      else
-        if @body =~ /rb_define_(class|module)/m then
-          class_name = class_name.split("::").last
-          comments = []
-          @body.split(/(\/\*.*?\*\/)\s*?\n/m).each_with_index do |chunk, index|
-            comments[index] = chunk
-            if chunk =~ /rb_define_(class|module).*?"(#{class_name})"/m then
-              comment = comments[index-1]
-              break
-            end
-          end
-        end
       end
       class_meth.comment = mangle_comment(comment) if comment
     end
@@ -212,7 +200,8 @@ module RDoc
       module_name = nil
       @body.scan(/^%module\s*(\w+)/mx) do 
         |name|
-	module_name = name[0].capitalize
+	module_name = name.to_s
+	module_name.capitalize! unless module_name[0,1] =~ /[A-Z_]/
 	handle_class_module("module", module_name)
       end
       module_name
@@ -233,17 +222,27 @@ module RDoc
       @body.scan(/^%rename\s*\(([^\"\)]+)\)\s+(\w+);/) do |class_name, struct_name|
 #	puts "rename #{class_name} -> #{struct_name}"
 	@body.scan(/typedef\s+struct\s+#{struct_name}\s*\{[^}]*\}\s*(\w+);/) do |extend_name|
-#	  puts "extend #{extend_name}"
+#	  puts "extend #{extend_name}, class #{class_name}, %extend #{struct_name}"
+	  # find the corresponding '%extend' directive
 	  @body.scan(/^%extend\s+#{extend_name}\s*\{(.*)\}/mx) do |content|
+	    # now check if we have multiple %extend, the regexp above is greedy and will match all of them
+	    while content.to_s =~ /^%extend/
+	      content = $` # discard %extend and everything behind
+	    end
 	    extends[extend_name.to_s] = true
-	    swig_class = handle_class_module("class", class_name.to_s.capitalize, :parent => "rb_cObject", :content => content.to_s)
+	    cn = class_name.to_s
+	    cn.capitalize! unless cn[0,1] =~ /[A-Z_]/
+	    swig_class = handle_class_module("class", cn, :parent => "rb_cObject", :content => content.to_s)
 	  end
 	end
       end
       @body.scan(/^%extend\s*(\w+)\s*\{(.*)\}/mx) do |class_name,content|
-	unless extends[class_name]
-	  handle_class_module("class", class_name.capitalize, :parent => "rb_cObject", :content => content)
-	  extends[class_name] = true
+	cn = class_name.to_s
+	unless extends[cn]
+	  puts "Class #{cn}"
+	  cn.capitalize! unless cn[0,1] =~ /[A-Z_]/
+	  handle_class_module("class", cn, :parent => "rb_cObject", :content => content)
+	  extends[cn] = true
 	end
       end
     end
@@ -278,8 +277,8 @@ module RDoc
       c = find_class class_name
       c.body.scan(%r{%rename\s*\(\s*"([^"]+)"\s*\)\s*(\w+)}m) do #"
         |meth_name,orig_name|
-	meth_name = meth_name[0] if meth_name.is_a? Array
-	orig_name = orig_name[0] if orig_name.is_a? Array
+	meth_name = meth_name.to_s
+	orig_name = orig_name.to_s
         renames[orig_name] = meth_name
       end
       # Find function definitions of the format
@@ -287,12 +286,17 @@ module RDoc
       #
 #      puts "#{module_name}::#{class_name} methods ?"
       c = find_class class_name
+      # Find constructor as 'new'
+      c.body.scan(%r{^\s+#{class_name}\s*\(([^\)]*)\)\s*\{}m) do
+        |args|
+        handle_method(class_name, class_name, "initialize", nil, (args.to_s.split(",")||[]).size)
+      end
       c.body.scan(%r{^\s+((const\s+)?\w+)(\W+)(\w+)\s*\(([^\)]*)\)\s*\{}m) do
         |type,const,pointer,meth_name,args|
 	next unless meth_name
 	type = "string" if type =~ /char/ && pointer =~ /\*/
 #	puts "-> #{const}:#{type}:#{pointer}:#{meth_name} ( #{args} )\n#{$&}\n\n"
-	meth_name = meth_name[0] if meth_name.is_a? Array
+	meth_name = meth_name.to_s
 	meth_name = renames[meth_name] || meth_name
         handle_method(type, class_name, meth_name, nil, (args.split(",")||[]).size)
       end
@@ -457,7 +461,7 @@ module RDoc
 
 	body = find_class(class_name).body
 
-        if find_body(meth_name, meth_obj, body) and meth_obj.document_self
+        if find_body(class_name, meth_name, meth_obj, body) and meth_obj.document_self
           class_obj.add_method(meth_obj)
         end
       end
@@ -466,14 +470,12 @@ module RDoc
     ############################################################
 
     # Find the C code corresponding to a Ruby method
-    def find_body(meth_name, meth_obj, body, quiet = false)
-#      puts "Find body for #{meth_name}"
+    def find_body(class_name, meth_name, meth_obj, body, quiet = false)
       case body
       when %r{((?>/\*.*?\*/\s*))(?:const\s+)?(\w+)[\s\*]+#{meth_name}
               \s*(\(.*?\)).*?^}xm
         comment, params = $1, $2
         body_text = $&
-#puts "Comment for #{meth_name} is #{comment}"
         remove_private_comments(comment) if comment
 
         # see if we can find the whole body
@@ -501,19 +503,22 @@ module RDoc
         meth_obj.comment = mangle_comment(comment)
       when %r{((?>/\*.*?\*/\s*))^\s*\#\s*define\s+#{meth_name}\s+(\w+)}m
         comment = $1
-        find_body($2, meth_obj, body, true)
+        find_body(class_name, $2, meth_obj, body, true)
         find_modifiers(comment, meth_obj)
         meth_obj.comment = mangle_comment(comment) + meth_obj.comment
       when %r{^\s*\#\s*define\s+#{meth_name}\s+(\w+)}m
-        unless find_body($1, meth_obj, body, true)
+        unless find_body(class_name, $1, meth_obj, body, true)
           warn "No definition for #{meth_name}" unless quiet
           return false
         end
       else
-
-        # No body, but might still have an override comment
-        comment = find_override_comment(meth_obj.name)
-
+        if (meth_name == "new") && body =~ %r{((?>/\*.*?\*/\s*))\s*#{class_name}\s*(\([^)]*\))}xm
+	  comment = $1
+	  find_modifiers(comment, meth_obj)
+	  meth_obj.comment = mangle_comment(comment) + meth_obj.comment
+	  # No body, but might still have an override comment
+	  comment = find_override_comment(meth_obj.name)
+	end
         if comment
           find_modifiers(comment, meth_obj)
           meth_obj.comment = mangle_comment(comment)
