@@ -785,6 +785,11 @@ typedef struct solver {} Solver;
   %typemap(out) int solve
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
+#if defined(SWIGPYTHON)
+%typemap(out) int solve {
+	$result = PyBool_FromLong((long) ($1 ? 1 : 0));
+}
+#endif
   /*
    * Solve the given Transaction
    *

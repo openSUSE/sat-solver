@@ -86,9 +86,10 @@ class TestSequenceFunctions(unittest.TestCase):
     transaction.install( solv1 )
 
     self.pool.installed = self.pool.create_repo( "system" )
-    solver = self.pool.create_solver(  )
+    solver = self.pool.create_solver()
 #    self.pool.debug = 255
-    solver.solve( transaction )
+    res = solver.solve( transaction )
+    assert res.__class__.__name__ == 'bool', res.__class__.__name__
 #    solver.each_to_install { |s|
 #      puts "Install #{s}"
 #    }
