@@ -60,6 +60,10 @@ class TestSequenceFunctions(unittest.TestCase):
     solv = list(self.pool.providers( 'product:openSUSE' ))
     assert len(solv) == 1, len(solv)
     
+  def test_iterate_pool(self):
+    for s in self.pool:
+      assert s.pool() == self.pool
+      
   def test_creation(self):
     repo = self.pool.create_repo( 'test' )
     assert repo
