@@ -220,13 +220,13 @@ module RDoc
 
       extends = Hash.new
       @body.scan(/^%rename\s*\(([^\"\)]+)\)\s+([_\w]+);/) do |class_name, struct_name|
-	puts "rename #{class_name} -> #{struct_name}"
+#	puts "rename #{class_name} -> #{struct_name}"
 	extend_name = struct_name
 	@body.scan(/typedef\s+struct\s+#{struct_name}\s*\{[^}]*\}\s*(\w+);/) do |ename|
 	  extend_name = ename
 	end
 	
-	puts "extend #{extend_name}, class #{class_name}, %extend #{struct_name}"
+#	puts "extend #{extend_name}, class #{class_name}, struct #{struct_name}"
 	# find the corresponding '%extend' directive
 	@body.scan(/^%extend\s+#{extend_name}\s*\{(.*)\}/mx) do |content|
 	  # now check if we have multiple %extend, the regexp above is greedy and will match all of them
