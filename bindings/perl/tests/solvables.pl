@@ -29,6 +29,10 @@ foreach my $solvable ($pool->solvables()) {
   $poolcount++;
 }
 
+foreach my $solvable ($pool->solvables()) {
+  $solvable->pool() == $pool || die
+}
+
 my $repocount = 0;
 foreach my $solvable ($repo->solvables()) {
   next if not defined $solvable;

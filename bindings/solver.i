@@ -785,6 +785,11 @@ typedef struct solver {} Solver;
   %typemap(out) int solve
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
+#if defined(SWIGPYTHON)
+%typemap(out) int solve {
+	$result = PyBool_FromLong((long) ($1 ? 1 : 0));
+}
+#endif
   /*
    * Solve the given Transaction
    *
@@ -980,5 +985,85 @@ typedef struct solver {} Solver;
         return res;
     }
 #endif
+#if defined(SWIGPYTHON)
+    XSolvable **installs() {
+    	Pool *pool = $self->pool;
+	Repo *installed = $self->installed;
+	int count = $self->decisionq.count;
+	Solvable *s;
+	Id p, *obsoletesmap = solver_create_decisions_obsoletesmap($self);
+	int i, j = 0;
+	XSolvable **xs = (XSolvable **) malloc((count + 1) * sizeof(XSolvable **));
 
+	for (i = 0; i < $self->decisionq.count; i++) {
+	    p = $self->decisionq.elements[i];
+	    if (p < 0)
+	       continue;
+	    if (p == SYSTEMSOLVABLE)
+	       continue;
+	    s = pool->solvables + p;
+	    if (installed && s->repo == installed)
+	       continue;
+	    if (obsoletesmap[p])
+	       continue;
+	    xs[j] = xsolvable_new(pool, p);
+            ++j;
+       }
+       xs[j] = NULL;
+       sat_free(obsoletesmap);
+       return xs;
+    }
+
+    XSolvable **updates() {
+    	Pool *pool = $self->pool;
+	Repo *installed = $self->installed;
+	int count = $self->decisionq.count;
+	Solvable *s;
+	Id p, *obsoletesmap = solver_create_decisions_obsoletesmap($self);
+	int i, j = 0;
+	XSolvable **xs = (XSolvable **) malloc((count + 1) * sizeof(XSolvable **));
+
+	for (i = 0; i < $self->decisionq.count; i++) {
+	    p = $self->decisionq.elements[i];
+	    if (p < 0)
+	       continue;
+	    if (p == SYSTEMSOLVABLE)
+	       continue;
+	    s = pool->solvables + p;
+	    if (installed && s->repo == installed)
+	       continue;
+	    if (!obsoletesmap[p])
+	       continue;
+	    xs[j] = xsolvable_new(pool, p);
+            ++j;
+       }
+       xs[j] = NULL;
+       sat_free(obsoletesmap);
+       return xs;
+    }
+
+    XSolvable **removes() {
+    	Pool *pool = $self->pool;
+	Repo *installed = $self->installed;
+	int count = installed ? installed->nsolvables : 0;
+	Solvable *s;
+	Id p, *obsoletesmap = solver_create_decisions_obsoletesmap($self);
+	int j = 0;
+	XSolvable **xs = (XSolvable **) malloc((count + 1) * sizeof(XSolvable **));
+
+	if (installed) {
+	   FOR_REPO_SOLVABLES(installed, p, s) {
+	      if ($self->decisionmap[p] > 0)
+	      	 continue;
+	      if (obsoletesmap[p])
+	      	 continue;
+	      xs[j] = xsolvable_new(pool, p);
+              ++j;
+       	   }
+       }
+       xs[j] = NULL;
+       sat_free(obsoletesmap);
+       return xs;
+    }
+#endif
 };

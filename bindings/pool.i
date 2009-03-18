@@ -246,6 +246,38 @@ typedef struct _Pool {} Pool;
     return xsolvable_new($self, SYSTEMSOLVABLE);
   }
 
+  /*
+   * Pool equality
+   */
+
+#if defined(SWIGPERL)
+  /*
+   * :nodoc:
+   */
+  int __eq__( Pool *pool )
+#endif
+#if defined(SWIGRUBY)
+  %rename("==") equal;
+  /*
+   * Equality operator
+   *
+   */
+  int equal( Pool *pool )
+#endif
+
+#if defined(SWIGPYTHON)
+  /*
+   * :nodoc:
+   * Python treats 'eq' and 'ne' distinct.
+   */
+  int __ne__( Pool *pool )
+  { return $self != pool; }
+  int __eq__( Pool *pool )
+#endif
+  { return $self == pool; } /* common implementation */
+
+
+
   /**************************
    * Repo management
    */

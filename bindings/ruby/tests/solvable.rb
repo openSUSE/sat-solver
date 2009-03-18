@@ -43,6 +43,13 @@ class SolvableTest < Test::Unit::TestCase
       break if i > 5
     }
   end
+  
+  def test_iterate_pool
+    @pool.each do |s|
+      assert s.pool == @pool
+    end
+  end
+
   def test_creation
     repo = @pool.create_repo( 'test' )
     assert repo
