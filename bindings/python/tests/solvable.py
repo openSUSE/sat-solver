@@ -89,18 +89,25 @@ class TestSequenceFunctions(unittest.TestCase):
     transaction = self.pool.create_transaction()
     transaction.install( solv1 )
 
-    self.pool.installed = self.pool.create_repo( "system" )
+ 
+    system = self.pool.create_repo( '@system' )
+    self.pool.set_installed(system)
+    solv3 = system.create_solvable( 'two', '1.0-0', 'noarch' )
+    solv4 = system.create_solvable( 'three', '1.0-0', 'noarch' )
+    rel = satsolver.Relation( self.pool, 'two', satsolver.REL_EQ, '1.0-0' )
+    solv4.requires().add(rel)
+
     solver = self.pool.create_solver()
-#    self.pool.debug = 255
+    solver.set_allow_uninstall(True)
     res = solver.solve( transaction )
     assert res.__class__.__name__ == 'bool', res.__class__.__name__
-#    solver.each_to_install { |s|
-#      puts "Install #{s}"
-#    }
-#    solver.each_to_remove { |s|
-#      puts "Remove #{s}"
-#    }
-
+    assert res == True, res
+    for s in solver.installs():
+      assert s.name() == "one", s
+    for s in solver.updates():
+      assert s.name() == "two", s
+    for s in solver.removes():
+      assert s.name() == "three", s
 
 if __name__ == '__main__':
   unittest.main()
