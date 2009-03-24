@@ -55,6 +55,10 @@ module RDoc
     attr_accessor :body
   end
   
+  class NormalClass
+    attr_accessor :extend_name
+  end
+
   class Swig_Parser
 
     attr_accessor :progress
@@ -162,6 +166,7 @@ module RDoc
       find_class_comment(class_name, cm)
       @classes[class_name] = cm
       @known_classes[class_name] = cm.full_name
+      cm
     end
 
     ##
@@ -203,6 +208,7 @@ module RDoc
 	module_name = name.to_s
 	module_name.capitalize! unless module_name[0,1] =~ /[A-Z_]/
 	handle_class_module("module", module_name)
+	break
       end
       module_name
     end
@@ -237,6 +243,7 @@ module RDoc
 	  cn = class_name.to_s
 	  cn.capitalize! unless cn[0,1] =~ /[A-Z_]/
 	  swig_class = handle_class_module("class", cn, :parent => "rb_cObject", :content => content.to_s)
+	  swig_class.extend_name = extend_name.to_s
 	end
       end
       @body.scan(/^%extend\s*(\w+)\s*\{(.*)\}/mx) do |class_name,content|
@@ -244,8 +251,9 @@ module RDoc
 	unless extends[cn]
 	  puts "Class #{cn}"
 	  cn.capitalize! unless cn[0,1] =~ /[A-Z_]/
-	  handle_class_module("class", cn, :parent => "rb_cObject", :content => content)
+	  swig_class = handle_class_module("class", cn, :parent => "rb_cObject", :content => content)
 	  extends[cn] = true
+	  swig_class.extend_name = cn
 	end
       end
     end
@@ -290,7 +298,7 @@ module RDoc
 #      puts "#{module_name}::#{class_name} methods ?"
       c = find_class class_name
       # Find constructor as 'new'
-      c.body.scan(%r{^\s+#{class_name}\s*\(([^\)]*)\)\s*\{}m) do
+      c.body.scan(%r{^\s+#{c.extend_name}\s*\(([^\)]*)\)\s*\{}m) do
         |args|
         handle_method(class_name, class_name, "initialize", nil, (args.to_s.split(",")||[]).size)
       end
@@ -515,12 +523,17 @@ module RDoc
           return false
         end
       else
-        if (meth_name == "new") && body =~ %r{((?>/\*.*?\*/\s*))\s*#{class_name}\s*(\([^)]*\))}xm
-	  comment = $1
-	  find_modifiers(comment, meth_obj)
-	  meth_obj.comment = mangle_comment(comment) + meth_obj.comment
-	  # No body, but might still have an override comment
-	  comment = find_override_comment(meth_obj.name)
+
+        if (meth_name == "new")
+	  # find constructor definition
+	  extend_name = find_class(class_name).extend_name
+	  if body =~ %r{((?>/\*.*?\*/\s*))\s*#{extend_name}\s*(\([^)]*\))}xm
+	    comment = $1
+	    find_modifiers(comment, meth_obj)
+	    meth_obj.comment = mangle_comment(comment) + meth_obj.comment
+	    # No body, but might still have an override comment
+	    comment = find_override_comment(meth_obj.name)
+	  end
 	end
         if comment
           find_modifiers(comment, meth_obj)
