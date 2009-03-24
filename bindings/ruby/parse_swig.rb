@@ -166,7 +166,8 @@ module RDoc
       end
       cm.record_location(enclosure.toplevel)
       cm.body = options[:content]
-
+      cm.extend_name = options[:extend_name] || class_name
+      
       find_class_comment(class_name, cm)
       @classes[class_name] = cm
       @known_classes[class_name] = cm.full_name
@@ -188,10 +189,10 @@ module RDoc
     #
 
     def find_class_comment(class_name, class_meth)
-#      puts "find_class_comment(#{class_name}, #{class_meth})"
+      puts "find_class_comment(#{class_name}, #{class_meth.extend_name})"
       comment = nil
       if @body =~ %r{((?>/\*.*?\*/\s+))
-                     %extend\s+#{class_name}\s*\{}xm
+                     %extend\s+#{class_meth.extend_name}\s*\{}xm
         comment = $1
       elsif @body =~ %r{Document-(class|module):\s#{class_name}\s*?\n((?>.*?\*/))}m
         comment = $2
@@ -231,9 +232,9 @@ module RDoc
       extends = Hash.new
       @body.scan(/^%rename\s*\(([^\"\)]+)\)\s+([_\w]+);/) do |class_name, struct_name|
 #	puts "rename #{class_name} -> #{struct_name}"
-	extend_name = struct_name
+	extend_name = struct_name.to_s
 	@body.scan(/typedef\s+struct\s+#{struct_name}\s*\{[^}]*\}\s*(\w+);/) do |ename|
-	  extend_name = ename
+	  extend_name = ename.to_s
 	end
 	
 #	puts "extend #{extend_name}, class #{class_name}, struct #{struct_name}"
@@ -243,11 +244,10 @@ module RDoc
 	  while content.to_s =~ /^%extend/
 	    content = $` # discard %extend and everything behind
 	  end
-	  extends[extend_name.to_s] = true
+	  extends[extend_name] = true
 	  cn = class_name.to_s
 	  cn.capitalize! unless cn[0,1] =~ /[A-Z_]/
-	  swig_class = handle_class_module("class", cn, :parent => "rb_cObject", :content => content.to_s)
-	  swig_class.extend_name = extend_name.to_s
+	  swig_class = handle_class_module("class", cn, :parent => "rb_cObject", :content => content.to_s, :extend_name => extend_name)
 	end
       end
       @body.scan(/^%extend\s*(\w+)\s*\{(.*)\}/mx) do |class_name,content|
@@ -257,7 +257,6 @@ module RDoc
 	  cn.capitalize! unless cn[0,1] =~ /[A-Z_]/
 	  swig_class = handle_class_module("class", cn, :parent => "rb_cObject", :content => content)
 	  extends[cn] = true
-	  swig_class.extend_name = cn
 	end
       end
     end
