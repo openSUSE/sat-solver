@@ -59,6 +59,10 @@ module RDoc
     attr_accessor :extend_name
   end
 
+  class NormalModule
+    attr_accessor :extend_name
+  end
+
   class AnyMethod
     attr_accessor :orig_name
   end
@@ -189,7 +193,7 @@ module RDoc
     #
 
     def find_class_comment(class_name, class_meth)
-      puts "find_class_comment(#{class_name}, #{class_meth.extend_name})"
+#      puts "find_class_comment(#{class_name}, #{class_meth.extend_name})"
       comment = nil
       if @body =~ %r{((?>/\*.*?\*/\s+))
                      %extend\s+#{class_meth.extend_name}\s*\{}xm
