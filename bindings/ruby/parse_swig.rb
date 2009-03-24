@@ -1,4 +1,4 @@
-#
+
 # parse_swig.rb
 #
 # A rdoc parser for SWIG .i files
@@ -59,6 +59,10 @@ module RDoc
     attr_accessor :extend_name
   end
 
+  class AnyMethod
+    attr_accessor :orig_name
+  end
+  
   class Swig_Parser
 
     attr_accessor :progress
@@ -300,16 +304,16 @@ module RDoc
       # Find constructor as 'new'
       c.body.scan(%r{^\s+#{c.extend_name}\s*\(([^\)]*)\)\s*\{}m) do
         |args|
-        handle_method(class_name, class_name, "initialize", nil, (args.to_s.split(",")||[]).size)
+        handle_method(class_name, class_name, "initialize", nil, (args.to_s.split(",")||[]).size, nil)
       end
       c.body.scan(%r{^\s+((const\s+)?\w+)(\W+)(\w+)\s*\(([^\)]*)\)\s*\{}m) do
         |type,const,pointer,meth_name,args|
 	next unless meth_name
 	type = "string" if type =~ /char/ && pointer =~ /\*/
 #	puts "-> #{const}:#{type}:#{pointer}:#{meth_name} ( #{args} )\n#{$&}\n\n"
-	meth_name = meth_name.to_s
+	meth_name = orig_name = meth_name.to_s
 	meth_name = renames[meth_name] || meth_name
-        handle_method(type, class_name, meth_name, nil, (args.split(",")||[]).size)
+        handle_method(type, class_name, meth_name, nil, (args.split(",")||[]).size, orig_name)
       end
 
    end
@@ -441,49 +445,51 @@ module RDoc
     ###########################################################
 
     def handle_method(type, class_name, meth_name, 
-                      meth_body, param_count)
+                      meth_body, param_count, orig_name)
       progress(".")
       
 
       class_obj  = find_class(class_name)
-      if class_obj
-	seen_before = class_obj.method_list.find { |meth| meth.name == meth_name }
-	return if seen_before
-	@stats.num_methods += 1
-        if meth_name == "initialize"
-          meth_name = "new"
-          type = "singleton_method"
-        end
-        meth_obj = AnyMethod.new("", meth_name)
-        meth_obj.singleton =
-	  %w{singleton_method module_function}.include?(type) 
-        
-        p_count = (Integer(param_count) rescue -1)
-        
-        if p_count < 0
-          meth_obj.params = "(...)"
-        elsif p_count == 0
-          meth_obj.params = "()"
-        else
-          meth_obj.params = "(" +
-                            (1..p_count).map{|i| "p#{i}"}.join(", ") + 
-                                                ")"
-        end
-
-	body = find_class(class_name).body
-
-        if find_body(class_name, meth_name, meth_obj, body) and meth_obj.document_self
-          class_obj.add_method(meth_obj)
-        end
+      return nil unless class_obj
+      
+      seen_before = class_obj.method_list.find { |meth| meth.name == meth_name }
+      return nil if seen_before
+      @stats.num_methods += 1
+      if meth_name == "initialize"
+	meth_name = "new"
+	type = "singleton_method"
       end
+      meth_obj = AnyMethod.new("", meth_name)
+      meth_obj.singleton = %w{singleton_method module_function}.include?(type) 
+      meth_obj.orig_name = orig_name || meth_name
+      
+      p_count = (Integer(param_count) rescue -1)
+      
+      if p_count < 0
+	meth_obj.params = "(...)"
+      elsif p_count == 0
+	meth_obj.params = "()"
+      else
+	meth_obj.params = "(" +
+                            (1..p_count).map{|i| "p#{i}"}.join(", ") + 
+			    ")"
+      end
+      
+      body = find_class(class_name).body
+      
+      if find_body(class_name, meth_name, meth_obj, body) and meth_obj.document_self
+	class_obj.add_method(meth_obj)
+      end
+      meth_obj
     end
     
     ############################################################
 
     # Find the C code corresponding to a Ruby method
     def find_body(class_name, meth_name, meth_obj, body, quiet = false)
+      
       case body
-      when %r{((?>/\*.*?\*/\s*))(?:const\s+)?(\w+)[\s\*]+#{meth_name}
+      when %r{((?>/\*.*?\*/\s*))(?:const\s+)?(\w+)[\s\*]+#{meth_obj.orig_name || meth_name}
               \s*(\(.*?\)).*?^}xm
         comment, params = $1, $2
         body_text = $&
