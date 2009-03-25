@@ -837,6 +837,18 @@ typedef struct solver {} Solver;
 #endif
 
   /*
+   * Return the size change of the installed system
+   *
+   * This is how much disk space gets allocated/freed after the
+   * solver decisions are applied to the system.
+   *
+   */
+  long sizechange()
+  {
+    return solver_calc_installsizechange($self);
+  }
+
+  /*
    * Document-method; explain
    *
    * Explain a decision
