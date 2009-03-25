@@ -1,4 +1,3 @@
-
 # parse_swig.rb
 #
 # A rdoc parser for SWIG .i files
@@ -99,6 +98,7 @@ module RDoc
 	remove_commented_out_lines
 	if module_name = do_module
 	  @@module_name = module_name
+	  do_methods module_name
 	else
 	  do_classes
 	  @classes.keys.each do |c|
@@ -290,10 +290,18 @@ module RDoc
     # and honor
     #  %rename "+new_name+" +old_name+ ;
     #
+    # Module level methods have 'static' prototypes of C functions.
+    # e.g. static type name(args);
+    #
+
     def do_methods class_name
       renames = Hash.new
       c = find_class class_name
-      c.body.scan(%r{%rename\s*\(\s*"([^"]+)"\s*\)\s*(\w+)}m) do #"
+
+      body = c.body || @body
+      extend_name = c.extend_name
+
+      body.scan(%r{%rename\s*\(\s*"([^"]+)"\s*\)\s*(\w+)}m) do #"
         |meth_name,orig_name|
 	meth_name = meth_name.to_s
 	orig_name = orig_name.to_s
@@ -303,17 +311,25 @@ module RDoc
       #   <type> [*]? <name> ( <args> ) {
       #
 #      puts "#{module_name}::#{class_name} methods ?"
-      c = find_class class_name
-      # Find constructor as 'new'
-      c.body.scan(%r{^\s+#{c.extend_name}\s*\(([^\)]*)\)\s*\{}m) do
+
+      # Find class constructor as 'new'
+      body.scan(%r{^\s+#{extend_name}\s*\(([^\)]*)\)\s*\{}m) do
         |args|
         handle_method(class_name, class_name, "initialize", nil, (args.to_s.split(",")||[]).size, nil)
+      end if extend_name
+      
+      body.scan(%r{static\s+((const\s+)?\w+)(\W+)(\w+)\s*\(([^\)]*)\)\s*;}m) do
+        |const,type,pointer,meth_name,args|
+#	puts "-> const #{const}:type #{type}:pointer #{pointer}:name #{meth_name} (args  #{args} )\n#{$&}\n\n"
+	meth_name = orig_name = meth_name.to_s
+	meth_name = renames[meth_name] || meth_name
+        handle_method(type, class_name||@@module_name, meth_name, nil, (args.split(",")||[]).size, orig_name)
       end
-      c.body.scan(%r{^\s+((const\s+)?\w+)(\W+)(\w+)\s*\(([^\)]*)\)\s*\{}m) do
-        |type,const,pointer,meth_name,args|
+      body.scan(%r{((const\s+)?\w+)([^~/\w]+)(\w+)\s*\(([^\)]*)\)\s*\{}m) do
+        |const,type,pointer,meth_name,args|
 	next unless meth_name
 	type = "string" if type =~ /char/ && pointer =~ /\*/
-#	puts "-> #{const}:#{type}:#{pointer}:#{meth_name} ( #{args} )\n#{$&}\n\n"
+	puts "-> const #{const}:type #{type}:pointer #{pointer}:name #{meth_name} (args  #{args} )\n#{$&}\n\n" if meth_name == "_WsXmlDoc"
 	meth_name = orig_name = meth_name.to_s
 	meth_name = renames[meth_name] || meth_name
         handle_method(type, class_name, meth_name, nil, (args.split(",")||[]).size, orig_name)
@@ -450,13 +466,13 @@ module RDoc
     def handle_method(type, class_name, meth_name, 
                       meth_body, param_count, orig_name)
       progress(".")
-      
 
       class_obj  = find_class(class_name)
       return nil unless class_obj
       
       seen_before = class_obj.method_list.find { |meth| meth.name == meth_name }
       return nil if seen_before
+      
       @stats.num_methods += 1
       if meth_name == "initialize"
 	meth_name = "new"
@@ -478,7 +494,7 @@ module RDoc
 			    ")"
       end
       
-      body = find_class(class_name).body
+      body = find_class(class_name).body || @body
       
       if find_body(class_name, meth_name, meth_obj, body) and meth_obj.document_self
 	class_obj.add_method(meth_obj)
@@ -490,9 +506,8 @@ module RDoc
 
     # Find the C code corresponding to a Ruby method
     def find_body(class_name, meth_name, meth_obj, body, quiet = false)
-      
       case body
-      when %r{((?>/\*.*?\*/\s*))(?:const\s+)?(\w+)[\s\*]+#{meth_obj.orig_name || meth_name}
+      when %r{((?>/\*.*?\*/\s*))(?:static\s+)?(?:const\s+)?(\w+)[\s\*]+#{meth_obj.orig_name || meth_name}
               \s*(\(.*?\)).*?^}xm
         comment, params = $1, $2
         body_text = $&
