@@ -325,11 +325,11 @@ module RDoc
 	meth_name = renames[meth_name] || meth_name
         handle_method(type, class_name||@@module_name, meth_name, nil, (args.split(",")||[]).size, orig_name)
       end
-      body.scan(%r{((const\s+)?\w+)([^~/\w]+)(\w+)\s*\(([^\)]*)\)\s*\{}m) do
+      body.scan(%r{((const\s+)?[^#\W]+)([^~/\w]+)(\w+)\s*\(([^\)]*)\)\s*\{}m) do
         |const,type,pointer,meth_name,args|
 	next unless meth_name
 	type = "string" if type =~ /char/ && pointer =~ /\*/
-	puts "-> const #{const}:type #{type}:pointer #{pointer}:name #{meth_name} (args  #{args} )\n#{$&}\n\n" if meth_name == "_WsXmlDoc"
+	puts "-> const #{const}:type #{type}:pointer #{pointer}:name #{meth_name} (args  #{args} )\n#{$&}\n\n" if meth_name == "if"
 	meth_name = orig_name = meth_name.to_s
 	meth_name = renames[meth_name] || meth_name
         handle_method(type, class_name, meth_name, nil, (args.split(",")||[]).size, orig_name)
@@ -647,6 +647,12 @@ module RDoc
     # Removes #ifdefs that would otherwise confuse us
     
     def handle_ifdefs_in(body)
+      # remove all %{...%}
+      while body =~ /^%\{/
+	before = $`          # keep whats before %{
+	$' =~ /^%\}/         # scan the rest for %} '
+	body = before + $'   # keep whats after %} '
+      end
       body.gsub(/^#ifdef HAVE_PROTOTYPES.*?#else.*?\n(.*?)#endif.*?\n/m) { $1 }
     end
     
