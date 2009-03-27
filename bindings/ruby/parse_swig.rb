@@ -318,18 +318,19 @@ module RDoc
         handle_method(class_name, class_name, "initialize", nil, (args.to_s.split(",")||[]).size, nil)
       end if extend_name
       
-      body.scan(%r{static\s+((const\s+)?\w+)(\W+)(\w+)\s*\(([^\)]*)\)\s*;}m) do
+      body.scan(%r{static\s+((const\s+)?\w+)([\s\*]+)(\w+)\s*\(([^\)]*)\)\s*;}) do
         |const,type,pointer,meth_name,args|
 #	puts "-> const #{const}:type #{type}:pointer #{pointer}:name #{meth_name} (args  #{args} )\n#{$&}\n\n"
 	meth_name = orig_name = meth_name.to_s
 	meth_name = renames[meth_name] || meth_name
         handle_method(type, class_name||@@module_name, meth_name, nil, (args.split(",")||[]).size, orig_name)
       end
-      body.scan(%r{((const\s+)?[^#\W]+)([^~/\w]+)(\w+)\s*\(([^\)]*)\)\s*\{}m) do
+      body.scan(%r{((const\s+)?\w+)([ \t\*]+)(\w+)\s*\(([^\)]*)\)\s*\{}m) do
         |const,type,pointer,meth_name,args|
 	next unless meth_name
+	next if meth_name =~ /~/
 	type = "string" if type =~ /char/ && pointer =~ /\*/
-	puts "-> const #{const}:type #{type}:pointer #{pointer}:name #{meth_name} (args  #{args} )\n#{$&}\n\n" if meth_name == "if"
+#	puts "-> const #{const}:type #{type}:pointer #{pointer}:name #{meth_name} (args  #{args} )\n#{$&}\n\n" if meth_name == "if"
 	meth_name = orig_name = meth_name.to_s
 	meth_name = renames[meth_name] || meth_name
         handle_method(type, class_name, meth_name, nil, (args.split(",")||[]).size, orig_name)
