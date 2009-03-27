@@ -92,6 +92,39 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   void set_vendor(const char *vendor)
   { xsolvable_solvable($self)->vendor = str2id( $self->pool, vendor, 1 ); }
 
+#if defined(SWIGRUBY)
+  VALUE
+#endif
+#if defined(SWIGPYTHON)
+  PyObject *
+#endif
+#if defined(SWIGPERL)
+  SV *
+#endif
+  /*
+   * Get location of corresponding package
+   *
+   * returns a 2-element tuple of [path (string), medianr (int)]
+   *
+   * +medianr+ is meaningful only for fixed-media repositories spread
+   * across multiple CDs or DVDs.
+   *
+   * +path+ is +nil+ for non-package solvables.
+   *
+   */
+  __type location()
+  {
+     Swig_Type result = Swig_Array();
+     unsigned int media;
+     const char *loc = solvable_get_location(xsolvable_solvable($self), &media);
+     if (loc == NULL)
+       Swig_Append(result, Swig_Null);
+     else
+       Swig_Append(result, Swig_String(loc));
+     Swig_Append(result, Swig_Int(media));
+     return result;
+  }
+  
 %newobject XSolvable::string;
 #if defined(SWIGRUBY)
   %rename("to_s") string();

@@ -34,7 +34,7 @@ class SolvableTest < Test::Unit::TestCase
     i = 0
     puts "test_deps"
     @pool.each { |s|
-      puts "Solvable >#{s}<"
+      puts "Solvable >#{s}< @ #{s.location.inspect}"
       show_dep "Provides", s.provides
       show_dep "Requires", s.requires
       show_dep "Obsoletes", s.obsoletes
@@ -42,6 +42,16 @@ class SolvableTest < Test::Unit::TestCase
       i += 1
       break if i > 5
     }
+  end
+  
+  def test_attributes
+    @pool.each do |s|
+      assert s.name
+      assert s.arch
+      assert s.evr
+#      assert s.vendor
+      assert s.location.size == 2
+    end
   end
   
   def test_iterate_pool

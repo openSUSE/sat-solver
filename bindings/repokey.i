@@ -45,7 +45,7 @@ typedef struct _Repokey {} XRepokey; /* expose XRepokey as 'Repokey' */
   /*
    * type id of key
    * 
-   * One of +Satsolver::REPOKEY_TYPE_*+
+   * One of +Satsolver+::+REPOKEY_TYPE_+*
    */
   int type_id()
   {
@@ -53,14 +53,6 @@ typedef struct _Repokey {} XRepokey; /* expose XRepokey as 'Repokey' */
     return key->type;
   }
   
-  /*
-   * Class of key
-   *
-   * Returns a _best_ _matching_ Class representation of the type
-   *
-   * i.e. +Satsolver::REPOKEY_TYPE_VOID+ is represented as a +Boolean+ since presence of the key means +true+ for this attribute.
-   *
-   */
 #if defined(SWIGPYTHON)
 PyTypeObject *
 #endif
@@ -70,7 +62,15 @@ VALUE
 #if defined(SWIGPERL)
 SV *
 #endif
-    type()
+  /*
+   * Class of key
+   *
+   * Returns a _best_ _matching_ Class representation of the type
+   *
+   * i.e. +Satsolver+::+REPOKEY_TYPE_VOID+ is represented as a +Boolean+ since presence of the key means +true+ for this attribute.
+   *
+   */
+  __type type()
   {
     Repokey *key = xrepokey_repokey( $self );
     Swig_Type_Type type = Swig_Type_Null;

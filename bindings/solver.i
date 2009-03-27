@@ -849,7 +849,7 @@ typedef struct solver {} Solver;
   }
 
   /*
-   * Document-method; explain
+   * Document-method: explain
    *
    * Explain a decision
    *
@@ -868,7 +868,7 @@ typedef struct solver {} Solver;
 #if defined(SWIGPERL)
   SV *
 #endif
-  explain(Transaction *t, Decision *decision)
+  __type explain(Transaction *t, Decision *decision)
   {
     Swig_Type result = Swig_Null;
     Id rule = decision->rule - $self->rules;
