@@ -88,7 +88,7 @@ module Satsolver
   end # class Rule
 end
 
-def explain solver, transaction
+def explain solver
   solver.each_to_install { |s|
     puts "Install #{s}"
   }
@@ -98,7 +98,7 @@ def explain solver, transaction
   solver.each_decision do |d|
     puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_s if d.rule})"
     puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool) if d.rule})"
-    e = solver.explain( transaction, d)
+    e = d.explain
     if e.nil?
       puts "\t unexplainable"
     else
@@ -161,7 +161,7 @@ class ReasonsTest < Test::Unit::TestCase
     @pool.prepare
     solver = @pool.create_solver( )
     solver.solve( transaction )
-    explain solver, transaction
+    explain solver
   end
   
   
@@ -181,7 +181,7 @@ class ReasonsTest < Test::Unit::TestCase
     @pool.prepare
     solver = @pool.create_solver( )
     solver.solve( transaction )
-    explain solver, transaction
+    explain solver
   end
   
   
@@ -203,7 +203,7 @@ class ReasonsTest < Test::Unit::TestCase
     @pool.prepare
     solver = @pool.create_solver( )
     solver.solve( transaction )
-    explain solver, transaction
+    explain solver
   end
   
   
@@ -220,7 +220,7 @@ class ReasonsTest < Test::Unit::TestCase
     solver = @pool.create_solver( )
 #    solver.dont_install_recommended = true
     solver.solve( transaction )
-    explain solver, transaction
+    explain solver
   end
   
   
@@ -244,7 +244,7 @@ class ReasonsTest < Test::Unit::TestCase
     @pool.prepare
     solver = @pool.create_solver( )
     solver.solve( transaction )
-    explain solver, transaction
+    explain solver
   end
 
   
@@ -266,7 +266,7 @@ class ReasonsTest < Test::Unit::TestCase
     @pool.prepare
     solver = @pool.create_solver( )
     solver.solve( transaction )
-    explain solver, transaction
+    explain solver
   end
   
   
@@ -291,6 +291,6 @@ class ReasonsTest < Test::Unit::TestCase
     solver.allow_uninstall = true
     solver.solve( transaction )
 
-    explain solver, transaction
+    explain solver
   end
 end

@@ -848,17 +848,6 @@ typedef struct solver {} Solver;
     return solver_calc_installsizechange($self);
   }
 
-  /*
-   * Document-method: explain
-   *
-   * Explain a decision
-   *
-   * returns 4-element Array [<SOLVER_PROBLEM_xxx>, Relation, Solvable, Solvable]
-   *
-   * call-seq:
-   *  solver.explain(transaction, decision) -> [<SOLVER_PROBLEM_xxx>, Relation, Solvable, Solvable]
-   *
-   */
 #if defined(SWIGRUBY)
   VALUE
 #endif
@@ -868,13 +857,24 @@ typedef struct solver {} Solver;
 #if defined(SWIGPERL)
   SV *
 #endif
-  __type explain(Transaction *t, Decision *decision)
+  /*
+   * Explain a decision
+   *
+   * returns 4-element Array [<SOLVER_PROBLEM_xxx>, Relation, Solvable, Solvable]
+   *
+   * *OBSOLETE*: Use Decision.explain instead
+   *
+   * call-seq:
+   *  solver.explain(transaction, decision) -> [<SOLVER_PROBLEM_xxx>, Relation, Solvable, Solvable]
+   *
+   */
+  __type explain(Transaction *unused, Decision *decision)
   {
     Swig_Type result = Swig_Null;
     Id rule = decision->rule - $self->rules;
     if (rule > 0) {
       Id depp = 0, sourcep = 0, targetp = 0;
-      SolverProbleminfo pi = solver_problemruleinfo($self, &(t->queue), rule, &depp, &sourcep, &targetp);
+      SolverProbleminfo pi = solver_ruleinfo($self, rule, &sourcep, &targetp, &depp);
       result = Swig_Array();
 /*      fprintf(stderr, "Rule %d: [pi %d, rel %d, source %d, target %d]\n", rule, pi, depp, sourcep, targetp); */
       Swig_Append(result, Swig_Int(pi));
