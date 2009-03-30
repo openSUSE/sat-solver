@@ -60,9 +60,19 @@ class RepoTest < Test::Unit::TestCase
     pool.arch = "i686"
     solvpath = Pathname( File.dirname( __FILE__ ) ) + Pathname( "../../testdata" ) + "os11-biarch.solv"
     repo = pool.add_solv( solvpath )
-    repo.each { |s|
-      puts s
-    }
+#    repo.each { |s|
+#      assert s
+#    }
     assert true
+  end
+  def test_attr
+    pool = Satsolver::Pool.new
+    assert pool
+    pool.arch = "i686"
+    solvpath = Pathname( File.dirname( __FILE__ ) ) + Pathname( "../../testdata" ) + "timestamp.solv"
+    repo = pool.add_solv( solvpath )
+    val = repo.attr("repository:timestamp")
+    puts "timestamp = #{val}"
+    assert val == repo["repository:timestamp"]
   end
 end
