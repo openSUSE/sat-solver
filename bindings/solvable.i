@@ -368,22 +368,38 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
   /* %rename is rejected by swig for [] */
   %alias attr "[]";
   /*
-   * Attribute accessor
+   * Attribute accessor.
+   *
+   * It takes either a string or a symbol and returns
+   * the value of the attribute.
+   *
+   * If its a symbol, all underline characters are converted
+   * to colons. E.g. +:solvable_installsize+ -> +"solvable:installsize"+
+   *
+   * A +ValueError+ exception is raised if the attribute
+   * name does not exist.
+   *
+   * +nil+ is returned if the attribute name exists but is not set for
+   * the solvable.
+   *
    *
    * call-seq:
    *  solvable["solvable:installsize"] -> VALUE
    *  solvable.attr("solvable:installsize") -> VALUE
+   *  solvable.attr(:solvable_installsize) -> VALUE
    *
    */
   VALUE attr( VALUE attrname )
+  {
 #endif
 #if defined(SWIGPYTHON)
   PyObject *attr( const char *name )
+  {
 #endif
 #if defined(SWIGPERL)
   SV *attr( const char *name )
-#endif
   {
+#endif
     Swig_Type result = Swig_Null;
     Id key;
     Solvable *s;
@@ -425,6 +441,7 @@ fail:
 #endif
     return result;
   }
+
 
   /*
    * iterate over all attributes
