@@ -1,4 +1,3 @@
-%{
 /*
  Document-module: Satsolver
  =About Satsolver
@@ -37,7 +36,6 @@
  
 */
 
-%}
 
 %module satsolver
 %feature("autodoc","1");
