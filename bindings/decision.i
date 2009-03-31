@@ -71,5 +71,41 @@ typedef struct _Decision {} Decision;
       return $self->rule;
     return NULL;
   }
+
+#if defined(SWIGRUBY)
+  VALUE
+#endif
+#if defined(SWIGPYTHON)
+  PyObject *
+#endif
+#if defined(SWIGPERL)
+  SV *
+#endif
+  /*
+   * Explain a decision
+   *
+   * returns 4-element Array [<SOLVER_PROBLEM_xxx>, Relation, Solvable, Solvable]
+   *
+   * call-seq:
+   *  decision.explain -> [<SOLVER_PROBLEM_xxx>, Relation, Solvable, Solvable]
+   *
+   */
+  __type explain()
+  {
+    Swig_Type result = Swig_Null;
+    Solver *solver = $self->solver;
+    Id rule = $self->rule - solver->rules;
+    if (rule > 0) {
+      Id depp = 0, sourcep = 0, targetp = 0;
+      SolverProbleminfo pi = solver_ruleinfo(solver, rule, &sourcep, &targetp, &depp);
+      result = Swig_Array();
+/*      fprintf(stderr, "Rule %d: [pi %d, rel %d, source %d, target %d]\n", rule, pi, depp, sourcep, targetp); */
+      Swig_Append(result, Swig_Int(pi));
+      Swig_Append(result, SWIG_NewPointerObj((void*)relation_new(solver->pool, depp), SWIGTYPE_p__Relation, 0));
+      Swig_Append(result, SWIG_NewPointerObj((void*)xsolvable_new(solver->pool, sourcep), SWIGTYPE_p__Solvable, 0));
+      Swig_Append(result, SWIG_NewPointerObj((void*)xsolvable_new(solver->pool, targetp), SWIGTYPE_p__Solvable, 0));
+    }
+    return result;
+  }
 }
 

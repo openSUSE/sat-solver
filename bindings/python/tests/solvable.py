@@ -47,7 +47,7 @@ class TestSequenceFunctions(unittest.TestCase):
   def test_deps(self):
     i = 0
     for s in self.pool:
-      print s
+      print s, s.location()
 #      show_dep( "Provides", s.provides())
 #      show_dep( "Requires", s.requires())
 #      show_dep( "Obsoletes", s.obsoletes())

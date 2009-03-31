@@ -61,6 +61,7 @@ typedef struct _Dataiterator {} Dataiterator;
   %constant int SEARCH_FILES = SEARCH_FILES;
 
   /*
+   * :nodoc:
    * Complete Dataiterator constructor, to be used via %python in Swig
    */
 

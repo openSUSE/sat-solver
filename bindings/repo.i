@@ -300,4 +300,86 @@ typedef struct _Repo {} Repo;
     swig_dataiterator_free(di);
   }
 #endif
+
+  /*
+   * access attribute via []
+   */
+
+#if defined(SWIGRUBY)
+  /* %rename is rejected by swig for [] */
+  %alias attr "[]";
+  /*
+   * Attribute accessor.
+   *
+   * It takes either a string or a symbol and returns
+   * the value of the attribute.
+   *
+   * If its a symbol, all underline characters are converted
+   * to colons. E.g. +:solvable_installsize+ -> +"solvable:installsize"+
+   *
+   * A +ValueError+ exception is raised if the attribute
+   * name does not exist.
+   *
+   * +nil+ is returned if the attribute name exists but is not set for
+   * the solvable.
+   *
+   *
+   * call-seq:
+   *  repo["repository:timestamp"] -> VALUE
+   *  repo.attr("repository:timestamp") -> VALUE
+   *  repo.attr(:repository_timestamp) -> VALUE
+   *
+   */
+  VALUE attr( VALUE attrname )
+  {
+#endif
+#if defined(SWIGPYTHON)
+  PyObject *attr( const char *name )
+  {
+#endif
+#if defined(SWIGPERL)
+  SV *attr( const char *name )
+  {
+#endif
+    Swig_Type result = Swig_Null;
+    Id key;
+    Dataiterator di;
+#if defined(SWIGRUBY)
+    char *name;
+
+    if (SYMBOL_P(attrname)) {
+      char *colon;
+      name = (char *)rb_id2name( SYM2ID( attrname ) );
+      colon = name;
+      while ((colon = strchr( colon, '_'))) {
+        *colon++ = ':';
+      }
+    }
+    else
+      name = StringValuePtr( attrname );
+#endif
+    if (!name)
+      SWIG_exception( SWIG_ValueError, "Attribute name missing" );
+
+    /* key existing in pool ? */
+    key = str2id( $self->pool, name, 0);
+    if (key == ID_NULL)
+      SWIG_exception( SWIG_ValueError, "No such attribute name" );
+
+    dataiterator_init(&di, $self->pool, $self, SOLVID_META, key, 0, 0);
+    if (dataiterator_step(&di))
+    {
+      result = dataiterator_value( &di );
+    }
+
+#if defined(SWIGPYTHON) || defined(SWIGPERL)/* needed for SWIG_Exception */
+fail:
+#endif
+#if defined(SWIGPYTHON)
+    Py_INCREF(result);
+#endif
+    return result;
+  }
+
+
 }

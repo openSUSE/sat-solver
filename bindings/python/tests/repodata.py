@@ -16,7 +16,7 @@ class TestSequenceFunctions(unittest.TestCase):
     pool = satsolver.Pool()
     assert pool
     pool.set_arch("x86_64")
-    repo = pool.add_solv( "os11-biarch.solv" )
+    repo = pool.add_solv( "../../testdata/os11-biarch.solv" )
     repo.set_name( "openSUSE 11.0 Beta3 BiArch" )
     print "Repo ", repo.name(), " loaded with ", repo.size(), " solvables"
     
@@ -31,13 +31,13 @@ class TestSequenceFunctions(unittest.TestCase):
     repodata = repo.data(0)
     assert repodata
     
-    print "Repodata is at ", repodata.location(), " with ", repodata.keysize(), " keys"
+    print "Repodata has ", repodata.size(), " keys"
     for k in repodata.keys():
         print "  Key ", k.name(), " is ", k.type().__str__(), "[", k.type_id(), "] with ", k.size(), " bytes"
     
     i = 0;
     for s in repo:
-      print "Solvable %s: group %s, time %s, downloadsize %s, installsize %s" % (s, s.attr('solvable:group'), s.attr('solvable:buildtime'), s.attr('solvable:downloadsize'), s.attr('solvable:installsize'))
+      print "Solvable %s: mediadir %s group %s, time %s, downloadsize %s, installsize %s" % (s, s.attr('solvable:mediadir'), s.attr('solvable:group'), s.attr('solvable:buildtime'), s.attr('solvable:downloadsize'), s.attr('solvable:installsize'))
       i += 1;
       if i == 10:
           break

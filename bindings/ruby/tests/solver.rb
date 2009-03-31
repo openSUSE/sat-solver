@@ -25,6 +25,8 @@ class SolverTest < Test::Unit::TestCase
     assert solver.allow_uninstall
     pool.prepare
     solver.solve( transaction )
+    assert solver.sizechange
+    puts "Size change #{solver.sizechange}"
     solver.each_to_install { |s|
       puts "Install #{s}"
     }

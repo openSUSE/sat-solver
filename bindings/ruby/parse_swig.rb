@@ -1,4 +1,3 @@
-#
 # parse_swig.rb
 #
 # A rdoc parser for SWIG .i files
@@ -55,6 +54,18 @@ module RDoc
     attr_accessor :body
   end
   
+  class NormalClass
+    attr_accessor :extend_name
+  end
+
+  class NormalModule
+    attr_accessor :extend_name
+  end
+
+  class AnyMethod
+    attr_accessor :orig_name
+  end
+  
   class Swig_Parser
 
     attr_accessor :progress
@@ -87,6 +98,7 @@ module RDoc
 	remove_commented_out_lines
 	if module_name = do_module
 	  @@module_name = module_name
+	  do_methods module_name
 	else
 	  do_classes
 	  @classes.keys.each do |c|
@@ -158,10 +170,12 @@ module RDoc
       end
       cm.record_location(enclosure.toplevel)
       cm.body = options[:content]
-
+      cm.extend_name = options[:extend_name] || class_name
+      
       find_class_comment(class_name, cm)
       @classes[class_name] = cm
       @known_classes[class_name] = cm.full_name
+      cm
     end
 
     ##
@@ -179,10 +193,10 @@ module RDoc
     #
 
     def find_class_comment(class_name, class_meth)
-#      puts "find_class_comment(#{class_name}, #{class_meth})"
+#      puts "find_class_comment(#{class_name}, #{class_meth.extend_name})"
       comment = nil
       if @body =~ %r{((?>/\*.*?\*/\s+))
-                     %extend\s+#{class_name}\s*\{}xm
+                     %extend\s+#{class_meth.extend_name}\s*\{}xm
         comment = $1
       elsif @body =~ %r{Document-(class|module):\s#{class_name}\s*?\n((?>.*?\*/))}m
         comment = $2
@@ -203,6 +217,7 @@ module RDoc
 	module_name = name.to_s
 	module_name.capitalize! unless module_name[0,1] =~ /[A-Z_]/
 	handle_class_module("module", module_name)
+	break
       end
       module_name
     end
@@ -221,30 +236,30 @@ module RDoc
       extends = Hash.new
       @body.scan(/^%rename\s*\(([^\"\)]+)\)\s+([_\w]+);/) do |class_name, struct_name|
 #	puts "rename #{class_name} -> #{struct_name}"
-	extend_name = struct_name
+	extend_name = struct_name.to_s
 	@body.scan(/typedef\s+struct\s+#{struct_name}\s*\{[^}]*\}\s*(\w+);/) do |ename|
-	  extend_name = ename
+	  extend_name = ename.to_s
 	end
 	
 #	puts "extend #{extend_name}, class #{class_name}, struct #{struct_name}"
 	# find the corresponding '%extend' directive
-	@body.scan(/^%extend\s+#{extend_name}\s*\{(.*)\}/mx) do |content|
+	@body.scan(/^%extend\s+(#{extend_name}|#{struct_name})\s*\{(.*)\}/mx) do |name,content|
 	  # now check if we have multiple %extend, the regexp above is greedy and will match all of them
 	  while content.to_s =~ /^%extend/
 	    content = $` # discard %extend and everything behind
 	  end
-	  extends[extend_name.to_s] = true
+	  extends[name] = true
 	  cn = class_name.to_s
 	  cn.capitalize! unless cn[0,1] =~ /[A-Z_]/
-	  swig_class = handle_class_module("class", cn, :parent => "rb_cObject", :content => content.to_s)
+	  swig_class = handle_class_module("class", cn, :parent => "rb_cObject", :content => content.to_s, :extend_name => name)
 	end
       end
       @body.scan(/^%extend\s*(\w+)\s*\{(.*)\}/mx) do |class_name,content|
 	cn = class_name.to_s
 	unless extends[cn]
-	  puts "Class #{cn}"
+#	  puts "Class #{cn}"
 	  cn.capitalize! unless cn[0,1] =~ /[A-Z_]/
-	  handle_class_module("class", cn, :parent => "rb_cObject", :content => content)
+	  swig_class = handle_class_module("class", cn, :parent => "rb_cObject", :content => content)
 	  extends[cn] = true
 	end
       end
@@ -275,10 +290,18 @@ module RDoc
     # and honor
     #  %rename "+new_name+" +old_name+ ;
     #
+    # Module level methods have 'static' prototypes of C functions.
+    # e.g. static type name(args);
+    #
+
     def do_methods class_name
       renames = Hash.new
       c = find_class class_name
-      c.body.scan(%r{%rename\s*\(\s*"([^"]+)"\s*\)\s*(\w+)}m) do #"
+
+      body = c.body || @body
+      extend_name = c.extend_name
+
+      body.scan(%r{%rename\s*\(\s*"([^"]+)"\s*\)\s*(\w+)}m) do #"
         |meth_name,orig_name|
 	meth_name = meth_name.to_s
 	orig_name = orig_name.to_s
@@ -288,20 +311,29 @@ module RDoc
       #   <type> [*]? <name> ( <args> ) {
       #
 #      puts "#{module_name}::#{class_name} methods ?"
-      c = find_class class_name
-      # Find constructor as 'new'
-      c.body.scan(%r{^\s+#{class_name}\s*\(([^\)]*)\)\s*\{}m) do
+
+      # Find class constructor as 'new'
+      body.scan(%r{^\s+#{extend_name}\s*\(([^\)]*)\)\s*\{}m) do
         |args|
-        handle_method(class_name, class_name, "initialize", nil, (args.to_s.split(",")||[]).size)
-      end
-      c.body.scan(%r{^\s+((const\s+)?\w+)(\W+)(\w+)\s*\(([^\)]*)\)\s*\{}m) do
-        |type,const,pointer,meth_name,args|
-	next unless meth_name
-	type = "string" if type =~ /char/ && pointer =~ /\*/
-#	puts "-> #{const}:#{type}:#{pointer}:#{meth_name} ( #{args} )\n#{$&}\n\n"
-	meth_name = meth_name.to_s
+        handle_method(class_name, class_name, "initialize", nil, (args.to_s.split(",")||[]).size, nil)
+      end if extend_name
+      
+      body.scan(%r{static\s+((const\s+)?\w+)([\s\*]+)(\w+)\s*\(([^\)]*)\)\s*;}) do
+        |const,type,pointer,meth_name,args|
+#	puts "-> const #{const}:type #{type}:pointer #{pointer}:name #{meth_name} (args  #{args} )\n#{$&}\n\n"
+	meth_name = orig_name = meth_name.to_s
 	meth_name = renames[meth_name] || meth_name
-        handle_method(type, class_name, meth_name, nil, (args.split(",")||[]).size)
+        handle_method(type, class_name||@@module_name, meth_name, nil, (args.split(",")||[]).size, orig_name)
+      end
+      body.scan(%r{((const\s+)?\w+)([ \t\*]+)(\w+)\s*\(([^\)]*)\)\s*\{}m) do
+        |const,type,pointer,meth_name,args|
+	next unless meth_name
+	next if meth_name =~ /~/
+	type = "string" if type =~ /char/ && pointer =~ /\*/
+#	puts "-> const #{const}:type #{type}:pointer #{pointer}:name #{meth_name} (args  #{args} )\n#{$&}\n\n" if meth_name == "if"
+	meth_name = orig_name = meth_name.to_s
+	meth_name = renames[meth_name] || meth_name
+        handle_method(type, class_name, meth_name, nil, (args.split(",")||[]).size, orig_name)
       end
 
    end
@@ -433,41 +465,42 @@ module RDoc
     ###########################################################
 
     def handle_method(type, class_name, meth_name, 
-                      meth_body, param_count)
+                      meth_body, param_count, orig_name)
       progress(".")
-      
 
       class_obj  = find_class(class_name)
-      if class_obj
-	seen_before = class_obj.method_list.find { |meth| meth.name == meth_name }
-	return if seen_before
-	@stats.num_methods += 1
-        if meth_name == "initialize"
-          meth_name = "new"
-          type = "singleton_method"
-        end
-        meth_obj = AnyMethod.new("", meth_name)
-        meth_obj.singleton =
-	  %w{singleton_method module_function}.include?(type) 
-        
-        p_count = (Integer(param_count) rescue -1)
-        
-        if p_count < 0
-          meth_obj.params = "(...)"
-        elsif p_count == 0
-          meth_obj.params = "()"
-        else
-          meth_obj.params = "(" +
-                            (1..p_count).map{|i| "p#{i}"}.join(", ") + 
-                                                ")"
-        end
-
-	body = find_class(class_name).body
-
-        if find_body(class_name, meth_name, meth_obj, body) and meth_obj.document_self
-          class_obj.add_method(meth_obj)
-        end
+      return nil unless class_obj
+      
+      seen_before = class_obj.method_list.find { |meth| meth.name == meth_name }
+      return nil if seen_before
+      
+      @stats.num_methods += 1
+      if meth_name == "initialize"
+	meth_name = "new"
+	type = "singleton_method"
       end
+      meth_obj = AnyMethod.new("", meth_name)
+      meth_obj.singleton = %w{singleton_method module_function}.include?(type) 
+      meth_obj.orig_name = orig_name || meth_name
+      
+      p_count = (Integer(param_count) rescue -1)
+      
+      if p_count < 0
+	meth_obj.params = "(...)"
+      elsif p_count == 0
+	meth_obj.params = "()"
+      else
+	meth_obj.params = "(" +
+                            (1..p_count).map{|i| "p#{i}"}.join(", ") + 
+			    ")"
+      end
+      
+      body = find_class(class_name).body || @body
+      
+      if find_body(class_name, meth_name, meth_obj, body) and meth_obj.document_self
+	class_obj.add_method(meth_obj)
+      end
+      meth_obj
     end
     
     ############################################################
@@ -475,7 +508,7 @@ module RDoc
     # Find the C code corresponding to a Ruby method
     def find_body(class_name, meth_name, meth_obj, body, quiet = false)
       case body
-      when %r{((?>/\*.*?\*/\s*))(?:const\s+)?(\w+)[\s\*]+#{meth_name}
+      when %r{((?>/\*.*?\*/\s*))(?:static\s+)?(?:const\s+)?(\w+)[\s\*]+#{meth_obj.orig_name || meth_name}
               \s*(\(.*?\)).*?^}xm
         comment, params = $1, $2
         body_text = $&
@@ -515,12 +548,17 @@ module RDoc
           return false
         end
       else
-        if (meth_name == "new") && body =~ %r{((?>/\*.*?\*/\s*))\s*#{class_name}\s*(\([^)]*\))}xm
-	  comment = $1
-	  find_modifiers(comment, meth_obj)
-	  meth_obj.comment = mangle_comment(comment) + meth_obj.comment
-	  # No body, but might still have an override comment
-	  comment = find_override_comment(meth_obj.name)
+
+        if (meth_name == "new")
+	  # find constructor definition
+	  extend_name = find_class(class_name).extend_name
+	  if body =~ %r{((?>/\*.*?\*/\s*))\s*#{extend_name}\s*(\([^)]*\))}xm
+	    comment = $1
+	    find_modifiers(comment, meth_obj)
+	    meth_obj.comment = mangle_comment(comment) + meth_obj.comment
+	    # No body, but might still have an override comment
+	    comment = find_override_comment(meth_obj.name)
+	  end
 	end
         if comment
           find_modifiers(comment, meth_obj)
@@ -610,6 +648,12 @@ module RDoc
     # Removes #ifdefs that would otherwise confuse us
     
     def handle_ifdefs_in(body)
+      # remove all %{...%}
+      while body =~ /^%\{/
+	before = $`          # keep whats before %{
+	$' =~ /^%\}/         # scan the rest for %} '
+	body = before + $'   # keep whats after %} '
+      end
       body.gsub(/^#ifdef HAVE_PROTOTYPES.*?#else.*?\n(.*?)#endif.*?\n/m) { $1 }
     end
     

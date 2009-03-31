@@ -1,4 +1,3 @@
-%{
 /*
  Document-module: Satsolver
  =About Satsolver
@@ -37,7 +36,6 @@
  
 */
 
-%}
 
 %module satsolver
 %feature("autodoc","1");
@@ -45,6 +43,8 @@
 #if defined(SWIGRUBY)
 %include <ruby.swg>
 #endif
+
+#define __type
 
 %{
 
