@@ -7,6 +7,8 @@ package kaffeine-0.8.4-0.pm.3.i686 requires libxine1 >= 1.1.5, but none of the p
 - allow architecture change of kaffeine-0.8.4-0.pm.3.i686 to kaffeine-0.8.5-31.i586
 
 - do not deinstall libxine1-1.1.6-0.pm.0.i686
+- do not deinstall lame-3.96.1-2.i586
+- do not install ImageMagick-6.3.5.3-26.i586
 - do not install DirectFB-1.0.0-63.i586
 - do not install kernel-default-2.6.22.5-26.i586
 - do not install libjasper-1.900.1-42.i586
