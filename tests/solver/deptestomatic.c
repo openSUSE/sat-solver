@@ -51,30 +51,31 @@ static Pool *decision_data;
 
 /*-----------------------------------------------------------------*/
 
-/*
- *   sorting queue by name
- */
-
 static int
-decision_sortcmp(const void *ap, const void *bp)
+transaction_sortcmp(const void *ap, const void *bp)
 {
   Pool *pool = decision_data;
   int r;
-  Id a = *(Id *)ap;
-  Id b = *(Id *)bp;
-  if (a<0) a = -a;
-  if (b<0) b = -b;
-  if (a == SYSTEMSOLVABLE
-      || b == SYSTEMSOLVABLE)
-      return 0;
-  r = pool->solvables[a].name - pool->solvables[b].name;
+  Id a = ((Id *)ap)[1];
+  Id b = ((Id *)bp)[1];
+  Solvable *sa = pool->solvables + a;
+  Solvable *sb = pool->solvables + b;
+
+  if (sa->repo != sb->repo && pool->installed)
+    {
+      if (sa->repo == pool->installed)
+	return -1;
+      if (sb->repo == pool->installed)
+	return 1;
+    }
+  r = sa->name - sb->name;
   if (r)
     {
       const char *na, *nb;
       /* different names. We use real strcmp here so that the result
        * is not depending on some random solvable order */
-      na = id2str(pool, pool->solvables[a].name);
-      nb = id2str(pool, pool->solvables[b].name);
+      na = id2str(pool, sa->name);
+      nb = id2str(pool, sb->name);
       /* bring patterns to the front */
       if (!strncmp(na, "pattern:", 8))
 	{
@@ -1603,8 +1604,6 @@ static void
 rc_printdecisions(Solver *solv, Queue *job)
 {
   Pool *pool = solv->pool;
-  Repo *installed = solv->installed;
-  Id p, *obsoletesmap;
   int i;
   Solvable *s;
 
@@ -1620,110 +1619,59 @@ rc_printdecisions(Solver *solv, Queue *job)
 	}
     }
 
-  obsoletesmap = solver_create_decisions_obsoletesmap(solv);
 
   printf(">!> Solution #1:\n");
 
   int installs = 0, uninstalls = 0, upgrades = 0;
   
-  /* print solvables to be erased */
+  decision_data = solv->pool;
+  qsort(solv->transaction.elements, solv->transaction.count / 2, 2 * sizeof(Id), transaction_sortcmp);
 
-  if (installed)
+  for (i = 0; i < solv->transaction.count; i += 2)
     {
-      for (i = installed->start; i < installed->end; i++)
+      s = pool->solvables + solv->transaction.elements[i + 1];
+      switch(solv->transaction.elements[i])
 	{
-	  s = pool->solvables + i;
-	  if (s->repo != installed)
-	    continue;
-	  if (solv->decisionmap[i] >= 0)
-	    continue;
-	  if (obsoletesmap[i])
-	    continue;
+	case SOLVER_TRANSACTION_INSTALL:
+	case SOLVER_TRANSACTION_MULTIINSTALL:
+	case SOLVER_TRANSACTION_RENAME:
+          printf(">!> install %s-%s%s", id2str(pool, s->name), id2rc(solv, s->evr), id2str(pool, s->evr));
+	  if (!redcarpet)
+            printf(".%s", id2str(pool, s->arch));
+	  if (s->repo && strcmp(repo_name(s->repo), "locales"))
+	    printf("[%s]", repo_name(s->repo));
+	  printf("\n");
+	  installs++;
+	  break;
+	case SOLVER_TRANSACTION_ERASE:
+	case SOLVER_TRANSACTION_OBSOLETED:
 	  if (redcarpet)
 	    printf(">!> remove  %s-%s%s\n", id2str(pool, s->name), id2rc(solv, s->evr), id2str(pool, s->evr));
 	  else
 	    printf(">!> remove  %s-%s.%s\n", id2str(pool, s->name), id2str(pool, s->evr), id2str(pool, s->arch));
 	  uninstalls++;
-	}
-    }
-
-  /* print solvables to be installed */
-
-  /* sorting */
-  decision_data = solv->pool;
-  qsort(solv->decisionq.elements, solv->decisionq.count, sizeof(Id), decision_sortcmp);
-
-  for (i = 0; i < solv->decisionq.count; i++)
-    {
-      int j;
-      p = solv->decisionq.elements[i];
-      if (p < 0)
-	{
-	  if (solv->decisionq_why.elements[i] == 0 && solv->decisionmap[-p] == -1)
-	    {
-	      s = pool->solvables - p;
-	      printf(">!> !unflag %s-%s.%s[%s]\n", id2str(pool, s->name), id2str(pool, s->evr), id2str(pool, s->arch), repo_name(s->repo));
-	    }
-	  continue;
-	}
-      if (p == SYSTEMSOLVABLE)
-	continue;
-      s = pool->solvables + p;
-      if (installed && s->repo == installed)
-	continue;
-
-      if (!obsoletesmap[p])
-        {
-	  printf(">!> ");
-          printf("install %s-%s%s", id2str(pool, s->name), id2rc(solv, s->evr), id2str(pool, s->evr));
-	  if (!redcarpet)
-            printf(".%s", id2str(pool, s->arch));
-	  installs++;
-        }
-      else
-	{
-	  Solvable *f, *fn = 0;
-	  for (j = installed->start; j < installed->end; j++)
-	    {
-	      if (obsoletesmap[j] != p)
-		continue;
-	      f = pool->solvables + j;
-	      if (fn || f->name != s->name)
-		{
-		  if (redcarpet)
-		    printf(">!> remove  %s-%s%s\n", id2str(pool, f->name), id2rc(solv, f->evr), id2str(pool, f->evr));
-		  else
-		    printf(">!> remove  %s-%s.%s\n", id2str(pool, f->name), id2str(pool, f->evr), id2str(pool, f->arch));
-		  uninstalls++;
-		}
-	      else
-		fn = f;
-	    }
-	  if (!fn)
-	    {
-	      printf(">!> install %s-%s%s", id2str(pool, s->name), id2rc(solv, s->evr), id2str(pool, s->evr));
-	      if (!redcarpet)
-	        printf(".%s", id2str(pool, s->arch));
-	      installs++;
-	    }
+	  break;
+	case SOLVER_TRANSACTION_REINSTALLED:
+	case SOLVER_TRANSACTION_DOWNGRADED:
+	case SOLVER_TRANSACTION_CHANGED:
+	case SOLVER_TRANSACTION_UPGRADED:
+	  if (redcarpet)
+	    printf(">!> upgrade %s-%s => ", id2str(pool, s->name), id2str(pool, s->evr));
 	  else
-	    {
-	      if (redcarpet)
-	        printf(">!> upgrade %s-%s => %s-%s%s", id2str(pool, fn->name), id2str(pool, fn->evr), id2str(pool, s->name), id2rc(solv, s->evr), id2str(pool, s->evr));
-	      else
-	        printf(">!> upgrade %s-%s.%s => %s-%s.%s", id2str(pool, fn->name), id2str(pool, fn->evr), id2str(pool, fn->arch), id2str(pool, s->name), id2str(pool, s->evr), id2str(pool, s->arch));
-	      upgrades++;
-	    }
+	    printf(">!> upgrade %s-%s.%s => ", id2str(pool, s->name), id2str(pool, s->evr), id2str(pool, s->arch));
+	  s = pool->solvables + solver_transaction_pkg(solv, solv->transaction.elements[i + 1]);
+	  if (redcarpet)
+	    printf("%s-%s%s", id2str(pool, s->name), id2rc(solv, s->evr), id2str(pool, s->evr));
+	  else
+	    printf("%s-%s.%s", id2str(pool, s->name), id2str(pool, s->evr), id2str(pool, s->arch));
+	  if (s->repo && strcmp(repo_name(s->repo), "locales"))
+	    printf("[%s]", repo_name(s->repo));
+	  printf("\n");
+	  upgrades++;
+	  break;
 	}
-      Repo *repo = s->repo;
-      if (repo && strcmp(repo_name(repo), "locales"))
-	printf("[%s]", repo_name(repo));
-      printf("\n");
     }
-
   printf(">!> installs=%d, upgrades=%d, uninstalls=%d\n", installs, upgrades, uninstalls);
-  
-  free(obsoletesmap);
 }
 
 /*-------------------------------------------------------------------*/
