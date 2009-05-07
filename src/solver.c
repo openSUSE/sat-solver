@@ -2849,7 +2849,7 @@ run_solver(Solver *solv, int disablerules, int doweak)
 	      queue_free(&dqs);
 	      return;
 	    }
-	  if (level < systemlevel)
+	  if (level < systemlevel || level == 1)
 	    break;
 	  n = 0;
 	} /* for(), decide */
