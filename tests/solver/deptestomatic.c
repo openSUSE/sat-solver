@@ -47,14 +47,12 @@ static void rc_printdecisions(Solver *solv, Queue *job);
 #define MAXNAMELEN 100
 
 
-static Pool *decision_data;
-
 /*-----------------------------------------------------------------*/
 
 static int
-transaction_sortcmp(const void *ap, const void *bp)
+transaction_sortcmp(const void *ap, const void *bp, void *dp)
 {
-  Pool *pool = decision_data;
+  Pool *pool = dp;
   int r;
   Id a = ((Id *)ap)[1];
   Id b = ((Id *)bp)[1];
@@ -663,19 +661,19 @@ add_repo( Parsedata *pd, const char *name, const char *file )
       err( "add_repo, no filename!" );
       return NULL;
     }
-  char solvname[256];
+  char solvname[256 + 5];
   int l = strlen( file );
   if (l > 255 )
     {
       err( "add_repo, filename too long!" );
       return NULL;
     }
-
+  
   const char *ptr = file + l - 1;
   while (*ptr)
     {
       if (ptr == file)
-	break;
+       break;
       if (*ptr == '.')
 	{
 	  if (!strncmp( ptr, ".xml", 4 )) 
@@ -686,6 +684,7 @@ add_repo( Parsedata *pd, const char *name, const char *file )
 	}
       --ptr;
     }
+
   strncpy( solvname, file, l );
   strcpy( solvname + l, ".solv" );
 
@@ -1441,7 +1440,7 @@ printf("hardware %s\n", dir);
 
 
 static void
-rc_printdownloadsize(struct solver *solv)
+rc_printdownloadsize(Solver *solv)
 {
   int i;
   Solvable *s;
@@ -1534,6 +1533,13 @@ endElement( void *userData, const char *name )
 	      rc_printdownloadsize(solv);
 	    }
 	  rc_printdecisions(solv, &pd->trials);
+#if 0
+	  if (1)
+	    {
+	      extern void solver_order_transaction(Solver *solv);
+	      solver_order_transaction(solv);
+	    }
+#endif
 	}
       // clean up
 
@@ -1623,18 +1629,20 @@ rc_printdecisions(Solver *solv, Queue *job)
   printf(">!> Solution #1:\n");
 
   int installs = 0, uninstalls = 0, upgrades = 0;
+  Id type, p;
   
-  decision_data = solv->pool;
-  qsort(solv->transaction.elements, solv->transaction.count / 2, 2 * sizeof(Id), transaction_sortcmp);
+  sat_sort(solv->transaction.elements, solv->transaction.count / 2, 2 * sizeof(Id), transaction_sortcmp, pool);
 
   for (i = 0; i < solv->transaction.count; i += 2)
     {
+      type = solv->transaction.elements[i];
+      p = solv->transaction.elements[i + 1];
       s = pool->solvables + solv->transaction.elements[i + 1];
-      switch(solv->transaction.elements[i])
+      type = solver_transaction_filter(solv, type, p, 0);
+      switch(type)
 	{
 	case SOLVER_TRANSACTION_INSTALL:
 	case SOLVER_TRANSACTION_MULTIINSTALL:
-	case SOLVER_TRANSACTION_RENAME:
           printf(">!> install %s-%s%s", id2str(pool, s->name), id2rc(solv, s->evr), id2str(pool, s->evr));
 	  if (!redcarpet)
             printf(".%s", id2str(pool, s->arch));
@@ -1644,7 +1652,6 @@ rc_printdecisions(Solver *solv, Queue *job)
 	  installs++;
 	  break;
 	case SOLVER_TRANSACTION_ERASE:
-	case SOLVER_TRANSACTION_OBSOLETED:
 	  if (redcarpet)
 	    printf(">!> remove  %s-%s%s\n", id2str(pool, s->name), id2rc(solv, s->evr), id2str(pool, s->evr));
 	  else
