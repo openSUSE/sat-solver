@@ -22,8 +22,8 @@ my $solver = $pool->create_solver();
 # Create dependencies to provides table
 $pool->prepare();
 
-# Create Transactions
-my $job = $pool->create_transaction();
+# Create Request
+my $job = $pool->create_request();
 
 # Push jobs on Queue
 my $pat = $pool->find("pattern:default") || die;

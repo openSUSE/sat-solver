@@ -2,7 +2,7 @@
  * Document-class: Rule
  *
  * A rule is the internal representation of the _working_ _queue_ of the
- * solver. Each transaction item and each dependency is converted to a
+ * solver. Each job item and each dependency is converted to a
  * rule the solver operates on.
  *
  * Rules are useful to traceback a decision or a problem.

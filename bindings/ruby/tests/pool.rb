@@ -4,7 +4,7 @@
 # It contains all solvables, grouped by Repo(sitorie)s
 # and is needed to create instances of other classes.
 #
-# For Solvable, Repo, Transaction, Solver and Relation,
+# For Solvable, Repo, Request, Solver and Relation,
 # Pool provides create_... methods as counterparts to
 # the instance contructors, all requiring a Pool argument.
 #

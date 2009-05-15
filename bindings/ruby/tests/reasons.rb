@@ -155,12 +155,12 @@ class ReasonsTest < Test::Unit::TestCase
     
     puts "\n---\nB-1.0-0 requires A = 1.0-0"
     
-    transaction = @pool.create_transaction
-    transaction.install( solv2 )
+    request = @pool.create_request
+    request.install( solv2 )
     
     @pool.prepare
     solver = @pool.create_solver( )
-    solver.solve( transaction )
+    solver.solve( request )
     explain solver
   end
   
@@ -175,12 +175,12 @@ class ReasonsTest < Test::Unit::TestCase
     
     puts "\n---\nB-1.0-0 requires a = 42, provided by A-1.0-0"
     
-    transaction = @pool.create_transaction
-    transaction.install( solv2 )
+    request = @pool.create_request
+    request.install( solv2 )
     
     @pool.prepare
     solver = @pool.create_solver( )
-    solver.solve( transaction )
+    solver.solve( request )
     explain solver
   end
   
@@ -197,12 +197,12 @@ class ReasonsTest < Test::Unit::TestCase
     
     puts "\n---\nB-1.0-0 requires a = 42, provided by A-1.0-0 and C-1.0-0"
     
-    transaction = @pool.create_transaction
-    transaction.install( solv2 )
+    request = @pool.create_request
+    request.install( solv2 )
     
     @pool.prepare
     solver = @pool.create_solver( )
-    solver.solve( transaction )
+    solver.solve( request )
     explain solver
   end
   
@@ -213,13 +213,13 @@ class ReasonsTest < Test::Unit::TestCase
     repo.name = "beta5"
 
     puts "\n---\nInstalling bash"
-    transaction = @pool.create_transaction
-    transaction.install( "bash" )
+    request = @pool.create_request
+    request.install( "bash" )
 
     @pool.prepare
     solver = @pool.create_solver( )
 #    solver.dont_install_recommended = true
-    solver.solve( transaction )
+    solver.solve( request )
     explain solver
   end
   
@@ -238,12 +238,12 @@ class ReasonsTest < Test::Unit::TestCase
     
     puts "\n---\nB-1.0-0 conflicts a = 42, provided by installed A-1.0-0"
     
-    transaction = @pool.create_transaction
-    transaction.install( solv2 )
+    request = @pool.create_request
+    request.install( solv2 )
     
     @pool.prepare
     solver = @pool.create_solver( )
-    solver.solve( transaction )
+    solver.solve( request )
     explain solver
   end
 
@@ -260,12 +260,12 @@ class ReasonsTest < Test::Unit::TestCase
     
     puts "\n---\n#{solv2} obsoletes #{rel}, provided by installed #{solv1}"
     
-    transaction = @pool.create_transaction
-    transaction.install( solv2 )
+    request = @pool.create_request
+    request.install( solv2 )
     
     @pool.prepare
     solver = @pool.create_solver( )
-    solver.solve( transaction )
+    solver.solve( request )
     explain solver
   end
   
@@ -283,13 +283,13 @@ class ReasonsTest < Test::Unit::TestCase
     
     @pool.installed = @repo
     
-    transaction = @pool.create_transaction
-    transaction.remove( solv1 )
+    request = @pool.create_request
+    request.remove( solv1 )
     
     @pool.prepare
     solver = @pool.create_solver( )
     solver.allow_uninstall = true
-    solver.solve( transaction )
+    solver.solve( request )
 
     explain solver
   end

@@ -6,36 +6,36 @@
  */
 
 /************************************************
- * Transaction
+ * Request
  *
  * A set of Actions to be solved by the Solver
  *
  */
 
-#ifndef SATSOLVER_TRANSACTION_H
-#define SATSOLVER_TRANSACTION_H
+#ifndef SATSOLVER_REQUEST_H
+#define SATSOLVER_REQUEST_H
 
 #include "job.h"
 
 
-typedef struct _Transaction {
+typedef struct _Request {
   Pool *pool;
   Queue queue;
-} Transaction;
+} Request;
 
 
-Transaction *transaction_new( Pool *pool );
-void transaction_free( Transaction *t );
+Request *request_new( Pool *pool );
+void request_free( Request *t );
 
-void transaction_install_xsolvable( Transaction *t, XSolvable *xs );
-void transaction_remove_xsolvable( Transaction *t, XSolvable *xs );
-void transaction_install_name( Transaction *t, const char *name );
-void transaction_remove_name( Transaction *t, const char *name );
-void transaction_install_relation( Transaction *t, const Relation *rel );
-void transaction_remove_relation( Transaction *t, const Relation *rel );
-int transaction_size( Transaction *t );
-Job *transaction_job_get( Transaction *t, int i );
+void request_install_xsolvable( Request *t, XSolvable *xs );
+void request_remove_xsolvable( Request *t, XSolvable *xs );
+void request_install_name( Request *t, const char *name );
+void request_remove_name( Request *t, const char *name );
+void request_install_relation( Request *t, const Relation *rel );
+void request_remove_relation( Request *t, const Relation *rel );
+int request_size( Request *t );
+Job *request_job_get( Request *t, int i );
 
-void transaction_jobs_iterate( Transaction *t, int (*callback)( const Job *j));
+void request_jobs_iterate( Request *t, int (*callback)( const Job *j));
 
-#endif  /* SATSOLVER_TRANSACTION_H */
+#endif  /* SATSOLVER_REQUEST_H */

@@ -17,7 +17,7 @@ solver.allow_uninstall = true
 solver.fix_system = true
 
 pool.prepare
-solver.solve( pool.create_transaction )
+solver.solve( pool.create_request )
 
 removals = []
 solver.each_to_remove { |s|
@@ -42,7 +42,7 @@ solver.allow_uninstall = true
 solver.fix_system = true
 
 pool.prepare
-solver.solve( pool.create_transaction )
+solver.solve( pool.create_request )
 
 # these shouldn't print anything
 
@@ -67,7 +67,7 @@ solver.update_system = true
 solver.fix_system = true
 
 pool.prepare
-solver.solve( pool.create_transaction )
+solver.solve( pool.create_request )
     
 count = 0
 solver.each_to_install { |s|

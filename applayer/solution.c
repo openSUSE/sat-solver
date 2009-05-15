@@ -11,7 +11,7 @@
  * A possible solution to a Problem.
  *
  * For each reported Problem, the Solver might generate
- * one or more Solutions to make the Transaction solvable.
+ * one or more Solutions to make the Request solvable.
  *
  */
 

@@ -8,7 +8,7 @@
  * solver can operate on. The pool also has designated repository for
  * 'installed' solvables.
  * 
- * Solving is done by creating Transactions and feeding them to the
+ * Solving is done by creating a Request and feeding it to the
  * solver as input. On success (solver.solve() returning 'true'), one can
  * retrieve the Decisions made by the solver (i.e. install this, remove
  * that, update those). On failure, the solver creates a list of
@@ -24,17 +24,17 @@
  *    pool.installed = system
  *    repo = pool.add_solv( "myrepo.solv" )
  *    
- *    transaction = pool.create_transaction
- *    transaction.install( "packageA" )
- *    transaction.install( "packageB" )
- *    transaction.remove( "old_package" )
+ *    request = pool.create_request
+ *    request.install( "packageA" )
+ *    request.install( "packageB" )
+ *    request.remove( "old_package" )
  *
  *    solver = pool.create_solver
  *    solver.allow_uninstall = true
  *    pool.prepare
- *    result = solver.solve( transaction )
+ *    result = solver.solve( request )
  *    if !result
- *      raise "Couldn't solve transaction"
+ *      raise "Couldn't solve request"
  *    end
  *
  *    solver.each_to_install do |s|
@@ -157,7 +157,7 @@ typedef struct solver {} Solver;
    * The normal solver operation tries to install (to update to) the 'best' package,
    * usually the one with the highest version.
    * If allow_downgrade is set, packages may be downgraded in order to
-   * fulfill a transaction or a dependency
+   * fulfill a request or a dependency
    * call-seq:
    *  solver.allow_downgrade -> bool
    *
@@ -250,9 +250,9 @@ typedef struct solver {} Solver;
   /*
    * On package removal, also remove dependant packages.
    *
-   * If removal of a package breaks dependencies, the transaction is
+   * If removal of a package breaks dependencies, the request is
    * usually considered not solvable. The dependencies of installed
-   * packages take precedence over transaction actions.
+   * packages take precedence over request actions.
    *
    *
    * call-seq:
@@ -791,15 +791,15 @@ typedef struct solver {} Solver;
 }
 #endif
   /*
-   * Solve the given Transaction
+   * Solve the given Request
    *
    * Returns +true+ if a solution was found, else +false+.
    *
    * call-seq:
-   *  solver.solve(transaction) -> bool
+   *  solver.solve(request) -> bool
    *
    */
-  int solve( Transaction *t )
+  int solve( Request *t )
   {
     if ($self->covenantq.count) {
       /* FIXME: Honor covenants */
@@ -811,11 +811,11 @@ typedef struct solver {} Solver;
   /*
    * Return the number of decisions after solving.
    *
-   * If its >0, a solution of the Transaction was found.
+   * If its >0, a solution of the Request was found.
    *
-   * If its ==0, and 'Solver.problems?' returns +true+, the Transaction couldn't be solved.
+   * If its ==0, and 'Solver.problems?' returns +true+, the Request couldn't be solved.
    *
-   * If its ==0, and 'Solver.problems?' returns +false+, the Transaction is trivially solved.
+   * If its ==0, and 'Solver.problems?' returns +false+, the Request is trivially solved.
    *
    * call-seq:
    *  solver.decision_count -> int
@@ -865,10 +865,10 @@ typedef struct solver {} Solver;
    * *OBSOLETE*: Use Decision.explain instead
    *
    * call-seq:
-   *  solver.explain(transaction, decision) -> [<SOLVER_PROBLEM_xxx>, Relation, Solvable, Solvable]
+   *  solver.explain(request, decision) -> [<SOLVER_PROBLEM_xxx>, Relation, Solvable, Solvable]
    *
    */
-  __type explain(Transaction *unused, Decision *decision)
+  __type explain(Request *unused, Decision *decision)
   {
     Swig_Type result = Swig_Null;
     Id rule = decision->rule - $self->rules;
@@ -911,10 +911,10 @@ typedef struct solver {} Solver;
    * Iterate over problems.
    *
    * call-seq:
-   *  solver.each_problem(transaction) { |problem| ... }
+   *  solver.each_problem(request) { |problem| ... }
    *
    */
-  void each_problem( Transaction *t )
+  void each_problem( Request *t )
   { return solver_problems_iterate( $self, t, solver_problems_iterate_callback, NULL ); }
 
   /*

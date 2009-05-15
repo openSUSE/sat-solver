@@ -15,16 +15,16 @@ class SolverTest < Test::Unit::TestCase
     repo = pool.add_solv( "../../../testsuite/data.libzypp/basic-exercises/exercise-1-packages.solv" )
     repo.name = "test"
     
-    transaction = Satsolver::Transaction.new( pool )
-    transaction.install( "A" )
-    transaction.remove( "xorg-x11" )
+    request = Satsolver::Request.new( pool )
+    request.install( "A" )
+    request.remove( "xorg-x11" )
     
     pool.installed = system
     solver = Satsolver::Solver.new( pool )
     solver.allow_uninstall = true
     assert solver.allow_uninstall
     pool.prepare
-    solver.solve( transaction )
+    solver.solve( request )
     assert solver.sizechange
     puts "Size change #{solver.sizechange}"
     solver.each_to_install { |s|

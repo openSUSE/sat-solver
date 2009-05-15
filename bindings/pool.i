@@ -752,18 +752,18 @@ typedef struct _Pool {} Pool;
 #endif
 
   /**************************
-   * Transaction management
+   * Request management
    */
 
-  %newobject create_transaction;
+  %newobject create_request;
   /*
-   * Create an empty Transaction.
+   * Create an empty Request
    *
-   * Equivalent to: Transaction.new
+   * Equivalent to: Request.new
    *
    */
-  Transaction *create_transaction()
-  { return transaction_new( $self ); }
+  Request *create_request()
+  { return request_new( $self ); }
 
   /**************************
    * Solver management

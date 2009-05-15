@@ -6,7 +6,7 @@
  */
 
 /************************************************
- * Transaction
+ * Request
  *
  * A set of Actions to be solved by the Solver
  *
@@ -14,20 +14,20 @@
 
 #include <stdlib.h>
 
-#include "transaction.h"
+#include "request.h"
 
 
-Transaction *
-transaction_new( Pool *pool )
+Request *
+request_new( Pool *pool )
 {
-  Transaction *t = (Transaction *)malloc( sizeof( Transaction ));
+  Request *t = (Request *)malloc( sizeof( Request ));
   t->pool = pool;
   queue_init( &(t->queue) );
   return t;
 }
 
 void
-transaction_free( Transaction *t )
+request_free( Request *t )
 {
   queue_free( &(t->queue) );
   free( t );
@@ -35,71 +35,71 @@ transaction_free( Transaction *t )
 
 
 /*
- * number of actions in transaction
+ * number of actions in request
  * every two queue elements make one action
  */
 
 int
-transaction_size( Transaction *t )
+request_size( Request *t )
 {
   return t->queue.count >> 1;
 }
 
 
 void
-transaction_install_xsolvable( Transaction *t, XSolvable *xs )
+request_install_xsolvable( Request *t, XSolvable *xs )
 {
-  queue_push( &(t->queue), SOLVER_INSTALL_SOLVABLE );
+  queue_push( &(t->queue), SOLVER_INSTALL|SOLVER_SOLVABLE );
   /* FIXME: check: s->repo->pool == $self->pool */
   queue_push( &(t->queue), xs->id );
 }
 
 
 void
-transaction_remove_xsolvable( Transaction *t, XSolvable *xs )
+request_remove_xsolvable( Request *t, XSolvable *xs )
 {
-  queue_push( &(t->queue), SOLVER_ERASE_SOLVABLE );
+  queue_push( &(t->queue), SOLVER_ERASE|SOLVER_SOLVABLE );
   /* FIXME: check: s->repo->pool == $self->pool */
   queue_push( &(t->queue), xs->id );
 }
 
 
 void
-transaction_install_name( Transaction *t, const char *name )
+request_install_name( Request *t, const char *name )
 {
-  queue_push( &(t->queue), SOLVER_INSTALL_SOLVABLE_NAME );
+  queue_push( &(t->queue), SOLVER_INSTALL|SOLVER_SOLVABLE_NAME );
   queue_push( &(t->queue), str2id( t->pool, name, 1 ));
 }
 
 
 void
-transaction_remove_name( Transaction *t, const char *name )
+request_remove_name( Request *t, const char *name )
 {
-  queue_push( &(t->queue), SOLVER_ERASE_SOLVABLE_NAME );
+  queue_push( &(t->queue), SOLVER_ERASE|SOLVER_SOLVABLE_NAME );
   queue_push( &(t->queue), str2id( t->pool, name, 1 ));
 }
 
 
 void
-transaction_install_relation( Transaction *t, const Relation *rel )
+request_install_relation( Request *t, const Relation *rel )
 {
-  queue_push( &(t->queue), SOLVER_INSTALL_SOLVABLE_PROVIDES );
+  queue_push( &(t->queue), SOLVER_INSTALL|SOLVER_SOLVABLE_PROVIDES );
   /* FIXME: check: rel->pool == $self->pool */
   queue_push( &(t->queue), rel->id );
 }
 
 
 void
-transaction_remove_relation( Transaction *t, const Relation *rel )
+request_remove_relation( Request *t, const Relation *rel )
 {
-  queue_push( &(t->queue), SOLVER_ERASE_SOLVABLE_PROVIDES );
+  queue_push( &(t->queue), SOLVER_ERASE|SOLVER_SOLVABLE_PROVIDES );
   /* FIXME: check: rel->pool == $self->pool */
   queue_push( &(t->queue), rel->id );
 }
 
 
 Job *
-transaction_job_get( Transaction *t, int i )
+request_job_get( Request *t, int i )
 {
   int size, cmd;
   Id id;
@@ -114,7 +114,7 @@ transaction_job_get( Transaction *t, int i )
 
 
 void
-transaction_jobs_iterate( Transaction *t, int (*callback)( const Job *j))
+request_jobs_iterate( Request *t, int (*callback)( const Job *j))
 {
   int i;
   for (i = 0; i < t->queue.count-1; )

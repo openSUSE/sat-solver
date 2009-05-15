@@ -55,15 +55,15 @@ class DecisionTest < Test::Unit::TestCase
     solv3.requires << Satsolver::Relation.new( pool, "A", Satsolver::REL_GT, "0.0-0" )
     repo.create_solvable( 'DD', '4.4-0' )
 
-    transaction = pool.create_transaction
-    transaction.install( solv3 )
-    transaction.remove( "D" )
+    request = pool.create_request
+    request.install( solv3 )
+    request.remove( "D" )
     
     pool.installed = installed
     solver = pool.create_solver( )
     solver.allow_uninstall = true;
 #    @pool.debug = 255
-    solver.solve( transaction )
+    solver.solve( request )
     puts "** Problems found" if solver.problems?
     assert solver.decision_count > 0
     i = 0

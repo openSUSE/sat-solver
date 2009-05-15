@@ -6,8 +6,8 @@ require 'pathname'
 require 'test/unit'
 require 'satsolver'
 
-class TransactionTest < Test::Unit::TestCase
-  def test_transaction
+class RequestTest < Test::Unit::TestCase
+  def test_request
     pool = Satsolver::Pool.new
     assert pool
     pool.arch = "i686"
@@ -15,16 +15,16 @@ class TransactionTest < Test::Unit::TestCase
     repo = pool.add_solv( solvpath )
     repo.name = "test1"
     
-    transaction = Satsolver::Transaction.new( pool )
-    assert transaction
-    transaction.install( "foo" )
-    transaction.install( repo.find "ruby" )
-    transaction.install( Satsolver::Relation.new( pool, "foo", Satsolver::REL_EQ, "42-7" ) )
-    transaction.remove( "bar" )
-    transaction.remove( repo.find "glibc" )
-    transaction.remove( Satsolver::Relation.new( pool, "bar", Satsolver::REL_EQ, "42-7" ) )
-    assert transaction.size == 6
-    transaction.each { |a|
+    request = Satsolver::Request.new( pool )
+    assert request
+    request.install( "foo" )
+    request.install( repo.find "ruby" )
+    request.install( Satsolver::Relation.new( pool, "foo", Satsolver::REL_EQ, "42-7" ) )
+    request.remove( "bar" )
+    request.remove( repo.find "glibc" )
+    request.remove( Satsolver::Relation.new( pool, "bar", Satsolver::REL_EQ, "42-7" ) )
+    assert request.size == 6
+    request.each { |a|
       cmd = case a.cmd
             when Satsolver::INSTALL_SOLVABLE: "install #{a.solvable}"
 	    when Satsolver::REMOVE_SOLVABLE: "remove #{a.solvable}"
@@ -36,7 +36,7 @@ class TransactionTest < Test::Unit::TestCase
 	    end
       puts cmd
     }
-    transaction.clear!
-    assert transaction.empty?
+    request.clear!
+    assert request.empty?
   end
 end
