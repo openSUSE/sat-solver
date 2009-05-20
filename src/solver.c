@@ -2980,6 +2980,29 @@ run_solver(Solver *solv, int disablerules, int doweak)
 		}
 	    }
 
+	  /* multiversion doesn't mix well with supplements.
+	   * filter supplemented packages where we already decided
+	   * to install a different version (see bnc#501088) */
+	  if (dqs.count && solv->noobsoletes.size)
+	    {
+	      for (i = j = 0; i < dqs.count; i++) 
+		{
+		  p = dqs.elements[i];
+		  if (MAPTST(&solv->noobsoletes, p))
+		    {
+		      Id p2, pp2; 
+		      s = pool->solvables + p; 
+		      FOR_PROVIDES(p2, pp2, s->name)
+			if (solv->decisionmap[p2] > 0 && pool->solvables[p2].name == s->name)
+			  break;
+		      if (p2) 
+			continue;       /* ignore this package */
+		    }
+		  dqs.elements[j++] = p; 
+		}
+	      dqs.count = j; 
+	    }
+
           /* make dq contain both recommended and supplemented pkgs */
 	  if (dqs.count)
 	    {
