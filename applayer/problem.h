@@ -27,7 +27,7 @@ typedef struct _Problem {
   Solver *solver;
   Request *request;
   Id id;                    /* [PRIVATE] problem id */
-  SolverProbleminfo reason;
+  SolverRuleinfo reason;
   Id source;                /* solvable id */
   Id relation;              /* relation id */
   Id target;                /* solvable id */
