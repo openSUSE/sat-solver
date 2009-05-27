@@ -452,6 +452,7 @@ policy_findupdatepackages(Solver *solv, Solvable *s, Queue *qs, int allow_all)
   Id p, pp, n, p2, pp2;
   Id obs, *obsp;
   Solvable *ps;
+  int haveprovobs = 0;
 
   queue_empty(qs);
 
@@ -500,6 +501,7 @@ policy_findupdatepackages(Solver *solv, Solvable *s, Queue *qs, int allow_all)
 	  /* here we have 'p' with a matching provides/obsoletes combination
 	   * thus flagging p as a valid update candidate for s
 	   */
+	  haveprovobs = 1;
 	}
       else
         continue;
@@ -511,7 +513,7 @@ policy_findupdatepackages(Solver *solv, Solvable *s, Queue *qs, int allow_all)
     }
   /* if we have found some valid candidates and noupdateprovide is not set, we're
      done. otherwise we fallback to all obsoletes */
-  if (!solv->noupdateprovide && qs->count)
+  if (!solv->noupdateprovide && haveprovobs)
     return;
   if (solv->obsoletes && solv->obsoletes[n - solv->installed->start])
     {
