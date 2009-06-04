@@ -1503,9 +1503,9 @@ endElement( void *userData, const char *name )
       if (redcarpet)
         pool->promoteepoch = 1;
 
-      Solver *solv = solver_create( pd->pool );
+      Solver *solv = solver_create(pd->pool);
       solv->fixsystem = pd->fixsystem;
-      solv->allowselfconflicts = 1;
+      pd->pool->allowselfconflicts = 1;	/* XXX: should fix test cases instead */
       solv->updatesystem = pd->updatesystem;
       solv->allowdowngrade = pd->allowdowngrade;
       solv->allowuninstall = pd->allowuninstall;
@@ -1534,11 +1534,8 @@ endElement( void *userData, const char *name )
 	    }
 	  rc_printdecisions(solv, &pd->trials);
 #if 0
-	  if (1)
-	    {
-	      extern void solver_order_transaction(Solver *solv);
-	      solver_order_transaction(solv);
-	    }
+	  transaction_order(&solv->trans);
+	  solver_printdecisions(solv);
 #endif
 	}
       // clean up
@@ -1610,6 +1607,7 @@ static void
 rc_printdecisions(Solver *solv, Queue *job)
 {
   Pool *pool = solv->pool;
+  Transaction *trans = &solv->trans;
   int i;
   Solvable *s;
 
@@ -1631,14 +1629,14 @@ rc_printdecisions(Solver *solv, Queue *job)
   int installs = 0, uninstalls = 0, upgrades = 0;
   Id type, p;
   
-  sat_sort(solv->transaction.elements, solv->transaction.count / 2, 2 * sizeof(Id), transaction_sortcmp, pool);
+  sat_sort(trans->steps.elements, trans->steps.count / 2, 2 * sizeof(Id), transaction_sortcmp, pool);
 
-  for (i = 0; i < solv->transaction.count; i += 2)
+  for (i = 0; i < trans->steps.count; i += 2)
     {
-      type = solv->transaction.elements[i];
-      p = solv->transaction.elements[i + 1];
-      s = pool->solvables + solv->transaction.elements[i + 1];
-      type = solver_transaction_filter(solv, type, p, 0);
+      type = trans->steps.elements[i];
+      p = trans->steps.elements[i + 1];
+      s = pool->solvables + trans->steps.elements[i + 1];
+      type = solver_transaction_show(trans, type, p, 0);
       switch(type)
 	{
 	case SOLVER_TRANSACTION_INSTALL:
@@ -1666,7 +1664,7 @@ rc_printdecisions(Solver *solv, Queue *job)
 	    printf(">!> upgrade %s-%s => ", id2str(pool, s->name), id2str(pool, s->evr));
 	  else
 	    printf(">!> upgrade %s-%s.%s => ", id2str(pool, s->name), id2str(pool, s->evr), id2str(pool, s->arch));
-	  s = pool->solvables + solver_transaction_pkg(solv, solv->transaction.elements[i + 1]);
+	  s = pool->solvables + solver_transaction_pkg(trans, trans->steps.elements[i + 1]);
 	  if (redcarpet)
 	    printf("%s-%s%s", id2str(pool, s->name), id2rc(solv, s->evr), id2str(pool, s->evr));
 	  else

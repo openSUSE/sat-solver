@@ -210,6 +210,113 @@ typedef struct _Pool {} Pool;
   void set_promoteepoch( int b )
   { $self->promoteepoch = b; }
 
+#if defined(SWIGRUBY)
+  %typemap(out) int no_virtual_conflicts
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  /*
+   * Allow virtual conflicts
+   *
+   * call-seq:
+   *  pool.no_virtual_conflicts -> bool
+   *
+   */
+  int no_virtual_conflicts()
+  { return $self->novirtualconflicts; }
+
+#if defined(SWIGRUBY)
+  %rename( "no_virtual_conflicts=" ) set_no_virtual_conflicts( int bflag );
+#endif
+  /*
+   * call-seq:
+   *  pool.no_virtual_conflicts = true
+   *
+   */
+  void set_no_virtual_conflicts( int bflag )
+  { $self->novirtualconflicts = bflag; }
+
+#if defined(SWIGRUBY)
+  %typemap(out) int allow_self_conflicts
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  /*
+   * Allow self conflicts
+   *
+   * If a package can conflict with itself
+   *
+   * call-seq:
+   *  pool.allow_self_conflicts -> bool
+   *
+   */
+  int allow_self_conflicts()
+  { return $self->allowselfconflicts; }
+
+#if defined(SWIGRUBY)
+  %rename( "allow_self_conflicts=" ) set_allow_self_conflicts( int bflag );
+#endif
+  /*
+   * call-seq:
+   *  pool.allow_self_conflicts = true
+   *
+   */
+  void set_allow_self_conflicts( int bflag )
+  { $self->allowselfconflicts = bflag; }
+
+#if defined(SWIGRUBY)
+  %typemap(out) int obsolete_uses_provides
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  /*
+   * Obsolete uses provides
+   *
+   * Obsolete dependencies usually match on package names only.
+   * Setting this flag will make obsoletes also match a provides.
+   *
+   * call-seq:
+   *  pool.obsolete_uses_provides -> bool
+   *
+   */
+  int obsolete_uses_provides()
+  { return $self->obsoleteusesprovides; }
+
+#if defined(SWIGRUBY)
+  %rename( "obsolete_uses_provides=" ) set_obsolete_uses_provides( int bflag );
+#endif
+  /*
+   * Obsolete uses provides
+   *
+   * call-seq:
+   *  pool.obsolete_uses_provides = true
+   *
+   */
+  void set_obsolete_uses_provides( int bflag )
+  { $self->obsoleteusesprovides= bflag; }
+
+#if defined(SWIGRUBY)
+  %typemap(out) int implicit_obsolete_uses_provides
+    "$result = $1 ? Qtrue : Qfalse;";
+#endif
+  /*
+   * Implicit obsolete uses provides
+   *
+   * call-seq:
+   *  pool.implicit_obsolete_uses_provides -> bool
+   *
+   */
+  int implicit_obsolete_uses_provides()
+  { return $self->implicitobsoleteusesprovides; }
+
+#if defined(SWIGRUBY)
+  %rename( "implicit_obsolete_uses_provides=" ) set_implicit_obsolete_uses_provides( int bflag );
+#endif
+  /*
+   * call-seq:
+   *  pool.implicit_obsolete_uses_provides = true
+   *
+   */
+  void set_implicit_obsolete_uses_provides( int bflag )
+  { $self->implicitobsoleteusesprovides= bflag; }
+
   /*
    * Set the pool to an _unprepared_ status.
    * 
