@@ -1534,7 +1534,7 @@ endElement( void *userData, const char *name )
 	    }
 	  rc_printdecisions(solv, &pd->trials);
 #if 1
-	  transaction_order(&solv->trans);
+	  transaction_order(&solv->trans, 0);
 	  transaction_check(&solv->trans);
 	  solver_printdecisions(solv);
 #endif
