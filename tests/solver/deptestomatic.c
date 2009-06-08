@@ -1533,8 +1533,9 @@ endElement( void *userData, const char *name )
 	      rc_printdownloadsize(solv);
 	    }
 	  rc_printdecisions(solv, &pd->trials);
-#if 0
+#if 1
 	  transaction_order(&solv->trans);
+	  transaction_check(&solv->trans);
 	  solver_printdecisions(solv);
 #endif
 	}
