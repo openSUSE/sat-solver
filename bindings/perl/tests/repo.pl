@@ -26,3 +26,5 @@ print "Repo \"" . $repo->name() . "\" size " . $repo->size() . ", count " . $rep
 my $timestamp = $repo->attr("repository:timestamp");
 
 print "Timestamp: " . $timestamp . "\n";
+
+print "Addedfileprovides: " . $repo->attr("repository:addedfileprovides") . "\n";
