@@ -100,6 +100,13 @@ typedef struct _Problem {} Problem;
   { return xsolvable_new( $self->solver->pool, $self->target ); }
 
   /*
+   * Number of available solutions for problem
+   *
+   */
+  int solutions_count()
+  { return solver_solution_count( $self->solver, $self->id ); }
+
+  /*
    * An iterator providing possible Solutions to the Problem
    *
    * call-seq:
