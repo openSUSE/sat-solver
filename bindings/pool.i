@@ -506,9 +506,12 @@ typedef struct _Pool {} Pool;
    */
   void each_repo()
   {
+    Pool *pool = $self;
+    Repo *r;
     int i;
-    for (i = 0; i < $self->nrepos; ++i )
-      rb_yield(SWIG_NewPointerObj((void*) $self->repos[i], SWIGTYPE_p__Repo, 0));
+
+    FOR_REPOS(i, r)
+      rb_yield(SWIG_NewPointerObj((void*)r, SWIGTYPE_p__Repo, 0));
   }
 #endif
 #if defined(SWIGPYTHON)
@@ -530,11 +533,13 @@ typedef struct _Pool {} Pool;
    */
   Repo *find_repo( const char *name )
   {
+    Pool *pool = $self;
+    Repo *r;
     int i;
-    for (i = 0; i < $self->nrepos; ++i ) {
-      if (!strcmp( $self->repos[i]->name, name ))
-        return $self->repos[i];
-    }
+
+    FOR_REPOS(i, r)
+      if (!strcmp(r->name, name))
+        return r;
     return NULL;
   }
 
