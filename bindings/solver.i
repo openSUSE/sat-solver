@@ -896,9 +896,6 @@ typedef struct solver {} Solver;
    * Returns true if any problems occured during solve, returns false
    * on successful solve.
    *
-   * There is no 'number of problems' available, but it can be computed
-   * by iterating over the problems.
-   *
    * call-seq:
    *  solver.problems? -> bool
    *
@@ -906,6 +903,13 @@ typedef struct solver {} Solver;
   int problems_found()
   { return $self->problems.count != 0; }
 
+  /*
+   * Return number of problems
+   *
+   */
+  int problems_count()
+  { return (int)solver_problem_count($self); }
+  
 #if defined(SWIGRUBY)
   /*
    * Iterate over problems.
