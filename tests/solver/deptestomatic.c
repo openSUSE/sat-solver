@@ -54,8 +54,8 @@ transaction_sortcmp(const void *ap, const void *bp, void *dp)
 {
   Pool *pool = dp;
   int r;
-  Id a = ((Id *)ap)[1];
-  Id b = ((Id *)bp)[1];
+  Id a = *(Id *)ap;
+  Id b = *(Id *)bp;
   Solvable *sa = pool->solvables + a;
   Solvable *sb = pool->solvables + b;
 
@@ -1535,8 +1535,8 @@ endElement( void *userData, const char *name )
 	  rc_printdecisions(solv, &pd->trials);
 #if 1
 	  transaction_order(&solv->trans, 0);
-	  transaction_check(&solv->trans);
-	  solver_printdecisions(solv);
+	  transaction_check_order(&solv->trans);
+	  solver_printtransaction(solv);
 #endif
 	}
       // clean up
@@ -1630,14 +1630,13 @@ rc_printdecisions(Solver *solv, Queue *job)
   int installs = 0, uninstalls = 0, upgrades = 0;
   Id type, p;
   
-  sat_sort(trans->steps.elements, trans->steps.count / 2, 2 * sizeof(Id), transaction_sortcmp, pool);
+  sat_sort(trans->steps.elements, trans->steps.count, sizeof(Id), transaction_sortcmp, pool);
 
-  for (i = 0; i < trans->steps.count; i += 2)
+  for (i = 0; i < trans->steps.count; i++)
     {
-      type = trans->steps.elements[i];
-      p = trans->steps.elements[i + 1];
-      s = pool->solvables + trans->steps.elements[i + 1];
-      type = solver_transaction_show(trans, type, p, 0);
+      p = trans->steps.elements[i];
+      s = pool->solvables + p;
+      type = transaction_type(trans, p, 0);
       switch(type)
 	{
 	case SOLVER_TRANSACTION_INSTALL:
@@ -1665,7 +1664,7 @@ rc_printdecisions(Solver *solv, Queue *job)
 	    printf(">!> upgrade %s-%s => ", id2str(pool, s->name), id2str(pool, s->evr));
 	  else
 	    printf(">!> upgrade %s-%s.%s => ", id2str(pool, s->name), id2str(pool, s->evr), id2str(pool, s->arch));
-	  s = pool->solvables + solver_transaction_pkg(trans, trans->steps.elements[i + 1]);
+	  s = pool->solvables + transaction_obs_pkg(trans, p);
 	  if (redcarpet)
 	    printf("%s-%s%s", id2str(pool, s->name), id2rc(solv, s->evr), id2str(pool, s->evr));
 	  else
