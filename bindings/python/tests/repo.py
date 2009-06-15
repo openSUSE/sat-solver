@@ -83,6 +83,7 @@ class TestSequenceFunctions(unittest.TestCase):
     assert pool
     pool.set_arch("i686")
     repo = pool.add_solv( "../../testdata/os11-biarch.solv" )
+    print "Addedfileprovides ", repo.attr("repository:addedfileprovides")
     for s in pool.providers("glibc"):
       print s, "provides 'glibc'"
     assert True

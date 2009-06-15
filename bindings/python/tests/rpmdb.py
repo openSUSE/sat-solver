@@ -30,7 +30,7 @@ class TestSequenceFunctions(unittest.TestCase):
     i = 0
     name = None
     for s in pool:
-      print s
+      print s, " Vendor: ", s.vendor()
       if i == 7:
         name = s.name()
       i += 1

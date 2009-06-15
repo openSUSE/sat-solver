@@ -19,7 +19,7 @@ class RepodataTest < Test::Unit::TestCase
     repo.name = "openSUSE 11.0 Beta3 BiArch"
     puts "Repo #{repo.name} loaded with #{repo.size} solvables"
     
-    puts "Repo has #{repo.datasize} Repodatas attached"
+#    puts "Repo has #{repo.datasize} Repodatas attached"
     assert repo.datasize > 0
     assert repo.data(-1) == nil
     assert repo.data(repo.datasize) == nil
@@ -36,11 +36,13 @@ class RepodataTest < Test::Unit::TestCase
       puts "  Key '#{k.name}' is #{k.type}[#{k.type_id}] with #{k.size} bytes"
     }
     
+    puts "repository:addedfileprovides: #{repo.attr('repository:addedfileprovides').inspect}"
+    
     i = 0
     repo.each { |s|
       bt = s['solvable:buildtime']
       bt = Time.at(bt) if bt.is_a? Fixnum
-      puts "Solvable #{s}: group #{s['solvable:group']}, time #{bt}, downloadsize #{s['solvable:downloadsize']}, installsize #{s['solvable:installsize']}"
+#      puts "Solvable #{s}: group #{s['solvable:group']}, time #{bt}, downloadsize #{s['solvable:downloadsize']}, installsize #{s['solvable:installsize']}"
       i += 1
       break if i == 10
     }

@@ -246,10 +246,17 @@ dataiterator_value( Dataiterator *di )
         value = Swig_String( di->kv.str );
       break;
       case REPOKEY_TYPE_IDARRAY:
-        if (di->data && di->data->localpool)
-	  value = Swig_String(stringpool_id2str( &di->data->spool, di->kv.id ));
-	else
-	  value = Swig_String(id2str( di->repo->pool, di->kv.id ));
+      {
+        Swig_Type result = Swig_Array();
+        do {
+	  if (di->data && di->data->localpool)
+	    Swig_Append( result, Swig_String( stringpool_id2str(&di->data->spool, di->kv.id ) ) );
+	  else
+	    Swig_Append( result, Swig_String( id2str( di->repo->pool, di->kv.id ) ) );
+	}
+	while (dataiterator_step(di));
+	value = result;
+      }
       break;
       case REPOKEY_TYPE_REL_IDARRAY:
         fprintf(stderr, "REPOKEY_TYPE_REL_IDARRAY: unhandled\n");
@@ -288,18 +295,6 @@ dataiterator_value( Dataiterator *di )
         fprintf(stderr, "Unhandled type %d\n", di->key->type);
     }
   return value;
-#if 0
-  Swig_Type result = Swig_Array();
-  if (di->data && di->data->localpool)
-    Swig_Append( result, Swig_String( stringpool_id2str( &di->data->spool, di->key->name ) ) );
-  else
-    Swig_Append( result, Swig_String( id2str( di->repo->pool, di->key->name ) ) );
-  Swig_Append( result, value );
-  
-  value = Swig_Null;
-
-  return result;
-#endif
 }
 
 
