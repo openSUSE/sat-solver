@@ -35,10 +35,10 @@ end
 pool.prepare
 
 repo.each do |s|
-  transaction = Satsolver::Transaction.new( pool )
-  transaction.install( s )
+  request = Satsolver::Request.new( pool )
+  request.install( s )
 
   solver = Satsolver::Solver.new( pool )
-  res = solver.solve( transaction )
+  res = solver.solve( request )
   $stderr.puts "Package #{s} is not installable" unless res
 end

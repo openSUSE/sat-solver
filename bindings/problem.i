@@ -1,7 +1,7 @@
 /*
  * Document-class: Problem
  *
- * If solving a Transaction is unsucccessful (+Solver+.+solve+ returning +false+), the Solver provides
+ * If solving a Request is unsucccessful (+Solver+.+solve+ returning +false+), the Solver provides
  * information on possible reason and how to fix them.
  *
  * The Problem class represents such a reason and provides solutions.
@@ -38,7 +38,7 @@ typedef struct _Problem {} Problem;
 %extend Problem {
   /* The problem is caused by an update rule (i.e. 'better' Solvable available) */
   %constant int SOLVER_PROBLEM_UPDATE_RULE = SOLVER_PROBLEM_UPDATE_RULE;
-  /* The problem is caused by a Job inside the Transaction */
+  /* The problem is caused by a Job inside the Request */
   %constant int SOLVER_PROBLEM_JOB_RULE = SOLVER_PROBLEM_JOB_RULE;
   /* A Job based on a Relation could not be fulfilled because there is no Solvable in the Pool providing it. */
   %constant int SOLVER_PROBLEM_JOB_NOTHING_PROVIDES_DEP = SOLVER_PROBLEM_JOB_NOTHING_PROVIDES_DEP;
@@ -69,10 +69,10 @@ typedef struct _Problem {} Problem;
   { return $self->solver; }
 
   /*
-   * The Transaction causing the Problem
+   * The Request causing the Problem
    */
-  Transaction *transaction()
-  { return $self->transaction; }
+  Request *request()
+  { return $self->request; }
 
   /*
    * The reason for the problem. One of +Satsolver::SOLVER_PROBLEM_*+

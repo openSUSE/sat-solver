@@ -8,7 +8,7 @@
 /*
  * Job
  *
- * A single 'job' item of a Transaction
+ * A single 'job' item of a Request
  *
  */
 

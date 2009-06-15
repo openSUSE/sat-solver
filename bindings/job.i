@@ -1,10 +1,10 @@
 /*
  * Document-class: Job
- * A job is a single 'work item' of a transaction
+ * A job is a single 'work item' of a request
  *
  * === Constructor
  * There is no constructor defined for Job. Jobs are created by accessing
- * a Transaction
+ * a Request
  *
  */
 

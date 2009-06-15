@@ -1,6 +1,5 @@
 >!> Installing zypper from channel zypp:svn
 >!> Solution #1:
->!> install bash-completion-20060301-71.noarch[factory]
 >!> upgrade glibc-2.7-15.x86_64 => glibc-2.8-5.x86_64[factory]
 >!> upgrade glibc-devel-2.7-14.x86_64 => glibc-devel-2.8-5.x86_64[factory]
 >!> upgrade glibc-locale-2.7-14.x86_64 => glibc-locale-2.8-5.x86_64[factory]
@@ -11,8 +10,9 @@
 >!> upgrade ruby-zypp-0.4.6-12.12.x86_64 => ruby-zypp-0.4.6-15.5.x86_64[zypp:svn]
 >!> upgrade satsolver-tools-0.0.25-12.1.x86_64 => satsolver-tools-0.0.28-3.1.x86_64[zypp:svn]
 >!> upgrade yast2-ncurses-pkg-2.16.6-13.1.x86_64 => yast2-ncurses-pkg-2.16.6-24.1.x86_64[YaST_SVN]
->!> upgrade yast2-perl-bindings-2.16.5-12.13.x86_64 => yast2-perl-bindings-2.16.6-4.x86_64[factory]
+>!> upgrade yast2-perl-bindings-2.16.5-12.13.x86_64 => yast2-perl-bindings-2.16.6-3.9.x86_64[YaST_SVN]
 >!> upgrade yast2-pkg-bindings-2.16.23-18.2.x86_64 => yast2-pkg-bindings-2.16.29-1.1.x86_64[YaST_SVN]
 >!> upgrade yast2-qt-pkg-2.16.32-1.3.x86_64 => yast2-qt-pkg-2.16.37-2.1.x86_64[YaST_SVN]
 >!> upgrade zypper-0.10.6-6.4.x86_64 => zypper-0.11.0-8.1.x86_64[zypp:svn]
+>!> install bash-completion-20060301-71.noarch[factory]
 >!> installs=1, upgrades=14, uninstalls=0

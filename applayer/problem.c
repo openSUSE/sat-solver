@@ -10,7 +10,7 @@
  *
  * An unsuccessful solver result
  *
- * If a transaction is not solvable, one or more
+ * If a request is not solvable, one or more
  * Problems will be reported by the Solver.
  *
  */
@@ -23,13 +23,13 @@
 
 
 Problem *
-problem_new( Solver *s, Transaction *t, Id id )
+problem_new( Solver *s, Request *t, Id id )
 {
   Id prule;
 
   Problem *p = (Problem *)malloc( sizeof( Problem ));
   p->solver = s;
-  p->transaction = t;
+  p->request = t;
   p->id = id;
   prule = solver_findproblemrule( s, id );
   p->reason = solver_problemruleinfo( s, &(t->queue), prule, &(p->relation), &(p->source), &(p->target) );
@@ -44,7 +44,7 @@ problem_free( Problem *p )
 
 
 void
-solver_problems_iterate( Solver *solver, Transaction *t, int (*callback)(const Problem *p, void *user_data), void *user_data )
+solver_problems_iterate( Solver *solver, Request *t, int (*callback)(const Problem *p, void *user_data), void *user_data )
 {
   Id problem = 0;
   if (!callback)
@@ -84,9 +84,9 @@ problem_solutions_iterate( Problem *problem, int (*callback)( const Solution *s,
 	    {
 	
 	      /* job, rp is index into job queue */
-	      what = problem->transaction->queue.elements[rp];
+	      what = solver->job.elements[rp];
 	
-	      switch (problem->transaction->queue.elements[rp - 1])
+	      switch (solver->job.elements[rp - 1])
 	        {
 		 case SOLVER_INSTALL_SOLVABLE:
 		  s1 = what;
@@ -141,6 +141,8 @@ problem_solutions_iterate( Problem *problem, int (*callback)( const Solution *s,
 	    {
 	      s1 = p;
 	      s2 = rp;
+	      if (p < 0)
+		p = rp;
 	      /* policy, replace p with rp */
 	      Solvable *sp = pool->solvables + p;
 	      Solvable *sr = rp ? pool->solvables + rp : 0;

@@ -86,8 +86,8 @@ class TestSequenceFunctions(unittest.TestCase):
     solv1.requires().add(rel)
     assert solv1.requires().size() == 1
     
-    transaction = self.pool.create_transaction()
-    transaction.install( solv1 )
+    request = self.pool.create_request()
+    request.install( solv1 )
 
  
     system = self.pool.create_repo( '@system' )
@@ -99,7 +99,7 @@ class TestSequenceFunctions(unittest.TestCase):
 
     solver = self.pool.create_solver()
     solver.set_allow_uninstall(True)
-    res = solver.solve( transaction )
+    res = solver.solve( request )
     assert res.__class__.__name__ == 'bool', res.__class__.__name__
     assert res == True, res
     for s in solver.installs():

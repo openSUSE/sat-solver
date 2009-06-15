@@ -15,7 +15,7 @@ ADD_TEST(bindings_ruby_repodata	   ruby -C ${CMAKE_CURRENT_SOURCE_DIR} repodata.
 
 ADD_TEST(bindings_ruby_providers   ruby -C ${CMAKE_CURRENT_SOURCE_DIR} providers.rb)
 
-ADD_TEST(bindings_ruby_transaction ruby -C ${CMAKE_CURRENT_SOURCE_DIR} transaction.rb)
+ADD_TEST(bindings_ruby_request     ruby -C ${CMAKE_CURRENT_SOURCE_DIR} request.rb)
 ADD_TEST(bindings_ruby_covenants   ruby -C ${CMAKE_CURRENT_SOURCE_DIR} covenants.rb)
 
 ADD_TEST(bindings_ruby_solver	   ruby -C ${CMAKE_CURRENT_SOURCE_DIR} solver.rb)

@@ -415,7 +415,9 @@ main(int argc, char **argv)
 	      queue_init(&qs);
 	      queue_init(&iq);
 	      findinstalled(solv, &iq);
+#if 0
 	      solver_find_involved(solv, &iq, pool->solvables + p, &qs);
+#endif
 	      queue_free(&iq);
 	      for (i = 0 ; i < qs.count; i++)
 		{

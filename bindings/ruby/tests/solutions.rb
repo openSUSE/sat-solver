@@ -41,19 +41,19 @@ class SolutionTest < Test::Unit::TestCase
     repo.create_solvable( 'DD', '4.4-0' )
 
     
-    transaction = pool.create_transaction
-    transaction.install( solv1 )
-    transaction.remove( "Z" )
+    request = pool.create_request
+    request.install( solv1 )
+    request.remove( "Z" )
     
     pool.installed = installed
     solver = pool.create_solver( )
 #    solver.allow_uninstall = true;
 #    @pool.debug = 255
-    solver.solve( transaction )
+    solver.solve( request )
     assert solver.problems?
     puts "Problems found"
     i = 0
-    solver.each_problem( transaction ) { |p|
+    solver.each_problem( request ) { |p|
       i += 1
       case p.reason
       when Satsolver::SOLVER_PROBLEM_UPDATE_RULE

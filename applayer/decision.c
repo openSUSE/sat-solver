@@ -10,7 +10,7 @@
  *
  * A successful solver result.
  *
- * Set of 'job items' needed to solve the Transaction.
+ * Set of 'job items' needed to solve the Request.
  *
  */
 

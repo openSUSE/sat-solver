@@ -97,7 +97,7 @@ typedef struct _Decision {} Decision;
     Id rule = $self->rule - solver->rules;
     if (rule > 0) {
       Id depp = 0, sourcep = 0, targetp = 0;
-      SolverProbleminfo pi = solver_ruleinfo(solver, rule, &sourcep, &targetp, &depp);
+      SolverRuleinfo pi = solver_ruleinfo(solver, rule, &sourcep, &targetp, &depp);
       result = Swig_Array();
 /*      fprintf(stderr, "Rule %d: [pi %d, rel %d, source %d, target %d]\n", rule, pi, depp, sourcep, targetp); */
       Swig_Append(result, Swig_Int(pi));

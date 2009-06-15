@@ -1,17 +1,17 @@
 /*
- * Document-class: Transaction
- * Transaction represents a Set of Jobs as input for the Solver.
+ * Document-class: Request
+ * Request represents a Set of Jobs as input for the Solver.
  *
  */
 
 %{
 
 /*
- * iterating over jobs of a transaction ('yield' in Ruby)
+ * iterating over jobs of a request ('yield' in Ruby)
  */
 
 static int
-transaction_jobs_iterate_callback( const Job *j )
+request_jobs_iterate_callback( const Job *j )
 {
 #if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
@@ -23,25 +23,25 @@ transaction_jobs_iterate_callback( const Job *j )
 %}
 
 
-%nodefault _Transaction;
-%rename(Transaction) _Transaction;
-typedef struct _Transaction {} Transaction;
+%nodefault _Request;
+%rename(Request) _Request;
+typedef struct _Request {} Request;
 
 #if defined(SWIGRUBY)
-%mixin Transaction "Enumerable";
+%mixin Request "Enumerable";
 #endif
 
-%extend Transaction {
+%extend Request {
   /*
-   * Create transaction based on Pool
+   * Create request based on Pool
    *
-   * See also: Pool.create_transaction
+   * See also: Pool.create_request
    */
-  Transaction( Pool *pool )
-  { return transaction_new( pool ); }
+  Request( Pool *pool )
+  { return request_new( pool ); }
 
-  ~Transaction()
-  { transaction_free( $self ); }
+  ~Request()
+  { request_free( $self ); }
 
   /*
    * Install request
@@ -55,13 +55,13 @@ typedef struct _Transaction {} Transaction;
    * solvable matching the request (by name, by relation)
    *
    * call-seq:
-   *  transaction.install(solvable) -> void
-   *  transaction.install("kernel") -> void
-   *  transaction.install(relation) -> void
+   *  request.install(solvable) -> void
+   *  request.install("kernel") -> void
+   *  request.install(relation) -> void
    *
    */
   void install( XSolvable *xs )
-  { transaction_install_xsolvable( $self, xs ); }
+  { request_install_xsolvable( $self, xs ); }
 
   /*
    * Remove request
@@ -75,40 +75,40 @@ typedef struct _Transaction {} Transaction;
    * solvable matching the request (by name, by relation)
    *
    * call-seq:
-   *  transaction.remove(solvable) -> void
-   *  transaction.remove("kernel") -> void
-   *  transaction.remove(relation) -> void
+   *  request.remove(solvable) -> void
+   *  request.remove("kernel") -> void
+   *  request.remove(relation) -> void
    *
    */
   void remove( XSolvable *xs )
-  { transaction_remove_xsolvable( $self, xs ); }
+  { request_remove_xsolvable( $self, xs ); }
 
   /*
    * Install solvable by name
    */
   void install( const char *name )
-  { transaction_install_name( $self, name ); }
+  { request_install_name( $self, name ); }
 
   /*
    * Remove solvable by name
    *
    */
   void remove( const char *name )
-  { transaction_remove_name( $self, name ); }
+  { request_remove_name( $self, name ); }
 
   /*
    * Install solvable by relation
    *
    */
   void install( const Relation *rel )
-  { transaction_install_relation( $self, rel ); }
+  { request_install_relation( $self, rel ); }
 
   /*
    * Remove solvable by relation
    *
    */
   void remove( const Relation *rel )
-  { return transaction_remove_relation( $self, rel ); }
+  { return request_remove_relation( $self, rel ); }
 
 #if defined(SWIGRUBY)
   %rename("empty?") empty();
@@ -116,30 +116,30 @@ typedef struct _Transaction {} Transaction;
     "$result = $1 ? Qtrue : Qfalse;";
 #endif
   /*
-   * Check if the transaction has any jobs attached.
+   * Check if the request has any jobs attached.
    *
    * call-seq:
-   *   transaction.empty? -> bool
+   *   request.empty? -> bool
    *
    */
   int empty()
   { return ( $self->queue.count == 0 ); }
 
   /*
-   * Return number of jobs of this transaction
+   * Return number of jobs of this request
    *
    */
   int size()
-  { return transaction_size( $self ); }
+  { return request_size( $self ); }
 
 #if defined(SWIGRUBY)
   %rename("clear!") clear();
 #endif
   /*
-   * Remove all jobs of this transaction
+   * Remove all jobs of this request
    *
    * call-seq:
-   *   transaction.clear! -> void
+   *   request.clear! -> void
    *
    */
   void clear()
@@ -154,23 +154,23 @@ typedef struct _Transaction {} Transaction;
    * The index is just a convenience access method and
    * does NOT imply any preference/ordering of the Jobs.
    *
-   * A Transaction is always considered a set of Jobs.
+   * A Request is always considered a set of Jobs.
    *
    * call-seq:
-   *  transaction.get(42) -> Job
+   *  request.get(42) -> Job
    *
    */
   Job *get( unsigned int i )
-  { return transaction_job_get( $self, i ); }
+  { return request_job_get( $self, i ); }
 
   /*
-   * Iterate over each Job of the Transaction.
+   * Iterate over each Job of the Request.
    *
    * call-seq:
-   *  transaction.each { |job| ... }
+   *  request.each { |job| ... }
    *
    */
   void each()
-  { transaction_jobs_iterate( $self, transaction_jobs_iterate_callback ); }
+  { request_jobs_iterate( $self, request_jobs_iterate_callback ); }
 }
 

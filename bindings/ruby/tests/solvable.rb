@@ -82,12 +82,12 @@ class SolvableTest < Test::Unit::TestCase
     solv1.requires << rel
     assert solv1.requires.size == 1
     
-    transaction = @pool.create_transaction
-    transaction.install( solv1 )
+    request = @pool.create_request
+    request.install( solv1 )
     
     solver = @pool.create_solver( )
 #    @pool.debug = 255
-    solver.solve( transaction )
+    solver.solve( request )
     solver.each_to_install { |s|
       puts "Install #{s}"
     }
