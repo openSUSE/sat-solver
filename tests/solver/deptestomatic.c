@@ -1522,7 +1522,7 @@ endElement( void *userData, const char *name )
       solver_solve( solv, &pd->trials );
       // print result
       if (solv->problems.count)
-	solver_printsolutions(solv, &pd->trials);
+	solver_printallsolutions(solv);
       else
 	{
 	  if (verbose >= 2)

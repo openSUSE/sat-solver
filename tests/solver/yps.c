@@ -458,7 +458,7 @@ main(int argc, char **argv)
     solv->solution_callback = solution_callback;
   solver_solve(solv, &job);
   if (solv->problems.count)
-    solver_printsolutions(solv, &job);
+    solver_printallsolutions(solv);
   solver_printdecisions(solv);
   if (1)
     {
