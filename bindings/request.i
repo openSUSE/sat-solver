@@ -61,7 +61,7 @@ typedef struct _Request {} Request;
    *
    */
   void install( XSolvable *xs )
-  { request_install_xsolvable( $self, xs ); }
+  { request_xsolvable( $self, xs, SOLVER_INSTALL ); }
 
   /*
    * Remove request
@@ -81,34 +81,102 @@ typedef struct _Request {} Request;
    *
    */
   void remove( XSolvable *xs )
-  { request_remove_xsolvable( $self, xs ); }
+  { request_xsolvable( $self, xs, SOLVER_ERASE ); }
+
+  /*
+   * Update request
+   *
+   * Ensure update of a solvable by either
+   * * specifying it directly
+   * * specify it by name
+   * * specify a required relation
+   *
+   * Except when specified directly, the solver is free to choose any
+   * solvable matching the request (by name, by relation)
+   *
+   * call-seq:
+   *  request.update(solvable) -> void
+   *  request.update("kernel") -> void
+   *  request.update(relation) -> void
+   *
+   */
+  void update( XSolvable *xs )
+  { request_xsolvable( $self, xs, SOLVER_UPDATE ); }
+
+  /*
+   * Lock request
+   *
+   * Ensure solvable stays installed/uninstalled
+   * * specifying it directly
+   * * specify it by name
+   * * specify a required relation
+   *
+   * Except when specified directly, the solver is free to choose any
+   * solvable matching the request (by name, by relation)
+   *
+   * call-seq:
+   *  request.lock(solvable) -> void
+   *  request.lock("kernel") -> void
+   *  request.lock(relation) -> void
+   *
+   */
+  void lock( XSolvable *xs )
+  { request_xsolvable( $self, xs, SOLVER_LOCK ); }
 
   /*
    * Install solvable by name
    */
   void install( const char *name )
-  { request_install_name( $self, name ); }
+  { request_name( $self, name, SOLVER_INSTALL ); }
 
   /*
    * Remove solvable by name
    *
    */
   void remove( const char *name )
-  { request_remove_name( $self, name ); }
+  { request_name( $self, name, SOLVER_ERASE ); }
+
+  /*
+   * Update solvable by name
+   *
+   */
+  void update( const char *name )
+  { request_name( $self, name, SOLVER_UPDATE ); }
+
+  /*
+   * Lock solvable by name
+   *
+   */
+  void lock( const char *name )
+  { request_name( $self, name, SOLVER_LOCK ); }
 
   /*
    * Install solvable by relation
    *
    */
   void install( const Relation *rel )
-  { request_install_relation( $self, rel ); }
+  { request_relation( $self, rel, SOLVER_INSTALL ); }
 
   /*
    * Remove solvable by relation
    *
    */
   void remove( const Relation *rel )
-  { return request_remove_relation( $self, rel ); }
+  { return request_relation( $self, rel, SOLVER_ERASE ); }
+
+  /*
+   * Update solvable by relation
+   *
+   */
+  void update( const Relation *rel )
+  { return request_relation( $self, rel, SOLVER_UPDATE ); }
+
+  /*
+   * Lock solvable by relation
+   *
+   */
+  void lock( const Relation *rel )
+  { return request_relation( $self, rel, SOLVER_LOCK ); }
 
 #if defined(SWIGRUBY)
   %rename("empty?") empty();

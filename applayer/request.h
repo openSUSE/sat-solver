@@ -27,12 +27,10 @@ typedef struct _Request {
 Request *request_new( Pool *pool );
 void request_free( Request *t );
 
-void request_install_xsolvable( Request *t, XSolvable *xs );
-void request_remove_xsolvable( Request *t, XSolvable *xs );
-void request_install_name( Request *t, const char *name );
-void request_remove_name( Request *t, const char *name );
-void request_install_relation( Request *t, const Relation *rel );
-void request_remove_relation( Request *t, const Relation *rel );
+void request_xsolvable( Request *t, XSolvable *xs, int what );
+void request_name( Request *t, const char *name, int what );
+void request_relation( Request *t, const Relation *rel, int what );
+
 int request_size( Request *t );
 Job *request_job_get( Request *t, int i );
 
