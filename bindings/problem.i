@@ -37,28 +37,30 @@ typedef struct _Problem {} Problem;
 
 %extend Problem {
   /* The problem is caused by an update rule (i.e. 'better' Solvable available) */
-  %constant int SOLVER_PROBLEM_UPDATE_RULE = SOLVER_PROBLEM_UPDATE_RULE;
+  %constant int SOLVER_PROBLEM_UPDATE_RULE = SOLVER_RULE_UPDATE;
   /* The problem is caused by a Job inside the Request */
-  %constant int SOLVER_PROBLEM_JOB_RULE = SOLVER_PROBLEM_JOB_RULE;
+  %constant int SOLVER_PROBLEM_JOB_RULE = SOLVER_RULE_JOB;
   /* A Job based on a Relation could not be fulfilled because there is no Solvable in the Pool providing it. */
-  %constant int SOLVER_PROBLEM_JOB_NOTHING_PROVIDES_DEP = SOLVER_PROBLEM_JOB_NOTHING_PROVIDES_DEP;
+  %constant int SOLVER_PROBLEM_JOB_NOTHING_PROVIDES_DEP = SOLVER_RULE_JOB_NOTHING_PROVIDES_DEP;
   /* The Solvable is not installable (wrong architecture, etc.) */
-  %constant int SOLVER_PROBLEM_NOT_INSTALLABLE = SOLVER_PROBLEM_NOT_INSTALLABLE;
+  %constant int SOLVER_PROBLEM_NOT_INSTALLABLE = SOLVER_RULE_RPM_NOT_INSTALLABLE;
   /* A requirement could not be fulfilled because there is no Solvable in the Pool providing it. */
-  %constant int SOLVER_PROBLEM_NOTHING_PROVIDES_DEP = SOLVER_PROBLEM_NOTHING_PROVIDES_DEP;
+  %constant int SOLVER_PROBLEM_NOTHING_PROVIDES_DEP = SOLVER_RULE_RPM_NOTHING_PROVIDES_DEP;
   /* Same name */
-  %constant int SOLVER_PROBLEM_SAME_NAME = SOLVER_PROBLEM_SAME_NAME;
+  %constant int SOLVER_PROBLEM_SAME_NAME = SOLVER_RULE_RPM_SAME_NAME;
   /* Packages conflict */
-  %constant int SOLVER_PROBLEM_PACKAGE_CONFLICT = SOLVER_PROBLEM_PACKAGE_CONFLICT;
+  %constant int SOLVER_PROBLEM_PACKAGE_CONFLICT = SOLVER_RULE_RPM_PACKAGE_CONFLICT;
   /* Package is obsoleted */
-  %constant int SOLVER_PROBLEM_PACKAGE_OBSOLETES = SOLVER_PROBLEM_PACKAGE_OBSOLETES;
+  %constant int SOLVER_PROBLEM_PACKAGE_OBSOLETES = SOLVER_RULE_RPM_PACKAGE_OBSOLETES;
   /* A requirement is fulfilled by an uninstallable Solvable */
-  %constant int SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE = SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE;
+  %constant int SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE = SOLVER_RULE_RPM_PACKAGE_REQUIRES;
   /* The Solvable conflicts with itself. */
-  %constant int SOLVER_PROBLEM_SELF_CONFLICT = SOLVER_PROBLEM_SELF_CONFLICT;
+  %constant int SOLVER_PROBLEM_SELF_CONFLICT = SOLVER_RULE_RPM_SELF_CONFLICT;
   /* A dependency of an already installed Solvable could not be fulfilled (broken system) */
-  %constant int SOLVER_PROBLEM_RPM_RULE = SOLVER_PROBLEM_RPM_RULE;
-
+  %constant int SOLVER_PROBLEM_RPM_RULE = SOLVER_RULE_RPM;
+  %constant int SOLVER_RULE_DISTUPGRADE = SOLVER_RULE_DISTUPGRADE;
+  %constant int SOLVER_RULE_INFARCH = SOLVER_RULE_INFARCH;
+  
   ~Problem()
   { problem_free ($self); }
 

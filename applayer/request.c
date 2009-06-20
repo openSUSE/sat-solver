@@ -47,52 +47,26 @@ request_size( Request *t )
 
 
 void
-request_install_xsolvable( Request *t, XSolvable *xs )
+request_xsolvable( Request *t, XSolvable *xs, int what )
 {
-  queue_push( &(t->queue), SOLVER_INSTALL|SOLVER_SOLVABLE );
+  queue_push( &(t->queue), what|SOLVER_SOLVABLE );
   /* FIXME: check: s->repo->pool == $self->pool */
   queue_push( &(t->queue), xs->id );
 }
 
 
 void
-request_remove_xsolvable( Request *t, XSolvable *xs )
+request_name( Request *t, const char *name, int what )
 {
-  queue_push( &(t->queue), SOLVER_ERASE|SOLVER_SOLVABLE );
-  /* FIXME: check: s->repo->pool == $self->pool */
-  queue_push( &(t->queue), xs->id );
-}
-
-
-void
-request_install_name( Request *t, const char *name )
-{
-  queue_push( &(t->queue), SOLVER_INSTALL|SOLVER_SOLVABLE_NAME );
+  queue_push( &(t->queue), what|SOLVER_SOLVABLE_NAME );
   queue_push( &(t->queue), str2id( t->pool, name, 1 ));
 }
 
 
 void
-request_remove_name( Request *t, const char *name )
+request_relation( Request *t, const Relation *rel, int what )
 {
-  queue_push( &(t->queue), SOLVER_ERASE|SOLVER_SOLVABLE_NAME );
-  queue_push( &(t->queue), str2id( t->pool, name, 1 ));
-}
-
-
-void
-request_install_relation( Request *t, const Relation *rel )
-{
-  queue_push( &(t->queue), SOLVER_INSTALL|SOLVER_SOLVABLE_PROVIDES );
-  /* FIXME: check: rel->pool == $self->pool */
-  queue_push( &(t->queue), rel->id );
-}
-
-
-void
-request_remove_relation( Request *t, const Relation *rel )
-{
-  queue_push( &(t->queue), SOLVER_ERASE|SOLVER_SOLVABLE_PROVIDES );
+  queue_push( &(t->queue), what|SOLVER_SOLVABLE_PROVIDES );
   /* FIXME: check: rel->pool == $self->pool */
   queue_push( &(t->queue), rel->id );
 }
