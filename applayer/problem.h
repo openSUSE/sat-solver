@@ -19,24 +19,25 @@
  */
 
 #include "solver.h"
+#include "job.h"
 
 #include "request.h"
-#include "solution.h"
 
 typedef struct _Problem {
   Solver *solver;
   Request *request;
-  Id id;                    /* [PRIVATE] problem id */
-  SolverRuleinfo reason;
-  Id source;                /* solvable id */
-  Id relation;              /* relation id */
-  Id target;                /* solvable id */
+  Id id;                    /* problem id */
 } Problem;
 
 Problem *problem_new( Solver *s, Request *t, Id id );
 void problem_free( Problem *p );
 
 void solver_problems_iterate( Solver *solver, Request *t, int (*callback)( const Problem *p, void *user_data ), void *user_data );
-void problem_solutions_iterate( Problem *p, int (*callback)( const Solution *s, void *user_data ), void *user_data );
+
+/* loop over Jobs leading to the problem */
+void problem_jobs_iterate( Problem *p, int (*callback)( const Job *j, void *user_data ), void *user_data );
+
+struct _Solution; /* forward decl, cannot include solution.h due to cycles */
+void problem_solutions_iterate( Problem *p, int (*callback)( const struct _Solution *s, void *user_data ), void *user_data );
 
 #endif  /* SATSOLVER_PROBLEM_H */

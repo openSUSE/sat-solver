@@ -24,7 +24,7 @@ ruleinfo_new( const Solver *solver, Id rule )
 {
   Ruleinfo *ri = (Ruleinfo *)calloc( 1, sizeof( Ruleinfo ));
   ri->solver = solver;
-  ri->cmd = solver_ruleinfo(solver, rule, &(ri->source), &(ri->target), &(ri->dep));
+  ri->cmd = solver_ruleinfo((Solver *)solver, rule, &(ri->source), &(ri->target), &(ri->dep));
   return ri;
 }
 

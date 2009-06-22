@@ -14,6 +14,21 @@
 
 %{
 /*
+ * iterating over problem causes ('yield' in Ruby)
+ */
+					
+static int
+problem_rules_iterate_callback(const Rule *r, void *user_data)
+{
+#if defined(SWIGRUBY)
+  /* FIXME: how to pass 'break' back to the caller ? */
+  rb_yield( SWIG_NewPointerObj((void*) r, SWIGTYPE_p__Rule, 0) );
+#endif
+  return 0;
+}
+
+
+/*
  * iterating over problem solutions ('yield' in Ruby)
  */
 					
@@ -36,30 +51,23 @@ typedef struct _Problem {} Problem;
 
 
 %extend Problem {
-  /* The problem is caused by an update rule (i.e. 'better' Solvable available) */
-  %constant int SOLVER_PROBLEM_UPDATE_RULE = SOLVER_RULE_UPDATE;
-  /* The problem is caused by a Job inside the Request */
-  %constant int SOLVER_PROBLEM_JOB_RULE = SOLVER_RULE_JOB;
-  /* A Job based on a Relation could not be fulfilled because there is no Solvable in the Pool providing it. */
-  %constant int SOLVER_PROBLEM_JOB_NOTHING_PROVIDES_DEP = SOLVER_RULE_JOB_NOTHING_PROVIDES_DEP;
-  /* The Solvable is not installable (wrong architecture, etc.) */
-  %constant int SOLVER_PROBLEM_NOT_INSTALLABLE = SOLVER_RULE_RPM_NOT_INSTALLABLE;
-  /* A requirement could not be fulfilled because there is no Solvable in the Pool providing it. */
-  %constant int SOLVER_PROBLEM_NOTHING_PROVIDES_DEP = SOLVER_RULE_RPM_NOTHING_PROVIDES_DEP;
-  /* Same name */
-  %constant int SOLVER_PROBLEM_SAME_NAME = SOLVER_RULE_RPM_SAME_NAME;
-  /* Packages conflict */
-  %constant int SOLVER_PROBLEM_PACKAGE_CONFLICT = SOLVER_RULE_RPM_PACKAGE_CONFLICT;
-  /* Package is obsoleted */
-  %constant int SOLVER_PROBLEM_PACKAGE_OBSOLETES = SOLVER_RULE_RPM_PACKAGE_OBSOLETES;
-  /* A requirement is fulfilled by an uninstallable Solvable */
-  %constant int SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE = SOLVER_RULE_RPM_PACKAGE_REQUIRES;
-  /* The Solvable conflicts with itself. */
-  %constant int SOLVER_PROBLEM_SELF_CONFLICT = SOLVER_RULE_RPM_SELF_CONFLICT;
-  /* A dependency of an already installed Solvable could not be fulfilled (broken system) */
-  %constant int SOLVER_PROBLEM_RPM_RULE = SOLVER_RULE_RPM;
+			    
+  %constant int SOLVER_RULE_RPM = SOLVER_RULE_RPM;
+  %constant int SOLVER_RULE_RPM_NOT_INSTALLABLE = SOLVER_RULE_RPM_NOT_INSTALLABLE,
+  %constant int SOLVER_RULE_RPM_NOTHING_PROVIDES_DEP = SOLVER_RULE_RPM_NOTHING_PROVIDES_DEP,
+  %constant int SOLVER_RULE_RPM_PACKAGE_REQUIRES = SOLVER_RULE_RPM_PACKAGE_REQUIRES,
+  %constant int SOLVER_RULE_RPM_SELF_CONFLICT = SOLVER_RULE_RPM_SELF_CONFLICT,
+  %constant int SOLVER_RULE_RPM_PACKAGE_CONFLICT = SOLVER_RULE_RPM_PACKAGE_CONFLICT,
+  %constant int SOLVER_RULE_RPM_SAME_NAME = SOLVER_RULE_RPM_SAME_NAME,
+  %constant int SOLVER_RULE_RPM_PACKAGE_OBSOLETES = SOLVER_RULE_RPM_PACKAGE_OBSOLETES,
+  %constant int SOLVER_RULE_RPM_IMPLICIT_OBSOLETES = SOLVER_RULE_RPM_IMPLICIT_OBSOLETES,
+  %constant int SOLVER_RULE_UPDATE = SOLVER_RULE_UPDATE = 0x200,
+  %constant int SOLVER_RULE_FEATURE = SOLVER_RULE_FEATURE = 0x300,
+  %constant int SOLVER_RULE_JOB = SOLVER_RULE_JOB = 0x400,
+  %constant int SOLVER_RULE_JOB_NOTHING_PROVIDES_DEP = SOLVER_RULE_JOB_NOTHING_PROVIDES_DEP,
   %constant int SOLVER_RULE_DISTUPGRADE = SOLVER_RULE_DISTUPGRADE;
   %constant int SOLVER_RULE_INFARCH = SOLVER_RULE_INFARCH;
+  %constant int SOLVER_RULE_LEARNT = SOLVER_RULE_LEARNT;
   
   ~Problem()
   { problem_free ($self); }
@@ -77,7 +85,7 @@ typedef struct _Problem {} Problem;
   { return $self->request; }
 
   /*
-   * The reason for the problem. One of +Satsolver::SOLVER_PROBLEM_*+
+   * The reason for the problem. One of +Satsolver::SOLVER_RULE_*+
    *
    */
   int reason()

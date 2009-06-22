@@ -28,7 +28,7 @@
  */
 
 typedef struct _xsolvable {
-  Pool *pool;
+  const Pool *pool;
   Id id;
   unsigned int kind;           /* one of KIND_xxx */
 } XSolvable;
@@ -36,7 +36,7 @@ typedef struct _xsolvable {
 /*
  * Create a new XSolvable in pool from Solvable id
  */
-XSolvable *xsolvable_new( Pool *pool, Id id );
+XSolvable *xsolvable_new( const Pool *pool, Id id );
 
 /*
  * Create a new XSolvable in pool from name, evr, arch
@@ -52,7 +52,7 @@ void xsolvable_free( XSolvable *xs );
  * Check for equality
  * Two XSolvables are equal if they both reference the same Id of the same pool.
  */
-int xsolvable_equal( XSolvable *xs1, XSolvable *xs2 );
+int xsolvable_equal( const XSolvable *xs1, const XSolvable *xs2 );
 
 /*
  * Return the Solvable corresponding to the given XSolvable
@@ -62,14 +62,14 @@ Solvable *xsolvable_solvable( const XSolvable *xs );
 /*
  * Add an existing solvable to Repo
  */
-XSolvable *xsolvable_add( Repo *repo, XSolvable *xs );
+XSolvable *xsolvable_add( Repo *repo, const XSolvable *xs );
 
 /*
  * Find XSolvable by name in pool (and repo)
  * If repo == NULL, search the complete pool
  * If repo != NULL, limit search to the given repo
  */
-XSolvable *xsolvable_find( Pool *pool, char *name, const Repo *repo );
+XSolvable *xsolvable_find( Pool *pool, const char *name, const Repo *repo );
 
 /* iterate over all (newly-)to-be-installed solvables
  * if all = 0, only report *newly* installed ones (non-updates)
@@ -91,17 +91,17 @@ void solver_updates_iterate( Solver *solver, int (*callback)( const XSolvable *x
 /*
  * Iterate over all solvables being suggested in the last solver run
  */
-void solver_suggestions_iterate( Solver *solver, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data );
+void solver_suggestions_iterate( const Solver *solver, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data );
 
 /*
  * Count solvables in a Repo
  * This is the number of iterations when calling repo_xsolvables_iterate for this Repo
  */
-int repo_xsolvables_count( Repo *repo );
+int repo_xsolvables_count( const Repo *repo );
 
 /*
  * Iterate over all solvables of the given repo
  */
-void repo_xsolvables_iterate( Repo *repo, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data );
+void repo_xsolvables_iterate( const Repo *repo, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data );
 
 #endif  /* SATSOLVER_XSOLVABLE_H */

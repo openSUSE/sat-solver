@@ -19,20 +19,17 @@
 #include <policy.h>
 
 #include "problem.h"
+#include "solution.h"
 #include "evr.h"
 
 
 Problem *
 problem_new( Solver *s, Request *t, Id id )
 {
-  Id prule;
-
   Problem *p = (Problem *)malloc( sizeof( Problem ));
   p->solver = s;
   p->request = t;
   p->id = id;
-  prule = solver_findproblemrule( s, id );
-  p->reason = solver_problemruleinfo( s, &(t->queue), prule, &(p->relation), &(p->source), &(p->target) );
   return p;
 }
 
@@ -66,122 +63,48 @@ problem_solutions_iterate( Problem *problem, int (*callback)( const Solution *s,
     return;
 
   Id solution = 0;
+  
   while ((solution = solver_next_solution( problem->solver, problem->id, solution )) != 0)
     {
-      Id p, rp, element, what;
+      Id p, rp, element = 0;
+     
       
-      Id s1, s2, n1, n2;
-      int code = SOLUTION_UNKNOWN;
-      
-      Solver *solver = problem->solver;
-      Pool *pool = solver->pool;
-      element = 0;
-      s1 = s2 = n1 = n2 = 0;
+      /*  from src/problems.c:
+       * 
+       *  return the next item of the proposed solution
+       *  here are the possibilities for p / rp and what
+       *  the solver expects the application to do:
+       *    p                             rp
+       *  -------------------------------------------------------
+       *    SOLVER_SOLUTION_INFARCH       pkgid
+       *    -> add (SOLVER_INSTALL|SOLVER_SOLVABLE, rp) to the job
+       * 
+       *    SOLVER_SOLUTION_DISTUPGRADE   pkgid
+       *    -> add (SOLVER_INSTALL|SOLVER_SOLVABLE, rp) to the job
+       * 
+       *    SOLVER_SOLUTION_JOB           jobidx
+       *    -> remove job (jobidx - 1, jobidx) from job queue
+       * 
+       *    pkgid (> 0)                   0
+       *    -> add (SOLVER_ERASE|SOLVER_SOLVABLE, p) to the job
+       * 
+       *    pkgid (> 0)                   pkgid (> 0)
+       *    -> add (SOLVER_INSTALL|SOLVER_SOLVABLE, rp) to the job
+       *       (this will replace package p)
+       *         
+       * Thus, the solver will either ask the application to remove
+       * a specific job from the job queue, or ask to add an install/erase
+       * job to it.
+       *
+       */
     
-      while ((element = solver_next_solutionelement( solver, problem->id, solution, element, &p, &rp)) != 0)
+      while ((element = solver_next_solutionelement( problem->solver, problem->id, solution, element, &p, &rp)) != 0)
         {
-	  if (p == 0)
-	    {
-	
-	      /* job, rp is index into job queue */
-	      what = solver->job.elements[rp];
-	
-	      switch (solver->job.elements[rp - 1])
-	        {
-		 case SOLVER_INSTALL_SOLVABLE:
-		  s1 = what;
-		  if (solver->installed
-		      && (pool->solvables + s1)->repo == solver->installed)
-		    {
-		      code = SOLUTION_NOKEEP_INSTALLED; /* s1 */
-		    }
-		  else
-		  {
-		    code = SOLUTION_NOINSTALL_SOLV; /* s1 */
-		  }
-		  break;
-		 case SOLVER_ERASE_SOLVABLE:
-		  s1 = what;
-		  if (solver->installed
-		      && (pool->solvables + s1)->repo == solver->installed)
-		    {
-		      code = SOLUTION_NOREMOVE_SOLV; /* s1 */
-		    }
-		  else
-		    {
-		      code = SOLUTION_NOFORBID_INSTALL; /* s1 */
-		    }
-		  break;
-		 case SOLVER_INSTALL_SOLVABLE_NAME:
-		  n1 = what;
-		  code = SOLUTION_NOINSTALL_NAME; /* n1 */
-		  break;
-		 case SOLVER_ERASE_SOLVABLE_NAME:
-		  n1 = what;
-		  code = SOLUTION_NOREMOVE_NAME; /* n1 */
-		  break;
-		 case SOLVER_INSTALL_SOLVABLE_PROVIDES:
-		  n1 = what;
-		  code = SOLUTION_NOINSTALL_REL; /* r1 */
-		  break;
-		 case SOLVER_ERASE_SOLVABLE_PROVIDES:
-		  n1 = what;
-		  code = SOLUTION_NOREMOVE_REL; /* r1 */
-		  break;
-		 case SOLVER_INSTALL_SOLVABLE_UPDATE:
-		  s1 = what;
-		  code = SOLUTION_NOUPDATE;
-		  break;
-		 default:
-		  code = SOLUTION_UNKNOWN;
-		  break;
-		}
-	    }
-	  else
-	    {
-	      s1 = p;
-	      s2 = rp;
-	      if (p < 0)
-		p = rp;
-	      /* policy, replace p with rp */
-	      Solvable *sp = pool->solvables + p;
-	      Solvable *sr = rp ? pool->solvables + rp : 0;
-	      if (sr)
-	        {
-		  if (!solver->allowdowngrade
-		      && evrcmp( pool, sp->evr, sr->evr, EVRCMP_MATCH_RELEASE ) > 0)
-		    {
-		      code = SOLUTION_ALLOW_DOWNGRADE;
-		    }
-		  else if (!solver->allowarchchange
-			   && sp->name == sr->name
-			   && sp->arch != sr->arch
-			   && policy_illegal_archchange(solver, sp, sr ) )
-		    {
-		      code = SOLUTION_ALLOW_ARCHCHANGE; /* s1, s2 */
-		    }
-		  else if (!solver->allowvendorchange
-			   && sp->name == sr->name
-			   && sp->vendor != sr->vendor
-			   && policy_illegal_vendorchange( solver, sp, sr ) )
-		    {
-		      n1 = sp->vendor;
-		      n2 = sr->vendor;
-		      code = SOLUTION_ALLOW_VENDORCHANGE;
-		    }
-		  else
-		    {
-		      code = SOLUTION_ALLOW_REPLACEMENT;
-		    }
-		}
-	      else
-	        {
-		  code = SOLUTION_ALLOW_REMOVE; /* s1 */
-		}
-	    }
+	  Solution *s = solution_new( problem, solution, p, rp );
+	  int result = callback( s, user_data );
+	  solution_free(s);
+	  if (result)
+	    break;
 	}
-      Solution *s = solution_new( problem->solver->pool, code, s1, n1, s2, n2 );
-      if (callback( s, user_data ))
-	break;
     }
 }

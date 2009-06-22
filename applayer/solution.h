@@ -20,34 +20,16 @@
 
 #include "pool.h"
 
-enum solutions {
-  SOLUTION_UNKNOWN = 0,
-  SOLUTION_NOKEEP_INSTALLED,
-  SOLUTION_NOINSTALL_SOLV,
-  SOLUTION_NOREMOVE_SOLV,
-  SOLUTION_NOFORBID_INSTALL,
-  SOLUTION_NOINSTALL_NAME,
-  SOLUTION_NOREMOVE_NAME,
-  SOLUTION_NOINSTALL_REL,
-  SOLUTION_NOREMOVE_REL,
-  SOLUTION_NOUPDATE,
-  SOLUTION_ALLOW_DOWNGRADE,
-  SOLUTION_ALLOW_ARCHCHANGE,
-  SOLUTION_ALLOW_VENDORCHANGE,
-  SOLUTION_ALLOW_REPLACEMENT,
-  SOLUTION_ALLOW_REMOVE
-};
+#include "problem.h"
 
 typedef struct _Solution {
-  Pool *pool;
-  enum solutions solution;
-  Id s1;
-  Id n1;
-  Id s2;
-  Id n2;
+  const Problem *problem;
+  Id s;       /* solution set id. */
+  Id p;
+  Id rp;
 } Solution;
 
-Solution *solution_new( Pool *pool, int solution, Id s1, Id n1, Id s2, Id n2 );
+Solution *solution_new( const Problem *problem, Id s, Id p, Id rp );
 void solution_free( Solution *s );
 
 #endif  /* SATSOLVER_SOLUTION_H */

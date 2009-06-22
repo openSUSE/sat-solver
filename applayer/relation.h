@@ -19,10 +19,10 @@
 
 typedef struct _Relation {
   Offset id;
-  Pool *pool;
+  const Pool *pool;
 } Relation;
 
-Relation *relation_new( Pool *pool, Id id );
+Relation *relation_new( const Pool *pool, Id id );
 Relation *relation_create( Pool *pool, const char *name, int op, const char *evr );
 void relation_free( Relation *r );
 Id relation_evrid( const Relation *r );

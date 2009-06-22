@@ -16,7 +16,7 @@
 
 
 Relation *
-relation_new( Pool *pool, Id id )
+relation_new( const Pool *pool, Id id )
 {
   Relation *relation;
   if (!id) return NULL;

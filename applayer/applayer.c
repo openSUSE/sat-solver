@@ -15,7 +15,7 @@
 #include "applayer.h"
 
 const char *
-my_id2str( Pool *pool, Id id )
+my_id2str( const Pool *pool, Id id )
 {
   if (id == STRID_NULL)
     return NULL;
@@ -25,9 +25,9 @@ my_id2str( Pool *pool, Id id )
 }
 
 unsigned int
-pool_xsolvables_count( Pool *pool )
+pool_xsolvables_count( const Pool *pool )
 {
-  Solvable *s;
+  const Solvable *s;
   Id p;
   int count = 0;
   /* skip Id 0 since it is reserved
@@ -47,9 +47,9 @@ pool_xsolvables_count( Pool *pool )
 }
 
 void
-pool_xsolvables_iterate( Pool *pool, int (*callback)(const XSolvable *xs, void *user_data), void *user_data)
+pool_xsolvables_iterate( const Pool *pool, int (*callback)(const XSolvable *xs, void *user_data), void *user_data)
 {
-  Solvable *s;
+  const Solvable *s;
   Id p;
   /* skip Id 0 and Id 1, see pool_count() above */
   for (p = 2, s = pool->solvables + p; p < pool->nsolvables; p++, s++)

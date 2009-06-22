@@ -21,17 +21,16 @@
 
 
 Solution *
-solution_new( Pool *pool, int solution, Id s1, Id n1, Id s2, Id n2 )
+solution_new( const Problem *problem, Id s, Id p, Id rp )
 {
-  Solution *s = (Solution *)malloc( sizeof( Solution ));
-  s->pool = pool;
-  s->solution = solution;
-  s->s1 = s1;
-  s->n1 = n1;
-  s->s2 = s2;
-  s->n2 = n2;
-  return s;
+  Solution *solution = (Solution *)malloc( sizeof( Solution ));
+  solution->problem = problem;
+  solution->s = s;
+  solution->p = p;
+  solution->rp = rp;
+  return solution;
 }
+
 
 void
 solution_free( Solution *s )

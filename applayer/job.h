@@ -10,6 +10,9 @@
  *
  * A single 'job' item of a Request
  *
+ * Internally, a Job is translated to a solver rule. Thus, solver
+ * problems will only reference bad rules.
+ * 
  */
 
 
@@ -23,17 +26,23 @@
 #include "relation.h"
 
 typedef struct _Job {
-  Pool *pool;
-  Id cmd;
-  Id id;
+  const Pool *pool;
+  int cmd;  /* solver queue command */
+  Id id;    /* Id of Name, Relation, or Solvable */
 } Job;
 
 
-Job *job_new( Pool *pool, Id cmd, Id id );
+Job *job_new( const Pool *pool, int cmd, Id id );
 void job_free( Job *j );
 
-XSolvable *job_xsolvable( Job *j );
-const char *job_name( Job *j );
-Relation *job_relation( Job *j );
+
+/* Return Solvable (or NULL if job doesn't affect Solvable) */
+XSolvable *job_xsolvable( const Job *j );
+
+/* Return Name (or NULL if job doesn't affect Name) */
+const char *job_name( const Job *j );
+
+/* Return Relation (or NULL if job doesn't affect Relation) */
+Relation *job_relation( const Job *j );
 
 #endif  /* SATSOLVER_JOB_H */

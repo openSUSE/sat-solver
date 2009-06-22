@@ -45,6 +45,7 @@ typedef struct _Job {} Job;
 
   XSolvable *solvable()
   { return job_xsolvable( $self ); }
+
   const char *name()
   { return job_name( $self ); }
 

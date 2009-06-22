@@ -26,7 +26,7 @@
 
 
 XSolvable *
-xsolvable_new( Pool *pool, Id id )
+xsolvable_new( const Pool *pool, Id id )
 {
   if (id) {
     XSolvable *xsolvable = (XSolvable *)malloc( sizeof( XSolvable ));
@@ -82,7 +82,7 @@ xsolvable_solvable( const XSolvable *xs )
  */
 
 int
-xsolvable_equal( XSolvable *xs1, XSolvable *xs2 )
+xsolvable_equal( const XSolvable *xs1, const XSolvable *xs2 )
 {
 /*  fprintf(stderr, "%p[%p/%d] == %p[%p/%d] ?\n", xs1, xs1->pool, xs1->id, xs2, xs2->pool, xs2->id); */
   if ((xs1 == xs2)
@@ -109,7 +109,7 @@ copy_deps( Repo *repo, Offset *ndeps, Id *odeps )
  */
 
 XSolvable *
-xsolvable_add( Repo *repo, XSolvable *xs )
+xsolvable_add( Repo *repo, const XSolvable *xs )
 {
   Id sid;
   Solvable *old_s, *new_s;
@@ -146,14 +146,16 @@ xsolvable_add( Repo *repo, XSolvable *xs )
  */
 
 XSolvable *
-xsolvable_find( Pool *pool, char *name, const Repo *repo )
+xsolvable_find( Pool *pool, const char *name, const Repo *repo )
 {
   Id id;
   Queue plist;
   int i, end;
   Solvable *s;
 
-  id = str2id( pool, name, 1 );
+  id = str2id( (Pool *)pool, name, 0 );
+  if (id == ID_NULL)
+    return NULL;       /* 'name' unknown in pool */
   queue_init( &plist);
   i = repo ? repo->start : 1;
   end = repo ? repo->start + repo->nsolvables : pool->nsolvables;
@@ -189,7 +191,7 @@ xsolvable_find( Pool *pool, char *name, const Repo *repo )
  */
 
 XSolvable *
-xsolvable_get( Pool *pool, int i, const Repo *repo )
+xsolvable_get( const Pool *pool, int i, const Repo *repo )
 {
   if (repo == NULL)
     i += 2; /* adapt to internal Id, see size() above */
@@ -230,7 +232,7 @@ solver_installs_iterate( Solver *solver, int all, int (*callback)( const XSolvab
       
       // getting repo
       s = solver->pool->solvables + p;
-      Repo *repo = s->repo;
+      const Repo *repo = s->repo;
       if (!repo || repo == installed)
         continue;       /* already installed resolvable */
 
@@ -253,7 +255,7 @@ solver_removals_iterate( Solver *solver, int all, int (*callback)( const XSolvab
   Id p;
   Solvable *s;
   Id *obsoletesmap = NULL;
-  Repo *installed = solver->installed; /* repo of installed solvables */
+  const Repo *installed = solver->installed; /* repo of installed solvables */
 
   if (!callback)
     return;
@@ -289,7 +291,7 @@ solver_updates_iterate( Solver *solver, int (*callback)( const XSolvable *xs_old
   Id p;
   Solvable *s;
   Id *obsoletesmap = NULL;
-  Repo *installed = solver->installed; /* repo of installed solvables */
+  const Repo *installed = solver->installed; /* repo of installed solvables */
 
   if (!callback)
     return;
@@ -314,7 +316,7 @@ solver_updates_iterate( Solver *solver, int (*callback)( const XSolvable *xs_old
 
 
 void
-solver_suggestions_iterate( Solver *solver, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data )
+solver_suggestions_iterate( const Solver *solver, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data )
 {
   int i;
 
@@ -335,7 +337,7 @@ solver_suggestions_iterate( Solver *solver, int (*callback)( const XSolvable *xs
  */
 
 int
-repo_xsolvables_count( Repo *repo )
+repo_xsolvables_count( const Repo *repo )
 {
   Solvable *s;
   Id p;
@@ -357,7 +359,7 @@ repo_xsolvables_count( Repo *repo )
  */
 
 void
-repo_xsolvables_iterate( Repo *repo, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data )
+repo_xsolvables_iterate( const Repo *repo, int (*callback)( const XSolvable *xs, void *user_data ), void *user_data )
 {
   Solvable *s;
   Id p;

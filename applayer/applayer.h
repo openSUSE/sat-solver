@@ -25,14 +25,14 @@
  *
  */
 
-const char *my_id2str( Pool *pool, Id id );
+const char *my_id2str( const Pool *pool, Id id );
 
 /************************************************
  * Pool
  *
  */
 
-unsigned int pool_xsolvables_count( Pool *pool );
-void pool_xsolvables_iterate( Pool *pool, int (*callback)(const XSolvable *xs, void *user_data), void *user_data);
+unsigned int pool_xsolvables_count( const Pool *pool );
+void pool_xsolvables_iterate( const Pool *pool, int (*callback)(const XSolvable *xs, void *user_data), void *user_data);
 
 #endif  /* SATSOLVER_APPLAYER_H */
