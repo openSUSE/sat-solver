@@ -36,6 +36,37 @@ ruleinfo_free( Ruleinfo *ri )
 }
 
 
+const char *
+ruleinfo_command_string(const Ruleinfo *ri)
+{
+  switch (ri->cmd) 
+    {
+#define rulecase(r) case r: return #r; break
+      rulecase(SOLVER_RULE_UNKNOWN);
+      rulecase(SOLVER_RULE_RPM);
+      rulecase(SOLVER_RULE_RPM_NOT_INSTALLABLE);
+      rulecase(SOLVER_RULE_RPM_NOTHING_PROVIDES_DEP);
+      rulecase(SOLVER_RULE_RPM_PACKAGE_REQUIRES);
+      rulecase(SOLVER_RULE_RPM_SELF_CONFLICT);
+      rulecase(SOLVER_RULE_RPM_PACKAGE_CONFLICT);
+      rulecase(SOLVER_RULE_RPM_SAME_NAME);
+      rulecase(SOLVER_RULE_RPM_PACKAGE_OBSOLETES);
+      rulecase(SOLVER_RULE_RPM_IMPLICIT_OBSOLETES);
+      rulecase(SOLVER_RULE_UPDATE);
+      rulecase(SOLVER_RULE_FEATURE);
+      rulecase(SOLVER_RULE_JOB);
+      rulecase(SOLVER_RULE_JOB_NOTHING_PROVIDES_DEP);
+      rulecase(SOLVER_RULE_DISTUPGRADE);
+      rulecase(SOLVER_RULE_INFARCH);
+      rulecase(SOLVER_RULE_LEARNT);
+#undef rulecase
+    default:
+      break;
+    }
+  return "Unknown";
+}
+
+
 int
 ruleinfo_command(const Ruleinfo *ri)
 {

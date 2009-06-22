@@ -44,7 +44,6 @@ class DecisionTest < Test::Unit::TestCase
     # installed: A-0.0-0, B-1.0-0, C-2.0-0, D-3.0-0
     #  C-2.0-0 requires D-3.0-0
     
-
     repo = pool.create_repo( 'test' )
     assert repo
     
@@ -76,13 +75,13 @@ class DecisionTest < Test::Unit::TestCase
       i += 1
       case d.op
       when Satsolver::DECISION_INSTALL
-	puts "#{i}: Install #{d.solvable} #{d.ruleinfo}"
+	puts "#{i}: Install #{d.solvable}\n\t#{d.ruleinfo.command_s}: #{d.ruleinfo}"
       when Satsolver::DECISION_REMOVE
-	puts "#{i}: Remove #{d.solvable} #{d.ruleinfo}"
+	puts "#{i}: Remove #{d.solvable}\n\t#{d.ruleinfo.command_s}: #{d.ruleinfo}"
       when Satsolver::DECISION_OBSOLETE
-	puts "#{i}: Obsolete #{d.solvable} #{d.ruleinfo}"
+	puts "#{i}: Obsolete #{d.solvable}\n\t#{d.ruleinfo.command_s}: #{d.ruleinfo}"
       when Satsolver::DECISION_UPDATE
-	puts "#{i}: Update #{d.solvable} #{d.ruleinfo}"
+	puts "#{i}: Update #{d.solvable}\n\t#{d.ruleinfo.command_s}: #{d.ruleinfo}"
       else
 	puts "#{i}: Decision op #{d.op}"
       end

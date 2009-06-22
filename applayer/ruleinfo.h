@@ -34,6 +34,7 @@ typedef struct _Ruleinfo {
 Ruleinfo *ruleinfo_new( const Solver *solver, Id rule );
 void ruleinfo_free( Ruleinfo *ri );
 
+const char *ruleinfo_command_string(const Ruleinfo *ri);
 int ruleinfo_command(const Ruleinfo *ri);
 XSolvable *ruleinfo_source(const Ruleinfo *ri);
 XSolvable *ruleinfo_target(const Ruleinfo *ri);

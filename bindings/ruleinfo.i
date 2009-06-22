@@ -34,8 +34,11 @@ typedef struct _Ruleinfo {} Ruleinfo;
   %constant int SOLVER_RULE_LEARNT = SOLVER_RULE_LEARNT;
 
   int command()
-  { return $self->cmd; }
-  
+  { return ruleinfo_command($self); }
+
+  const char *command_s()
+  { return ruleinfo_command_string($self); }
+
   XSolvable *source()
   { return ruleinfo_source($self); }
   
