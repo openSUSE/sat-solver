@@ -40,14 +40,14 @@ ADD_CUSTOM_COMMAND (
 )
 
 
-SET(binding_SRCS ${SWIG_OUTPUT} "${CMAKE_SOURCE_DIR}/tools/repo_rpmdb.c" )
+SET(binding_SRCS ${SWIG_OUTPUT} "${CMAKE_SOURCE_DIR}/ext/repo_rpmdb.c" )
 
 ADD_LIBRARY( satsolver_perl SHARED ${binding_SRCS} )
 # name it 'satsolver.so'
 #  and don't prefix with 'lib'
 SET_TARGET_PROPERTIES( satsolver_perl PROPERTIES PREFIX "" OUTPUT_NAME "satsolver")
 
-INCLUDE_DIRECTORIES( ${PERL_CORE_DIR} ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/applayer ${CMAKE_SOURCE_DIR}/tools )
+INCLUDE_DIRECTORIES( ${PERL_CORE_DIR} ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/applayer ${CMAKE_SOURCE_DIR}/ext)
 
 TARGET_LINK_LIBRARIES( satsolver_perl satsolver )
 TARGET_LINK_LIBRARIES( satsolver_perl appsatsolver )
