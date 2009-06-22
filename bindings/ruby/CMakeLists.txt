@@ -22,7 +22,7 @@ ADD_CUSTOM_COMMAND (
    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../*.i
 )
 
-SET(bindings_SRCS ${SWIG_OUTPUT} "${CMAKE_SOURCE_DIR}/tools/repo_rpmdb.c" )
+SET(bindings_SRCS ${SWIG_OUTPUT} "${CMAKE_SOURCE_DIR}/ext/repo_rpmdb.c" )
 
 ADD_LIBRARY( satsolver_ruby SHARED ${bindings_SRCS} )
 
@@ -30,7 +30,7 @@ ADD_LIBRARY( satsolver_ruby SHARED ${bindings_SRCS} )
 #  and don't prefix with 'lib'
 SET_TARGET_PROPERTIES( satsolver_ruby PROPERTIES OUTPUT_NAME "satsolver" PREFIX "" )
 
-INCLUDE_DIRECTORIES( ${RUBY_INCLUDE_PATH} ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/applayer ${CMAKE_SOURCE_DIR}/tools )
+INCLUDE_DIRECTORIES( ${RUBY_INCLUDE_PATH} ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/applayer ${CMAKE_SOURCE_DIR}/ext )
 
 TARGET_LINK_LIBRARIES( satsolver_ruby satsolver )
 TARGET_LINK_LIBRARIES( satsolver_ruby appsatsolver )
