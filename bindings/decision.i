@@ -62,15 +62,6 @@ typedef struct _Decision {} Decision;
    */
   XSolvable *solvable()
   { return xsolvable_new( $self->solver->pool, $self->solvable ); }
-  /*
-   * The rule which lead to the decision
-   * might be +nil+
-   */
-  Rule *rule()
-  { if ($self->rule > $self->solver->rules)
-      return $self->rule;
-    return NULL;
-  }
 
 #if defined(SWIGRUBY)
   VALUE
@@ -90,7 +81,7 @@ typedef struct _Decision {} Decision;
    *  decision.explain -> Ruleinfo
    *
    */
-  __type explain()
+  __type ruleinfo()
   {
     Swig_Type result = Swig_Null;
     Solver *solver = $self->solver;
@@ -101,4 +92,3 @@ typedef struct _Decision {} Decision;
     return result;
   }
 }
-

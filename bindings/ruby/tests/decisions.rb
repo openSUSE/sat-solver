@@ -26,6 +26,7 @@ require 'pathname'
 # test Decisions
 require 'test/unit'
 require 'satsolver'
+require 'ruleinfo'
 
 class DecisionTest < Test::Unit::TestCase
   def test_decision
@@ -39,6 +40,10 @@ class DecisionTest < Test::Unit::TestCase
     solv = installed.create_solvable( 'C', '2.0-0' )
     solv.requires << Satsolver::Relation.new( pool, "D", Satsolver::REL_EQ, "3.0-0" )
     installed.create_solvable( 'D', '3.0-0' )
+    
+    # installed: A-0.0-0, B-1.0-0, C-2.0-0, D-3.0-0
+    #  C-2.0-0 requires D-3.0-0
+    
 
     repo = pool.create_repo( 'test' )
     assert repo
@@ -71,13 +76,13 @@ class DecisionTest < Test::Unit::TestCase
       i += 1
       case d.op
       when Satsolver::DECISION_INSTALL
-	puts "#{i}: Install #{d.solvable} #{d.rule}"
+	puts "#{i}: Install #{d.solvable} #{d.ruleinfo}"
       when Satsolver::DECISION_REMOVE
-	puts "#{i}: Remove #{d.solvable} #{d.rule}"
+	puts "#{i}: Remove #{d.solvable} #{d.ruleinfo}"
       when Satsolver::DECISION_OBSOLETE
-	puts "#{i}: Obsolete #{d.solvable} #{d.rule}"
+	puts "#{i}: Obsolete #{d.solvable} #{d.ruleinfo}"
       when Satsolver::DECISION_UPDATE
-	puts "#{i}: Update #{d.solvable} #{d.rule}"
+	puts "#{i}: Update #{d.solvable} #{d.ruleinfo}"
       else
 	puts "#{i}: Decision op #{d.op}"
       end
