@@ -742,43 +742,6 @@ typedef struct solver {} Solver;
   }
 
 #if defined(SWIGRUBY)
-  VALUE
-#endif
-#if defined(SWIGPYTHON)
-  PyObject *
-#endif
-#if defined(SWIGPERL)
-  SV *
-#endif
-  /*
-   * Explain a decision
-   *
-   * returns 4-element Array [<SOLVER_PROBLEM_xxx>, Relation, Solvable, Solvable]
-   *
-   * *OBSOLETE*: Use Decision.explain instead
-   *
-   * call-seq:
-   *  solver.explain(request, decision) -> [<SOLVER_PROBLEM_xxx>, Relation, Solvable, Solvable]
-   *
-   */
-  __type explain(Request *unused, Decision *decision)
-  {
-    Swig_Type result = Swig_Null;
-    Id rule = decision->rule - $self->rules;
-    if (rule > 0) {
-      Id depp = 0, sourcep = 0, targetp = 0;
-      SolverRuleinfo pi = solver_ruleinfo($self, rule, &sourcep, &targetp, &depp);
-      result = Swig_Array();
-/*      fprintf(stderr, "Rule %d: [pi %d, rel %d, source %d, target %d]\n", rule, pi, depp, sourcep, targetp); */
-      Swig_Append(result, Swig_Int(pi));
-      Swig_Append(result, SWIG_NewPointerObj((void*)relation_new($self->pool, depp), SWIGTYPE_p__Relation, 0));
-      Swig_Append(result, SWIG_NewPointerObj((void*)xsolvable_new($self->pool, sourcep), SWIGTYPE_p__Solvable, 0));
-      Swig_Append(result, SWIG_NewPointerObj((void*)xsolvable_new($self->pool, targetp), SWIGTYPE_p__Solvable, 0));
-    }
-    return result;
-  }
-
-#if defined(SWIGRUBY)
   %rename("problems?") problems_found();
   %typemap(out) int problems_found
     "$result = ($1 != 0) ? Qtrue : Qfalse;";

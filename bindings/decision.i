@@ -84,10 +84,10 @@ typedef struct _Decision {} Decision;
   /*
    * Explain a decision
    *
-   * returns 4-element Array [<SOLVER_PROBLEM_xxx>, Relation, Solvable, Solvable]
+   * returns Ruleinfo
    *
    * call-seq:
-   *  decision.explain -> [<SOLVER_PROBLEM_xxx>, Relation, Solvable, Solvable]
+   *  decision.explain -> Ruleinfo
    *
    */
   __type explain()
@@ -96,14 +96,7 @@ typedef struct _Decision {} Decision;
     Solver *solver = $self->solver;
     Id rule = $self->rule - solver->rules;
     if (rule > 0) {
-      Id depp = 0, sourcep = 0, targetp = 0;
-      SolverRuleinfo pi = solver_ruleinfo(solver, rule, &sourcep, &targetp, &depp);
-      result = Swig_Array();
-/*      fprintf(stderr, "Rule %d: [pi %d, rel %d, source %d, target %d]\n", rule, pi, depp, sourcep, targetp); */
-      Swig_Append(result, Swig_Int(pi));
-      Swig_Append(result, SWIG_NewPointerObj((void*)relation_new(solver->pool, depp), SWIGTYPE_p__Relation, 0));
-      Swig_Append(result, SWIG_NewPointerObj((void*)xsolvable_new(solver->pool, sourcep), SWIGTYPE_p__Solvable, 0));
-      Swig_Append(result, SWIG_NewPointerObj((void*)xsolvable_new(solver->pool, targetp), SWIGTYPE_p__Solvable, 0));
+      result = SWIG_NewPointerObj((void*)ruleinfo_new(solver, rule), SWIGTYPE_p__Ruleinfo, 0);
     }
     return result;
   }
