@@ -28,7 +28,7 @@
  */
 
 typedef struct _xsolvable {
-  const Pool *pool;
+  Pool *pool;
   Id id;
   unsigned int kind;           /* one of KIND_xxx */
 } XSolvable;
@@ -36,7 +36,7 @@ typedef struct _xsolvable {
 /*
  * Create a new XSolvable in pool from Solvable id
  */
-XSolvable *xsolvable_new( const Pool *pool, Id id );
+XSolvable *xsolvable_new( Pool *pool, Id id );
 
 /*
  * Create a new XSolvable in pool from name, evr, arch

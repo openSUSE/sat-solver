@@ -20,6 +20,7 @@
 
 #include "solver.h"
 #include "job.h"
+#include "ruleinfo.h"
 
 #include "request.h"
 
@@ -33,6 +34,8 @@ Problem *problem_new( Solver *s, Request *t, Id id );
 void problem_free( Problem *p );
 
 void solver_problems_iterate( Solver *solver, Request *t, int (*callback)( const Problem *p, void *user_data ), void *user_data );
+
+void problem_ruleinfos_iterate( Problem *problem, int (*callback)( const Ruleinfo *ri, void *user_data), void *user_data );
 
 /* loop over Jobs leading to the problem */
 void problem_jobs_iterate( Problem *p, int (*callback)( const Job *j, void *user_data ), void *user_data );

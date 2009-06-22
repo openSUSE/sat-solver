@@ -26,7 +26,7 @@
 
 
 XSolvable *
-xsolvable_new( const Pool *pool, Id id )
+xsolvable_new( Pool *pool, Id id )
 {
   if (id) {
     XSolvable *xsolvable = (XSolvable *)malloc( sizeof( XSolvable ));
@@ -179,27 +179,6 @@ xsolvable_find( Pool *pool, const char *name, const Repo *repo )
   queue_free(&plist);
 
   return xsolvable_new( pool, id );
-}
-
-
-/*
- * get solvable by index (0..size-1)
- * If repo == NULL, index is relative to pool
- * If repo != NULL, index is relative to repo
- * 
- * index is _not_ the internal id, but used as an array index
- */
-
-XSolvable *
-xsolvable_get( const Pool *pool, int i, const Repo *repo )
-{
-  if (repo == NULL)
-    i += 2; /* adapt to internal Id, see size() above */
-  if (i < 0)
-    return NULL;
-  if (i >= (repo ? repo->nsolvables : pool->nsolvables))
-    return NULL;
-  return xsolvable_new( repo ? repo->pool : pool, repo ? repo->start + i : i );
 }
 
 

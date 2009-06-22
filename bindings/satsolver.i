@@ -157,6 +157,7 @@ SWIGINTERNINLINE SV *SWIG_FromCharPtr(const char *cptr);
 #include "problem.h"
 #include "solution.h"
 #include "covenant.h"
+#include "ruleinfo.h"
 
 
 #if defined(SWIGRUBY)
@@ -403,6 +404,6 @@ typedef unsigned int Offset;
 %include "problem.i"
 %include "solution.i"
 %include "covenant.i"
-%include "rule.i"
+%include "ruleinfo.i"
 %include "solver.i"
 %include "dataiterator.i"

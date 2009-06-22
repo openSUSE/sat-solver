@@ -18,11 +18,11 @@
  */
 					
 static int
-problem_rules_iterate_callback(const Rule *r, void *user_data)
+problem_ruleinfo_iterate_callback(const Ruleinfo *ri, void *user_data)
 {
 #if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
-  rb_yield( SWIG_NewPointerObj((void*) r, SWIGTYPE_p__Rule, 0) );
+  rb_yield( SWIG_NewPointerObj((void*)ri, SWIGTYPE_p__Ruleinfo, 0) );
 #endif
   return 0;
 }
@@ -79,35 +79,15 @@ typedef struct _Problem {} Problem;
   { return $self->solver; }
 
   /*
-   * The Request causing the Problem
-   */
-  Request *request()
-  { return $self->request; }
-
-  /*
-   * The reason for the problem. One of +Satsolver::SOLVER_RULE_*+
+   * An iterator providing information on the rules leading to the
+   * problem.
+   *
+   * call-seq:
+   *   problem.each_ruleinfo { |ruleinfo| ... }
    *
    */
-  int reason()
-  { return $self->reason; }
-
-  /*
-   * The Solvable causing the problem
-   */
-  XSolvable *source()
-  { return xsolvable_new( $self->solver->pool, $self->source ); }
-
-  /*
-   * The affected relation
-   */
-  Relation *relation()
-  { return relation_new( $self->solver->pool, $self->relation ); }
-
-  /*
-   * The Solvable affected by the problem
-   */
-  XSolvable *target()
-  { return xsolvable_new( $self->solver->pool, $self->target ); }
+  void each_ruleinfo()
+  { problem_ruleinfos_iterate( $self, problem_ruleinfo_iterate_callback, NULL );  }
 
   /*
    * Number of available solutions for problem

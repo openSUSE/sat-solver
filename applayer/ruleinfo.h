@@ -34,9 +34,9 @@ typedef struct _Ruleinfo {
 Ruleinfo *ruleinfo_new( const Solver *solver, Id rule );
 void ruleinfo_free( Ruleinfo *ri );
 
-int command(const Ruleinfo *ri);
-XSolvable *source(const Ruleinfo *ri);
-XSolvable *target(const Ruleinfo *ri);
-Relation *relation(const Ruleinfo *ri);
+int ruleinfo_command(const Ruleinfo *ri);
+XSolvable *ruleinfo_source(const Ruleinfo *ri);
+XSolvable *ruleinfo_target(const Ruleinfo *ri);
+Relation *ruleinfo_relation(const Ruleinfo *ri);
 
 #endif  /* SATSOLVER_RULEINFO_H */

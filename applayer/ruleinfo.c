@@ -37,28 +37,28 @@ ruleinfo_free( Ruleinfo *ri )
 
 
 int
-command(const Ruleinfo *ri)
+ruleinfo_command(const Ruleinfo *ri)
 {
   return ri->cmd;
 }
 
 
 XSolvable *
-source(const Ruleinfo *ri)
+ruleinfo_source(const Ruleinfo *ri)
 {
   return ri->source ? xsolvable_new( ri->solver->pool, ri->source ) : NULL;
 }
 
 
 XSolvable *
-target(const Ruleinfo *ri)
+ruleinfo_target(const Ruleinfo *ri)
 {
   return ri->target ? xsolvable_new( ri->solver->pool, ri->target ) : NULL;
 }
 
 
 Relation *
-relation(const Ruleinfo *ri)
+ruleinfo_relation(const Ruleinfo *ri)
 {
   return ri->dep ? relation_new( ri->solver->pool, ri->dep ) : NULL;
 }

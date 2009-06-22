@@ -47,7 +47,7 @@ pool_xsolvables_count( const Pool *pool )
 }
 
 void
-pool_xsolvables_iterate( const Pool *pool, int (*callback)(const XSolvable *xs, void *user_data), void *user_data)
+pool_xsolvables_iterate( Pool *pool, int (*callback)(const XSolvable *xs, void *user_data), void *user_data)
 {
   const Solvable *s;
   Id p;

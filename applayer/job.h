@@ -26,13 +26,13 @@
 #include "relation.h"
 
 typedef struct _Job {
-  const Pool *pool;
+  Pool *pool;
   int cmd;  /* solver queue command */
   Id id;    /* Id of Name, Relation, or Solvable */
 } Job;
 
 
-Job *job_new( const Pool *pool, int cmd, Id id );
+Job *job_new( Pool *pool, int cmd, Id id );
 void job_free( Job *j );
 
 

@@ -57,6 +57,27 @@ solver_problems_iterate( Solver *solver, Request *t, int (*callback)(const Probl
 
 
 void
+problem_ruleinfos_iterate( Problem *problem, int (*callback)( const Ruleinfo *ri, void *user_data), void *user_data )
+{
+  Queue rules;
+  Id rule;
+  queue_init(&rules);
+  
+  solver_findallproblemrules(problem->solver, problem->id, &rules);
+  while ((rule = queue_shift(&rules))) 
+    {
+      int result;
+      Ruleinfo *ri = ruleinfo_new( problem->solver, rule );
+      result = callback( ri, user_data );
+      ruleinfo_free(ri);
+      if (result)
+	break;
+    }
+  return;
+}
+
+
+void
 problem_solutions_iterate( Problem *problem, int (*callback)( const Solution *s, void *user_data ), void *user_data )
 {
   if (!callback) /* no use to iterate without callback */
