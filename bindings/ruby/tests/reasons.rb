@@ -8,85 +8,7 @@ $:.unshift "../../../build/bindings/ruby"
 require 'test/unit'
 require 'pathname'
 require 'satsolver'
-
-module Satsolver
-  class Rule
-    def to_solvable pool, id
-      if (id < 0)
-	"!#{pool.solvable(-id)}"
-      else
-	"#{pool.solvable(id)}"
-      end
-    end
-    def to_relation pool, id
-      if (id < 0)
-	"!#{pool.relation(-id)}"
-      else
-	"#{pool.relation(id)}"
-      end
-    end
-    def to_providers pool, id
-      r = "<"
-      pool.each_provider(id) do |s|
-	r += "#{s}, "
-      end
-      r + ">"
-    end
-    def to_s
-      "p #{p}, d #{d}, w1 #{w1}, w2 #{w2}"
-    end
-    def solvables pool
-      "p #{to_solvable(pool, p)}, d #{to_solvable(pool, d)}, w1 #{to_solvable(pool, w1)}, w2 #{to_solvable(pool, w2)}"
-    end
-    def to_dep pool
-      if d == 0
-	if w2 == 0
-	  if p == w1
-	    if p > 0
-	      "install! #{to_solvable(pool, p)}"
-	    else
-	      "remove! #{to_solvable(pool, -p)}"
-	    end
-	  else # p != w1
-	    "error d = 0, w2 = 0, p #{p} != w1 #{w1}"
-	  end
-	else # w2 != 0
-	  if p == w1
-	    if p > 0
-	      "or! #{to_solvable(pool, p)}, #{to_solvable(pool, w2)}"
-	    else
-	      if w2 > 0
-		"bin! #{to_solvable(pool, -p)} requires #{to_solvable(pool, w2)}"
-	      else
-		"bin! #{to_solvable(pool, -p)} obsoletes #{to_solvable(pool, -w2)}"
-	      end
-	    end
-	  else # p != w1
-	    "error d = 0, w2 = #{w2}, p #{p} != w1 #{w1}"
-	  end
-	end
-      else # d != 0
-	if d > 0
-	  if p < 0
-	    "req! #{to_solvable(pool, -p)} requires one of #{to_providers(pool, d)}..."
-	  else
-	    "upd! #{to_providers(pool, d)} updates #{to_solvable(pool, p)}, provided by #{to_solvable(pool, w2)}..."
-	  end
-	else # d < 0
-	  if p < 0
-	    if d == -1
-	      "del! #{to_solvable(pool, -p)}"
-	    else
-	      "cnf! #{to_solvable(pool, -p)} conflicts #{to_providers(pool, -d)}"
-	    end
-	  else
-	    "error p #{p}, d #{d}, w1 #{w1}, w2 {w2}"
-	  end
-	end
-      end
-    end # to_dep
-  end # class Rule
-end
+require 'ruleinfo'
 
 def explain solver
   solver.each_to_install { |s|
@@ -96,45 +18,7 @@ def explain solver
     puts "Remove #{s}"
   }
   solver.each_decision do |d|
-    puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_s if d.rule})"
-    puts "Decision: #{d.solvable}: #{d.op_s} (#{d.rule.to_dep(@pool) if d.rule})"
-    e = d.explain
-    if e.nil?
-      puts "\t unexplainable"
-    else
-      pis = pi_s e.shift
-      rel = e.shift
-      src = e.shift
-      if src.nil?
-	puts "\t #{pis}"
-      else
-	tgt = e.shift
-	if tgt
-	  puts "\t [#{src}: #{pis} #{rel} provided by #{tgt}]"
-	else
-	  puts "\t [#{src}: #{pis} #{rel}]"
-	end
-      end
-    end
-  end
-end
-
-# SolverProbleminfo to string
-def pi_s pi
-  case pi
-  when Satsolver::SOLVER_PROBLEM_UPDATE_RULE: "update"
-  when Satsolver::SOLVER_PROBLEM_JOB_RULE: "job"
-  when Satsolver::SOLVER_PROBLEM_JOB_NOTHING_PROVIDES_DEP: "job nothing provides"
-  when Satsolver::SOLVER_PROBLEM_NOT_INSTALLABLE: "solvable not installable"
-  when Satsolver::SOLVER_PROBLEM_NOTHING_PROVIDES_DEP: "nothing provides"
-  when Satsolver::SOLVER_PROBLEM_SAME_NAME: "same name"
-  when Satsolver::SOLVER_PROBLEM_PACKAGE_CONFLICT: "conflicts"
-  when Satsolver::SOLVER_PROBLEM_PACKAGE_OBSOLETES: "obsoletes"
-  when Satsolver::SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE: "requires"
-  when Satsolver::SOLVER_PROBLEM_SELF_CONFLICT: "self conflict"
-  when Satsolver::SOLVER_PROBLEM_RPM_RULE: "rpm rule"
-  else
-    "unknown (#{pi})"
+    puts "Decision: #{d.solvable}: #{d.op_s} (#{d.ruleinfo})"
   end
 end
 
