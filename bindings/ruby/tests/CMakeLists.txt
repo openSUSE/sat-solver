@@ -20,5 +20,6 @@ ADD_TEST(bindings_ruby_covenants   ruby -C ${CMAKE_CURRENT_SOURCE_DIR} covenants
 
 ADD_TEST(bindings_ruby_solver	   ruby -C ${CMAKE_CURRENT_SOURCE_DIR} solver.rb)
 ADD_TEST(bindings_ruby_decisions   ruby -C ${CMAKE_CURRENT_SOURCE_DIR} decisions.rb)
+ADD_TEST(bindings_ruby_reasons     ruby -C ${CMAKE_CURRENT_SOURCE_DIR} reasons.rb)
 #ADD_TEST(bindings_ruby_problems   ruby -C ${CMAKE_CURRENT_SOURCE_DIR} problems.rb)
 ADD_TEST(bindings_ruby_solutions   ruby -C ${CMAKE_CURRENT_SOURCE_DIR} solutions.rb)
