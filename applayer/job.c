@@ -65,3 +65,17 @@ job_relation( const Job *j )
     }
   return NULL;
 }
+
+
+int
+job_equal( const Job *job1, const Job *job2 )
+{
+  if (job1 != job2)
+    {
+      if (job1->pool != job2->pool
+	  || job1->cmd != job2->cmd
+	  || job1->id != job2->id)
+	return 0;
+    }
+  return 1;
+}
