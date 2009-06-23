@@ -11,6 +11,8 @@ require 'pathname'
 # test Solutions
 require 'test/unit'
 require 'satsolver'
+require 'ruleinfo'
+require 'job'
 
 class SolutionTest < Test::Unit::TestCase
   def test_solutions
@@ -37,7 +39,7 @@ class SolutionTest < Test::Unit::TestCase
     assert solv2
     
     solv3 = repo.create_solvable( 'CC', '3.3-0' )
-#    solv3.requires << Satsolver::Relation.new( pool, "Z" )
+    solv3.requires << Satsolver::Relation.new( pool, "Z" )
     repo.create_solvable( 'DD', '4.4-0' )
 
     
@@ -52,6 +54,29 @@ class SolutionTest < Test::Unit::TestCase
     solver.solve( request )
     assert solver.problems?
     puts "Problems found"
-    i = 0
+    solver.each_problem(request) do |problem|
+      puts "Problem"
+      problem.each_solution do |solution|
+        puts "  Solution"
+	solution.each_element do |element|
+	  case element.cause
+	  when Satsolver::SOLUTION_SOLVABLE
+	    puts "    Solvable : #{element.job}"
+	  when Satsolver::SOLUTION_JOB
+	    bad = element.job
+	    puts "    Bad job : #{bad}"
+	    request.each do |job|
+	      puts "\tculprit found" if job == bad
+	    end
+	  when Satsolver::SOLUTION_DISTUPGRADE
+	    puts "    Upgrade : #{element.job}"
+	  when Satsolver::SOLUTION_INFARCH
+	    puts "    Architecture : #{element.job}"
+	  else
+	    puts "    Unknown : #{element.job}"
+	  end
+	end
+      end
+    end
   end
 end

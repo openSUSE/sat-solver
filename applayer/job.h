@@ -45,4 +45,6 @@ const char *job_name( const Job *j );
 /* Return Relation (or NULL if job doesn't affect Relation) */
 Relation *job_relation( const Job *j );
 
+/* return non-zero if jobs are equal */
+int job_equal( const Job *job1, const Job *job2 );
 #endif  /* SATSOLVER_JOB_H */

@@ -52,5 +52,37 @@ typedef struct _Job {} Job;
   Relation *relation()
   { return job_relation( $self ); }
 
+  /*
+   * Job equality
+   */
+
+#if defined(SWIGPERL)
+  /*
+   * :nodoc:
+   */
+  int __eq__( const Job *job )
+#endif
+#if defined(SWIGRUBY)
+  %typemap(out) int equal
+    "$result = $1 ? Qtrue : Qfalse;";
+  %rename("==") equal;
+  /*
+   * Equality operator
+   *
+   */
+  int equal( const Job *job )
+#endif
+
+#if defined(SWIGPYTHON)
+  /*
+   * :nodoc:
+   * Python treats 'eq' and 'ne' distinct.
+   */
+  int __ne__( const Job *job )
+  { return !job_equal($self, job); }
+  int __eq__( const Job *job )
+#endif
+  { return job_equal($self, job); }
+
 }
 

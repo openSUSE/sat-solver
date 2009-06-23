@@ -87,45 +87,10 @@ problem_solutions_iterate( Problem *problem, int (*callback)( const Solution *s,
   
   while ((solution = solver_next_solution( problem->solver, problem->id, solution )) != 0)
     {
-      Id p, rp, element = 0;
-     
-      
-      /*  from src/problems.c:
-       * 
-       *  return the next item of the proposed solution
-       *  here are the possibilities for p / rp and what
-       *  the solver expects the application to do:
-       *    p                             rp
-       *  -------------------------------------------------------
-       *    SOLVER_SOLUTION_INFARCH       pkgid
-       *    -> add (SOLVER_INSTALL|SOLVER_SOLVABLE, rp) to the job
-       * 
-       *    SOLVER_SOLUTION_DISTUPGRADE   pkgid
-       *    -> add (SOLVER_INSTALL|SOLVER_SOLVABLE, rp) to the job
-       * 
-       *    SOLVER_SOLUTION_JOB           jobidx
-       *    -> remove job (jobidx - 1, jobidx) from job queue
-       * 
-       *    pkgid (> 0)                   0
-       *    -> add (SOLVER_ERASE|SOLVER_SOLVABLE, p) to the job
-       * 
-       *    pkgid (> 0)                   pkgid (> 0)
-       *    -> add (SOLVER_INSTALL|SOLVER_SOLVABLE, rp) to the job
-       *       (this will replace package p)
-       *         
-       * Thus, the solver will either ask the application to remove
-       * a specific job from the job queue, or ask to add an install/erase
-       * job to it.
-       *
-       */
-    
-      while ((element = solver_next_solutionelement( problem->solver, problem->id, solution, element, &p, &rp)) != 0)
-        {
-	  Solution *s = solution_new( problem, solution, p, rp );
-	  int result = callback( s, user_data );
-	  solution_free(s);
-	  if (result)
-	    break;
-	}
+      Solution *s = solution_new( problem, solution );
+      int result = callback( s, user_data );
+      solution_free(s);
+      if (result)
+	break;
     }
 }
