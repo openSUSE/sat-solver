@@ -361,15 +361,17 @@ typedef struct _Pool {} Pool;
   /*
    * :nodoc:
    */
-  int __eq__( Pool *pool )
+  int __eq__( const Pool *pool )
 #endif
 #if defined(SWIGRUBY)
+  %typemap(out) int equal
+    "$result = $1 ? Qtrue : Qfalse;";
   %rename("==") equal;
   /*
    * Equality operator
    *
    */
-  int equal( Pool *pool )
+  int equal( const Pool *pool )
 #endif
 
 #if defined(SWIGPYTHON)
@@ -377,9 +379,9 @@ typedef struct _Pool {} Pool;
    * :nodoc:
    * Python treats 'eq' and 'ne' distinct.
    */
-  int __ne__( Pool *pool )
+  int __ne__( const Pool *pool )
   { return $self != pool; }
-  int __eq__( Pool *pool )
+  int __eq__( const Pool *pool )
 #endif
   { return $self == pool; } /* common implementation */
 
