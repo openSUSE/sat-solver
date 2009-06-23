@@ -63,7 +63,11 @@ class SolutionTest < Test::Unit::TestCase
 	  when Satsolver::SOLUTION_SOLVABLE
 	    puts "    Solvable : #{element.job}"
 	  when Satsolver::SOLUTION_JOB
-	    puts "    Bad job : #{element.job}"
+	    bad = element.job
+	    puts "    Bad job : #{bad}"
+	    request.each do |job|
+	      puts "\tculprit found" if job == bad
+	    end
 	  when Satsolver::SOLUTION_DISTUPGRADE
 	    puts "    Upgrade : #{element.job}"
 	  when Satsolver::SOLUTION_INFARCH
