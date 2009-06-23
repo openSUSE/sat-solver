@@ -16,40 +16,23 @@ require 'pathname'
 # test Problems
 require 'test/unit'
 require 'satsolver'
+require 'ruleinfo'
 
-def solve_and_check solver, request, reason
-  
-#  assert solver.problems?
+def solve_and_check pool, installed, request
+  @pool.installed = @installed
+  solver = @pool.create_solver( )
+  return true if solver.solve( request )
+
   i = 0
-  found = false
-  solver.each_problem( request ) { |p|
-    found = true if p.reason == reason
+  solver.each_problem( request ) do |p|
     i += 1
-    case p.reason
-      when Satsolver::SOLVER_PROBLEM_UPDATE_RULE #1
-	reason = "problem with installed"
-      when Satsolver::SOLVER_PROBLEM_JOB_RULE #2
-	reason = "conflicting requests"
-      when Satsolver::SOLVER_PROBLEM_JOB_NOTHING_PROVIDES_DEP #3
-	reason = "nothing provides requested"
-      when Satsolver::SOLVER_PROBLEM_NOT_INSTALLABLE #4
-	reason = "not installable"
-      when Satsolver::SOLVER_PROBLEM_NOTHING_PROVIDES_DEP #5
-	reason = "nothing provides rel required by source"
-      when Satsolver::SOLVER_PROBLEM_SAME_NAME #6
-	reason = "cannot install both"
-      when Satsolver::SOLVER_PROBLEM_PACKAGE_CONFLICT #7
-	reason = "source conflicts with rel provided by target"
-      when Satsolver::SOLVER_PROBLEM_PACKAGE_OBSOLETES #8
-	reason = "source obsoletes rel provided by target"
-      when Satsolver::SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE #9
-	reason = "source requires rel but no providers are installable"
-      else
-	reason = "**unknown**"
+    j = 0
+    p.each_ruleinfo do |ri|
+      j += 1
+      puts "#{i}.#{j}: #{ri.command_s} #{ri}"
     end
-    puts "#{i}: [#{p.reason}]: #{reason}] Source #{p.source}, Rel #{p.relation}, Target #{p.target}"
-  }
-  return found
+  end
+  true
 end
 
 class ProblemTest < Test::Unit::TestCase
@@ -73,36 +56,12 @@ class ProblemTest < Test::Unit::TestCase
 
   end
   
-  def test_update_rule
-    request = @pool.create_request
-    @pool.installed = @installed
-    solver = @pool.create_solver( )
-    solver.solve( request )
-    assert solve_and_check( solver, request, Satsolver::SOLVER_PROBLEM_UPDATE_RULE )
-  end
-  def test_job_rule
-    request = @pool.create_request
-    @pool.installed = @installed
-    solver = @pool.create_solver( )
-    solver.solve( request )
-    assert solve_and_check( solver, request, Satsolver::SOLVER_PROBLEM_JOB_RULE )
-  end
-  def test_job_nothing_provides
-    request = @pool.create_request
-    @pool.installed = @installed
-    solver = @pool.create_solver( )
-    solver.solve( request )
-    assert solve_and_check( solver, request, Satsolver::SOLVER_PROBLEM_JOB_NOTHING_PROVIDES_DEP )
-  end
   def test_not_installable
     request = @pool.create_request
     solv = @pool.find( "A", @repo )
     solv.requires << @pool.create_relation( "ZZ" )
     request.install( solv )
-    @pool.installed = @installed
-    solver = @pool.create_solver( )
-    solver.solve( request )
-    assert solve_and_check( solver, request, Satsolver::SOLVER_PROBLEM_NOT_INSTALLABLE )
+    assert solve_and_check( @pool, @installed, request )
   end
   def test_nothing_provides
     request = @pool.create_request
@@ -111,10 +70,7 @@ class ProblemTest < Test::Unit::TestCase
     solvB = @pool.find( "B", @repo )
     solvB.requires << @pool.create_relation( "ZZ" )
     request.install( solvA )
-    @pool.installed = @installed
-    solver = @pool.create_solver( )
-    solver.solve( request )
-    assert solve_and_check( solver, request, Satsolver::SOLVER_PROBLEM_NOTHING_PROVIDES_DEP )
+    assert solve_and_check( @pool, @installed, request )
   end
   def test_same_name
     request = @pool.create_request
@@ -122,10 +78,7 @@ class ProblemTest < Test::Unit::TestCase
     request.install( solvA )
     solvA = @repo.create_solvable( "A", "2.0-0" )
     request.install( solvA )
-    @pool.installed = @installed
-    solver = @pool.create_solver( )
-    solver.solve( request )
-    assert solve_and_check( solver, request, Satsolver::SOLVER_PROBLEM_SAME_NAME )
+    assert solve_and_check( @pool, @installed, request )
   end
   def test_package_conflict
     request = @pool.create_request
@@ -135,26 +88,13 @@ class ProblemTest < Test::Unit::TestCase
     solvB.conflicts << @pool.create_relation( solvA.name, Satsolver::REL_EQ, solvA.evr )
     request.install( solvA )
     request.install( solvB )
-    @pool.installed = @installed
-    solver = @pool.create_solver( )
-    solver.solve( request )
-    assert solve_and_check( solver, request, Satsolver::SOLVER_PROBLEM_PACKAGE_CONFLICT )
+    assert solve_and_check( @pool, @installed, request )
   end
   def test_package_obsoletes
     request = @pool.create_request
     solvCC = @pool.find( "CC", @repo )
     solvCC.obsoletes << @pool.create_relation( "A" )
     request.install( solvCC )
-    @pool.installed = @installed
-    solver = @pool.create_solver( )
-    solver.solve( request )
-    assert solve_and_check( solver, request, Satsolver::SOLVER_PROBLEM_PACKAGE_OBSOLETES )
-  end
-  def test_providers_not_installable
-    request = @pool.create_request
-    @pool.installed = @installed
-    solver = @pool.create_solver( )
-    solver.solve( request )
-    assert solve_and_check( solver, request, Satsolver::SOLVER_PROBLEM_DEP_PROVIDERS_NOT_INSTALLABLE )
+    assert solve_and_check( @pool, @installed, request )
   end
 end
