@@ -12,7 +12,7 @@ module Satsolver
       when SOLVER_RULE_UPDATE:
 	"problem with installed package %s" % source
       when SOLVER_RULE_JOB:
-	"conflicting requests"
+	"job request"
       when SOLVER_RULE_JOB_NOTHING_PROVIDES_DEP:
 	"nothing provides requested %s" % relation
       when SOLVER_RULE_RPM:
@@ -22,7 +22,7 @@ module Satsolver
       when SOLVER_RULE_RPM_NOTHING_PROVIDES_DEP:
 	"nothing provides %s needed by %s" % [ relation, source ]
       when SOLVER_RULE_RPM_SAME_NAME:
-	"cannot install both %s and %s" % [ source, target ]
+	"%s updates %s" % [ source, target ]
       when SOLVER_RULE_RPM_PACKAGE_CONFLICT:
 	"package %s conflicts with %s provided by %s" % [ source, relation, target ]
       when SOLVER_RULE_RPM_PACKAGE_OBSOLETES:
@@ -30,7 +30,7 @@ module Satsolver
       when SOLVER_RULE_RPM_IMPLICIT_OBSOLETES:
 	"package %s implicitely obsoletes %s provided by %s" % [ source, relation, target ]
       when SOLVER_RULE_RPM_PACKAGE_REQUIRES:
-	"package %s requires %s, but none of the providers can be installed" % [ source, relation ]
+	"package %s requires %s" % [ source, relation ]
       when SOLVER_RULE_RPM_SELF_CONFLICT:
 	"package %s conflicts with %s provided by itself" % [ source, relation ]
       when SOLVER_RULE_UNKNOWN:

@@ -79,9 +79,9 @@ class DecisionTest < Test::Unit::TestCase
       when Satsolver::DECISION_REMOVE
 	puts "#{i}: Remove #{d.solvable}\n\t#{d.ruleinfo.command_s}: #{d.ruleinfo}"
       when Satsolver::DECISION_OBSOLETE
-	puts "#{i}: Obsolete #{d.solvable}\n\t#{d.ruleinfo.command_s}: #{d.ruleinfo}"
+	puts "#{i}: Obsoleted #{d.solvable}\n\t#{d.ruleinfo.command_s}: #{d.ruleinfo}"
       when Satsolver::DECISION_UPDATE
-	puts "#{i}: Update #{d.solvable}\n\t#{d.ruleinfo.command_s}: #{d.ruleinfo}"
+	puts "#{i}: Update to #{d.solvable}\n\t#{d.ruleinfo.command_s}: #{d.ruleinfo}"
       else
 	puts "#{i}: Decision op #{d.op}"
       end
