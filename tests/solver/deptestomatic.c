@@ -1527,17 +1527,17 @@ endElement( void *userData, const char *name )
 	{
 	  if (verbose >= 2)
 	    {
+#if 1
+	      transaction_order(&solv->trans, 0);
+	      transaction_check_order(&solv->trans);
+	      solver_printtransaction(solv);
+#endif
 	      solver_printdecisions(solv);
 	      solver_printtrivial(solv);
 	      printf("install size change: %d\n\n", solver_calc_installsizechange(solv));
 	      rc_printdownloadsize(solv);
 	    }
 	  rc_printdecisions(solv, &pd->trials);
-#if 1
-	  transaction_order(&solv->trans, 0);
-	  transaction_check_order(&solv->trans);
-	  solver_printtransaction(solv);
-#endif
 	}
       // clean up
 
