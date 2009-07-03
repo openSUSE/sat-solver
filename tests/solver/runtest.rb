@@ -125,7 +125,7 @@ class Solution
 	solution << l
       else
 	if problemFound
-	   solution << l
+	   solution << l.lstrip
         end
       end
     }
