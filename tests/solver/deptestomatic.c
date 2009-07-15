@@ -1756,6 +1756,7 @@ main( int argc, char **argv )
 
   /* setting loglevel */
   pool_setdebuglevel(pd.pool, verbose);
+  /* pd.pool->debugmask |= SAT_DEBUG_STATS; */
 
   if (argp >= argc || !strcmp( argv[argp], "-h" ))
     {
