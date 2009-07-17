@@ -2,11 +2,11 @@ Encountered problems! Here are the solutions:
 
 Problem 1:
 ====================================
-package atom:libzypp-2.8.1-3.i586 requires libzypp >= 2.8.1-3, but none of the providers can be installed
+package patch:libzypp-2287-0.noarch requires atom:libzypp = 2.8.1-3, but none of the providers can be installed
 
-- do not install patch:libzypp-2287-0.noarch
+  - do not install patch:libzypp-2287-0.noarch
 
-- do not keep libzypp-2.7.2-7.i586 installed
-- do not keep libzypp-2.7.2-7.i586 installed
-- do not keep libzypp-2.7.2-7.i586 installed
+  - do not keep libzypp-2.7.2-7.i586 installed
+  - do not keep libzypp-2.7.2-7.i586 installed
+  - do not keep libzypp-2.7.2-7.i586 installed
 

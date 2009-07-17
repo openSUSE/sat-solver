@@ -1634,9 +1634,14 @@ rc_printdecisions(Solver *solv, Queue *job)
 
   for (i = 0; i < trans->steps.count; i++)
     {
+      const char *name;
       p = trans->steps.elements[i];
       s = pool->solvables + p;
+      
       type = transaction_type(trans, p, 0);
+      name = id2str(pool, s->name);
+      if (!strncmp(name, "pattern:", 8) || !strncmp(name, "patch:", 6))
+	type = s->repo == pool->installed ? SOLVER_TRANSACTION_ERASE : SOLVER_TRANSACTION_INSTALL;
       switch(type)
 	{
 	case SOLVER_TRANSACTION_INSTALL:
