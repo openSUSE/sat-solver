@@ -1,5 +1,5 @@
 >!> Installing A from channel test
 >!> Solution #1:
+>!> upgrade C-1.0-1.noarch => C-2.0-1.noarch[test]
 >!> install A-1.0-1.noarch[test]
->!> install B-1.0-1.noarch[test]
->!> installs=2, upgrades=0, uninstalls=0
+>!> installs=1, upgrades=1, uninstalls=0
