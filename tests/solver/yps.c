@@ -81,19 +81,24 @@ solution_callback(Solver *solv, void *data)
   return 0;
 }
 
-static FILE *
+static int
 load_callback(Pool *pool, Repodata *data, void *cbdata)
 {
-  FILE *fp = 0;
+  FILE *fp;
   const char *location = repodata_lookup_str(data, SOLVID_META, REPOSITORY_LOCATION);
-  if (location)
+  int r;
+  if (!location)
+    return 0;
+  printf("loading %s\n", location);
+  fp = fopen (location, "r");
+  if (!fp)
     {
-      printf("loading %s\n", location);
-      fp = fopen (location, "r");
-      if (!fp)
-        perror(location);
+      perror(location);
+      return 0;
     }
-  return fp;
+  r = repo_add_solv_flags(data->repo, fp, REPO_USE_LOADING|REPO_LOCALPOOL);
+  fclose(fp);
+  return r ? 0 : 1;
 }
 
 //-----------------------------------------------

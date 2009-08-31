@@ -23,17 +23,23 @@
  *  (aka 'attribute' files, referenced from within the main .solv file)
  */
 
-static FILE *
+static int
 poolloadcallback( Pool *pool, Repodata *data, void *vdata )
 {
-  FILE *fp = 0;
+  FILE *fp;
   const char *location = repodata_lookup_str(data, SOLVID_META, REPOSITORY_LOCATION);
-  if (location) {
-    fp = fopen(location, "r");
-    if (!fp)
+  int r;
+  if (!location)
+    return 0;
+  fp = fopen(location, "r");
+  if (!fp)
+    {
       fprintf( stderr, "*** failed reading %s\n", location );
-  }
-  return fp;
+      return 0;
+    }
+  r = repo_add_solv_flags(data->repo, fp, REPO_USE_LOADING|REPO_LOCALPOOL);
+  fclose(fp);
+  return r ? 0 : 1;
 }
 
 
