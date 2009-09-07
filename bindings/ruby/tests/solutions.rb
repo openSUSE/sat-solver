@@ -45,7 +45,8 @@ class SolutionTest < Test::Unit::TestCase
     
     request = pool.create_request
     request.install( solv1 )
-    request.remove( "Z" )
+    request.lock( "A" )
+    request.remove( "A" )
     
     pool.installed = installed
     solver = pool.create_solver( )
