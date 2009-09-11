@@ -9,7 +9,19 @@
 
  See http://en.opensuse.org/Package_Management/Sat_Solver for details
  about the internals of sat-solver.
- 
+
+ Solving needs a Request containing a set of Jobs. Jobs install,
+ update, remove, or lock Solvables (packages), names (a Solvable
+ providing name), or Relations (+name+ +op+ +version.release+).
+
+ Successful solving creates a Transaction, listing the Solvables to
+ install, update, or remove in order to fulfill the Request while
+ keeping the installed system consistent.
+
+ Solver errors are reported as Problems. Each Problem has a
+ description of what went wrong and a set of Solutions how to
+ remediate the Problem.
+
  ==Working with sat-solver bindings
  
  The sat-solver bindings provide two main functionalities
@@ -144,6 +156,7 @@ SWIGINTERNINLINE SV *SWIG_FromCharPtr(const char *cptr);
 #include "repo.h"
 #include "repo_solv.h"
 #include "repo_rpmdb.h"
+#include "transaction.h"
 
 /* satsolver application layer includes */
 #include "applayer.h"
@@ -158,6 +171,7 @@ SWIGINTERNINLINE SV *SWIG_FromCharPtr(const char *cptr);
 #include "solution.h"
 #include "covenant.h"
 #include "ruleinfo.h"
+#include "step.h"
 
 
 #if defined(SWIGRUBY)
@@ -407,3 +421,5 @@ typedef unsigned int Offset;
 %include "ruleinfo.i"
 %include "solver.i"
 %include "dataiterator.i"
+%include "step.i"
+%include "transaction.i"
