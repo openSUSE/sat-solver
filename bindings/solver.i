@@ -702,6 +702,20 @@ typedef struct solver {} Solver;
   }
 
   /*
+   * The computed Transaction
+   *
+   * Will return +nil+ if solver.solve was not successful
+   *
+   */
+  Transaction *transaction()
+  {
+    if ($self->problems.count) {
+      return NULL;
+    }
+    return &$self->trans;
+  }
+  
+  /*
    * Return the number of decisions after solving.
    *
    * If its >0, a solution of the Request was found.
@@ -734,6 +748,8 @@ typedef struct solver {} Solver;
    *
    * This is how much disk space gets allocated/freed after the
    * solver decisions are applied to the system.
+   *
+   * See Transaction for more details.
    *
    */
   long sizechange()

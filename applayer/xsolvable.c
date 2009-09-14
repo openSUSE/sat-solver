@@ -78,6 +78,30 @@ xsolvable_solvable( const XSolvable *xs )
 
 
 /*
+ * Return the internal id
+ *
+ * Check also pool for comparison !
+ * 
+ */
+int
+xsolvable_id( const XSolvable *xs)
+{
+  return xs->id;
+}
+
+
+/*
+ * Return the Pool
+ *
+ */
+Pool *
+xsolvable_pool( const XSolvable *xs)
+{
+  return xs->pool;
+}
+
+
+/*
  * equality
  */
 

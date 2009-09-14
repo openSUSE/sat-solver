@@ -47,11 +47,19 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
 
   /*
    * call-seq:
+   *  solvable.id -> id
+   *
+   */
+  int id()
+  { return xsolvable_id($self); }
+
+  /*
+   * call-seq:
    *  solvable.pool -> Pool
    *
    */
   Pool *pool()
-  { return xsolvable_solvable($self)->repo->pool; }
+  { return xsolvable_pool($self); }
 
   /*
    * call-seq:

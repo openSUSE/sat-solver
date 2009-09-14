@@ -60,6 +60,20 @@ int xsolvable_equal( const XSolvable *xs1, const XSolvable *xs2 );
 Solvable *xsolvable_solvable( const XSolvable *xs );
 
 /*
+ * Return the internal id
+ *
+ * Check also pool for comparison !
+ * 
+ */
+int xsolvable_id( const XSolvable *xs);
+
+/*
+ * Return the Pool
+ *
+ */
+Pool *xsolvable_pool( const XSolvable *xs);
+
+/*
  * Add an existing solvable to Repo
  */
 XSolvable *xsolvable_add( Repo *repo, const XSolvable *xs );
