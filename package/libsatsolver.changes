@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Sep 25 15:33:38 CEST 2009 - mls@suse.de
+
+- backport allocation fix in repo_solv
+
+-------------------------------------------------------------------
 Thu Sep  3 15:24:41 CEST 2009 - mls@suse.de
 
 - fix multiversion handling for real (#bnc531899)
