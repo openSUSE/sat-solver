@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon Oct 26 15:08:25 CET 2009 - mls@suse.de
+
+- backport "ignore products element so that repo2solv works" patch
+  (bnc#497973)
+- 0.13.9
+
+-------------------------------------------------------------------
 Fri Sep 25 15:33:38 CEST 2009 - mls@suse.de
 
 - backport allocation fix in repo_solv

@@ -634,6 +634,8 @@ startElement(void *userData, const char *name, const char **atts)
 
   if (pd->state == STATE_START && !strcmp(name, "patterns"))
     return;
+  if (pd->state == STATE_START && !strcmp(name, "products"))
+    return;
   //if (pd->state == STATE_START && !strcmp(name, "metadata"))
   //  return;
   if (pd->state == STATE_SOLVABLE && !strcmp(name, "format"))
@@ -884,6 +886,8 @@ endElement(void *userData, const char *name)
 
   /* ignore patterns & metadata */
   if (pd->state == STATE_START && !strcmp(name, "patterns"))
+    return;
+  if (pd->state == STATE_START && !strcmp(name, "products"))
     return;
   //if (pd->state == STATE_START && !strcmp(name, "metadata"))
   //  return;
