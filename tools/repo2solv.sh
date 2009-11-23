@@ -99,7 +99,7 @@ if test "$repotype" = rpmmd ; then
   fi
 
   prodfile="/nonexist"
-  if test -f product.xml; then
+  if test -f product.xml || test -f product.xml.gz || test -f product.xml.bz2 || products.xml || test -f products.xml.gz || test -f products.xml.bz2 ; then
     prodfile=`mktemp` || exit 3
     (
      echo '<products>'
