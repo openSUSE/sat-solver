@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Mon Dec  7 12:27:00 CET 2009 - ma@suse.de
+
+- Support optionally compressed product(s).xml in rpmmd metadata.
+- 0.13.10
+
+-------------------------------------------------------------------
 Mon Oct 26 15:08:25 CET 2009 - mls@suse.de
 
 - backport "ignore products element so that repo2solv works" patch
