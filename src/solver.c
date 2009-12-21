@@ -905,7 +905,11 @@ disableupdaterules(Solver *solv, Queue *job, int jobidx)
 	    break;
 	  s = pool->solvables + what;
 	  if (solv->noobsoletes.size && MAPTST(&solv->noobsoletes, what))
-	    break;
+	    {
+	      if (solv->distupgrade && s->repo == installed)
+	        MAPSET(&solv->noupdate, what - installed->start);
+	      break;
+	    }
 	  if (s->repo == installed)
 	    {
 	      MAPSET(&solv->noupdate, what - installed->start);
@@ -1541,11 +1545,6 @@ addupdaterule(Solver *solv, Solvable *s, int allow_all)
 	    }
 	  qs.elements[j++] = qs.elements[i];
 	}
-      if (j == 0 && p == -SYSTEMSOLVABLE && solv->distupgrade)
-	{
-	  queue_push(&solv->orphaned, s - pool->solvables);	/* treat as orphaned */
-	  j = qs.count;
-	}
       if (j < qs.count)
 	{
 	  if (d && solv->updatesystem && solv->installed && s->repo == solv->installed)
@@ -1553,6 +1552,11 @@ addupdaterule(Solver *solv, Solvable *s, int allow_all)
 	      if (!solv->multiversionupdaters)
 		solv->multiversionupdaters = sat_calloc(solv->installed->end - solv->installed->start, sizeof(Id));
 	      solv->multiversionupdaters[s - pool->solvables - solv->installed->start] = d;
+	    }
+	  if (j == 0 && p == -SYSTEMSOLVABLE && solv->distupgrade)
+	    {
+	      queue_push(&solv->orphaned, s - pool->solvables);	/* treat as orphaned */
+	      j = qs.count;
 	    }
 	  qs.count = j;
 	}
