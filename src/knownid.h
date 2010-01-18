@@ -209,6 +209,8 @@ KNOWNID(DELTA_SEQ_NUM,			"delta:seqnum"),
 
 KNOWNID(NAMESPACE_PRODUCTBUDDY,		"namespace:productbuddy"),
 
+KNOWNID(REPOSITORY_TOOLVERSION,		"repository:toolversion"),
+
 KNOWNID(ID_NUM_INTERNAL,		0)
 
 #ifdef KNOWNID_INITIALIZE
