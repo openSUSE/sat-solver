@@ -110,6 +110,10 @@ typedef struct solver {} Solver;
   ~Solver()
   { solver_free( $self ); }
 
+  /*
+   * Pool of solver
+   *
+   */
   Pool *pool() { return $self->pool; }
 
   /**************************
