@@ -3,6 +3,7 @@
 require 'test/unit'
 require 'pathname'
 require 'yaml'
+require 'tmpdir'
 
 
 SRCPATH = Pathname( File.dirname( __FILE__ ) )
@@ -30,19 +31,19 @@ class ContentTest < Test::Unit::TestCase
     @binpath = Pathname.new BINPATH
     assert @binpath.directory?
     
-    $:.unshift( @binpath + "bindings/ruby" )
+    $:.unshift( @binpath + File.join("bindings","ruby"))
     require 'satsolver'
     
     @tag = TAG
-    @tool = @binpath + "tools/susetags2solv"
+    @tool = @binpath + File.join("tools","susetags2solv")
     assert @tool.executable?
     
-    @outpath = @binpath + "tools/tests/content"
+    @outpath = @binpath + File.join("tests","tools","content")
     assert @outpath.directory?
     
     yamlpath = @srcpath + DATA
 
-    @logf = File.open("/tmp/output", "w")
+    @logf = File.open(File.join(Dir.tmpdir,"output"), "w")
     @logf.puts "Testing started at #{Time.now}\n--"
     @logf.puts "@binpath #{@binpath}"
     @logf.puts "@tag #{@tag}"
