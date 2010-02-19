@@ -8,22 +8,21 @@ require 'tmpdir'
 
 SRCPATH = Pathname( File.dirname( __FILE__ ) )
 BINPATH = ARGV[0]
-TAG = ARGV[1]
-DATA = "testdata.yaml"
+TYPE = ARGV[1]
+DATA = "#{TYPE}.yaml"
 
-if BINPATH.nil? || BINPATH == "--help"
-  STDERR.puts "Usage: content_test [<bindir> [<tag>]]"
+if ARGV.size < 2 || BINPATH == "--help"
+  STDERR.puts "Usage: rpmmd_test [<bindir>] [<type>]"
   STDERR.puts "\t<bindir>: cmake binary dir (toplevel)"
-  STDERR.puts "\t<tag>: optional tag of content file, content.<tag>"
-  STDERR.puts "\t\tif <tag> is omitted, process all content tags listed in 'testdata.yaml'"
+  STDERR.puts "\t<type>: loads <type>.xml and compare to <type>.yaml"
   exit 0
 end
 
 #
-# Called with <bindir> <tag>
+# Called with <bindir> <type>
 #
 
-class ContentTest < Test::Unit::TestCase
+class RpmmdTest < Test::Unit::TestCase
   def setup
 
     @srcpath = Pathname.new SRCPATH
@@ -31,14 +30,14 @@ class ContentTest < Test::Unit::TestCase
     @binpath = Pathname.new BINPATH
     assert @binpath.directory?
     
-    $:.unshift( @binpath + File.join("bindings","ruby"))
+    $:.unshift( @binpath + File.join("bindings","ruby") )
     require 'satsolver'
     
-    @tag = TAG
-    @tool = @binpath + File.join("tools","susetags2solv")
+    @type = TYPE
+    @tool = @binpath + File.join("tools","rpmmd2solv")
     assert @tool.executable?
     
-    @outpath = @binpath + File.join("tests","tools","content")
+    @outpath = @binpath + File.join("tests","tools","rpmmd")
     assert @outpath.directory?
     
     yamlpath = @srcpath + DATA
@@ -46,7 +45,7 @@ class ContentTest < Test::Unit::TestCase
     @logf = File.open(File.join(Dir.tmpdir,"output"), "w")
     @logf.puts "Testing started at #{Time.now}\n--"
     @logf.puts "@binpath #{@binpath}"
-    @logf.puts "@tag #{@tag}"
+    @logf.puts "@type #{@type}"
     @logf.puts "@tool #{@tool}"
     @logf.puts "@outpath #{@outpath}"
     @logf.puts "yamlpath #{yamlpath}"
@@ -57,7 +56,7 @@ class ContentTest < Test::Unit::TestCase
     @logf.puts "--\nTesting ended at #{Time.now}" if @logf
   end
   #
-  # test content.<tag>
+  # test <type>.xml
   #  1. convert it to .solv
   #  2. load .solv
   #  3. assert properties as defined in @testdata YAML hash
@@ -68,39 +67,34 @@ class ContentTest < Test::Unit::TestCase
       
       # convert content file to .solv
 
-      inname = @srcpath + "content.#{@tag}"
-      solvname = "#{@tag}.solv"
+      inname = @srcpath + "#{@type}.xml"
+      solvname = "#{@type}.solv"
       outname = @outpath + solvname
-      cmd = "#{@tool} -c #{inname} < /dev/null > #{outname}"
-      system cmd
-      assert_equal 0, $?
+      cmd = "#{@tool} < #{inname} > #{outname}"
+      assert system(cmd)
       
-      testdata = @testdata[@tag]
-
       # create the Pool, load the .solv file
 
       pool = Satsolver::Pool.new
       repo = pool.add_solv outname
-      assert_equal testdata.size, repo.size
+      assert_equal @testdata.size, repo.size
       
       # get the solvable
       
       testdata_index = 0
 
-      repo.each { |solvable|
-      
+      repo.each do |solvable|
       # loop over YAML hash entries and compare to solvable properties
-      
-      testdata[testdata_index].each { |k,v|
-	
+      assert @testdata.has_key? solvable.name
+      @testdata[solvable.name].each do |k,v|
 	s = k.to_sym # symbol
 	# retrieve property
 	if solvable.respond_to?( s )
 	  p = solvable.send(s)
-	elsif solvable.attr?( s )
-	  p = solvable[s]
+	elsif solvable.attr?( k )
+	  p = solvable[k]
 	else
-	  raise "Unknown property/attribute #{k}"
+	  raise "Unknown property/attribute #{k.inspect}"
 	end
 
 	case v
@@ -112,53 +106,52 @@ class ContentTest < Test::Unit::TestCase
 	    # check dependency relations
 	    #	    
 	    expected = []
-	    v.each { |k,v|
+	    v.each do |k,v|
 	      #
 	      # Convert "<name> <op> <evr>" string to Satsolver::Relation
 	      # 
 	      nov = v.split " " # split to name,op,version
-	      if nov.size == 1
-		expected << Satsolver::Relation.new( pool, v )
-	      elsif nov.size == 3
-		op = Satsolver::REL_NONE
-		case nov[1]
-		when "=", "=="
-		  op = Satsolver::REL_EQ
-		when "<"
-		  op = Satsolver::REL_LT
-		when ">"
-		  op = Satsolver::REL_GT
-		when "<="
-		  op = Satsolver::REL_LE
-		when ">="
-		  op = Satsolver::REL_GE
-		when "<>", "!="
-		  op = Satsolver::REL_NE
-		else
-		  raise "Not a parseable relation operator '#{nov[1]}'"
-		end
-		expected << Satsolver::Relation.new( pool, nov[0], op, nov[2] )
-	      else
-		raise "Not a parseable relation '#{v}'"
+	      op = Satsolver::REL_NONE
+	      
+	      case nov[1]
+	      when "=", "==":  op = Satsolver::REL_EQ
+	      when "<":        op = Satsolver::REL_LT
+	      when ">":	       op = Satsolver::REL_GT
+	      when "<=":       op = Satsolver::REL_LE
+	      when ">=":       op = Satsolver::REL_GE
+	      when "<>", "!=": op = Satsolver::REL_NE
 	      end
-	    }
+	      
+	      if op == Satsolver::REL_NONE
+		expected << Satsolver::Relation.new( pool, v )
+	      else
+		expected << Satsolver::Relation.new( pool, nov[0], op, nov[2] )
+	      end
+	    end
 	    
 	    # check equal size of solvable dependencies with expected dependencies
 	    assert_equal p.size, expected.size
 
 	    # now loop over the dependencies and check them one-by-one
-	    p.each { |dep|
-	      raise "Not a dependency: #{v}" unless expected.include?( dep )
-	    }
+	    p.each do |rel|
+	      rel = Satsolver::Relation.new( pool, rel.name) if rel.op == Satsolver::REL_EQ and rel.evr.empty?
+	      raise "Not a relation: #{rel.inspect}" unless expected.include?( rel )
+	    end
 	  else
 	    raise "Don't know what to do with Hash for property/attribute #{k}"
 	  end
+	when NilClass
+	  assert v.nil?
+	when TrueClass
+	  assert v
+	when FalseClass
+	  assert !v
 	else
 	  raise "Can't handle value class #{v.class} of YAML key #{k}"
 	end
-      } # testdata.each
+      end # testdata.each
       testdata_index += 1
-    } # repo.each
+    end # repo.each
     rescue Exception => e
       @logf.puts "**ERR #{e}"
       raise e

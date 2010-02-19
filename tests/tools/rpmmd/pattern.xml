@@ -1,0 +1,37 @@
+<pattern xmlns="http://novell.com/package/metadata/suse/pattern"
+  xmlns:rpm="http://linux.duke.edu/metadata/rpm"
+>
+  <name>KDE 4 Games</name>
+  <summary>KDE 4 Games</summary>
+  <description>A number of games for KDE 4.</description>
+  <uservisible/>
+  <category lang="en">Desktop Functions</category>
+  <rpm:recommends>
+    <rpm:entry name="kde4-kpat"/>
+    <rpm:entry name="kde4-kmahjongg"/>
+    <rpm:entry name="kde4-kmines"/>
+    <rpm:entry name="kde4-kreversi"/>
+    <rpm:entry name="kde4-ksudoku"/>
+  </rpm:recommends>
+  <rpm:suggests>
+    <rpm:entry name="kde4-katomic"/>
+    <rpm:entry name="kde4-kbattleship"/>
+    <rpm:entry name="kde4-ksquares"/>
+    <rpm:entry name="kde4-bovo"/>
+    <rpm:entry name="kde4-kiriki"/>
+    <rpm:entry name="kde4-kwin4"/>
+    <rpm:entry name="kde4-kolf"/>
+    <rpm:entry name="kde4-klines"/>
+    <rpm:entry name="kde4-ksame"/>
+    <rpm:entry name="kde4-lskat"/>
+    <rpm:entry name="kde4-kgoldrunner"/>
+    <rpm:entry name="kde4-kblackbox"/>
+    <rpm:entry name="kde4-kbounce"/>
+    <rpm:entry name="kde4-ktuberling"/>
+    <rpm:entry name="kde4-knetwalk"/>
+    <rpm:entry name="kde4-kjumpingcube"/>
+    <rpm:entry name="kde4-kspaceduel"/>
+    <rpm:entry name="kde4-konquest"/>
+    <rpm:entry name="kde4-kshisen"/>
+  </rpm:suggests>
+</pattern>

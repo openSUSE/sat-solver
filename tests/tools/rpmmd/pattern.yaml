@@ -1,0 +1,35 @@
+"pattern:KDE 4 Games":
+  name: pattern:KDE 4 Games
+  arch: noarch
+  evr:
+  provides:
+    0: pattern:KDE 4 Games
+  recommends:
+    0: kde4-kmahjongg
+    1: kde4-kmines
+    2: kde4-kpat
+    3: kde4-kreversi
+    4: kde4-ksudoku
+  suggests:
+    0: kde4-bovo
+    1: kde4-katomic
+    2: kde4-kbattleship
+    3: kde4-kblackbox
+    4: kde4-kbounce
+    5: kde4-kgoldrunner
+    6: kde4-kiriki
+    7: kde4-kjumpingcube
+    8: kde4-klines
+    9: kde4-knetwalk
+    10: kde4-kolf
+    11: kde4-konquest
+    12: kde4-ksame
+    13: kde4-kshisen
+    14: kde4-kspaceduel
+    15: kde4-ksquares
+    16: kde4-ktuberling
+    17: kde4-kwin4
+    18: kde4-lskat
+  solvable:summary: KDE 4 Games
+  solvable:description: A number of games for KDE 4.
+  solvable:isvisible: true
