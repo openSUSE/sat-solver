@@ -119,7 +119,7 @@ langdemo(Pool *pool)
       const char *chksum;
       chksum = solvable_lookup_checksum(pool->solvables + p, SOLVABLE_CHECKSUM, &chktype);
       printf("%s: %s\n%s[%d] %s:%s\n", solvable2str(pool, pool->solvables + p), solvable_lookup_str_poollang(pool->solvables + p, SOLVABLE_DESCRIPTION), loc, medianr, id2str(pool, chktype), chksum);
-      printf("DE: %s\n", solvable_lookup_str_lang(pool->solvables + p, SOLVABLE_DESCRIPTION, "de"));
+      printf("DE: %s\n", solvable_lookup_str_lang(pool->solvables + p, SOLVABLE_DESCRIPTION, "de", 1));
     }
 }
 
