@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Apr  1 15:59:30 CEST 2010 - mls@suse.de
+
+- support sha256 checksum for repomd and susetags
+- 0.13.13
+
+-------------------------------------------------------------------
 Mon Jan 18 17:45:27 CET 2010 - ma@suse.de
 
 - fix typo in repo2solv.sh
