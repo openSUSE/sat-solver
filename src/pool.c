@@ -562,8 +562,9 @@ pool_addrelproviders(Pool *pool, Id d)
     {
     case REL_AND:
     case REL_WITH:
-      pp = pool_whatprovides_ptr(pool, name);
+      wp = pool_whatprovides(pool, name);
       pp2 = pool_whatprovides_ptr(pool, evr);
+      pp = pool->whatprovidesdata + wp;
       while ((p = *pp++) != 0)
 	{
 	  for (pp3 = pp2; *pp3;)
@@ -637,6 +638,7 @@ pool_addrelproviders(Pool *pool, Id d)
       if (wp)
 	{
 	  /* all solvables match, no need to create a new list */
+	  queue_free(&plist);
 	  pool->whatprovides_rel[d] = wp;
 	  return wp;
 	}
