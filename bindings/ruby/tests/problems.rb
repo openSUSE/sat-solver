@@ -11,12 +11,12 @@
 #
 
 $:.unshift "../../../build/bindings/ruby"
+$:.unshift File.join(File.dirname(__FILE__), "..")
 require 'pathname'
 
 # test Problems
 require 'test/unit'
 require 'satsolver'
-require 'ruleinfo'
 
 def solve_and_check pool, installed, request
   @pool.installed = @installed

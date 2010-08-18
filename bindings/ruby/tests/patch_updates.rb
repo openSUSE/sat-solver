@@ -1,6 +1,7 @@
 # test Patch and Update
 
 $:.unshift "../../../build/bindings/ruby"
+$:.unshift File.join(File.dirname(__FILE__), "..")
 require 'pathname'
 
 require 'satsolver'
