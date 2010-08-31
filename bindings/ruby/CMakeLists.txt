@@ -26,7 +26,7 @@ SET(bindings_SRCS ${SWIG_OUTPUT} "${CMAKE_SOURCE_DIR}/ext/repo_rpmdb.c" )
 
 ADD_LIBRARY( satsolver_ruby SHARED ${bindings_SRCS} )
 
-# name it 'satsolver.so'
+# name it '_satsolver.so'
 #  and don't prefix with 'lib'
 SET_TARGET_PROPERTIES( satsolver_ruby PROPERTIES OUTPUT_NAME "satsolver" PREFIX "" )
 
@@ -39,6 +39,13 @@ TARGET_LINK_LIBRARIES( satsolver_ruby ${RPMDB_LIBRARY} )
 
 INSTALL(TARGETS satsolver_ruby LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR})
 
+# copy satsolver.rb to LIB_DIR
+INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/satsolver.rb DESTINATION ${RUBY_VENDORLIB_DIR})
+# copy satsolver/*.rb to LIB_DIR
+INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/satsolver DESTINATION ${RUBY_VENDORLIB_DIR}
+   PATTERN "*.rb"
+   PATTERN "*~" EXCLUDE)
+		
 # rdoc
 SET(rdoc_dir "${CMAKE_CURRENT_BINARY_DIR}/html")
 ADD_CUSTOM_COMMAND (

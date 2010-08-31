@@ -1,6 +1,7 @@
 #
-# Ruleinfo support functions
+# satsolver/ruleinfo
 #
+
 module Satsolver
   class Ruleinfo
     def to_s

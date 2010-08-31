@@ -1,4 +1,5 @@
 $:.unshift "../../../build/bindings/ruby"
+$:.unshift File.join(File.dirname(__FILE__), "..")
 require 'pathname'
 
 #
@@ -26,7 +27,6 @@ require 'pathname'
 # test Decisions
 require 'test/unit'
 require 'satsolver'
-require 'ruleinfo'
 
 class DecisionTest < Test::Unit::TestCase
   def test_decision

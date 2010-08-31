@@ -1,5 +1,5 @@
 #
-# job.rb
+# satsolver/job.rb
 #
 
 module Satsolver
