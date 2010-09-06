@@ -1,11 +1,4 @@
-$:.unshift "../../../build/bindings/ruby"
-$:.unshift File.join(File.dirname(__FILE__), "..")
-require 'pathname'
-
-# test Covenants
-
-require 'test/unit'
-require 'satsolver'
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 
 class CovenantTest < Test::Unit::TestCase
   def test_convenant

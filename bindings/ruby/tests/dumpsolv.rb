@@ -3,19 +3,11 @@
 #
 # Example code how to use Ruby bindings to implement tools/dumpsolv
 #
-
-$:.unshift "../../../build/bindings/ruby"
-$:.unshift File.join(File.dirname(__FILE__), "..")
-require 'pathname'
-
-require 'satsolver'
-require 'pp'
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 
 #
 # usage() function, called on error
 #
-
-
 def usage reason=nil
   STDERR.puts reason if reason
   STDERR.puts "Usage: dumpsolv <solv-file>"

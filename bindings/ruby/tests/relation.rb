@@ -1,3 +1,4 @@
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 #
 # Relations are the primary means to specify dependencies.
 # Relations combine names and version through an operator.
@@ -18,14 +19,7 @@
 #
 #
 
-$:.unshift "../../../build/bindings/ruby"
-$:.unshift File.join(File.dirname(__FILE__), "..")
-require 'pathname'
-
 # test Relation
-require 'test/unit'
-require 'satsolver'
-
 class SolvableTest < Test::Unit::TestCase
   def setup
     @pool = Satsolver::Pool.new

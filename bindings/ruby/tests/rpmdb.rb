@@ -1,3 +1,4 @@
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 #
 # Load repository from rpm database
 #
@@ -10,14 +11,7 @@
 #
 #
 
-$:.unshift "../../../build/bindings/ruby"
-$:.unshift File.join(File.dirname(__FILE__), "..")
-require 'pathname'
-
 # test adding rpmdb
-require 'test/unit'
-require 'satsolver'
-
 class RpmdbTest < Test::Unit::TestCase
   def test_rpmdb
     pool = Satsolver::Pool.new

@@ -1,15 +1,9 @@
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 #
 # Search
 #
 
-$:.unshift "../../../build/bindings/ruby"
-$:.unshift File.join(File.dirname(__FILE__), "..")
-require 'pathname'
-
 # test Repodata
-require 'test/unit'
-require 'satsolver'
-
 class RepodataTest < Test::Unit::TestCase
   #
   # Pool search

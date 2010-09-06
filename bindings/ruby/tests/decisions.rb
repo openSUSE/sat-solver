@@ -1,7 +1,4 @@
-$:.unshift "../../../build/bindings/ruby"
-$:.unshift File.join(File.dirname(__FILE__), "..")
-require 'pathname'
-
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 #
 # After successful solving, the solver returns the result as list of Decisions.
 #
@@ -23,11 +20,7 @@ require 'pathname'
 # The number of decision steps is available through Solver.decision_count
 #
 
-
 # test Decisions
-require 'test/unit'
-require 'satsolver'
-
 class DecisionTest < Test::Unit::TestCase
   def test_decision
     pool = Satsolver::Pool.new

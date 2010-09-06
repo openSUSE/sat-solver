@@ -2,9 +2,10 @@
 #
 # picks up Ruby extensions for satsolver-bindings-ruby
 #
-require 'rbconfig'
+# pick up built version if running tests from source
+# native
+require 'satsolver.so'
 
-require Config::CONFIG['arch']+'/satsolver' # the .so file
 require 'satsolver/covenant'
 require 'satsolver/dump'
 require 'satsolver/job'

@@ -1,12 +1,6 @@
-$:.unshift "../../../build/bindings/ruby"
-$:.unshift File.join(File.dirname(__FILE__), "..")
-require 'pathname'
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 
 # test Transction
-
-require 'test/unit'
-require 'satsolver'
-
 class RequestTest < Test::Unit::TestCase
   def test_request
     pool = Satsolver::Pool.new

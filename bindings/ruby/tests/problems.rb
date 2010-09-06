@@ -1,3 +1,4 @@
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 #
 # In case the Solver cannot find a solution (Solver.problems? true),
 # it reports Problems through Solver.each_problem.
@@ -10,14 +11,7 @@
 # A solution is a set of elements, each suggesting changes to the initial request.
 #
 
-$:.unshift "../../../build/bindings/ruby"
-$:.unshift File.join(File.dirname(__FILE__), "..")
-require 'pathname'
-
 # test Problems
-require 'test/unit'
-require 'satsolver'
-
 def solve_and_check pool, installed, request
   @pool.installed = @installed
   solver = @pool.create_solver( )

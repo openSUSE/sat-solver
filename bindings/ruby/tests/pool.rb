@@ -1,3 +1,4 @@
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 #
 # The Pool is the main data structure for sat-solver.
 #
@@ -14,15 +15,7 @@
 #
 # For Repos there is each_repo, count_repos, get_repo and find_repo.
 #
-
-$:.unshift "../../../build/bindings/ruby"
-$:.unshift File.join(File.dirname(__FILE__), "..")
-require 'pathname'
-
 # test Pool
-require 'test/unit'
-require 'satsolver'
-
 class PoolTest < Test::Unit::TestCase
   def test_pool
     pool = Satsolver::Pool.new

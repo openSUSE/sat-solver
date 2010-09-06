@@ -1,16 +1,8 @@
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 #
 # reasons.rb
 # test decision reasons
 #
-
-puts $:.join("\n")
-
-$:.unshift "../../../build/bindings/ruby"
-$:.unshift File.join(File.dirname(__FILE__), "..")
-
-require 'test/unit'
-require 'pathname'
-require 'satsolver'
 
 def explain solver
   solver.each_to_install { |s|

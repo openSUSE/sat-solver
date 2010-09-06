@@ -1,17 +1,11 @@
-$:.unshift "../../../build/bindings/ruby"
-$:.unshift File.join(File.dirname(__FILE__), "..")
-require 'pathname'
-
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 #
 # After successful solving, the solver returns a transaction
 #
 # A Decision consists of a set of steps
 #
 
-
 # test Transaction
-require 'test/unit'
-require 'satsolver'
 require 'ruleinfo'
 
 class TransactionTest < Test::Unit::TestCase
