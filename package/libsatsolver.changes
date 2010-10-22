@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Fri Oct 22 15:54:24 CEST 2010 - ma@suse.de
+
+- updateinfoxml: Correctly parse 'issued date' field.
+- 0.15.2
+
+-------------------------------------------------------------------
 Thu Sep  9 17:27:52 CEST 2010 - mls@suse.de
 
 - fix package priority handling of installed packages in dup case [bnc#631306]
