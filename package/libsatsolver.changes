@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Fri Oct 22 15:56:18 CEST 2010 - ma@suse.de
+
+- updateinfoxml: Correctly parse 'issued date' field.
+- 0.14.18
+
+-------------------------------------------------------------------
 Tue Mar 23 17:24:46 CET 2010 - ma@suse.de
 
 - Parse an installed products <shortsummary> tag [bnc#586303]
