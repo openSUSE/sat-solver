@@ -1,9 +1,6 @@
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
+
 # test Patch and Update
-
-$:.unshift "../../../build/bindings/ruby"
-require 'pathname'
-
-require 'satsolver'
 require '_solv2patches'
 
 pool = Satsolver::Pool.new

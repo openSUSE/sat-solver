@@ -1,3 +1,4 @@
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 #
 # Solutions provide 'exit strategies' for Problems.
 #
@@ -5,15 +6,7 @@
 #
 #
 
-$:.unshift "../../../build/bindings/ruby"
-require 'pathname'
-
 # test Solutions
-require 'test/unit'
-require 'satsolver'
-require 'ruleinfo'
-require 'job'
-
 class SolutionTest < Test::Unit::TestCase
   def test_solutions
     pool = Satsolver::Pool.new

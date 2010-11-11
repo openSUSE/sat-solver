@@ -3,92 +3,16 @@
 #
 # Example code how to use Ruby bindings to implement tools/dumpsolv
 #
-
-$:.unshift "../../../build/bindings/ruby"
-require 'pathname'
-
-require 'satsolver'
-require 'pp'
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 
 #
 # usage() function, called on error
 #
-
-
 def usage reason=nil
   STDERR.puts reason if reason
   STDERR.puts "Usage: dumpsolv <solv-file>"
   exit 1
 end
-
-
-class Satsolver::Pool
-  def dump
-    puts "Pool has #{count_repos} repositories, #{size} solvables"
-  end
-end
-
-
-class Satsolver::Repokey
-  def dump
-    puts "    #{name} (type #{type} size #{size})"
-  end
-end
-
-class Satsolver::Repodata
-  def dump
-    puts "  Repodata #{(location) ? location : '*EMBEDDED*' } has #{keysize} keys"
-    each_key { |key| key.dump }
-  end
-end
-
-class Satsolver::Relation
-  def dump
-    puts "   #{to_s}"
-  end
-end
-
-class Satsolver::Dependency
-  def dump name
-    return if empty?
-    puts "  #{name}:"
-    each { |rel| rel.dump }
-  end
-end
-
-class Satsolver::Solvable
-  def dump
-    puts " Solvable #{name} #{evr} #{arch}"
-    puts " Vendor #{vendor}"
-    provides.dump "Provides"
-    requires.dump "Requires"
-    conflicts.dump "Conflicts"
-    obsoletes.dump "Obsoletes"
-#    each_attr { |attr|
-#      pp attr
-#    }
-  end
-end
-
-class Satsolver::Repo
-  def dump
-    puts " Repo #{name} refers to #{datasize} subfiles"
-    each_data { |data| data.dump }
-    puts
-    puts " Repo #{name} contains #{size} solvables"
-    each { |solvable|
-      solvable.dump
-      pp solvable[:update_collection_name]
-      puts " Name2: #{solvable.attr('solvable:buildtime')}"
-      puts
-    }
-  end
-end
-
-
-#
-#  main()
-#
 
 usage if ARGV.size < 1
 
@@ -115,5 +39,5 @@ repo.name = File.basename filename
 #
 puts "#{filename} with #{repo.size} solvables"
 
-pool.dump
-repo.dump
+puts pool.dump
+puts repo.dump

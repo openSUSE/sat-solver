@@ -1,5 +1,4 @@
-$:.unshift "../../../build/bindings/ruby"
-require 'pathname'
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 
 #
 # Generate 'code11 updateinfo' from (code10) patch solv

@@ -1,9 +1,7 @@
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 #
 # Test loading of the bindings
 #
-
-$:.unshift "../../../build/bindings/ruby"
-require 'pathname'
 
 File.open("/tmp/output", "w") { |f|
   f.puts "PWD: #{Dir.pwd}"

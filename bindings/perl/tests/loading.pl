@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
-use lib '../../../build/bindings/perl';
+use FindBin qw($Bin);
+use lib "$Bin/../../../build/bindings/perl";
 
 use satsolver;
 

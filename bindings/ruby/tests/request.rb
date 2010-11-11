@@ -1,11 +1,6 @@
-$:.unshift "../../../build/bindings/ruby"
-require 'pathname'
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 
 # test Transction
-
-require 'test/unit'
-require 'satsolver'
-
 class RequestTest < Test::Unit::TestCase
   def test_request
     pool = Satsolver::Pool.new
@@ -25,16 +20,7 @@ class RequestTest < Test::Unit::TestCase
     request.remove( Satsolver::Relation.new( pool, "bar", Satsolver::REL_EQ, "42-7" ) )
     assert request.size == 6
     request.each { |a|
-      cmd = case a.cmd
-            when Satsolver::INSTALL_SOLVABLE: "install #{a.solvable}"
-	    when Satsolver::REMOVE_SOLVABLE: "remove #{a.solvable}"
-	    when Satsolver::INSTALL_SOLVABLE_NAME: "install by name #{a.name}"
-	    when Satsolver::REMOVE_SOLVABLE_NAME: "remove by name #{a.name}"
-	    when Satsolver::INSTALL_SOLVABLE_PROVIDES: "install by relation #{a.relation}"
-	    when Satsolver::REMOVE_SOLVABLE_PROVIDES: "remove by relation #{a.relation}"
-	    else "<NONE>"
-	    end
-      puts cmd
+      puts a.to_s
     }
     request.clear!
     assert request.empty?

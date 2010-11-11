@@ -1,3 +1,4 @@
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 #
 # Convert .solv file to Code11 Patches
 #
@@ -17,10 +18,6 @@
 #		    
 #
 
-$:.unshift "../../../build/bindings/ruby"
-require 'pathname'
-
-require 'satsolver'
 require '_patch'
 
 def store_it the_store, name, s

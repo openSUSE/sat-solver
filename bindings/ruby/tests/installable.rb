@@ -1,5 +1,4 @@
-$:.unshift "../../../build/bindings/ruby"
-require 'pathname'
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 
 # test 'installability' of Repo
 #
@@ -13,8 +12,6 @@ require 'pathname'
 # Multiple solv files can be given and all are added to the pool.
 # The last one will be tested.
 #
-
-require 'satsolver'
 
 raise "Usage: installable <arch> <solv>..." unless ARGV.size > 1
 

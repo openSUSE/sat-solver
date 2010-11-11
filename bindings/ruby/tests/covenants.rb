@@ -1,10 +1,4 @@
-$:.unshift "../../../build/bindings/ruby"
-require 'pathname'
-
-# test Covenants
-
-require 'test/unit'
-require 'satsolver'
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 
 class CovenantTest < Test::Unit::TestCase
   def test_convenant
@@ -35,16 +29,7 @@ class CovenantTest < Test::Unit::TestCase
     solver.exclude( Satsolver::Relation.new( pool, "bar", Satsolver::REL_EQ, "42-7" ) )
     assert solver.covenants_count == 6
     solver.each_covenant do |c|
-      cmd = case c.cmd
-        when Satsolver::INCLUDE_SOLVABLE: "include #{c.solvable}"
-	when Satsolver::EXCLUDE_SOLVABLE: "exclude #{c.solvable}"
-	when Satsolver::INCLUDE_SOLVABLE_NAME: "include by name #{c.name}"
-	when Satsolver::EXCLUDE_SOLVABLE_NAME: "exclude by name #{c.name}"
-	when Satsolver::INCLUDE_SOLVABLE_PROVIDES: "include by relation #{c.relation}"
-	when Satsolver::EXCLUDE_SOLVABLE_PROVIDES: "exclude by relation #{c.relation}"
-	else "<NONE>"
-	end
-      puts cmd
+      puts c.to_s
     end
     solver.covenants_clear!
     assert solver.covenants_empty?

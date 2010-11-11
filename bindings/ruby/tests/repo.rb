@@ -1,3 +1,4 @@
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 #
 # A Repo (repository) groups Solvables
 # A Repo has a name and always belongs to a Pool. The size of a Repo is the number
@@ -26,13 +27,7 @@
 #   this will return the 'best' solvable named 'A' or nil if no such solvable exists.
 #
 
-$:.unshift "../../../build/bindings/ruby"
-require 'pathname'
-
 # test Repo
-require 'test/unit'
-require 'satsolver'
-
 class RepoTest < Test::Unit::TestCase
   def test_repo_create
     pool = Satsolver::Pool.new

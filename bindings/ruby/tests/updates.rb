@@ -1,10 +1,6 @@
-$:.unshift "../../../build/bindings/ruby"
-require 'pathname'
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 
 # test Updates
-
-require 'satsolver'
-
 pool = Satsolver::Pool.new
 pool.arch = "x86_64"
 

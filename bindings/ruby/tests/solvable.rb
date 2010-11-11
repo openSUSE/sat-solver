@@ -1,11 +1,6 @@
-$:.unshift "../../../build/bindings/ruby"
-require 'pathname'
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 
 # test Solvable
-
-require 'test/unit'
-require 'satsolver'
-
 def show_dep name, deps
   return unless deps
   puts "    #{deps.size} #{name}: "

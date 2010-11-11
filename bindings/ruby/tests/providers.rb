@@ -1,14 +1,9 @@
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 #
 # Check each_provider callback
 #
 
-$:.unshift "../../../build/bindings/ruby"
-require 'pathname'
-
 # test EachProvider
-require 'test/unit'
-require 'satsolver'
-
 class EachProviderTest < Test::Unit::TestCase
   def test_repo_create
     pool = Satsolver::Pool.new
