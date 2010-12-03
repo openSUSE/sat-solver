@@ -33,3 +33,17 @@ IF (PERL_EXECUTABLE)
   ADD_SUBDIRECTORY(perl)
 ENDIF (PERL_EXECUTABLE)
 
+SET(bindings_devel_dir "${CMAKE_CURRENT_BINARY_DIR}/satsolver-bindings")
+ADD_CUSTOM_COMMAND (
+   OUTPUT ${bindings_devel_dir}
+   COMMAND ${CMAKE_COMMAND} -E remove_directory ${bindings_devel_dir}
+   COMMAND ${CMAKE_COMMAND} -E make_directory "${bindings_devel_dir}"
+   # cmake -E copy cannot handle wildcard, so use plain /bin/cp
+   COMMAND cp "${CMAKE_SOURCE_DIR}/bindings/*.i" "${bindings_devel_dir}"
+   COMMAND cp "${CMAKE_SOURCE_DIR}/bindings/*.h" "${bindings_devel_dir}"
+   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bindings
+   DEPENDS ${CMAKE_SOURCE_DIR}/bindings/*.i
+)
+ADD_CUSTOM_TARGET(bindings_devel ALL DEPENDS "${bindings_devel_dir}")
+
+INSTALL(DIRECTORY "${bindings_devel_dir}" DESTINATION "${CMAKE_INSTALL_PREFIX}/share")
