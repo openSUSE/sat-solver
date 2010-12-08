@@ -43,6 +43,9 @@ TARGET_LINK_LIBRARIES(patchcheck satsolverext satsolver ${EXPAT_LIBRARY} ${ZLIB_
 ADD_EXECUTABLE(dumpsolv dumpsolv.c )
 TARGET_LINK_LIBRARIES(dumpsolv satsolver)
 
+ADD_EXECUTABLE(solv2rpmmd solv2rpmmd.c )
+TARGET_LINK_LIBRARIES(solv2rpmmd satsolver)
+
 ADD_EXECUTABLE(mergesolv mergesolv.c )
 TARGET_LINK_LIBRARIES(mergesolv toolstuff satsolverext satsolver)
 
