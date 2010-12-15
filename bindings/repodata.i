@@ -62,5 +62,16 @@ typedef struct _Repodata {} Repodata;
             yield self.key(r.pop(0))
     %}
 #endif
+#if defined(SWIGPERL)
+  const XRepokey **keys()
+  {
+    PtrIndex pi;
+    NewPtrIndex(pi,const XRepokey **,0);
+    int i;
+    for (i = 1; i < $self->nkeys; ++i ) {
+      AddPtrIndex((&pi),const XRepokey **,xrepokey_new( $self->keys + i, $self->repo, $self ));
+    }
+    ReturnPtrIndex(pi,const XRepokey **);
+  }
+#endif
 }
-

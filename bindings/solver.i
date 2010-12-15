@@ -47,7 +47,6 @@
  */
 
 %{
-#if defined(SWIGRUBY)
 /*
  * iterating over updates (takes two (x)solvables) ('yield' in Ruby)
  */
@@ -55,8 +54,13 @@
 static int
 update_xsolvables_iterate_callback( const XSolvable *xs_old, const XSolvable *xs_new, void *user_data )
 {
+#if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield_values( 2, SWIG_NewPointerObj((void*)xs_old, SWIGTYPE_p__Solvable, 0), SWIG_NewPointerObj((void*)xs_new, SWIGTYPE_p__Solvable, 0) );
+#else
+  AddPtrIndex(((PtrIndex*)user_data),const XSolvable **,xs_old);
+  AddPtrIndex(((PtrIndex*)user_data),const XSolvable **,xs_new);
+#endif /* SWIGRUBY */
   return 0;
 }
 
@@ -67,8 +71,12 @@ update_xsolvables_iterate_callback( const XSolvable *xs_old, const XSolvable *xs
 static int
 solver_decisions_iterate_callback( const Decision *d, void *user_data )
 {
+#if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield(SWIG_NewPointerObj((void*) d, SWIGTYPE_p__Decision, 0));
+#else
+  AddPtrIndex(((PtrIndex*)user_data),const Decision **,d);
+#endif /* SWIGRUBY */
   return 0;
 }
 
@@ -80,12 +88,14 @@ solver_decisions_iterate_callback( const Decision *d, void *user_data )
 static int
 solver_problems_iterate_callback( const Problem *p, void *user_data )
 {
+#if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield( SWIG_NewPointerObj((void*) p, SWIGTYPE_p__Problem, 0) );
+#else
+  AddPtrIndex(((PtrIndex*)user_data),const Problem **,p);
+#endif
   return 0;
 }
-#endif /* SWIGRUBY */
-
 
 %}
 
@@ -747,6 +757,14 @@ typedef struct solver {} Solver;
    */
   void each_decision()
   { return solver_decisions_iterate( $self, solver_decisions_iterate_callback, NULL ); }
+#else
+  const Decision **decisions()
+  { 
+    PtrIndex pi;
+    NewPtrIndex(pi,const Decision **,$self->decisionq.count);
+    solver_decisions_iterate( $self, solver_decisions_iterate_callback, &pi );
+    ReturnPtrIndex(pi,const Decision **);	
+  }
 #endif
 
   /*
@@ -846,118 +864,76 @@ typedef struct solver {} Solver;
    */
   void each_suggested()
   { return solver_suggestions_iterate( $self, generic_xsolvables_iterate_callback, NULL ); }
-#endif /* SWIGRUBY */
 
-#if defined(SWIGPERL)
-    SV* getInstallList()
-    {
-        int b = 0;
-        AV *myav = newAV();
-        SV *mysv = 0;
-        SV *res  = 0;
-        int len = self->decisionq.count;
-        for (b = 0; b < len; b++) {
-            Solvable *s;
-            char *myel;
-            Id p = self->decisionq.elements[b];
-            if (p < 0) {
-                continue; // ignore conflict
-            }
-            if (p == SYSTEMSOLVABLE) {
-                continue; // ignore system solvable
-            }
-            s = self->pool->solvables + p;
-            //printf ("SOLVER NAME: %d %s\n",p,id2str(self->pool, s->name));
-            myel = (char*)id2str(self->pool, s->name);
-            mysv = sv_newmortal();
-            mysv = perl_get_sv (myel,TRUE);
-            sv_setpv(mysv, myel);
-            av_push (myav,mysv);
-        }
-        res = newRV((SV*)myav);
-        sv_2mortal (res);
-        return res;
+#else /* not Ruby */
+
+  /*
+   * :nodoc:
+   * Return array of problems found in solver run based on Request
+   */
+  const Problem **problems( Request *t )
+  {
+    if ($self->problems.count <= 0) {
+      return NULL;
     }
-#endif
-#if defined(SWIGPYTHON)
-    XSolvable **installs() {
-    	Pool *pool = $self->pool;
-	Repo *installed = $self->installed;
-	int count = $self->decisionq.count;
-	Solvable *s;
-	Id p, *obsoletesmap = solver_create_decisions_obsoletesmap($self);
-	int i, j = 0;
-	XSolvable **xs = (XSolvable **) malloc((count + 1) * sizeof(XSolvable **));
+    PtrIndex pi;
+    NewPtrIndex(pi,const Problem **,$self->problems.count);
+    solver_problems_iterate( $self, t, solver_problems_iterate_callback, &pi );
+    ReturnPtrIndex(pi,const Problem **);
+  }
 
-	for (i = 0; i < $self->decisionq.count; i++) {
-	    p = $self->decisionq.elements[i];
-	    if (p < 0)
-	       continue;
-	    if (p == SYSTEMSOLVABLE)
-	       continue;
-	    s = pool->solvables + p;
-	    if (installed && s->repo == installed)
-	       continue;
-	    if (obsoletesmap[p])
-	       continue;
-	    xs[j] = xsolvable_new(pool, p);
-            ++j;
-       }
-       xs[j] = NULL;
-       sat_free(obsoletesmap);
-       return xs;
-    }
+  /*
+   * :nodoc:
+   * Return array of to-be-installed Solvables
+   * by default, returns only newly installed packages
+   * if 'true' is passed, returns new packages and updates
+   */
+  const XSolvable **installs(int bflag = 0)
+  {
+    PtrIndex pi;
+    NewPtrIndex(pi,const XSolvable **,0);
+    solver_installs_iterate( $self, bflag, generic_xsolvables_iterate_callback, &pi );
+    ReturnPtrIndex(pi,const XSolvable **);
+  }
 
-    XSolvable **updates() {
-    	Pool *pool = $self->pool;
-	Repo *installed = $self->installed;
-	int count = $self->decisionq.count;
-	Solvable *s;
-	Id p, *obsoletesmap = solver_create_decisions_obsoletesmap($self);
-	int i, j = 0;
-	XSolvable **xs = (XSolvable **) malloc((count + 1) * sizeof(XSolvable **));
+  /*
+   * :nodoc:
+   * iterate over all to-be-updated solvables
+   */
+  const XSolvable **updates()
+  {
+    PtrIndex pi;
+    NewPtrIndex(pi,const XSolvable **,0);
+    solver_updates_iterate( $self, update_xsolvables_iterate_callback, &pi );
+    ReturnPtrIndex(pi,const XSolvable **);
+  }
 
-	for (i = 0; i < $self->decisionq.count; i++) {
-	    p = $self->decisionq.elements[i];
-	    if (p < 0)
-	       continue;
-	    if (p == SYSTEMSOLVABLE)
-	       continue;
-	    s = pool->solvables + p;
-	    if (installed && s->repo == installed)
-	       continue;
-	    if (!obsoletesmap[p])
-	       continue;
-	    xs[j] = xsolvable_new(pool, p);
-            ++j;
-       }
-       xs[j] = NULL;
-       sat_free(obsoletesmap);
-       return xs;
-    }
+  /*
+   * :nodoc:
+   * Iterate over all to-be-removed-without-replacement solvables
+   * those replaced by an updated are normally *not* reported.
+   *
+   * if +true+ is passed, iterate over *all* to-be-removed solvables
+   */
+  const XSolvable **removes(int bflag = 0)
+  {
+    PtrIndex pi;
+    NewPtrIndex(pi,const XSolvable **,0);
+    solver_removals_iterate( $self, bflag, generic_xsolvables_iterate_callback, &pi );
+    ReturnPtrIndex(pi,const XSolvable **);
+  }
 
-    XSolvable **removes() {
-    	Pool *pool = $self->pool;
-	Repo *installed = $self->installed;
-	int count = installed ? installed->nsolvables : 0;
-	Solvable *s;
-	Id p, *obsoletesmap = solver_create_decisions_obsoletesmap($self);
-	int j = 0;
-	XSolvable **xs = (XSolvable **) malloc((count + 1) * sizeof(XSolvable **));
+  /*
+   * :nodoc:
+   * Iterate of all suggested (weak install) solvables.
+   */
+  const XSolvable **suggested()
+  {
+    PtrIndex pi;
+    NewPtrIndex(pi,const XSolvable **,0);
+    solver_suggestions_iterate( $self, generic_xsolvables_iterate_callback, &pi );
+    ReturnPtrIndex(pi,const XSolvable **);
+  }
 
-	if (installed) {
-	   FOR_REPO_SOLVABLES(installed, p, s) {
-	      if ($self->decisionmap[p] > 0)
-	      	 continue;
-	      if (obsoletesmap[p])
-	      	 continue;
-	      xs[j] = xsolvable_new(pool, p);
-              ++j;
-       	   }
-       }
-       xs[j] = NULL;
-       sat_free(obsoletesmap);
-       return xs;
-    }
 #endif
 };

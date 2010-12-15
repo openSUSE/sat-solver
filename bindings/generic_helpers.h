@@ -1,7 +1,6 @@
 #ifndef GENERIC_HELPERS_H
 #define GENERIC_HELPERS_H
 
-#if defined(SWIGRUBY)
 /*
  * iterating over (x)solvables ('yield' in Ruby)
  * (used by Pool, Repo and Solver)
@@ -10,11 +9,15 @@
 static int
 generic_xsolvables_iterate_callback( const XSolvable *xs, void *user_data )
 {
+#if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield( SWIG_NewPointerObj((void*)xs, SWIGTYPE_p__Solvable, 0) );
+#else
+  AddPtrIndex(((PtrIndex *)user_data),const XSolvable **,xs);
+#endif
   return 0;
 }
-#endif
+
 
 /*
  * create Dataiterator
@@ -38,6 +41,7 @@ swig_dataiterator_new(Pool *pool, Repo *repo, const char *match, int option, XSo
     return di;
 }
 
+
 /*
  * destroy Dataiterator
  */
@@ -47,6 +51,7 @@ swig_dataiterator_free(Dataiterator *di)
     dataiterator_free(di);
     free( di );
 }
+
 
 /* convert Dataiterator to target value
  * if *more != 0 on return, value is incomplete

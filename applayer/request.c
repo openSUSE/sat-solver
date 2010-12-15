@@ -88,14 +88,14 @@ request_job_get( Request *t, int i )
 
 
 void
-request_jobs_iterate( Request *t, int (*callback)( const Job *j))
+request_jobs_iterate( Request *t, int (*callback)(const Job *j, void *user_data), void *user_data)
 {
   int i;
   for (i = 0; i < t->queue.count-1; )
     {
       int cmd = t->queue.elements[i++];
       Id id = t->queue.elements[i++];
-      if (callback( job_new( t->pool, cmd, id ) ) )
+      if (callback( job_new( t->pool, cmd, id ), user_data ) )
 	break;
     }
 }

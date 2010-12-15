@@ -11,11 +11,13 @@
  */
 
 static int
-request_jobs_iterate_callback( const Job *j )
+request_jobs_iterate_callback( const Job *j, void *user_data )
 {
 #if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield(SWIG_NewPointerObj((void*) j, SWIGTYPE_p__Job, 0));
+#else
+  AddPtrIndex(((PtrIndex*)user_data),const Job **,j);
 #endif
   return 0;
 }
@@ -239,6 +241,6 @@ typedef struct _Request {} Request;
    *
    */
   void each()
-  { request_jobs_iterate( $self, request_jobs_iterate_callback ); }
+  { request_jobs_iterate( $self, request_jobs_iterate_callback, NULL ); }
 }
 

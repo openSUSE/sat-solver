@@ -23,6 +23,8 @@ problem_ruleinfo_iterate_callback(const Ruleinfo *ri, void *user_data)
 #if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield( SWIG_NewPointerObj((void*)ri, SWIGTYPE_p__Ruleinfo, 0) );
+#else
+  AddPtrIndex(((PtrIndex*)user_data),const Ruleinfo **,ri);
 #endif
   return 0;
 }
@@ -38,6 +40,8 @@ problem_solutions_iterate_callback(const Solution *s, void *user_data)
 #if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield( SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solution, 0) );
+#else
+  AddPtrIndex(((PtrIndex*)user_data),const Solution **,s);
 #endif
   return 0;
 }
@@ -61,6 +65,7 @@ typedef struct _Problem {} Problem;
   Solver *solver()
   { return $self->solver; }
 
+#if defined(SWIGRUBY)
   /*
    * An iterator providing information on the rules leading to the
    * problem.
@@ -71,6 +76,15 @@ typedef struct _Problem {} Problem;
    */
   void each_ruleinfo()
   { problem_ruleinfos_iterate( $self, problem_ruleinfo_iterate_callback, NULL );  }
+#else
+  const Ruleinfo **ruleinfos()
+  {
+    PtrIndex pi;
+    NewPtrIndex(pi,const Ruleinfo **,0);
+    problem_ruleinfos_iterate( $self, problem_ruleinfo_iterate_callback, &pi );
+    ReturnPtrIndex(pi,const Ruleinfo **);
+  }
+#endif
 
   /*
    * Number of available solutions for problem
@@ -79,6 +93,7 @@ typedef struct _Problem {} Problem;
   int solutions_count()
   { return solver_solution_count( $self->solver, $self->id ); }
 
+#if defined(SWIGRUBY)
   /*
    * An iterator providing possible Solutions to the Problem
    *
@@ -88,6 +103,15 @@ typedef struct _Problem {} Problem;
    */
   void each_solution()
   { problem_solutions_iterate( $self, problem_solutions_iterate_callback, NULL );  }
+#else
+  const Solution **solutions()
+  {
+    PtrIndex pi;
+    NewPtrIndex(pi,const Solution **,0);
+    problem_solutions_iterate( $self, problem_solutions_iterate_callback, &pi );
+    ReturnPtrIndex(pi,const Solution **);
+  }
+#endif
 
 }
 

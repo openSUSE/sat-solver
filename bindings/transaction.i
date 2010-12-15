@@ -21,11 +21,13 @@
  */
 
 static int
-transaction_steps_iterate_callback( const Step *s )
+transaction_steps_iterate_callback( const Step *s, void *user_data )
 {
 #if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield(SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Step, 0));
+#else
+  AddPtrIndex(((PtrIndex*)user_data),const Step **,s);
 #endif
   return 0;
 }
@@ -126,6 +128,7 @@ typedef struct _Transaction {} Transaction;
   Step *get( unsigned int i )
   { return step_get( $self, i ); }
 
+#if defined(SWIGRUBY)
   /*
    * Iterate over each Step of the Transaction.
    *
@@ -134,6 +137,16 @@ typedef struct _Transaction {} Transaction;
    *
    */
   void each()
-  { transaction_steps_iterate( $self, transaction_steps_iterate_callback ); }
+  { transaction_steps_iterate( $self, transaction_steps_iterate_callback, NULL ); }
+#else
+  const Step **steps()
+  {
+    PtrIndex pi;
+    NewPtrIndex(pi,const Step **,$self->steps.count);
+    transaction_steps_iterate( $self, transaction_steps_iterate_callback, &pi );
+    ReturnPtrIndex(pi,const Step **);
+
+  }
+#endif  
 }
 

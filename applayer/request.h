@@ -34,6 +34,6 @@ void request_relation( Request *t, const Relation *rel, int what );
 int request_size( Request *t );
 Job *request_job_get( Request *t, int i );
 
-void request_jobs_iterate( Request *t, int (*callback)( const Job *j));
+void request_jobs_iterate( Request *t, int (*callback)(const Job *j, void *user_data), void *user_data);
 
 #endif  /* SATSOLVER_REQUEST_H */

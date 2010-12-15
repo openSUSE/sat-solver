@@ -51,7 +51,45 @@
         EXTEND(sp, n - items);
 
     for (i = 0; i < n; i++) {
-        ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr($1[i]), SWIGTYPE_p__Solvable, SWIG_OWNER | SWIG_SHADOW);
+        ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr($1[i]), SWIGTYPE_p__Solvable, 0);
+        argvi++;
+    }
+    free($1);
+}
+
+/*
+ * Problem* array to Perl
+ */
+%typemap(out) Problem ** {
+    int n, i;
+
+    for (n = 0; $1[n];)
+        n++;
+
+    if (n > items)
+        EXTEND(sp, n - items);
+
+    for (i = 0; i < n; i++) {
+        ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr($1[i]), SWIGTYPE_p__Problem, 0 ); /* SWIG_OWNER | SWIG_SHADOW */
+        argvi++;
+    }
+    free($1);
+}
+
+/*
+ * Solution* array to Perl
+ */
+%typemap(out) Solution ** {
+    int n, i;
+
+    for (n = 0; $1[n];)
+        n++;
+
+    if (n > items)
+        EXTEND(sp, n - items);
+
+    for (i = 0; i < n; i++) {
+        ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr($1[i]), SWIGTYPE_p__Solution, 0 ); /* SWIG_OWNER | SWIG_SHADOW */
         argvi++;
     }
     free($1);

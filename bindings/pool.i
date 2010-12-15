@@ -530,6 +530,21 @@ typedef struct _Pool {} Pool;
             yield self.get_repo(r.pop(0))
     %}
 #endif
+#if defined(SWIGPERL)
+  const Repo **repos()
+  {
+    Pool *pool = $self;
+    Repo *r;
+    int i;
+    PtrIndex pi;
+
+    NewPtrIndex(pi,const Repo **,$self->nrepos);
+    FOR_REPOS(i, r) {
+      AddPtrIndex((&pi),const Repo **,r);
+    }
+    ReturnPtrIndex(pi,const Repo **);
+  }
+#endif
 
   /*
    * Find Repository by name. Returns +nil+ if no Repository with the
@@ -846,9 +861,8 @@ typedef struct _Pool {} Pool;
           while d.step():
             yield d
     %}
-#endif
+#else
 
-#if defined(SWIGRUBY)
   /*
    * Search for Solvable attributes
    *
@@ -860,16 +874,34 @@ typedef struct _Pool {} Pool;
    *  pool.search("match", flags, solvable, key) { |dataiterator| ... }
    *
    */
-  void search(const char *match, int flags, XSolvable *xs = NULL, const char *keyname = NULL) 
+#if defined(SWIGRUBY)
+  void 
+#endif
+#if defined(SWIGPERL)
+  Dataiterator **
+#endif
+  search(const char *match, int flags, XSolvable *xs = NULL, const char *keyname = NULL) 
   {
     Dataiterator *di;
+#if defined(SWIGPERL)
+    PtrIndex pi;
+    NewPtrIndex(pi,Dataiterator **,0);
+#endif
     di = swig_dataiterator_new($self, NULL, match, flags, xs, keyname);
     while( dataiterator_step(di) ) {
+#if defined(SWIGRUBY)
       rb_yield(SWIG_NewPointerObj((void*) di, SWIGTYPE_p__Dataiterator, 0));
+#endif
+#if defined(SWIGPERL)
+      AddPtrIndex((&pi),Dataiterator **,di);
+#endif
     }
     swig_dataiterator_free(di);
-  }
+#if defined(SWIGPERL)
+    ReturnPtrIndex(pi,Dataiterator **);
 #endif
+  }
+#endif /* SWIGPYTHON */
 
   /**************************
    * Request management

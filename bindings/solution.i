@@ -26,6 +26,8 @@ solutionelement_iterate_callback(const SolutionElement *se, void *user_data)
 #if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield( SWIG_NewPointerObj((void*)se, SWIGTYPE_p__SolutionElement, 0) );
+#else
+  AddPtrIndex(((PtrIndex*)user_data),const SolutionElement **,se);
 #endif
   return 0;
 }
@@ -46,6 +48,7 @@ typedef struct _SolutionElement {} SolutionElement;
   /* No explicit constructor, use Problem#each_solution */
   ~Solution()
   { solution_free ($self); }
+#if defined(SWIGRUBY)
   /*
    * An iterator providing elements of the Solution
    *
@@ -54,8 +57,18 @@ typedef struct _SolutionElement {} SolutionElement;
    *
    */
   void each_element()
-  { solution_elements_iterate( $self, solutionelement_iterate_callback, NULL );  }
-
+  {
+    solution_elements_iterate( $self, solutionelement_iterate_callback, NULL );
+  }
+#else
+  const SolutionElement **elements()
+  {
+    PtrIndex pi;
+    NewPtrIndex(pi,const SolutionElement **,0);
+    solution_elements_iterate( $self, solutionelement_iterate_callback, &pi );
+    ReturnPtrIndex(pi,const SolutionElement **);
+  }
+#endif
 }
 
 %extend SolutionElement {

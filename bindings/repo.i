@@ -257,6 +257,21 @@ typedef struct _Repo {} Repo;
     }
   }
 #endif
+#if defined(SWIGPERL)
+  /*
+   * Iterate over each Repodata
+   */
+  const Repodata **repodatas()
+  {
+    PtrIndex pi;
+    int i;
+    NewPtrIndex(pi,const Repodata **,$self->nrepodata);
+    for (i = 0; i < $self->nrepodata; ++i ) {
+      AddPtrIndex((&pi),const Repodata **,$self->repodata + i);
+    }
+    ReturnPtrIndex(pi,const Repodata **);
+  }
+#endif
 #if defined(SWIGPYTHON)
     %pythoncode %{
         def datas(self):
@@ -265,6 +280,7 @@ typedef struct _Repo {} Repo;
             yield self.data(r.pop(0))
     %}
 #endif
+
 
 #if defined(SWIGPYTHON)
   /*
@@ -276,9 +292,7 @@ typedef struct _Repo {} Repo;
           while d.step():
             yield d
     %}
-#endif
-
-#if defined(SWIGRUBY)
+#else
   /*
    * Search for Solvable attributes in Repository
    *
@@ -290,16 +304,37 @@ typedef struct _Repo {} Repo;
    *  repo.search("match", flags, solvable, key) { |dataiterator| ... }
    *
    */
-  void search(const char *match, int flags, XSolvable *xs = NULL, const char *keyname = NULL) 
+#if defined(SWIGRUBY)
+  void
+#endif
+#if defined(SWIGPERL)
+  const Dataiterator **
+#endif
+  search(const char *match, int flags, XSolvable *xs = NULL, const char *keyname = NULL) 
   {
+#if defined(SWIGPERL)
+    PtrIndex pi;
+#endif
     Dataiterator *di;
     di = swig_dataiterator_new($self->pool, $self, match, flags, xs, keyname);
+#if defined(SWIGPERL)
+    NewPtrIndex(pi,const Dataiterator **,0);
+#endif
     while( dataiterator_step(di) ) {
+#if defined(SWIGRUBY)
       rb_yield(SWIG_NewPointerObj((void*) di, SWIGTYPE_p__Dataiterator, 0));
+#endif
+#if defined(SWIGPERL)
+      AddPtrIndex((&pi),const Dataiterator **,di);
+#endif
     }
     swig_dataiterator_free(di);
-  }
+#if defined(SWIGPERL)
+    ReturnPtrIndex(pi,const Dataiterator **);
 #endif
+  }
+#endif /* SWIGPYTHON */
+
 
   /*
    * access attribute via []

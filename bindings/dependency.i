@@ -20,12 +20,16 @@
  * iterating over dependency relations ('yield' in Ruby)
  */
 
-#if defined(SWIGRUBY)
+#if !defined(SWIGPYTHON) /* Python does it differently */
 static int
-dependency_relations_iterate_callback( const Relation *rel )
+dependency_relations_iterate_callback( const Relation *rel, void *user_data )
 {
+#if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield( SWIG_NewPointerObj((void*) rel, SWIGTYPE_p__Relation, 0) );
+#else
+  AddPtrIndex(((PtrIndex*)user_data),const Relation **,rel);
+#endif
   return 0;
 }
 #endif
@@ -148,7 +152,7 @@ typedef struct _Dependency {} Dependency;
    *
    */
   void each()
-  { dependency_relations_iterate( $self, dependency_relations_iterate_callback ); }
+  { dependency_relations_iterate( $self, dependency_relations_iterate_callback, NULL ); }
 #endif
 #if defined(SWIGPYTHON)
     %pythoncode %{
@@ -157,6 +161,20 @@ typedef struct _Dependency {} Dependency;
           while r:
             yield self.get(r.pop(0))
     %}
+#endif
+#if defined(SWIGPERL)
+  /*
+   * :nodoc:
+   * get all relations in this Dependency
+   *
+   */
+  const Relation ** relations()
+  {
+    PtrIndex pi;
+    NewPtrIndex(pi,const Relation **,dependency_size($self));
+    dependency_relations_iterate( $self, dependency_relations_iterate_callback, &pi );
+    ReturnPtrIndex(pi,const Relation **);
+  }
 #endif
 
 }

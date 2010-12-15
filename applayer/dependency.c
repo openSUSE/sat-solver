@@ -103,14 +103,14 @@ dependency_relation_get( Dependency *dep, int i )
 
 
 void
-dependency_relations_iterate( Dependency *dep, int (*callback)(const Relation *rel))
+dependency_relations_iterate( Dependency *dep, int (*callback)(const Relation *rel, void *user_data), void *user_data)
 {
   Solvable *s = xsolvable_solvable( dep->xsolvable );
   Offset *relations = dependency_relations( dep );
   Id *ids = s->repo->idarraydata + *relations;
   while (*ids)
     {
-      if (callback( relation_new( s->repo->pool, *ids ) ) )
+      if (callback( relation_new( s->repo->pool, *ids ), user_data ) )
 	break;
       ++ids;
     }

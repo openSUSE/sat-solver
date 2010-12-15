@@ -101,12 +101,12 @@ step_get( Transaction *transaction, unsigned int num)
 
 /* iterate over all transaction steps */
 void
-transaction_steps_iterate( Transaction *t, int (*callback)( const Step *s ))
+transaction_steps_iterate( Transaction *t, int (*callback)( const Step *s, void *user_data ), void *user_data)
 {
   int i;
   for (i = 0; i < t->steps.count; ++i )
     {
-      if (callback( step_get( t, i ) ) )
+      if (callback( step_get( t, i ), user_data ) )
 	break;
     }
 }

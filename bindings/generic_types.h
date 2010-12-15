@@ -4,6 +4,23 @@
 /* HELPER CODE                                                 */
 /*=============================================================*/
 
+typedef struct {
+  void *ptr;
+  int size;
+  int idx;
+} PtrIndex;
+
+#define PtrIndexSize 16
+/* alloc PtrIndex with 'init'ial size */
+#define NewPtrIndex(pi,type,init) pi.ptr = (type)malloc((((init)==0)?PtrIndexSize:(init) + 1) * sizeof(type)); pi.idx = 0; pi.size = ((init)==0)?PtrIndexSize:(init)
+/* add element and realloc eventually */
+#define AddPtrIndex(pip,type,element) if (pip->idx == pip->size) { \
+	pip->ptr = (type)realloc(pip->ptr, (pip->size + PtrIndexSize) * sizeof(type)); \
+	pip->size += PtrIndexSize; \
+  } ((type)(pip->ptr))[pip->idx++] = element
+/* put final NULL ptr */
+#define ReturnPtrIndex(pi,type) ((type)(pi.ptr))[pi.idx] = NULL; return (type)pi.ptr
+
 #if defined(SWIGPYTHON)
 #define Swig_Null_p(x) (x == Py_None)
 #define Swig_True Py_True
