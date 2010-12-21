@@ -7,7 +7,8 @@
 #
 #
 
-use lib '../../../build/bindings/perl';
+use FindBin qw($Bin);
+use lib "$Bin/../../../build/bindings/perl";
 
 use satsolver;
 
@@ -21,13 +22,13 @@ $pool->set_arch( 'x86_64' );
 my $repo1 = $pool->create_repo('test_x86_64') || die;
 
 # Add Solvable to Repository
-$repo1->add_solv ("../../testdata/os11-beta5-x86_64.solv");
+$repo1->add_solv ("$Bin/../../testdata/os11-beta5-x86_64.solv");
 
 # Create another Repository 
 my $repo2 = $pool->create_repo('test_biarch') || die;
 
 # Add Solvable to Repository
-$repo2->add_solv ("../../testdata/os11-biarch.solv");
+$repo2->add_solv ("$Bin/../../testdata/os11-biarch.solv");
 
 # Create dependencies to provides table
 $pool->prepare();

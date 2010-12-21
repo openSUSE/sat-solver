@@ -7,7 +7,8 @@
 #
 #
 
-use lib '../../../build/bindings/perl';
+use FindBin qw($Bin);
+use lib "$Bin/../../../build/bindings/perl";
 
 use satsolver;
 
@@ -20,7 +21,7 @@ $pool->set_arch( $sysarch );
 my $repo = $pool->create_repo('test') || die;
 
 # Add Solvable to Repository
-$repo->add_solv ("../../testdata/os11-biarch.solv");
+$repo->add_solv ("$Bin/../../testdata/os11-biarch.solv");
 
 # Create dependencies to provides table
 $pool->prepare();

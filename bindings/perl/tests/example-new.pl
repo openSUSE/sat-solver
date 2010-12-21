@@ -61,9 +61,9 @@ if ($t) {
     print "Transaction $ts\n";
 }
 else {
-    print "No transaction computed\n";
-    }
-exit 1;
+    print "***** No transaction computed\n";
+}
+
 # get install size
 my $size = getInstallSizeKBytes($repo,$solver);
 print "REQUIRED SIZE: $size kB\n";
