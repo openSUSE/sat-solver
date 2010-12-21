@@ -38,7 +38,8 @@ my $rel = $pool->create_relation($mysolvable->name());
 
 # Find Providers of Relation $rel
 $solvname = $mysolvable->string();
-print "\nFinding providers for relation $rel ...\n";
+my $rel_s = $rel->string();
+print "\nFinding providers for relation $rel_s ...\n";
 foreach my $solvable ($pool->providers($rel)) {
   print "--\n";
   next if not defined $solvable;
