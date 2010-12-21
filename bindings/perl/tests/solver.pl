@@ -12,7 +12,7 @@ my $pool = new satsolver::Pool;
 $pool->set_arch('i686');
 my $repo = $pool->create_repo('repo');
 
-# Add Solvable to Repository
+# Add solv file to Repository
 $repo -> add_solv("tmp/primary");
 # close(F) || die;
 
