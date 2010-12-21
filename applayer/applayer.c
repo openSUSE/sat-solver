@@ -12,7 +12,70 @@
  *
  */
 
+#include <stdarg.h>
+#include <stdlib.h>
 #include "applayer.h"
+
+/************************************************
+ * string handling
+ *
+ */
+
+/* helper for string representation, snprintf + strdup */
+
+char *to_string(const char *format, ...)
+{
+  char buf[2048];
+  va_list args;
+  va_start(args, format);
+  vsnprintf(buf, sizeof(buf), format, args);
+  return strdup(buf);
+}
+
+struct debugdata {
+  Pool *pool;
+  int debugmask;
+  char *buf;
+  int length;
+};
+
+static struct debugdata dd;
+
+static void
+app_debugcallback(struct _Pool *p, void *data, int type, const char *str)
+{
+  struct debugdata *ddp = (struct debugdata *)data;
+  int len = strlen(str);
+  ddp->buf = realloc(ddp->buf, ddp->length + len + 1);
+  if (ddp->length == 0) *ddp->buf = 0;
+  strcat(ddp->buf, str);
+  ddp->length += len;
+}
+
+void
+app_debugstart(Pool *p, int type)
+{
+  dd.buf = NULL;
+  dd.length = 0;
+  dd.debugmask = p->debugmask;
+  p->debugmask = type;
+  p->debugcallback = app_debugcallback;
+  p->debugcallbackdata = &dd;
+  dd.pool = p;
+}
+
+char *
+app_debugend()
+{
+  dd.pool->debugcallback = NULL;
+  dd.pool->debugmask = dd.debugmask;
+  return dd.buf;
+}
+
+/************************************************
+ * Id
+ *
+ */
 
 const char *
 my_id2str( const Pool *pool, Id id )
@@ -23,6 +86,11 @@ my_id2str( const Pool *pool, Id id )
     return "";
   return id2str( pool, id );
 }
+
+/************************************************
+ * Pool
+ *
+ */
 
 unsigned int
 pool_xsolvables_count( const Pool *pool )

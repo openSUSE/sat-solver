@@ -18,11 +18,12 @@
  */
 					
 static int
-problem_ruleinfo_iterate_callback(const Ruleinfo *ri, void *user_data)
+problem_ruleinfo_iterate_callback( Ruleinfo *ri, void *user_data)
 {
 #if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield( SWIG_NewPointerObj((void*)ri, SWIGTYPE_p__Ruleinfo, 0) );
+  ruleinfo_free(ri);
 #else
   AddPtrIndex(((PtrIndex*)user_data),const Ruleinfo **,ri);
 #endif
@@ -35,11 +36,12 @@ problem_ruleinfo_iterate_callback(const Ruleinfo *ri, void *user_data)
  */
 					
 static int
-problem_solutions_iterate_callback(const Solution *s, void *user_data)
+problem_solutions_iterate_callback( Solution *s, void *user_data)
 {
 #if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield( SWIG_NewPointerObj((void*) s, SWIGTYPE_p__Solution, 0) );
+  solution_free(s);
 #else
   AddPtrIndex(((PtrIndex*)user_data),const Solution **,s);
 #endif
@@ -66,6 +68,15 @@ typedef struct _Problem {} Problem;
   { return $self->solver; }
 
 #if defined(SWIGRUBY)
+  %rename("to_s") string(int full = 0);
+#endif
+#if defined(SWIGPYTHON)
+  %rename("__str__") string(int full = 0);
+#endif
+  char *string(int full = 0)
+  { return problem_string( $self, full ); }
+
+#if defined(SWIGRUBY)
   /*
    * An iterator providing information on the rules leading to the
    * problem.
@@ -75,7 +86,7 @@ typedef struct _Problem {} Problem;
    *
    */
   void each_ruleinfo()
-  { problem_ruleinfos_iterate( $self, problem_ruleinfo_iterate_callback, NULL );  }
+  { problem_ruleinfos_iterate( $self, problem_ruleinfo_iterate_callback, NULL ); }
 #else
   const Ruleinfo **ruleinfos()
   {

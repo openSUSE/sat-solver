@@ -27,4 +27,10 @@ my $timestamp = $repo->attr("repository:timestamp");
 
 print "Timestamp: " . $timestamp . "\n";
 
-print "Addedfileprovides: " . $repo->attr("repository:addedfileprovides") . "\n";
+#
+# FIXME
+#
+print "Addedfileprovides:\n";
+foreach my $a ($repo->attr("repository:addedfileprovides")) {
+    print "  $a\n";
+}

@@ -22,6 +22,8 @@
 #include "solution.h"
 #include "evr.h"
 
+#include "applayer.h"
+#include "solverdebug.h"
 
 Problem *
 problem_new( Solver *s, Request *t, Id id )
@@ -39,9 +41,29 @@ problem_free( Problem *p )
   free( p );
 }
 
+char *
+problem_string( const Problem *p, int full )
+{
+  Pool *pool = p->solver->pool;
+
+  if (full == 0) {
+    app_debugstart(pool,SAT_DEBUG_RESULT);
+    solver_printcompleteprobleminfo(p->solver, p->id);
+  }
+  else if (full > 0) {
+    app_debugstart(pool,SAT_DEBUG_RESULT);
+    solver_printprobleminfo(p->solver, p->id);
+  }
+  else {
+    app_debugstart(pool,SAT_DEBUG_SOLUTIONS);
+    solver_printproblem(p->solver, p->id);
+  }
+  return app_debugend();
+}
+
 
 void
-solver_problems_iterate( Solver *solver, Request *t, int (*callback)(const Problem *p, void *user_data), void *user_data )
+solver_problems_iterate( Solver *solver, Request *t, int (*callback)(Problem *p, void *user_data), void *user_data )
 {
   Id problem = 0;
   if (!callback)
@@ -57,7 +79,7 @@ solver_problems_iterate( Solver *solver, Request *t, int (*callback)(const Probl
 
 
 void
-problem_ruleinfos_iterate( Problem *problem, int (*callback)( const Ruleinfo *ri, void *user_data), void *user_data )
+problem_ruleinfos_iterate( Problem *problem, int (*callback)(Ruleinfo *ri, void *user_data), void *user_data )
 {
   Queue rules;
   Id rule;
@@ -66,11 +88,8 @@ problem_ruleinfos_iterate( Problem *problem, int (*callback)( const Ruleinfo *ri
   solver_findallproblemrules(problem->solver, problem->id, &rules);
   while ((rule = queue_shift(&rules))) 
     {
-      int result;
       Ruleinfo *ri = ruleinfo_new( problem->solver, rule );
-      result = callback( ri, user_data );
-      ruleinfo_free(ri);
-      if (result)
+      if (callback( ri, user_data ))
 	break;
     }
   return;
@@ -78,7 +97,7 @@ problem_ruleinfos_iterate( Problem *problem, int (*callback)( const Ruleinfo *ri
 
 
 void
-problem_solutions_iterate( Problem *problem, int (*callback)( const Solution *s, void *user_data ), void *user_data )
+problem_solutions_iterate( Problem *problem, int (*callback)(Solution *s, void *user_data ), void *user_data )
 {
   if (!callback) /* no use to iterate without callback */
     return;
@@ -88,9 +107,29 @@ problem_solutions_iterate( Problem *problem, int (*callback)( const Solution *s,
   while ((solution = solver_next_solution( problem->solver, problem->id, solution )) != 0)
     {
       Solution *s = solution_new( problem, solution );
-      int result = callback( s, user_data );
-      solution_free(s);
-      if (result)
+      if (callback( s, user_data ))
 	break;
     }
+}
+
+/* loop over Jobs leading to the problem
+ * 
+ * ??? DOES THIS MAKE SENSE ???
+ */
+void
+problem_jobs_iterate( Problem *p, int (*callback)( const Job *j, void *user_data ), void *user_data )
+{
+  if (!callback) /* no use to iterate without callback */
+    return;
+/*
+  Id solution = 0;
+  
+  while ((solution = solver_next_solution( problem->solver, problem->id, solution )) != 0)
+    {
+      Solution *s = solution_new( problem, solution );
+      if (callback( s, user_data ))
+	break;
+    }
+ */
+  return;
 }

@@ -84,5 +84,12 @@ typedef struct _Job {} Job;
 #endif
   { return job_equal($self, job); }
 
+#if defined(SWIGRUBY)
+  %rename("to_s") string();
+#endif
+#if defined(SWIGPYTHON)
+  %rename("__str__") string();
+#endif
+  char *string()
+  { return job_string($self); }
 }
-

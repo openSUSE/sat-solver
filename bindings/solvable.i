@@ -145,12 +145,7 @@ typedef struct _Solvable {} XSolvable; /* expose XSolvable as 'Solvable' */
    */
   const char *string()
   {
-    const char *s;
-    if ( $self->id == ID_NULL )
-      s = "";
-    else
-      s = solvable2str( $self->pool, xsolvable_solvable( $self ) );
-    return strdup(s);
+    return xsolvable_string($self);
   }
 
 #if defined(SWIGRUBY)

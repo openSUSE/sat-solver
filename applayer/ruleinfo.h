@@ -23,7 +23,8 @@
 #include "relation.h"
 
 typedef struct _Ruleinfo {
-  const Solver *solver;
+  Solver *solver;
+  Id id;
   int cmd;
   Id source;
   Id target;
@@ -31,7 +32,8 @@ typedef struct _Ruleinfo {
 } Ruleinfo;
 
 
-Ruleinfo *ruleinfo_new( const Solver *solver, Id rule );
+Ruleinfo *ruleinfo_new( Solver *solver, Id rule );
+char *ruleinfo_string( const Ruleinfo *ri);
 void ruleinfo_free( Ruleinfo *ri );
 
 const char *ruleinfo_command_string(const Ruleinfo *ri);

@@ -48,4 +48,13 @@ typedef struct _Ruleinfo {} Ruleinfo;
   Relation *relation()
   { return ruleinfo_relation($self); }
 
+#if defined(SWIGRUBY)
+  %rename("to_s") string();
+#endif
+#if defined(SWIGPYTHON)
+  %rename("__str__") string();
+#endif
+  char *string()
+  { return ruleinfo_string($self); }
+
 }

@@ -21,6 +21,15 @@
 #include "xsolvable.h"
 
 /************************************************
+ * string handling
+ *
+ */
+
+char *to_string(const char *format, ...);
+void app_debugstart(Pool *p, int type);
+char *app_debugend();
+
+/************************************************
  * Id
  *
  */

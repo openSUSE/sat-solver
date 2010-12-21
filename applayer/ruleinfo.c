@@ -17,15 +17,24 @@
 #include "ruleinfo.h"
 
 #include "applayer.h"
-
+#include "solverdebug.h"
 
 Ruleinfo *
-ruleinfo_new( const Solver *solver, Id rule )
+ruleinfo_new( Solver *solver, Id rule )
 {
   Ruleinfo *ri = (Ruleinfo *)calloc( 1, sizeof( Ruleinfo ));
   ri->solver = solver;
+  ri->id = rule;
   ri->cmd = solver_ruleinfo((Solver *)solver, rule, &(ri->source), &(ri->target), &(ri->dep));
   return ri;
+}
+
+char *
+ruleinfo_string( const Ruleinfo *ri )
+{
+  app_debugstart(ri->solver->pool,SAT_DEBUG_RESULT);
+  solver_printrule(ri->solver, SAT_DEBUG_RESULT, ri->solver->rules + ri->id);
+  return app_debugend();
 }
 
 

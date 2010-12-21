@@ -37,7 +37,7 @@ decision_free( Decision *d )
 }
 
 void
-solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d, void *user_data ), void *user_data )
+solver_decisions_iterate( Solver *solver, int (*callback)( Decision *d, void *user_data ), void *user_data )
 {
   Repo *installed = solver->installed;
   Id p, *obsoletesmap = solver_create_decisions_obsoletesmap( solver );

@@ -28,7 +28,14 @@ print "\"" . $repo->name() . "\" size: " . $repo->size() . "\n";
 print "\nFinding values for attribute 'solvable:keywords' ...\n";
 
 my $solvable = $repo->find("perl") || die;
-foreach my $value ($solvable->attr_values("solvable:keywords")) {
-  print "  solvable keyword: $value\n";
-}
 
+#
+# Extract solvable:keywords attribute, which is an array(!)
+#
+my $di = new satsolver::Dataiterator($pool,$repo,undef,0,$solvable,"solvable:keywords");
+while ($di->step() != 0) {
+  my $v = $di->value();
+  foreach my $v1 (@$v) {
+    print " $v1\n";
+  }    
+}

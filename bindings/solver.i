@@ -69,11 +69,12 @@ update_xsolvables_iterate_callback( const XSolvable *xs_old, const XSolvable *xs
  */
 
 static int
-solver_decisions_iterate_callback( const Decision *d, void *user_data )
+solver_decisions_iterate_callback( Decision *d, void *user_data )
 {
 #if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield(SWIG_NewPointerObj((void*) d, SWIGTYPE_p__Decision, 0));
+  decision_free(d);
 #else
   AddPtrIndex(((PtrIndex*)user_data),const Decision **,d);
 #endif /* SWIGRUBY */
@@ -86,11 +87,12 @@ solver_decisions_iterate_callback( const Decision *d, void *user_data )
  */
 
 static int
-solver_problems_iterate_callback( const Problem *p, void *user_data )
+solver_problems_iterate_callback( Problem *p, void *user_data )
 {
 #if defined(SWIGRUBY)
   /* FIXME: how to pass 'break' back to the caller ? */
   rb_yield( SWIG_NewPointerObj((void*) p, SWIGTYPE_p__Problem, 0) );
+  problem_free(p);
 #else
   AddPtrIndex(((PtrIndex*)user_data),const Problem **,p);
 #endif
@@ -730,7 +732,22 @@ typedef struct solver {} Solver;
     }
     return &$self->trans;
   }
-  
+
+  /*
+   * String representation of the computed Transaction
+   *
+   * Will return +nil+ if solver.solve was not successful
+   *
+   */
+#if defined(SWIGRUBY)
+  %rename("transaction_s") string( );
+#endif
+#if defined(SWIGPYTHON)
+  %rename("transaction_str") string( );
+#endif
+  char *transaction_string( )
+  { return transaction_string( $self ); }
+
   /*
    * Return the number of decisions after solving.
    *

@@ -24,6 +24,7 @@ typedef struct _Relation {
 
 Relation *relation_new( const Pool *pool, Id id );
 Relation *relation_create( Pool *pool, const char *name, int op, const char *evr );
+char *relation_string( const Relation *r );
 void relation_free( Relation *r );
 Id relation_evrid( const Relation *r );
 

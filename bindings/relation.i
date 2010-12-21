@@ -67,7 +67,7 @@ typedef struct _Relation {} Relation;
    * String representation of this Relation
    */
   const char *string()
-  { return strdup(dep2str( (Pool *)$self->pool, $self->id )); }
+  { return relation_string($self); }
 
   const Pool *pool()
   { return $self->pool; }

@@ -16,6 +16,9 @@
 #include <stdlib.h>
 #include "step.h"
 
+#include "applayer.h"
+#include "solverdebug.h"
+
 Step *
 step_new( Transaction *transaction, Id id )
 {
@@ -110,3 +113,12 @@ transaction_steps_iterate( Transaction *t, int (*callback)( const Step *s, void 
 	break;
     }
 }
+
+char *
+transaction_string( Solver *s )
+{
+  app_debugstart(s->pool,SAT_DEBUG_RESULT);
+  solver_printtransaction(s);
+  return app_debugend();
+}
+
