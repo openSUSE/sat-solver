@@ -16,3 +16,6 @@ $pool->set_arch('i686');
 $pool->prepare();
 
 my $system = $pool->find('system:system') || die;
+
+my $s = $system->string();
+print "$s\n";
