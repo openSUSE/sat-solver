@@ -102,7 +102,12 @@ dataiterator_value( Dataiterator *di )
 	    Swig_Append( result, Swig_String( id2str( di->repo->pool, di->kv.id ) ) );
 	}
 	while (dataiterator_step(di));
+#if defined(SWIGPERL)
+        value = newRV((SV*)result);
+        sv_2mortal(value);
+#else
 	value = result;
+#endif
       }
       break;
       case REPOKEY_TYPE_REL_IDARRAY:
@@ -116,15 +121,23 @@ dataiterator_value( Dataiterator *di )
 	  fprintf(stderr, "REPOKEY_TYPE_DIRSTRARRAY: without repodata\n");
 	break;
       case REPOKEY_TYPE_DIRNUMNUMARRAY:
-        value = Swig_Array();
+      {
+        Swig_Type result = Swig_Array();
 	if (di->data)
 	{
-	  Swig_Append( value, Swig_String(repodata_dir2str(di->data, di->kv.id, 0)) );
-	  Swig_Append( value, Swig_Int(di->kv.num) );
-	  Swig_Append( value, Swig_Int(di->kv.num2) );
+	  Swig_Append( result, Swig_String(repodata_dir2str(di->data, di->kv.id, 0)) );
+	  Swig_Append( result, Swig_Int(di->kv.num) );
+	  Swig_Append( result, Swig_Int(di->kv.num2) );
 	}
 	else
 	  fprintf(stderr, "REPOKEY_TYPE_DIRNUMNUMARRAY: without repodata\n");
+#if defined(SWIGPERL)
+        value = newRV((SV*)result);
+        sv_2mortal(value);
+#else
+	value = result;
+#endif
+      }
       break;
       case REPOKEY_TYPE_MD5:
       case REPOKEY_TYPE_SHA1:
