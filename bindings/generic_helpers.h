@@ -95,11 +95,16 @@ dataiterator_value( Dataiterator *di )
       case REPOKEY_TYPE_IDARRAY:
       {
         Swig_Type result = Swig_Array();
+	Swig_Type v;
         do {
 	  if (di->data && di->data->localpool)
-	    Swig_Append( result, Swig_String( stringpool_id2str(&di->data->spool, di->kv.id ) ) );
+	    v = Swig_String( stringpool_id2str(&di->data->spool, di->kv.id ) );
 	  else
-	    Swig_Append( result, Swig_String( id2str( di->repo->pool, di->kv.id ) ) );
+	    v = Swig_String( id2str( di->repo->pool, di->kv.id ) );
+#if defined(SWIGPERL)
+	  SvREFCNT_inc( v );
+#endif
+	  Swig_Append( result, v );
 	}
 	while (dataiterator_step(di));
 #if defined(SWIGPERL)

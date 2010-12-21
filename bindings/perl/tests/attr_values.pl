@@ -29,21 +29,13 @@ print "\nFinding values for attribute 'solvable:keywords' ...\n";
 
 my $solvable = $repo->find("perl") || die;
 
-# FIXME !
 #
-# satsolver::Dataiterator->value() is a variant, returning different
-#  types (string, int, bool, array) depending on the attribute.
-# This doesn't work correctly in Perl
+# Extract solvable:keywords attribute, which is an array(!)
 #
 my $di = new satsolver::Dataiterator($pool,$repo,undef,0,$solvable,"solvable:keywords");
 while ($di->step() != 0) {
-  print "di $di\n";
-  my @v = $di->value();
-  print "at-vau @v\n";
-  foreach my $v1 (@v) {
-    print "vau1 $v1\n";
-    foreach my $v ($v1) {
-      print "vau $v\n";
-    }
+  my $v = $di->value();
+  foreach my $v1 (@$v) {
+    print " $v1\n";
   }    
 }
