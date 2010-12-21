@@ -69,6 +69,15 @@ typedef struct _SolutionElement {} SolutionElement;
     ReturnPtrIndex(pi,const SolutionElement **);
   }
 #endif
+#if defined(SWIGRUBY)
+  %rename("to_s") string();
+#endif
+#if defined(SWIGPYTHON)
+  %rename("__str__") string();
+#endif
+
+  char *string()
+  { return solution_string($self); }
 }
 
 %extend SolutionElement {
