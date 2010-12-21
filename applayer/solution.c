@@ -17,8 +17,11 @@
 
 #include <stdlib.h>
 
+#include "applayer.h"
 #include "solution.h"
 #include "request.h"
+
+#include "solverdebug.h"
 
 Solution *
 solution_new( const Problem *problem, Id id )
@@ -36,6 +39,20 @@ solution_free( Solution *s )
   free( s );
 }
 
+
+char *
+solution_string( const Solution *s )
+{
+  app_debugstart(s->problem->solver->pool,SAT_DEBUG_RESULT);
+  solver_printsolution(s->problem->solver, s->problem->id, s->id);
+  return app_debugend();
+}
+
+/**************************
+ * SolutionElement
+ * 
+ */
+
 SolutionElement *
 solutionelement_new( const Solution *solution, Id p, Id rp )
 {
@@ -43,6 +60,7 @@ solutionelement_new( const Solution *solution, Id p, Id rp )
   element->solution = solution;
   element->p = p;
   element->rp = rp;
+
   return element;
 }
 
@@ -96,10 +114,32 @@ solution_elements_iterate( const Solution *solution, int (*callback)( const Solu
     
       SolutionElement *se = solutionelement_new( solution, p, rp );
       int result = callback( se, user_data );
-      solutionelement_free(se);
       if (result)
 	break;
     }
+}
+
+
+char *
+solutionelemen_string( const SolutionElement *se )
+{
+#if 0
+  switch (se->p) {
+    case SOLVER_SOLUTION_INFARCH:
+      to_string("Install %s", solvable_
+      return job_new( pool, SOLVER_INSTALL|SOLVER_SOLVABLE, se->rp );
+      break;
+    case SOLVER_SOLUTION_DISTUPGRADE:
+      return job_new( pool, SOLVER_INSTALL|SOLVER_SOLVABLE, se->rp );
+      break;
+    case SOLVER_SOLUTION_JOB:
+      return request_job_get( problem->request, se->rp);
+      break;
+    default:
+    }
+  return job_new( pool, SOLVER_INSTALL|SOLVER_SOLVABLE, se->rp );
+#endif
+  return to_string("SolutionElement %p", se);
 }
 
 
@@ -116,17 +156,19 @@ solutionelement_cause( const SolutionElement *se )
 Job *
 solutionelement_job( const SolutionElement *se )
 {
-    const Problem *problem = se->solution->problem;
-    Pool *pool = problem->solver->pool;
+  const Problem *problem = se->solution->problem;
+  Pool *pool = problem->solver->pool;
   
-    if (se->p == SOLVER_SOLUTION_INFARCH)
+  switch (se->p) {
+    case SOLVER_SOLUTION_INFARCH:
       return job_new( pool, SOLVER_INSTALL|SOLVER_SOLVABLE, se->rp );
-    else if (se->p == SOLVER_SOLUTION_DISTUPGRADE)
+      break;
+    case SOLVER_SOLUTION_DISTUPGRADE:
       return job_new( pool, SOLVER_INSTALL|SOLVER_SOLVABLE, se->rp );
-    else if (se->p == SOLVER_SOLUTION_JOB)
+      break;
+    case SOLVER_SOLUTION_JOB:
       return request_job_get( problem->request, se->rp);
-    else if (se->rp == 0)
-      return job_new( pool, SOLVER_ERASE|SOLVER_SOLVABLE, se->p );
-    else
-      return job_new( pool, SOLVER_INSTALL|SOLVER_SOLVABLE, se->rp );
+      break;
+  }
+  return job_new( pool, SOLVER_INSTALL|SOLVER_SOLVABLE, se->rp );
 }

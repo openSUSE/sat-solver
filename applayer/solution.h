@@ -29,6 +29,7 @@ typedef struct _Solution {
 
 Solution *solution_new( const Problem *problem, Id id );
 void solution_free( Solution *s );
+char *solution_string( const Solution *s );
 const Problem *solution_problem( const Solution *s );
 
 
@@ -43,6 +44,7 @@ void solutionelement_free( SolutionElement *se );
 
 void solution_elements_iterate( const Solution *s, int (*callback)( const SolutionElement *se, void *user_data ), void *user_data );
 int solutionelement_cause( const SolutionElement *se );
+char *solutionelement_string( const SolutionElement *se );
 Job *solutionelement_job( const SolutionElement *se );
 
 #endif  /* SATSOLVER_SOLUTION_H */

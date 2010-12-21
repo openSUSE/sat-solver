@@ -11,6 +11,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "relation.h"
 
@@ -31,6 +32,13 @@ void
 relation_free( Relation *r )
 {
   free( r );
+}
+
+
+char *
+relation_string(const Relation *r)
+{
+   return strdup(dep2str( (Pool *)r->pool, r->id ));
 }
 
 

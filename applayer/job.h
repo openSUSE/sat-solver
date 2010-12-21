@@ -47,4 +47,8 @@ Relation *job_relation( const Job *j );
 
 /* return non-zero if jobs are equal */
 int job_equal( const Job *job1, const Job *job2 );
+
+/* Return string representation */
+char *job_string( const Job *j );
+
 #endif  /* SATSOLVER_JOB_H */

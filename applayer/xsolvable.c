@@ -70,6 +70,18 @@ xsolvable_free( XSolvable *xs )
 }
 
 
+char *
+xsolvable_string( const XSolvable *xs )
+{
+  const char *s;
+  if ( xs->id == ID_NULL )
+    s = "";
+  else
+    s = solvable2str( xs->pool, xsolvable_solvable( xs ) );
+  return strdup(s);
+}
+
+
 Solvable *
 xsolvable_solvable( const XSolvable *xs )
 {
@@ -104,7 +116,6 @@ xsolvable_pool( const XSolvable *xs)
 /*
  * equality
  */
-
 int
 xsolvable_equal( const XSolvable *xs1, const XSolvable *xs2 )
 {

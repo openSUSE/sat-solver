@@ -48,6 +48,12 @@ int steps_equal( const Step *step1, const Step *step2 );
 /* get specific step number from transaction. Returns NULL if step number is invalid. */
 Step *step_get( Transaction *transaction, unsigned int num);
 
+/****
+ * Transaction
+ * 
+ */
+
 void transaction_steps_iterate( Transaction *transaction, int (*callback)( const Step *s, void *user_data ), void *user_data);
 
+char *transaction_string( Solver *s );
 #endif  /* SATSOLVER_STEP_H */

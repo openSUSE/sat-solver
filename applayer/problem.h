@@ -32,15 +32,16 @@ typedef struct _Problem {
 
 Problem *problem_new( Solver *s, Request *t, Id id );
 void problem_free( Problem *p );
+char *problem_string( const Problem *p, int full );
 
-void solver_problems_iterate( Solver *solver, Request *t, int (*callback)( const Problem *p, void *user_data ), void *user_data );
+void solver_problems_iterate( Solver *solver, Request *t, int (*callback)( Problem *p, void *user_data ), void *user_data );
 
-void problem_ruleinfos_iterate( Problem *problem, int (*callback)( const Ruleinfo *ri, void *user_data), void *user_data );
+void problem_ruleinfos_iterate( Problem *problem, int (*callback)( Ruleinfo *ri, void *user_data), void *user_data );
 
 /* loop over Jobs leading to the problem */
 void problem_jobs_iterate( Problem *p, int (*callback)( const Job *j, void *user_data ), void *user_data );
 
 struct _Solution; /* forward decl, cannot include solution.h due to cycles */
-void problem_solutions_iterate( Problem *p, int (*callback)( const struct _Solution *s, void *user_data ), void *user_data );
+void problem_solutions_iterate( Problem *p, int (*callback)( struct _Solution *s, void *user_data ), void *user_data );
 
 #endif  /* SATSOLVER_PROBLEM_H */

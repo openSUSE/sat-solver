@@ -36,6 +36,6 @@ typedef struct _Decision {
 Decision *decision_new( Solver *solver, int op, Id solvable, Rule *rule );
 void decision_free( Decision *d );
 
-void solver_decisions_iterate( Solver *solver, int (*callback)( const Decision *d, void *user_data ), void *user_data);
+void solver_decisions_iterate( Solver *solver, int (*callback)( Decision *d, void *user_data ), void *user_data);
 
 #endif  /* SATSOLVER_DECISION_H */
