@@ -52,11 +52,31 @@
 
     for (i = 0; i < n; i++) {
         ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr($1[i]), SWIGTYPE_p__Solvable, 0);
+	/* xsolvable_free((XSolvable *)$1[i]); */
         argvi++;
     }
     free($1);
 }
 
+/*
+ * Decision* array to Perl
+ */
+%typemap(out) Decision ** {
+    int n, i;
+
+    for (n = 0; $1[n];)
+        n++;
+
+    if (n > items)
+        EXTEND(sp, n - items);
+
+    for (i = 0; i < n; i++) {
+        ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr($1[i]), SWIGTYPE_p__Decision, 0 ); /* SWIG_OWNER | SWIG_SHADOW */
+/*	decision_free((Decision *)$1[i]); */
+        argvi++;
+    }
+    free($1);
+}
 /*
  * Problem* array to Perl
  */
@@ -71,6 +91,7 @@
 
     for (i = 0; i < n; i++) {
         ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr($1[i]), SWIGTYPE_p__Problem, 0 ); /* SWIG_OWNER | SWIG_SHADOW */
+/*	problem_free((Problem *)$1[i]);*/
         argvi++;
     }
     free($1);
@@ -90,6 +111,49 @@
 
     for (i = 0; i < n; i++) {
         ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr($1[i]), SWIGTYPE_p__Solution, 0 ); /* SWIG_OWNER | SWIG_SHADOW */
+/*	solution_free((Solution *)$1[i]); */
+        argvi++;
+    }
+    free($1);
+}
+
+
+/*
+ * Ruleinfo* array to Perl
+ */
+%typemap(out) Ruleinfo ** {
+    int n, i;
+
+    for (n = 0; $1[n];)
+        n++;
+
+    if (n > items)
+        EXTEND(sp, n - items);
+
+    for (i = 0; i < n; i++) {
+        ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr($1[i]), SWIGTYPE_p__Ruleinfo, 0 ); /* SWIG_OWNER | SWIG_SHADOW */
+/*	ruleinfo_free((Ruleinfo *)$1[i]);*/
+        argvi++;
+    }
+    free($1);
+}
+
+
+/*
+ * SolutionElement* array to Perl
+ */
+%typemap(out) SolutionElement ** {
+    int n, i;
+
+    for (n = 0; $1[n];)
+        n++;
+
+    if (n > items)
+        EXTEND(sp, n - items);
+
+    for (i = 0; i < n; i++) {
+        ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr($1[i]), SWIGTYPE_p__SolutionElement, 0 ); /* SWIG_OWNER | SWIG_SHADOW */
+/*	solutionelement_free((SolutionElement  *)$1[i]);*/
         argvi++;
     }
     free($1);
@@ -118,4 +182,3 @@
 
 typedef int Id;
 typedef unsigned int Offset;
-
