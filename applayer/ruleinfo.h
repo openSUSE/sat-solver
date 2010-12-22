@@ -38,6 +38,9 @@ void ruleinfo_free( Ruleinfo *ri );
 
 const char *ruleinfo_command_string(const Ruleinfo *ri);
 int ruleinfo_command(const Ruleinfo *ri);
+
+/* Return Job (or NULL if Rule doesn't affect Job) */
+Job *ruleinfo_job(const Ruleinfo *ri);
 XSolvable *ruleinfo_source(const Ruleinfo *ri);
 XSolvable *ruleinfo_target(const Ruleinfo *ri);
 Relation *ruleinfo_relation(const Ruleinfo *ri);

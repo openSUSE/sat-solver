@@ -13,6 +13,7 @@
  */
 
 #include <stdlib.h>
+#include "job.h"
 
 #include "ruleinfo.h"
 
@@ -29,11 +30,12 @@ ruleinfo_new( Solver *solver, Id rule )
   return ri;
 }
 
+
 char *
 ruleinfo_string( const Ruleinfo *ri )
 {
   app_debugstart(ri->solver->pool,SAT_DEBUG_RESULT);
-  solver_printrule(ri->solver, SAT_DEBUG_RESULT, ri->solver->rules + ri->id);
+  solver_printproblemruleinfo(ri->solver, ri->id);
   return app_debugend();
 }
 
@@ -82,10 +84,27 @@ ruleinfo_command(const Ruleinfo *ri)
   return ri->cmd;
 }
 
+/*
+ * If cmd == SOLVER_RULE_JOB
+ * then source -> job id
+ *      target -> job cmd
+ *      dep    -> job data (depending on job cmd !)
+ */
+
+Job *
+ruleinfo_job(const Ruleinfo *ri)
+{
+  if (ri->cmd != SOLVER_RULE_JOB)
+    return NULL;
+  return job_new( ri->solver->pool, ri->target, ri->source);
+}
+
 
 XSolvable *
 ruleinfo_source(const Ruleinfo *ri)
 {
+  if (ri->cmd == SOLVER_RULE_JOB)
+    return NULL;
   return ri->source ? xsolvable_new( ri->solver->pool, ri->source ) : NULL;
 }
 
@@ -93,6 +112,8 @@ ruleinfo_source(const Ruleinfo *ri)
 XSolvable *
 ruleinfo_target(const Ruleinfo *ri)
 {
+  if (ri->cmd == SOLVER_RULE_JOB)
+    return NULL;
   return ri->target ? xsolvable_new( ri->solver->pool, ri->target ) : NULL;
 }
 
@@ -100,5 +121,7 @@ ruleinfo_target(const Ruleinfo *ri)
 Relation *
 ruleinfo_relation(const Ruleinfo *ri)
 {
+  if (ri->cmd == SOLVER_RULE_JOB)
+    return NULL;
   return ri->dep ? relation_new( ri->solver->pool, ri->dep ) : NULL;
 }

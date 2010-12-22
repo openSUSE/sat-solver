@@ -23,7 +23,9 @@ def solve_and_check pool, installed, request
     j = 0
     p.each_ruleinfo do |ri|
       j += 1
-      puts "#{i}.#{j}: #{ri.command_s} #{ri}"
+      puts "#{i}.#{j}: cmd: #{ri.command_s}\n\tRuleinfo: #{ri}"
+      job = ri.job
+      puts "\tJob #{job}" if job
     end
   end
   true
