@@ -39,6 +39,9 @@ typedef struct _Ruleinfo {} Ruleinfo;
   const char *command_s()
   { return ruleinfo_command_string($self); }
 
+  Job *job()
+  { return ruleinfo_job($self); }
+  
   XSolvable *source()
   { return ruleinfo_source($self); }
   
