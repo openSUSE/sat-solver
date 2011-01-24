@@ -45,7 +45,7 @@ select_solvable(Solver *solv, Pool *pool, Repo *repo, char *name)
   Solvable *s;
 
   id = str2id(pool, name, 1);
-  queue_init( &plist);
+  queue_init(&plist);
   i = repo ? repo->start : 1;
   end = repo ? repo->end : pool->nsolvables;
   for (; i < end; i++)
