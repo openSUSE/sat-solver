@@ -37,6 +37,8 @@
 #include "poolarch.h"
 #include "evr.h"
 
+#include "../../tools/common_myfopen.h"
+
 static int verbose = 0;
 static int redcarpet = 0;
 
@@ -614,39 +616,6 @@ adddep( Pool *pool, Parsedata *pd, unsigned int olddeps, const char **atts, int 
 #endif
 
 /*----------------------------------------------------------------*/
-
-static ssize_t
-cookie_gzread(void *cookie, char *buf, size_t nbytes)
-{
-  return gzread((gzFile *)cookie, buf, nbytes);
-}
-
-static int
-cookie_gzclose(void *cookie)
-{
-  return gzclose((gzFile *)cookie);
-}
-
-FILE *
-myfopen(const char *fn)
-{
-  cookie_io_functions_t cio;
-  char *suf;
-  gzFile *gzf;
-
-  if (!fn)
-    return 0;
-  suf = strrchr(fn, '.');
-  if (!suf || strcmp(suf, ".gz") != 0)
-    return fopen(fn, "r");
-  gzf = gzopen(fn, "r");
-  if (!gzf)
-    return 0;
-  memset(&cio, 0, sizeof(cio));
-  cio.read = cookie_gzread;
-  cio.close = cookie_gzclose;
-  return  fopencookie(gzf, "r", cio);
-}
 
 /*
  * read repo from file as name
