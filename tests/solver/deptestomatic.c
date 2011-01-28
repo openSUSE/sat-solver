@@ -36,8 +36,7 @@
 #include "repo_helix.h"
 #include "poolarch.h"
 #include "evr.h"
-
-#include "../../tools/common_myfopen.h"
+#include "sat_xfopen.h"
 
 static int verbose = 0;
 static int redcarpet = 0;
@@ -664,12 +663,12 @@ add_repo( Parsedata *pd, const char *name, const char *file )
   if (!fp)
     {
       if (!access(file, R_OK))
-	fp = myfopen(file);
+	fp = sat_xfopen(file);
       else
 	{
 	  char gzfile[PATH_MAX];
 	  snprintf(gzfile, PATH_MAX, "%s.gz", file);
-	  fp = myfopen(gzfile);
+	  fp = sat_xfopen(gzfile);
 	}
       if (!fp)
 	{
