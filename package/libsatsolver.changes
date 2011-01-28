@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Jan 28 11:45:07 CET 2011 - ma@suse.de
+
+- Add '/usr/bin/installcheck' to package.
+
+-------------------------------------------------------------------
 Fri Oct 22 15:54:24 CEST 2010 - ma@suse.de
 
 - updateinfoxml: Correctly parse 'issued date' field.
