@@ -1,5 +1,0 @@
-README for sat-solver/applayer
-
-applayer provides an 'application layer' to ease access to sat-solver.
-Primary consumer are the SWIG bindings below sat-solver/bindings,
-hence the application layer is written in 'C'.
