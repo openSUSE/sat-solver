@@ -142,6 +142,7 @@ enum state {
   STATE_AVAILABLELOCALES,
   STATE_DONTINSTALLRECOMMENDED,
   STATE_IGNOREALREADYRECOMMENDED,
+  STATE_DROPORPHANED,
   NUMSTATES
 };
 
@@ -193,6 +194,7 @@ static struct stateswitch stateswitches[] = {
   { STATE_TRIAL,       "availablelocales",STATE_AVAILABLELOCALES, 0 },
   { STATE_TRIAL,       "keep",         STATE_KEEP, 0 },
   { STATE_TRIAL,       "multiinstall", STATE_MULTIINSTALL, 0 },
+  { STATE_TRIAL,       "droporphaned", STATE_DROPORPHANED, 0 },
   { STATE_TRIAL,    "dontinstallrecommended", STATE_DONTINSTALLRECOMMENDED, 0 },
   { STATE_TRIAL,    "ignorealreadyrecommended", STATE_IGNOREALREADYRECOMMENDED, 0 },
 
@@ -1132,6 +1134,17 @@ startElement( void *userData, const char *name, const char **atts )
 	getPackageName( atts, package );
 	id = str2id(pool, package, 1);
 	queue_push( &(pd->trials), SOLVER_NOOBSOLETES|SOLVER_SOLVABLE_NAME );
+	queue_push( &(pd->trials), id );
+      }
+      break;
+
+    case STATE_DROPORPHANED:
+      {
+	char package[MAXNAMELEN];
+	Id id;
+	getPackageName( atts, package );
+	id = str2id(pool, package, 1);
+	queue_push( &(pd->trials), SOLVER_DROP_ORPHANED|SOLVER_SOLVABLE_NAME );
 	queue_push( &(pd->trials), id );
       }
       break;
