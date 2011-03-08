@@ -665,12 +665,12 @@ add_repo( Parsedata *pd, const char *name, const char *file )
   if (!fp)
     {
       if (!access(file, R_OK))
-	fp = sat_xfopen(file);
+	fp = sat_xfopen(file, 0);
       else
 	{
 	  char gzfile[PATH_MAX];
 	  snprintf(gzfile, PATH_MAX, "%s.gz", file);
-	  fp = sat_xfopen(gzfile);
+	  fp = sat_xfopen(gzfile, 0);
 	}
       if (!fp)
 	{
