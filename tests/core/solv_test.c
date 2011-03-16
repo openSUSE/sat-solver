@@ -4,6 +4,13 @@
 #include <string.h>
 #include "check.h"
 
+#define CHECK_VERSION_AT_LEAST(major, minor, micro)	\
+  (  CHECK_MAJOR_VERSION > (major)	\
+  || CHECK_MAJOR_VERSION == (major)	\
+  && (  CHECK_MINOR_VERSION > (minor)	\
+     || CHECK_MINOR_VERSION == (minor)	\
+     && CHECK_MICRO_VERSION >= (micro) ) )
+
 START_TEST(test_pass)
 {
   fail_unless (1==1, "Shouldn't see this");
@@ -28,11 +35,13 @@ START_TEST(test_pass2)
 }
 END_TEST
 
+#if CHECK_VERSION_AT_LEAST(0,9,5)
 START_TEST(test_loop)
 {
   fail_unless (_i==1, "Iteration %d failed", _i);
 }
 END_TEST
+#endif /* CHECK 0.9.5 */
 
 static Suite *make_s1_suite (void)
 {
@@ -58,7 +67,9 @@ static Suite *make_s2_suite (void)
   tc = tcase_create ("Core");
   suite_add_tcase(s, tc);
   tcase_add_test (tc, test_pass2);
+#if CHECK_VERSION_AT_LEAST(0,9,5)
   tcase_add_loop_test(tc, test_loop, 0, 3);
+#endif /* CHECK 0.9.5 */
 
   return s;
 }
