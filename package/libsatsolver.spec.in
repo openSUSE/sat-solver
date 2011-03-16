@@ -1,3 +1,16 @@
+
+# bindings enabled by default only on
+# Code11+
+%if 0%{?suse_version} >= 1100
+%bcond_without ruby
+%bcond_without perl
+%bcond_without python
+%else
+%bcond_with ruby
+%bcond_with perl
+%bcond_with python
+%endif
+
 Name:           libsatsolver
 Version:        @VERSION@
 Release:        1
@@ -14,7 +27,7 @@ BuildRequires:  doxygen
 BuildRequires:  libneon0.26-devel
 %endif
 %if 0%{?fedora_version}
-BuildRequires:  perl-devel db4-devel ruby ruby-rdoc
+BuildRequires:  db4-devel
 %endif
 %if 0%{?suse_version}
 %if 0%{?suse_version} < 1030
@@ -31,19 +44,40 @@ BuildRequires:  fdupes
 %else
 BuildRequires:  expat-devel
 %endif
-BuildRequires:  cmake rpm-devel gcc-c++ ruby-devel swig perl python-devel
+BuildRequires:  cmake rpm-devel gcc-c++
 BuildRequires:  zlib-devel
 # the testsuite uses the check framework
+%if 0%{?suse_version} >= 1030
 BuildRequires:  check-devel
-Summary:        A new approach to package dependency solving
-
-#define some macros missing on fedora
+%else
+BuildRequires:  check
+%endif
+# Language bindings
+# ruby
+%if %{with ruby}
+BuildRequires: swig ruby-devel
+%if 0%{?fedora_version}
+BuildRequires:  ruby ruby-rdoc
+%{!?ruby_sitearch: %global ruby_sitearch %(ruby -rrbconfig -e 'puts Config::CONFIG["sitearchdir"] ')}
+%endif
+%endif
+# perl
+%if %{with perl}
+BuildRequires: swig perl
+%if 0%{?fedora_version}
+BuildRequires:  perl-devel
+%endif
+%endif
+# python
+%if %{with python}
+BuildRequires: swig python-devel
 %if 0%{?fedora_version}
 %{!?py_sitedir: %define py_sitedir %(%__python -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 %{!?py_requires: %define py_requires Requires: python}
-%{!?ruby_sitearch: %global ruby_sitearch %(ruby -rrbconfig -e 'puts Config::CONFIG["sitearchdir"] ')}
 %endif
-
+%endif
+#
+Summary:        A new approach to package dependency solving
 %description
 A new approach to package dependency solving
 
@@ -104,13 +138,16 @@ Requires:       gpg2
 %description demo
 Applications demoing the satsolver library.
 
+%if %{with ruby}
 %package -n ruby-satsolver
 Summary:        Ruby bindings for sat solver
 Group:          Development/Languages/Ruby
 
 %description -n ruby-satsolver
 Ruby bindings for sat solver.
+%endif
 
+%if %{with python}
 %package -n python-satsolver
 %py_requires
 Summary:        Python bindings for sat solver
@@ -118,7 +155,9 @@ Group:          Development/Languages/Python
 
 %description -n python-satsolver
 Python bindings for sat solver.
+%endif
 
+%if %{with perl}
 %package -n perl-satsolver
 Requires:       perl = %{perl_version}
 Summary:        Perl bindings for sat solver
@@ -126,7 +165,7 @@ Group:          Development/Languages/Perl
 
 %description -n perl-satsolver
 Perl bindings for sat solver.
-
+%endif
 
 %prep
 %setup -n satsolver-%{version}
@@ -146,7 +185,7 @@ cmake   $CMAKE_FLAGS \
 	-DLIB=%{_lib} \
 	-DCMAKE_VERBOSE_MAKEFILE=TRUE \
 	-DCMAKE_BUILD_TYPE=Release \
-	-DCMAKE_SKIP_RPATH=1 
+	-DCMAKE_SKIP_RPATH=1
 make %{?jobs:-j %jobs}
 make doc_forced
 
@@ -165,7 +204,11 @@ export NO_BRP_STRIP_DEBUG=true
 %if 0%{?suse_version} > 1020
 # create symlinks for documentation
 #%fdupes -s %{buildroot}%{_docdir}/ruby-satsolver
+
+%if %{with ruby}
 %fdupes -s bindings/ruby/html
+%endif
+
 %endif
 
 %clean
@@ -198,6 +241,7 @@ rm -rf "$RPM_BUILD_ROOT"
 #%dir %_docdir/satsolver
 #%_docdir/satsolver/*
 
+%if %{with ruby}
 %files -n ruby-satsolver
 %defattr(-,root,root,-)
 %if 0%{?suse_version}
@@ -215,16 +259,21 @@ rm -rf "$RPM_BUILD_ROOT"
 %{ruby_sitearch}/satsolver.so
 %endif
 %doc bindings/ruby/html
+%endif
 
+%if %{with python}
 %files -n python-satsolver
 %defattr(-,root,root,-)
 #%doc swig/python/examples/*.py
 %{py_sitedir}/_satsolver.so
 %{py_sitedir}/satsolver.py*
+%endif
 
+%if %{with perl}
 %files -n perl-satsolver
 %defattr(-,root,root,-)
 %{perl_vendorarch}/satsolver.so
 %{perl_vendorlib}/satsolver.pm
+%endif
 
 %changelog
