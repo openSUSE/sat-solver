@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Feb 24 17:44:05 CET 2011 - mls@suse.de
+
+- ignore to be dropped orhaned packages when calculating
+  candidates for recommends/supplements installation
+
+-------------------------------------------------------------------
 Fri Oct 22 15:51:11 CEST 2010 - ma@suse.de
 
 - updateinfoxml: Correctly parse 'issued date' field.
