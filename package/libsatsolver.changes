@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Fri Apr 29 14:28:57 CEST 2011 - mls@suse.de
+
+- make analyze_unsolvable faster in corner cases [bnc#686261]
+- correctly cummulate multi-line fields in language extensions
+  [bnc#666422]
+- 0.16.2
+
+-------------------------------------------------------------------
 Thu Feb 24 17:44:05 CET 2011 - mls@suse.de
 
 - ignore to be dropped orhaned packages when calculating
