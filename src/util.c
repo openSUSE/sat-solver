@@ -100,23 +100,52 @@ sat_timems(unsigned int subtract)
 
 /* bsd's qsort_r has different arguments, so we define our
    own version in case we need to do some clever mapping
- 
+
    see also: http://sources.redhat.com/ml/libc-alpha/2008-12/msg00003.html
  */
+#if defined(__GLIBC__)
+
+# if HAVE_QSORT_R || HAVE___QSORT_R
 void
 sat_sort(void *base, size_t nmemb, size_t size, int (*compar)(const void *, const void *, void *), void *compard)
 {
-#if defined(__GLIBC__)
-# if __GLIBC_PREREQ(2, 8)
+# if HAVE_QSORT_R
   qsort_r(base, nmemb, size, compar, compard);
 # else
   /* backported for SLE10-SP2 */
   __qsort_r(base, nmemb, size, compar, compard);
 # endif
-#else
-# error please add qsort_r call here
-#endif
+
 }
+#else /* qsort_r or __qsort_r on glibc */
+/* use own version of qsort if none available */
+#include "qsort_r.c"
+#endif
+
+#else /* not glibc */
+
+struct sat_sort_data {
+  int (*compar)(const void *, const void *, void *);
+  void *compard;
+};
+
+static int
+sat_sort_helper(void *compard, const void *a, const void *b)
+{
+  struct sat_sort_data *d = compard;
+  return (*d->compar)(a, b, d->compard);
+}
+
+void
+sat_sort(void *base, size_t nmemb, size_t size, int (*compar)(const void *, const void *, void *), void *compard)
+{
+  struct sat_sort_data d;
+  d.compar = compar;
+  d.compard = compard;
+  qsort_r(base, nmemb, size, &d, sat_sort_helper);
+}
+
+#endif
 
 char *
 sat_dupjoin(const char *str1, const char *str2, const char *str3)
@@ -145,3 +174,63 @@ sat_dupjoin(const char *str1, const char *str2, const char *str3)
   *s = 0;
   return str;
 }
+
+char *
+sat_dupappend(const char *str1, const char *str2, const char *str3)
+{
+  char *str = sat_dupjoin(str1, str2, str3);
+  sat_free((void *)str1);
+  return str;
+}
+
+int
+sat_hex2bin(const char **strp, unsigned char *buf, int bufl)
+{
+  const char *str = *strp;
+  int i;
+
+  for (i = 0; i < bufl; i++)
+    {
+      int c = *str;
+      int d;
+      if (c >= '0' && c <= '9')
+        d = c - '0';
+      else if (c >= 'a' && c <= 'f')
+        d = c - ('a' - 10);
+      else if (c >= 'A' && c <= 'F')
+        d = c - ('A' - 10);
+      else
+	break;
+      c = *++str;
+      d <<= 4;
+      if (c >= '0' && c <= '9')
+        d |= c - '0';
+      else if (c >= 'a' && c <= 'f')
+        d |= c - ('a' - 10);
+      else if (c >= 'A' && c <= 'F')
+        d |= c - ('A' - 10);
+      else
+	break;
+      buf[i] = d;
+      ++str;
+    }
+  *strp = str;
+  return i;
+}
+
+char *
+sat_bin2hex(const unsigned char *buf, int l, char *str)
+{
+  int i;
+  for (i = 0; i < l; i++, buf++)
+    {
+      int c = *buf >> 4;
+      *str++ = c < 10 ? c + '0' : c + ('a' - 10);
+      c = *buf & 15;
+      *str++ = c < 10 ? c + '0' : c + ('a' - 10);
+    }
+  *str = 0;
+  return str;
+}
+
+
