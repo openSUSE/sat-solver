@@ -239,14 +239,20 @@ refine_suggestion(Solver *solv, Id *problem, Id sug, Queue *refined, int essenti
       for (i = 1; i < solv->problems.count - 1; i++)
 	{
 	  /* ignore solutions in refined */
-          v = solv->problems.elements[i];
+	  v = solv->problems.elements[i];
 	  if (v == 0)
 	    break;	/* end of problem reached */
-	  for (j = 0; problem[j]; j++)
-	    if (problem[j] != sug && problem[j] == v)
-	      break;
-	  if (problem[j])
-	    continue;
+	  if (sug != v)
+	    {
+	      /* check if v is in the given problems list
+               * we allow disabling all problem rules *after* sug, to
+               * prevent getting the same solution twice */
+	      for (j = 0; problem[j]; j++)
+		if (problem[j] == v || problem[j] == sug)
+		  break;
+	      if (problem[j] == v)
+		continue;
+	    }
 	  if (v >= solv->featurerules && v < solv->featurerules_end)
 	    nfeature++;
 	  else if (v > 0)
@@ -581,9 +587,7 @@ create_solutions(Solver *solv, int probnr, int solidx)
 	  queue_push(&solv->solutions, 0);
 	  for (j = 0; j < problem.count; j++)
 	    {
-	      queue_empty(&solution);
-	      queue_push(&solution, problem.elements[j]);
-	      convertsolution(solv, solution.elements[j], &solv->solutions);
+	      convertsolution(solv, problem.elements[j], &solv->solutions);
 	      if (solv->solutions.count > solstart + 1)
 		break;
 	    }
