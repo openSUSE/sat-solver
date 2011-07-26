@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu May 19 08:51:52 UTC 2011 - coolo@novell.com
+
+- make it compile with gcc 4.6
+
+-------------------------------------------------------------------
 Fri Apr 29 14:35:59 CEST 2011 - mls@suse.de
 
 - bup version to 0.17.0 to make it different from 11.4
