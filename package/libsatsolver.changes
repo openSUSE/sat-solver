@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Wed Jul 27 11:34:20 CEST 2011 - mls@suse.de
+
+- fix segfault in "fallback" solution creation code, do two passes to
+  find better solutions [bnc#707839]
+- 0.17.1
+
+-------------------------------------------------------------------
 Thu May 19 08:51:52 UTC 2011 - coolo@novell.com
 
 - make it compile with gcc 4.6
