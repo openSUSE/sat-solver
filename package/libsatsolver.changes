@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Wed Jul 27 11:30:45 CEST 2011 - mls@suse.de
+
+- fix segfault in "fallback" solution creation code, do two passes to
+  find better solutions [bnc#707839]
+- 0.16.3
+
+-------------------------------------------------------------------
 Fri Apr 29 14:28:57 CEST 2011 - mls@suse.de
 
 - make analyze_unsolvable faster in corner cases [bnc#686261]
