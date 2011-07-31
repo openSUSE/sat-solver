@@ -8,6 +8,7 @@
 #define _GNU_SOURCE
 #define _XOPEN_SOURCE /* glibc2 needs this */
 #include <sys/types.h>
+#include <sys/param.h>
 #include <limits.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -22,6 +23,10 @@
 #define DISABLE_SPLIT
 #include "tools_util.h"
 
+#ifndef MAX
+#  define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#endif
+
 /*
  * <updates>
  *   <update from="rel-eng@fedoraproject.org" status="stable" type="security" version="1.4">
@@ -31,6 +36,7 @@
  *     <release>Fedora 8</release>
  *     <rights>Copyright 2007 Company Inc</rights>
  *     <issued date="2007-12-28 16:42:30"/>
+ *     <updated date="2007-03-14 00:00:00"/>
  *     <references>
  *       <reference href="https://bugzilla.redhat.com/show_bug.cgi?id=426091" id="426091" title="CVE-2007-3568 imlib: infinite loop DoS using crafted BMP image" type="bugzilla"/>
  *     </references>
@@ -57,19 +63,20 @@ enum state {
   STATE_SEVERITY,     /* 5 */
   STATE_RELEASE,      /* 6 */
   STATE_ISSUED,       /* 7 */
-  STATE_RIGHTS,       /* 8 */
-  STATE_MESSAGE,      /* 9 */
-  STATE_REFERENCES,   /* 10 */
-  STATE_REFERENCE,    /* 11 */
-  STATE_DESCRIPTION,  /* 12 */
-  STATE_PKGLIST,     /* 13 */
-  STATE_COLLECTION,  /* 14 */
-  STATE_NAME,        /* 15 */
-  STATE_PACKAGE,     /* 16 */
-  STATE_FILENAME,    /* 17 */
-  STATE_REBOOT,      /* 18 */
-  STATE_RESTART,     /* 19 */
-  STATE_RELOGIN,     /* 20 */
+  STATE_UPDATED,      /* 8 */
+  STATE_RIGHTS,       /* 9 */
+  STATE_MESSAGE,      /* 10 */
+  STATE_REFERENCES,   /* 11 */
+  STATE_REFERENCE,    /* 12 */
+  STATE_DESCRIPTION,  /* 13 */
+  STATE_PKGLIST,     /* 14 */
+  STATE_COLLECTION,  /* 15 */
+  STATE_NAME,        /* 16 */
+  STATE_PACKAGE,     /* 17 */
+  STATE_FILENAME,    /* 18 */
+  STATE_REBOOT,      /* 19 */
+  STATE_RESTART,     /* 20 */
+  STATE_RELOGIN,     /* 21 */
   NUMSTATES
 };
 
@@ -91,6 +98,7 @@ static struct stateswitch stateswitches[] = {
   { STATE_UPDATE,      "severity",        STATE_SEVERITY,    1 },
   { STATE_UPDATE,      "release",         STATE_RELEASE,     1 },
   { STATE_UPDATE,      "issued",          STATE_ISSUED,      1 },
+  { STATE_UPDATE,      "updated",         STATE_UPDATED,     1 },
   { STATE_UPDATE,      "description",     STATE_DESCRIPTION, 1 },
   { STATE_UPDATE,      "message",         STATE_MESSAGE    , 1 },
   { STATE_UPDATE,      "rights",          STATE_RIGHTS,      1 },
@@ -121,6 +129,10 @@ struct parsedata {
   unsigned int datanum;
   Solvable *solvable;
   Id collhandle;
+
+  /* We store the "issued" date here, that maz
+     get overwriten bz "updated" later */
+  time_t buildtime;
 
   struct stateswitch *swtab[NUMSTATES];
   enum state sbtab[NUMSTATES];
@@ -315,6 +327,7 @@ startElement(void *userData, const char *name, const char **atts)
       /*  <issued date="2008-03-21 21:36:55"/>
       */
     case STATE_ISSUED:
+    case STATE_UPDATED:
       {
 	const char *date = 0;
 	for (; *atts; atts += 2)
@@ -325,8 +338,14 @@ startElement(void *userData, const char *name, const char **atts)
 	if (date)
 	  {
 	    time_t t = datestr2timestamp(date);
-	    if (t)
-	      repodata_set_num(pd->data, pd->datanum, SOLVABLE_BUILDTIME, t);
+	    if (t) {
+              /* we consider the case here that an "issued" tag comes
+                 after an "updated" tag */
+              if (pd->state == STATE_ISSUED)
+                pd->buildtime = MAX(pd->buildtime, t);
+              else
+                pd->buildtime = t;
+            }
 	  }
       }
       break;
@@ -475,6 +494,9 @@ endElement(void *userData, const char *name)
       break;
     case STATE_UPDATE:
       s->provides = repo_addid_dep(repo, s->provides, rel2id(pool, s->name, s->evr, REL_EQ, 1), 0);
+      /** set the final buildtime */
+      repodata_set_num(pd->data, pd->datanum, SOLVABLE_BUILDTIME, pd->buildtime);
+      pd->buildtime = 0;
       break;
     case STATE_ID:
       s->name = str2id(pool, join2("patch", ":", pd->content), 1);
