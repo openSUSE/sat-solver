@@ -27,6 +27,7 @@
  *   <update from="rel-eng@fedoraproject.org" status="stable" type="security" version="1.4">
  *     <id>FEDORA-2007-4594</id>
  *     <title>imlib-1.9.15-6.fc8</title>
+ *     <severity>Important</severity>
  *     <release>Fedora 8</release>
  *     <issued date="2007-12-28 16:42:30"/>
  *     <references>
@@ -52,20 +53,21 @@ enum state {
   STATE_UPDATE,       /* 2 */
   STATE_ID,           /* 3 */
   STATE_TITLE,        /* 4 */
-  STATE_RELEASE,      /* 5 */
-  STATE_ISSUED,       /* 6 */
-  STATE_MESSAGE,      /* 7 */
-  STATE_REFERENCES,   /* 8 */
-  STATE_REFERENCE,    /* 9 */
-  STATE_DESCRIPTION,  /* 10 */
-  STATE_PKGLIST,     /* 11 */
-  STATE_COLLECTION,  /* 12 */
-  STATE_NAME,        /* 13 */
-  STATE_PACKAGE,     /* 14 */
-  STATE_FILENAME,    /* 15 */
-  STATE_REBOOT,      /* 16 */
-  STATE_RESTART,     /* 17 */
-  STATE_RELOGIN,     /* 18 */
+  STATE_SEVERITY,     /* 5 */
+  STATE_RELEASE,      /* 6 */
+  STATE_ISSUED,       /* 7 */
+  STATE_MESSAGE,      /* 8 */
+  STATE_REFERENCES,   /* 9 */
+  STATE_REFERENCE,    /* 10 */
+  STATE_DESCRIPTION,  /* 11 */
+  STATE_PKGLIST,     /* 12 */
+  STATE_COLLECTION,  /* 13 */
+  STATE_NAME,        /* 14 */
+  STATE_PACKAGE,     /* 15 */
+  STATE_FILENAME,    /* 16 */
+  STATE_REBOOT,      /* 17 */
+  STATE_RESTART,     /* 18 */
+  STATE_RELOGIN,     /* 19 */
   NUMSTATES
 };
 
@@ -84,6 +86,7 @@ static struct stateswitch stateswitches[] = {
   { STATE_UPDATES,     "update",          STATE_UPDATE,      0 },
   { STATE_UPDATE,      "id",              STATE_ID,          1 },
   { STATE_UPDATE,      "title",           STATE_TITLE,       1 },
+  { STATE_UPDATE,      "severity",        STATE_SEVERITY,    1 },
   { STATE_UPDATE,      "release",         STATE_RELEASE,     1 },
   { STATE_UPDATE,      "issued",          STATE_ISSUED,      1 },
   { STATE_UPDATE,      "description",     STATE_DESCRIPTION, 1 },
@@ -479,6 +482,12 @@ endElement(void *userData, const char *name)
     case STATE_RELEASE:
       break;
     case STATE_ISSUED:
+      break;
+      /*
+       * <severity>Urgent</severity>
+       */
+    case STATE_SEVERITY:
+      repodata_set_str(pd->data, pd->datanum, UPDATE_SEVERITY, pd->content);
       break;
     case STATE_REFERENCES:
       break;
