@@ -29,6 +29,7 @@
  *     <title>imlib-1.9.15-6.fc8</title>
  *     <severity>Important</severity>
  *     <release>Fedora 8</release>
+ *     <rights>Copyright 2007 Company Inc</rights>
  *     <issued date="2007-12-28 16:42:30"/>
  *     <references>
  *       <reference href="https://bugzilla.redhat.com/show_bug.cgi?id=426091" id="426091" title="CVE-2007-3568 imlib: infinite loop DoS using crafted BMP image" type="bugzilla"/>
@@ -56,18 +57,19 @@ enum state {
   STATE_SEVERITY,     /* 5 */
   STATE_RELEASE,      /* 6 */
   STATE_ISSUED,       /* 7 */
-  STATE_MESSAGE,      /* 8 */
-  STATE_REFERENCES,   /* 9 */
-  STATE_REFERENCE,    /* 10 */
-  STATE_DESCRIPTION,  /* 11 */
-  STATE_PKGLIST,     /* 12 */
-  STATE_COLLECTION,  /* 13 */
-  STATE_NAME,        /* 14 */
-  STATE_PACKAGE,     /* 15 */
-  STATE_FILENAME,    /* 16 */
-  STATE_REBOOT,      /* 17 */
-  STATE_RESTART,     /* 18 */
-  STATE_RELOGIN,     /* 19 */
+  STATE_RIGHTS,       /* 8 */
+  STATE_MESSAGE,      /* 9 */
+  STATE_REFERENCES,   /* 10 */
+  STATE_REFERENCE,    /* 11 */
+  STATE_DESCRIPTION,  /* 12 */
+  STATE_PKGLIST,     /* 13 */
+  STATE_COLLECTION,  /* 14 */
+  STATE_NAME,        /* 15 */
+  STATE_PACKAGE,     /* 16 */
+  STATE_FILENAME,    /* 17 */
+  STATE_REBOOT,      /* 18 */
+  STATE_RESTART,     /* 19 */
+  STATE_RELOGIN,     /* 20 */
   NUMSTATES
 };
 
@@ -91,6 +93,7 @@ static struct stateswitch stateswitches[] = {
   { STATE_UPDATE,      "issued",          STATE_ISSUED,      1 },
   { STATE_UPDATE,      "description",     STATE_DESCRIPTION, 1 },
   { STATE_UPDATE,      "message",         STATE_MESSAGE    , 1 },
+  { STATE_UPDATE,      "rights",          STATE_RIGHTS,      1 },
   { STATE_UPDATE,      "references",      STATE_REFERENCES,  0 },
   { STATE_UPDATE,      "pkglist",         STATE_PKGLIST,     0 },
   { STATE_REFERENCES,  "reference",       STATE_REFERENCE,   0 },
@@ -326,6 +329,12 @@ startElement(void *userData, const char *name, const char **atts)
 	      repodata_set_num(pd->data, pd->datanum, SOLVABLE_BUILDTIME, t);
 	  }
       }
+      break;
+      /*
+       * <rights>Copyright 2007 Company Inc</rights>
+       */
+    case STATE_RIGHTS:
+      repodata_set_str(pd->data, pd->datanum, UPDATE_RIGHTS, pd->content);
       break;
     case STATE_REFERENCES:
       break;
