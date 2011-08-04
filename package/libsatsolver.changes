@@ -3,6 +3,7 @@ Thu Aug  4 07:57:15 UTC 2011 - kkaempf@novell.com
 
 - make satsolvertools.a available to provide the ability to
   write a .solv file (used by satsolver-bindings)
+- fix build for older SUSE versions (require check-devel)
 - 0.17.2
 
 -------------------------------------------------------------------
