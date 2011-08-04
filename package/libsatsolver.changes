@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Thu Aug  4 07:57:15 UTC 2011 - kkaempf@novell.com
+
+- make satsolvertools.a available to provide the ability to
+  write a .solv file (used by satsolver-bindings)
+- 0.17.2
+
+-------------------------------------------------------------------
 Wed Jul 27 11:34:20 CEST 2011 - mls@suse.de
 
 - fix segfault in "fallback" solution creation code, do two passes to
