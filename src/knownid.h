@@ -160,6 +160,8 @@ KNOWNID(UPDATE_REFERENCE_TYPE,		"update:reference:type"),	/*  type, e.g. 'bugzil
 KNOWNID(UPDATE_REFERENCE_HREF,		"update:reference:href"),	/*  href, e.g. 'http://bugzilla...' */
 KNOWNID(UPDATE_REFERENCE_ID,		"update:reference:id"),		/*  id, e.g. bug number */
 KNOWNID(UPDATE_REFERENCE_TITLE,		"update:reference:title"),	/*  title, e.g. "the bla forz scribs on fuggle" */
+KNOWNID(UPDATE_SEVERITY,		"update:severity"),	/*  Important... etc */
+KNOWNID(UPDATE_RIGHTS,		        "update:rights"),	/*  Copyright */
 
 /* name */
 KNOWNID(PRODUCT_REFERENCEFILE,		"product:referencefile"),
