@@ -52,7 +52,7 @@ Authors:
 %package devel
 Summary:        A new approach to package dependency solving
 Group:          Development/Libraries/C and C++
-Requires:       satsolver-tools = %version
+Requires:       satsolver-tools
 Requires:       rpm-devel
 
 #%package devel-doc
@@ -74,14 +74,14 @@ Authors:
     Michael Matz <matz@suse.de>
     Duncan Mac-Vicar P. <dmacvicar@suse.de>
 
-%package -n satsolver-tools
+%package -n satsolver-tools-obsolete
 Summary:        A new approach to package dependency solving
 Group:          Development/Libraries/C and C++
-Obsoletes:      libsatsolver <= 0.0.15
-Provides:       libsatsolver = %{version}-%{release}
+#Obsoletes:      libsatsolver <= 0.0.15
+#Provides:       libsatsolver = %{version}-%{release}
 Requires:       gzip bzip2 coreutils
 
-%description -n satsolver-tools
+%description -n satsolver-tools-obsolete
 A new approach to package dependency solving.
 
 %package demo
@@ -139,7 +139,7 @@ export NO_BRP_STRIP_DEBUG=true
 %clean
 rm -rf "$RPM_BUILD_ROOT"
 
-%files -n satsolver-tools
+%files -n satsolver-tools-obsolete
 %defattr(-,root,root)
 %doc LICENSE*
 %exclude /usr/bin/deptestomatic
