@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Mon Oct 24 14:29:36 CEST 2011 - mls@suse.de
+
+- rename "satsolver-tools" to "satsolver-tools-obsolete", so that
+  the libsolv version is used (workaround for 12.1 image generation)
+
+-------------------------------------------------------------------
 Thu Aug  4 07:57:15 UTC 2011 - kkaempf@novell.com
 
 - make satsolvertools.a available to provide the ability to
