@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Dec  1 12:20:30 CET 2011 - mls@suse.de
+
+- support severity/rights/updated in updateinfo.xml
+- 0.17.3
+
+-------------------------------------------------------------------
 Thu Aug  4 07:57:15 UTC 2011 - kkaempf@novell.com
 
 - make satsolvertools.a available to provide the ability to
