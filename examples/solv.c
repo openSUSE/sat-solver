@@ -2567,7 +2567,7 @@ rerunsolver:
       solv = solver_create(pool);
       solv->ignorealreadyrecommended = 1;
       solv->updatesystem = allpkgs && !repofilter && (mainmode == MODE_UPDATE || mainmode == MODE_DISTUPGRADE);
-      solv->dosplitprovides = solv->updatesystem;
+      solv->dosplitprovides = 1;
       solv->fixsystem = allpkgs && !repofilter && mainmode == MODE_VERIFY;
       if (mainmode == MODE_DISTUPGRADE && allpkgs && !repofilter)
 	{

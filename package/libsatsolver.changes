@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Thu Jan 12 11:27:38 CET 2012 - mls@suse.de
+
+- change splitprovides so that they only work on packages that are
+  to be updated (bnc#740982)
+- 0.14.19
+
+-------------------------------------------------------------------
 Mon Mar  7 17:17:39 CET 2011 - ma@suse.de
 
 - Fix susetags pattern parser truncating translated multiline texts
