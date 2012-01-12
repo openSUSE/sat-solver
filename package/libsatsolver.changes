@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Jan 12 11:27:38 CET 2012 - mls@suse.de
+
+- change splitprovides so that they only work on packages that are
+  to be updated (bnc#740982)
+- 0.17.4
+-------------------------------------------------------------------
 Thu Dec  1 12:20:30 CET 2011 - mls@suse.de
 
 - support severity/rights/updated in updateinfo.xml
