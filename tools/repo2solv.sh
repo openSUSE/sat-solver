@@ -102,13 +102,13 @@ if test "$repotype" = rpmmd ; then
      # fake tag to combine primary.xml and extensions
      # like susedata.xml, other.xml, filelists.xml
      echo '<rpmmd>'
-     if test -f $primxml ; then
+     if test -f "$primxml" ; then
 	repomd_decompress $primxml
          # add a newline
         echo
      fi
      susedataxml=`repomd_findfile susedata susedata.xml`
-     if test -f $susedataxml ; then
+     if test -f "$susedataxml" ; then
 	repomd_decompress $susedataxml
      fi
      echo '</rpmmd>'
@@ -122,11 +122,7 @@ if test "$repotype" = rpmmd ; then
   fi
   if test -n "$prodxml" -a -s "$prodxml" ; then
     prodfile=`mktemp` || exit 3
-    (
-     echo '<products>'
-     repomd_decompress "$prodxml"
-     echo '</products>'
-    ) | grep -v '\?xml' | rpmmd2solv $parser_options > $prodfile || exit 4
+    repomd_decompress "$prodxml" | rpmmd2solv $parser_options > $prodfile || exit 4
   fi
 
   patternfile=
@@ -165,7 +161,7 @@ if test "$repotype" = rpmmd ; then
   # This contains a deltainfo.xml*
   deltainfofile=
   deltainfoxml=`repomd_findfile deltainfo deltainfo.xml`
-  if test -z "$deltainfoxml"; then 
+  if test -z "$deltainfoxml"; then
       deltainfoxml=`repomd_findfile prestodelta prestodelta.xml`
   fi
   if test -n "$deltainfoxml" -a -s "$deltainfoxml" ; then
