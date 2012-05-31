@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu May 31 14:43:27 CEST 2012 - mls@suse.de
+
+- fix gzfile usage to make it compile again
+
+-------------------------------------------------------------------
 Tue Mar 20 13:51:43 CET 2012 - mls@suse.de
 
 - add copyright to specfile, fix license
