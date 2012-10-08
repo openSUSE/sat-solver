@@ -382,9 +382,10 @@ tag_from_string(char *cs)
  */
 
 static void
-finish_solvable(struct parsedata *pd, Solvable *s, Id handle, Offset freshens)
+finish_solvable(struct parsedata *pd, Solvable *s, Offset freshens)
 {
   Pool *pool = pd->repo->pool;
+  Id handle = s - pool->solvables;
 
 #if 1
   /* move file provides to filelist */
@@ -794,7 +795,7 @@ repo_add_susetags(Repo *repo, FILE *fp, Id defvendor, const char *language, int 
       if (tag == CTAG('=', 'D', 'l', 't'))
 	{
 	  if (s)
-	    finish_solvable(&pd, s, handle, freshens);
+	    finish_solvable(&pd, s, freshens);
 	  s = 0;
 	  pd.kind = 0;
           if (split(line + 5, sp, 5) != 4)
@@ -816,7 +817,7 @@ repo_add_susetags(Repo *repo, FILE *fp, Id defvendor, const char *language, int 
 	  /* If we have an old solvable, complete it by filling in some
 	     default stuff.  */
 	  if (s)
-	    finish_solvable(&pd, s, handle, freshens);
+	    finish_solvable(&pd, s, freshens);
 
 	  /*
 	   * define kind
@@ -1142,7 +1143,7 @@ repo_add_susetags(Repo *repo, FILE *fp, Id defvendor, const char *language, int 
     } /* for(;;) */
 
   if (s)
-    finish_solvable(&pd, s, handle, freshens);
+    finish_solvable(&pd, s, freshens);
 
   /* Shared attributes
    *  (e.g. multiple binaries built from same source)
