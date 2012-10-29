@@ -16,16 +16,16 @@
 
 static ssize_t cookie_gzread(void *cookie, char *buf, size_t nbytes)
 {
-  return gzread((gzFile *)cookie, buf, nbytes);
+  return gzread((gzFile)cookie, buf, nbytes);
 }
 
 static int
 cookie_gzclose(void *cookie)
 {
-  return gzclose((gzFile *)cookie);
+  return gzclose((gzFile)cookie);
 }
 
-static FILE *mygzfopen(gzFile* gzf)
+static FILE *mygzfopen(gzFile gzf)
 {
 #ifdef HAVE_FUNOPEN
   return funopen(
@@ -49,7 +49,7 @@ FILE *
 sat_xfopen(const char *fn, const char *mode)
 {
   char *suf;
-  gzFile *gzf;
+  gzFile gzf;
 
   if (!fn)
     return 0;
@@ -68,7 +68,7 @@ FILE *
 sat_xfopen_fd(const char *fn, int fd, const char *mode)
 {
   char *suf;
-  gzFile *gzf;
+  gzFile gzf;
 
   suf = fn ? strrchr(fn, '.') : 0;
   if (!mode)
