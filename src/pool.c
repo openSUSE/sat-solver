@@ -1738,9 +1738,12 @@ pool_trivial_installable_noobsoletesmap(Pool *pool, Map *installedmap, Queue *pk
 		{
 		  /* decided and miss */
 		  map[p] = 2;
+		  did = 0;
 		  break;
 		}
-	      m |= r;	/* 1 | 9 | 16 | 17 */
+	      if (r == 16)
+		break;	/* undecided */
+	      m |= r;	/* 1 | 9 | 17 */
 	    }
 	  if (req)
 	    continue;
@@ -1759,6 +1762,7 @@ pool_trivial_installable_noobsoletesmap(Pool *pool, Map *installedmap, Queue *pk
 	      if ((providedbyinstalled(pool, map, con, ispatch, noobsoletesmap) & 1) != 0)
 		{
 		  map[p] = 2;
+		  did = 0;
 		  break;
 		}
 	      if ((m == 1 || m == 17) && ISRELDEP(con))
