@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Jan  9 13:56:04 CET 2013 - mls@suse.de
+
+- fix trivial installable requires handling [bnc#795267]
+- 0.17.7
+
+-------------------------------------------------------------------
 Mon Oct 15 10:26:41 CEST 2012 - mls@suse.de
 
 - fix susetags parser, it ignored the filelist of the last
