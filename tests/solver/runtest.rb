@@ -66,25 +66,30 @@ class Solution
     a1 = f1.readlines
     a2 = f2.readlines
     i = 0
-    a1.each { |l1|
-      if (l1 =~ /unflag/)
-	next
+    retry_loop = true
+    while retry_loop do
+      retry_loop = false
+      a1.each do |l1|
+        if (l1 =~ /unflag/)
+          next
+        end
+        l2 = a2[i]
+        if (l2 =~ /unflag/)
+          i += 1
+          retry_loop = true # restart from beginning
+          break # was: retry, removed in Ruby 1.9
+        end
+        if l2
+          if (l1 != l2)
+            puts "- #{l1}"
+            puts "+ #{l2}"
+          end
+        else
+          #	puts "- #{l1}"
+        end
+        i += 1
       end
-      l2 = a2[i]
-      if (l2 =~ /unflag/)
-	i += 1
-	retry
-      end
-      if l2
-	if (l1 != l2)
-	  puts "- #{l1}"
-	  puts "+ #{l2}"
-	end
-      else
-#	puts "- #{l1}"
-      end
-      i += 1
-    }
+    end
     while i < a2.size
       puts "+ #{a2[i]}"
       i += 1
@@ -280,7 +285,7 @@ class Runner
  
   def run wd, arg, recurse=nil
     fullname = arg
-    if wd: 
+    if wd
        fullname = File.join( wd, arg )
     end
     #puts "Examine #{fullname}"
