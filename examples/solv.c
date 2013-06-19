@@ -1613,11 +1613,11 @@ read_repos(Pool *pool, struct repoinfo *repoinfos, int nrepoinfos)
 #ifndef DEBIAN
   printf("rpm database:");
   if (stat("/var/lib/rpm/Packages", &stb))
-    memset(&stb, 0, sizeof(&stb));
+    memset(&stb, 0, sizeof(stb));
 #else
   printf("dpgk database:");
   if (stat("/var/lib/dpkg/status", &stb))
-    memset(&stb, 0, sizeof(&stb));
+    memset(&stb, 0, sizeof(stb));
 #endif
   calc_checksum_stat(&stb, REPOKEY_TYPE_SHA256, installedcookie);
   if (usecachedrepo(repo, 0, installedcookie, 0))
