@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Wed Aug  7 16:45:29 CEST 2013 - ro@suse.de
+
+- fix misuses of memset
+
+-------------------------------------------------------------------
 Thu May 31 14:43:27 CEST 2012 - mls@suse.de
 
 - fix gzfile usage to make it compile again
