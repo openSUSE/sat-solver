@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Wed May 14 15:55:35 CEST 2014 - mls@suse.de
+
+- use sed instead of grep to get rid of the <?xml...> line
+  to parse files with no newlines [bnc#876297]
+- 0.17.8
+
+-------------------------------------------------------------------
 Wed Jan  9 13:56:04 CET 2013 - mls@suse.de
 
 - fix trivial installable requires handling [bnc#795267]
