@@ -5,6 +5,9 @@
  * for further information
  */
 
+#define _GNU_SOURCE
+#define _XOPEN_SOURCE
+#include <time.h>
 #include <sys/types.h>
 #include <limits.h>
 #include <fcntl.h>
@@ -87,6 +90,7 @@ enum state {
   STATE_UPDATEURL,
   STATE_OPTIONALURL,
   STATE_FLAG,
+  STATE_ENDOFLIFE,
 
   /* rpm-md dependencies inside the
      format tag */
@@ -187,6 +191,7 @@ static struct stateswitch stateswitches[] = {
   { STATE_SOLVABLE,    "update-url",        STATE_UPDATEURL,   1 },
   { STATE_SOLVABLE,    "optional-url",      STATE_OPTIONALURL, 1 },
   { STATE_SOLVABLE,    "flag",              STATE_FLAG,        1 },
+  { STATE_SOLVABLE,    "endoflife",         STATE_ENDOFLIFE,   1 },
 
   { STATE_SOLVABLE,      "rpm:vendor",      STATE_VENDOR,      1 },
   { STATE_SOLVABLE,      "rpm:group",       STATE_RPM_GROUP,   1 },
@@ -620,6 +625,30 @@ set_sourcerpm(Repodata *data, Solvable *s, Id handle, char *sourcerpm)
     repodata_set_void(data, handle, SOLVABLE_SOURCENAME);
   else
     repodata_set_id(data, handle, SOLVABLE_SOURCENAME, strn2id(pool, sourcerpm, sevr - sourcerpm - 1, 1));
+}
+
+static time_t
+datestr2timestamp(const char *date)
+{
+  const char *p;
+  struct tm tm;
+
+  if (!date || !*date)
+    return 0;
+  for (p = date; *p >= '0' && *p <= '9'; p++)
+    ;
+  if (!*p)
+    return atoi(date);
+  memset(&tm, 0, sizeof(tm));
+  p = strptime(date, "%F%T", &tm);
+  if (!p)
+    {
+      memset(&tm, 0, sizeof(tm));
+      p = strptime(date, "%F", &tm);
+      if (!p || *p)
+	return 0;
+    }
+  return timegm(&tm);
 }
 
 /*-----------------------------------------------*/
@@ -1071,6 +1100,14 @@ endElement(void *userData, const char *name)
     case STATE_FLAG:
       if (pd->content[0])
           repodata_set_poolstr(pd->data, handle, PRODUCT_FLAGS, pd->content);
+      break;
+    case STATE_ENDOFLIFE:
+      if (*pd->content)
+	{
+	  time_t t = datestr2timestamp(pd->content);
+	  if (t)
+	    repodata_set_num(pd->data, pd->handle, PRODUCT_ENDOFLIFE, (unsigned long long)t);
+	}
       break;
     case STATE_EULA:
       if (pd->content[0])

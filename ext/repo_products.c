@@ -11,6 +11,9 @@
  * for further information
  */
 
+#define _GNU_SOURCE
+#define _XOPEN_SOURCE
+#include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -58,6 +61,7 @@ enum state {
   STATE_TARGET,          // 16
   STATE_REGRELEASE,      // 18
   STATE_PRODUCTLINE,     // 19
+  STATE_ENDOFLIFE,       // 20
   NUMSTATES              // 0
 };
 
@@ -86,6 +90,7 @@ static struct stateswitch stateswitches[] = {
   { STATE_PRODUCT,   "linguas",       STATE_LINGUAS,       0 },
   { STATE_PRODUCT,   "updaterepokey", STATE_UPDATEREPOKEY, 1 },
   { STATE_PRODUCT,   "cpeid",         STATE_CPEID,         1 },
+  { STATE_PRODUCT,   "endoflife",     STATE_ENDOFLIFE,     1 },
   { STATE_URLS,      "url",           STATE_URL,           1 },
   { STATE_LINGUAS,   "lang",          STATE_LANG,          0 },
   { STATE_REGISTER,  "target",        STATE_TARGET,        1 },
@@ -167,6 +172,29 @@ langtag(struct parsedata *pd, Id tag, const char *language)
   return pd->langcache[tag];
 }
 
+static time_t
+datestr2timestamp(const char *date)
+{
+  const char *p;
+  struct tm tm;
+
+  if (!date || !*date)
+    return 0;
+  for (p = date; *p >= '0' && *p <= '9'; p++)
+    ;
+  if (!*p)
+    return atoi(date);
+  memset(&tm, 0, sizeof(tm));
+  p = strptime(date, "%F%T", &tm);
+  if (!p)
+    {
+      memset(&tm, 0, sizeof(tm));
+      p = strptime(date, "%F", &tm);
+      if (!p || *p)
+	return 0;
+    }
+  return timegm(&tm);
+}
 
 /*
  * XML callback: startElement
@@ -350,6 +378,15 @@ endElement(void *userData, const char *name)
     case STATE_CPEID:
       if (pd->content)
         repodata_set_str(pd->data, pd->handle, SOLVABLE_CPEID, pd->content);
+      break;
+    case STATE_ENDOFLIFE:
+      if (*pd->content)
+	{
+	  time_t t = datestr2timestamp(pd->content);
+	  if (t)
+	    repodata_set_num(pd->data, pd->handle, PRODUCT_ENDOFLIFE, (unsigned long long)t);
+	}
+      break;
     default:
       break;
     }

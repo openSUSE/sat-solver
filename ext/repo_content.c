@@ -14,6 +14,9 @@
  * for further information
  */
 
+#define _GNU_SOURCE
+#define _XOPEN_SOURCE
+#include <time.h>
 #include <sys/types.h>
 #include <limits.h>
 #include <fcntl.h>
@@ -189,7 +192,29 @@ add_multiple_urls(Repodata *data, Id handle, char *value, Id type)
     }
 }
 
+static time_t
+datestr2timestamp(const char *date)
+{
+  const char *p;
+  struct tm tm;
 
+  if (!date || !*date)
+    return 0;
+  for (p = date; *p >= '0' && *p <= '9'; p++)
+    ;
+  if (!*p)
+    return atoi(date);
+  memset(&tm, 0, sizeof(tm));
+  p = strptime(date, "%F%T", &tm);
+  if (!p)
+    {
+      memset(&tm, 0, sizeof(tm));
+      p = strptime(date, "%F", &tm);
+      if (!p || *p)
+	return 0;
+    }
+  return timegm(&tm);
+}
 
 /*
  * add 'content' to repo
@@ -440,6 +465,12 @@ repo_add_content(Repo *repo, FILE *fp, int flags)
 		    }
 		}
             }
+	  else if (istag ("ENDOFLIFE"))
+	    {
+	      time_t t = datestr2timestamp(value);
+	      if (t)
+		repodata_set_num(data, s - pool->solvables, PRODUCT_ENDOFLIFE, (unsigned long long)t);
+	    }
 
 	  /*
 	   * Every tag below is Code10 only
