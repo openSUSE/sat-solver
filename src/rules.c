@@ -1936,17 +1936,85 @@ solver_ruleinfo(Solver *solv, Id rid, Id *fromp, Id *top, Id *depp)
   return SOLVER_RULE_UNKNOWN;
 }
 
+/* check if the newest versions of pi still provides the dependency we're looking for */
+static int
+solver_choicerulecheck(Solver *solv, Id pi, Rule *r, Map *m, Queue *q)
+{
+  Pool *pool = solv->pool;
+  Rule *ur;
+  Id p, *pp;
+  int i;
+
+  if (!q->count || q->elements[0] != pi)
+    {
+      if (q->count)
+	queue_empty(q);
+      ur = solv->rules + solv->updaterules + (pi - pool->installed->start);
+      if (!ur->p)
+	ur = solv->rules + solv->featurerules + (pi - pool->installed->start);
+      if (!ur->p)
+       return 0;
+      queue_push2(q, pi, 0);
+      FOR_RULELITERALS(p, pp, ur)
+       if (p > 0)
+	 queue_push(q, p);
+    }
+  if (q->count == 2)
+    return 1;
+  if (q->count == 3)
+    {
+      p = q->elements[2];
+      return MAPTST(m, p) ? 0 : 1;
+    }
+  if (!q->elements[1])
+    {
+      for (i = 2; i < q->count; i++)
+       if (!MAPTST(m, q->elements[i]))
+	 break;
+      if (i == q->count)
+       return 0;	/* all provide it, no need to filter */
+      /* some don't provide it, have to filter */
+      queue_deleten(q, 0, 2);
+      policy_filter_unwanted(solv, q, POLICY_MODE_CHOOSE);
+      queue_unshift(q, 1);     /* filter mark */
+      queue_unshift(q, pi);
+    }
+  for (i = 2; i < q->count; i++)
+    if (MAPTST(m, q->elements[i]))
+      return 0;		/* at least one provides it */
+  return 1;	/* none of the new packages provided it */
+}
+
+static inline void
+queue_removeelement(Queue *q, Id el)
+{
+  int i, j;
+  for (i = 0; i < q->count; i++)
+    if (q->elements[i] == el)
+      break;
+  if (i < q->count)
+    {
+      for (j = i++; i < q->count; i++)
+       if (q->elements[i] != el)
+         q->elements[j++] = q->elements[i];
+      queue_truncate(q, j);
+    }
+}
+
 void
 solver_addchoicerules(Solver *solv)
 {
   Pool *pool = solv->pool;
   Map m, mneg;
   Rule *r;
-  Queue q, qi;
+  Queue q, qi, qcheck;
   int i, j, rid, havechoice;
   Id p, d, *pp;
   Id p2, pp2;
   Solvable *s, *s2;
+  Id lastaddedp, lastaddedd;
+  int lastaddedcnt;
+  unsigned int now;
 
   solv->choicerules = solv->nrules;
   if (!pool->installed)
@@ -1954,9 +2022,11 @@ solver_addchoicerules(Solver *solv)
       solv->choicerules_end = solv->nrules;
       return;
     }
+  now = sat_timems(0);
   solv->choicerules_ref = sat_calloc(solv->rpmrules_end, sizeof(Id));
   queue_init(&q);
   queue_init(&qi);
+  queue_init(&qcheck);
   map_init(&m, pool->nsolvables);
   map_init(&mneg, pool->nsolvables);
   /* set up negative assertion map from infarch and dup rules */
@@ -1966,10 +2036,13 @@ solver_addchoicerules(Solver *solv)
   for (rid = solv->duprules, r = solv->rules + rid; rid < solv->duprules_end; rid++, r++)
     if (r->p < 0 && !r->w2 && (r->d == 0 || r->d == -1))
       MAPSET(&mneg, -r->p);
+  lastaddedp = 0;
+  lastaddedd = 0;
+  lastaddedcnt = 0;
   for (rid = 1; rid < solv->rpmrules_end ; rid++)
     {
       r = solv->rules + rid;
-      if (r->p >= 0 || ((r->d == 0 || r->d == -1) && r->w2 < 0))
+      if (r->p >= 0 || ((r->d == 0 || r->d == -1) && r->w2 <= 0))
 	continue;	/* only look at requires rules */
       // solver_printrule(solv, SAT_DEBUG_RESULT, r);
       queue_empty(&q);
@@ -2007,7 +2080,7 @@ solver_addchoicerules(Solver *solv)
 		continue;
 	      if (policy_is_illegal(solv, s2, s, 0))
 		continue;
-	      queue_push(&qi, p2);
+	      queue_push2(&qi, p2, p);
 	      queue_push(&q, p);
 	      continue;
 	    }
@@ -2038,7 +2111,7 @@ solver_addchoicerules(Solver *solv)
 		    continue;
 		  if (policy_is_illegal(solv, s2, s, 0))
 		    continue;
-		  queue_push(&qi, p2);
+		  queue_push2(&qi, p2, p);
 		  queue_push(&q, p);
 		  continue;
 		}
@@ -2046,21 +2119,46 @@ solver_addchoicerules(Solver *solv)
 	  /* package p is independent of the installed ones */
 	  havechoice = 1;
 	}
-      if (!havechoice || !q.count)
+      if (!havechoice || !q.count || !qi.count)
 	continue;	/* no choice */
+
+      FOR_RULELITERALS(p, pp, r)
+        if (p > 0)
+	  MAPSET(&m, p);
+
+      /* do extra checking */
+      for (i = j = 0; i < qi.count; i += 2)
+	{
+	  p2 = qi.elements[i];
+	  if (!p2)
+	    continue;
+	  if (solver_choicerulecheck(solv, p2, r, &m, &qcheck))
+	    {
+	      /* oops, remove element p from q */
+	      queue_removeelement(&q, qi.elements[i + 1]);
+	      continue;
+	    }
+	  qi.elements[j++] = p2;
+	}
+      queue_truncate(&qi, j);
+
+      if (!q.count || !qi.count)
+       {
+         FOR_RULELITERALS(p, pp, r)
+           if (p > 0)
+             MAPCLR(&m, p);
+         continue;
+       }
 
       /* now check the update rules of the installed package.
        * if all packages of the update rules are contained in
        * the dependency rules, there's no need to set up the choice rule */
-      map_empty(&m);
-      FOR_RULELITERALS(p, pp, r)
-        if (p > 0)
-	  MAPSET(&m, p);
       for (i = 0; i < qi.count; i++)
 	{
+	  Rule *ur;
 	  if (!qi.elements[i])
 	    continue;
-	  Rule *ur = solv->rules + solv->updaterules + (qi.elements[i] - pool->installed->start);
+	  ur = solv->rules + solv->updaterules + (qi.elements[i] - pool->installed->start);
 	  if (!ur->p)
 	    ur = solv->rules + solv->featurerules + (qi.elements[i] - pool->installed->start);
 	  if (!ur->p)
@@ -2074,6 +2172,10 @@ solver_addchoicerules(Solver *solv)
 	    if (qi.elements[i] == qi.elements[j])
 	      qi.elements[j] = 0;
 	}
+      /* empty map again */
+      FOR_RULELITERALS(p, pp, r)
+	if (p > 0)
+	  MAPCLR(&m, p);
       if (i == qi.count)
 	{
 #if 0
@@ -2082,7 +2184,22 @@ solver_addchoicerules(Solver *solv)
 #endif
 	  continue;
 	}
+
+      /* don't add identical rules */
+      if (lastaddedp == r->p && lastaddedcnt == q.count)
+	{
+	  for (i = 0; i < q.count; i++)
+	    if (q.elements[i] != pool->whatprovidesdata[lastaddedd + i])
+	      break;
+	  if (i == q.count)
+	    continue;   /* already added that one */
+	}
       d = q.count ? pool_queuetowhatprovides(pool, &q) : 0;
+
+      lastaddedp = r->p;
+      lastaddedd = d;
+      lastaddedcnt = q.count;
+
       solver_addrule(solv, r->p, d);
       queue_push(&solv->weakruleq, solv->nrules - 1);
       solv->choicerules_ref[solv->nrules - 1 - solv->choicerules] = rid;
@@ -2095,9 +2212,13 @@ solver_addchoicerules(Solver *solv)
     }
   queue_free(&q);
   queue_free(&qi);
+  queue_free(&qcheck);
   map_free(&m);
   map_free(&mneg);
   solv->choicerules_end = solv->nrules;
+  /* shrink choicerules_ref */
+  solv->choicerules_ref = sat_realloc2(solv->choicerules_ref, solv->choicerules_end - solv->choicerules, sizeof(Id));
+  POOL_DEBUG(SAT_DEBUG_STATS, "choice rule creation took %d ms\n", sat_timems(now));
 }
 
 /* called when a choice rule is disabled by analyze_unsolvable. We also
