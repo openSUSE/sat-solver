@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Oct  9 15:01:41 CEST 2019 - mls@suse.de
+
+- Backport choice rule generation changes [bnc#1152078]
+- 0.17.10
+
+-------------------------------------------------------------------
 Mon Dec 15 17:51:01 CET 2014 - ma@suse.de
 
 - Support product end-of-life attribute [FATE#300591]
