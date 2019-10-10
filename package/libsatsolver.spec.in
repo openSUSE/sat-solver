@@ -1,11 +1,28 @@
+#
+# spec file for package libsatsolver
+#
+# Copyright (c) 2015 SUSE LINUX Products GmbH, Nuernberg, Germany.
+#
+# All modifications and additions to the file contributed by third parties
+# remain the property of their copyright owners, unless otherwise agreed
+# upon. The license for this file, and modifications and additions to the
+# file, is the same license as for the pristine package itself (unless the
+# license for the pristine package is not an Open Source License, in which
+# case the license is the MIT License). An "Open Source License" is a
+# license that conforms to the Open Source Definition (Version 1.9)
+# published by the Open Source Initiative.
+
+# Please submit bugfixes or comments via http://bugs.opensuse.org/
+#
+
+
+
 Name:           libsatsolver
 Version:        @VERSION@
 Release:        1
-License:        BSD 3-Clause
 Url:            git://gitorious.org/opensuse/sat-solver.git
 Source:         satsolver-%{version}.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
-Group:          Development/Libraries/C and C++
 Prefix:         /usr
 
 BuildRequires:  doxygen
@@ -14,7 +31,9 @@ BuildRequires:  doxygen
 BuildRequires:  libneon0.26-devel
 %endif
 %if 0%{?fedora_version}
-BuildRequires:  db4-devel ruby ruby-rdoc
+BuildRequires:  db4-devel
+BuildRequires:  ruby
+BuildRequires:  ruby-rdoc
 %endif
 %if 0%{?suse_version}
 %if 0%{?suse_version} < 1030
@@ -31,12 +50,15 @@ BuildRequires:  fdupes
 %else
 BuildRequires:  expat-devel
 %endif
-BuildRequires:  cmake rpm-devel gcc-c++
+BuildRequires:  cmake
+BuildRequires:  gcc-c++
+BuildRequires:  rpm-devel
 BuildRequires:  zlib-devel
 # the testsuite uses the check framework
 BuildRequires:  check-devel
 Summary:        A new approach to package dependency solving
-
+License:        BSD-3-Clause
+Group:          Development/Libraries/C and C++
 
 %description
 A new approach to package dependency solving
@@ -50,10 +72,11 @@ Authors:
     Duncan Mac-Vicar P. <dmacvicar@suse.de>
 
 %package devel
+
 Summary:        A new approach to package dependency solving
 Group:          Development/Libraries/C and C++
-Requires:       satsolver-tools = %version
 Requires:       rpm-devel
+Requires:       satsolver-tools = %version
 
 #%package devel-doc
 #Summary:        satsolver developer documentation
@@ -75,16 +98,20 @@ Authors:
     Duncan Mac-Vicar P. <dmacvicar@suse.de>
 
 %package -n satsolver-tools
+
 Summary:        A new approach to package dependency solving
 Group:          Development/Libraries/C and C++
 Obsoletes:      libsatsolver <= 0.0.15
 Provides:       libsatsolver = %{version}-%{release}
-Requires:       gzip bzip2 coreutils
+Requires:       bzip2
+Requires:       coreutils
+Requires:       gzip
 
 %description -n satsolver-tools
 A new approach to package dependency solving.
 
 %package demo
+
 Summary:        Applications demoing the satsolver library
 Group:          System/Management
 Requires:       curl
